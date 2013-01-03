@@ -25,5 +25,14 @@ log
 # Translations:
 *.pot
 
+# virtual enviroment
+venv
+
+# ignore south migrations
+migrations
+
+## Django
 # deployment specific django files:
 local_settings.py
+# uploaded media
+karmaworld/media/
