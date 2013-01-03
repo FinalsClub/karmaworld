@@ -196,9 +196,14 @@ THIRD_PARTY_APPS = (
 
     # Asynchronous task queue:
     'djcelery',
+
+    # Tagging https://github.com/yedpodtrzitko/django-taggit
+    'taggit',
 )
 
 LOCAL_APPS = (
+    # file handling app
+    'karmaworld.apps.notes',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -257,3 +262,15 @@ COMPRESS_JS_FILTERS = [
     'compressor.filters.template.TemplateFilter',
 ]
 ########## END COMPRESSION CONFIGURATION
+
+########## TAGGIT CONFIGURATION
+# From https://github.com/yedpodtrzitko/django-taggit
+
+# Use lowercase tags
+TAGGIT_FORCE_LOWERCASE = True
+
+# Ignore common stopwords
+TAGGIT_STOPWORDS = [u'a', u'an', u'and', u'be', u'from', u'of']
+
+########## END TAGGIT CONFIGURATION
+
