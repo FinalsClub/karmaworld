@@ -15,11 +15,12 @@ from taggit.managers import TaggableManager
 class Note(models.Model):
     """ A django model representing an uploaded file and associated metadata.
     """
+    UNKNOWN_FILE = '???'
     FILE_TYPE_CHOICES = (
         ('doc', 'MS Word compatible file (.doc, .docx, .rtf, .odf)'),
         ('img', 'Scan or picture of notes'),
         ('pdf', 'PDF file'),
-        ('???', 'Unknown file'),
+        (UNKNOWN_FILE, 'Unknown file'),
     )
 
     # Tagging system
@@ -29,7 +30,7 @@ class Note(models.Model):
     desc            = models.TextField(max_length=511, blank=True, null=True)
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
 
-    file_type   = models.CharField(max_length=15, blank=True, null=True, choices=FILE_TYPE_CHOICES, default='???')
+    file_type   = models.CharField(max_length=15, blank=True, null=True, choices=FILE_TYPE_CHOICES, default=UNKNOWN_FILE)
     # Upload files to MEDIA_ROOT/notes/YEAR/MONTH/DAY, 2012/10/30/filename
     note_file   = models.FileField(upload_to="notes/%Y/%m/%j/", blank=True, null=True)
 
@@ -47,3 +48,11 @@ class Note(models.Model):
 
     def __unicode__(self):
         return u"{0}: {1} -- {2}".format(self.file_type, self.name, self.uploaded_at)
+
+    def save(self, *args, **kwargs):
+        """ override built-in save to ensure contextual self.name """
+        # TODO: If self.name isn't set, generate one based on uploaded_name
+        # if we fail to set the Note.name earlier than this, use the saved filename
+
+        # resume save
+        super(Note, self).save(*args, **kwargs)
