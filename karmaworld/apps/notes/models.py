@@ -12,6 +12,8 @@ import os
 from django.db import models
 from taggit.managers import TaggableManager
 
+from karmaworld.apps.courses.models import Course
+
 class Note(models.Model):
     """ A django model representing an uploaded file and associated metadata.
     """
@@ -23,6 +25,7 @@ class Note(models.Model):
         (UNKNOWN_FILE, 'Unknown file'),
     )
 
+    course          = models.ForeignKey(Course)
     # Tagging system
     tags            = TaggableManager()
 
