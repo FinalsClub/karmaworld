@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block title %}
+  Share College Course Notes
+{% endblock %}
+
+{% block content %}
+
+<h2>Choose a course to browse or upload</h2>
+<div id="course_results" class="results_container">
+<table>
+  {% for course in object_list %}
+    <tr>
+      <td> {{ course.school.name }} </td>
+      <td> {{ course.name }} </td>
+      <td> {{ course.instructor_name }} </td>
+      <td> {{ course.file_count }} </td>
+    </tr>
+  {% endfor %}
+</table>
+</div><!-- #course_results .results_container -->
+
+{% endblock %}
+
