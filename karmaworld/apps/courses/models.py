@@ -41,18 +41,24 @@ class Course(models.Model):
     """ First class object that contains many notes.Note objects """
     # Core metadata
     name        = models.CharField(max_length=255)
-    desc        = models.TextField(max_length=511, blank=True, null=True)
     slug        = models.SlugField(null=True)
-    url         = models.URLField(max_length=511, blank=True, null=True)
-
     school      = models.ForeignKey(School) # Should this be optional ever?
+    file_count  = models.IntegerField(default=0)
 
+    desc        = models.TextField(max_length=511, blank=True, null=True)
+    url         = models.URLField(max_length=511, blank=True, null=True)
     academic_year   = models.IntegerField(blank=True, null=True, 
                         default=datetime.datetime.now().year)
-    instructor_name = models.CharField(max_length=255, blank=True, null=True)
-    instructor_email = models.EmailField(blank=True, null=True)
-    updated_at    = models.DateTimeField(default=datetime.datetime.utcnow)
-    created_at    = models.DateTimeField(auto_now_add=True)
+
+    instructor_name     = models.CharField(max_length=255, blank=True, null=True)
+    instructor_email    = models.EmailField(blank=True, null=True)
+
+    updated_at      = models.DateTimeField(default=datetime.datetime.utcnow)
+
+    created_at      = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-file_count', 'school', 'name']
 
     def __unicode__(self):
         return u"{0}: {1}".format(self.name, self.school)
@@ -67,3 +73,7 @@ class Course(models.Model):
         if not self.slug:
             self.slug = defaultfilters.slugify(self.name)
         super(Course, self).save(*args, **kwargs)
+
+    def update_note_count(self):
+        self.file_count = self.note_set.count()
+        self.save()
