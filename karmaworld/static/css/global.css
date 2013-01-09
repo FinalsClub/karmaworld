@@ -536,6 +536,55 @@ ul#course_menu li a
   font-size: 38px;
 }
 
+/* New course-list homepage css */
+#subhead
+{
+  padding-top: 47px;
+  text-align: center;
+  font-family: "MuseoSlab-500";
+  font-size: 24px;
+}
+
+.center
+{
+  text-align: center;
+}
+
+#page_instruction
+{
+  font-family: "MuseoSlab-700";
+  font-size: 12px;
+  padding-bottom: 14px
+}
+
+table#course_list
+{
+  margin:14px auto;
+}
+
+table#course_list tr:nth-child(even)
+{
+  background: url(/static/img/dashboard_activity_alt_on_bg.gif);
+}
+
+table#course_list thead
+{
+  border-bottom: solid 1px black;
+}
+
+table#course_list th
+{
+  font-family: "MuseoSlab-500";
+  font-size: 12px;
+}
+
+table#course_list td
+{
+  font-family: "MuseoSlab-700";
+  font-size: 12px;
+}
+/* end new course-list homepage css */
+
 a.white
 {
   color: white;
