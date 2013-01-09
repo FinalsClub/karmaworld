@@ -1,5 +1,5 @@
 {% load url from future %}
-{% if not user.is_authenticated %}
+
 {# Logged out #}
   <header id="global_header">
     <div class="row">
@@ -10,9 +10,14 @@
       </div><!--/logo container-->
 
       <div id="browse_container" class="one column">
-        <a class=white href="{# url 'browse' #}">Browse</a>
+        <a class=white href="{% url 'home' %}">Home</a>
       </div><!--/browse_container-->
 
+      <div id="login_container" class="two columns offset-by-five end">
+        <a class=white href="">About</a>
+      </div>
+
+      {% comment %}
       <div id="login_container" class="three columns offset-by-four end">
         <span id="login_toggle">
           LOGIN/SIGNUP <img src="/static/img/global_header_login_menu_arrow.png" alt="Open Login" id="login_arrow" width="9" height="6" />
@@ -76,10 +81,12 @@
         </div>
 
       </div><!--/login container-->
+      {% endcomment %}
     </div>
   </header><!--/global header-->
 
-{% else %}
+{% comment %}
+
 {# Logged IN #}
   <header id="global_header">
     <div class="row">
@@ -124,11 +131,9 @@
               <div class="row">
                 <div class="twelve columns" id="global_header_mycourses_list" style="display:none;">
                   <ul id="course_menu">
-                    {% comment %}
                     {% for course in user.get_profile.courses.all %}
                       <li><a href="{{ course.get_absolute_url }}"> {{ course.title }} </a></li>
                     {% endfor %}
-                    {% endcomment %}
                   </ul>
                 </div><!-- /global_header_mycourses_list -->
               </div>
@@ -198,4 +203,4 @@
     </div>
 
   </header><!--/global header-->
-{% endif %}
+{% endcomment %}
