@@ -5,21 +5,57 @@
   Share College Course Notes
 {% endblock %}
 
+{% block pagestyle %}
+  <link rel="stylesheet" type="text/css" media="all" href="/static/css/home.css">
+  <link rel="stylesheet" href="{{ STATIC_URL }}/css/responsive-tables.css">
+{% endblock %}
+
+{% block pagescript %}
+<script src="stylesheet" href="{{ STATIC_URL }}/js/responsive-tables.js"></script>
+{% endblock %}
+
 {% block content %}
 
-<h2>Choose a course to browse or upload</h2>
-<div id="course_results" class="results_container">
-<table>
-  {% for course in object_list %}
-    <tr>
-      <td> {{ course.school.name }} </td>
-      <td> {{ course.name }} </td>
-      <td> {{ course.instructor_name }} </td>
-      <td> {{ course.file_count }} </td>
-    </tr>
-  {% endfor %}
-</table>
-</div><!-- #course_results .results_container -->
+<section id="home_content">
+  <div id="page_header" class="hero_gradient_bar">
+    <div class="row">
+      <div id="subhead" class="twelve columns">
+        Welcome to KarmaNotes
+      </div> <!-- #subhead -->
+    </div> <!-- .row -->
+    <div class="row">
+      <div id="page_instruction" class="twelve columns center">
+        Choose a course to browse or upload
+      </div> <!-- #subhead -->
+    </div> <!-- .row -->
+  </div> <!-- #page_header -->
+  <div class="row">
+    <div class="ten columns offset-by-one">
+      <table id="course_list" class="responsive">
+        <thead>
+          <tr>
+            <th> School </th>
+            <th> Course Name </th>
+            <th> Instructor </th>
+            <th> Notes # </th>
+            <th> Last Updated </th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for course in object_list %}
+          <tr>
+            <td> {{ course.school.name }} </td>
+            <td> {{ course.name }} </td>
+            <td> {{ course.instructor_name }} </td>
+            <td> {{ course.file_count }} </td>
+            <td> {{ course.updated_at|date:"gA // D M d o" }} </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div><!-- .ten columns -->
+  </div> <!-- .row -->
+</section> <!-- #results_content -->
 
 {% endblock %}
 
