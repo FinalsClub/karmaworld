@@ -5,3 +5,4 @@ Fabric==1.4.3
 South==0.7.6
 Sphinx==1.1.3
 git+git://github.com/yedpodtrzitko/django-taggit.git
+oauth2client==1.0
