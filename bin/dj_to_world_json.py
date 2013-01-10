@@ -23,13 +23,19 @@ def course_to_dict(course):
     course_dict['name'] = c_dict['title']
     course_dict['slug'] = c_dict['slug']
     course_dict['school_id'] = c_dict['school_id']
-#    course_dict['file_count']
     course_dict['desc'] = c_dict['desc']
     course_dict['url'] = c_dict['url']
     course_dict['academic_year'] = c_dict['academic_year']
-#    course_dict['instructor_name']
+    try:
+    	course_dict['instructor_name'] = course.instructor.name
+    except AttributeError:
+    	course_dict['instructor_name'] = ''
+    try:
+	course_dict['instructor_email'] = course.instructor.email
+    except AttributeError:
+	course_dict['instructor_email'] = ''
 #    course_dict['instructor_email']
-    course_dict['updated_at'] = c_dict['last_updated']
+    course_dict['updated_at'] = str(c_dict['last_updated'])
     course_dict['id'] = c_dict['id']
     return course_dict
 
@@ -42,7 +48,7 @@ def note_to_dict(note):
     notes_dict['tags'] = [tag.name for tag in note.tags.all()]
     notes_dict['name'] = n_dict['title']
     notes_dict['desc'] = n_dict['description']
-    notes_dict['uploaded_at'] = n_dict['timestamp']
+    notes_dict['uploaded_at'] = str(n_dict['timestamp'])
 #   notes_dict['file_type']
 #   notes_dict['note_file'] 
     notes_dict['embed_url'] = n_dict['embed_url']
