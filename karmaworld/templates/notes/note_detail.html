@@ -107,9 +107,11 @@
       <div class="row">
         <div class="eight columns centered body_copy">
 
-          <h1>description</h1>
+          {% if note.desc %}
+            <h1>description</h1>
 
-          <p>{{ note.desc }}</p>
+            <p>{{ note.desc }}</p>
+          {% endif %}
 
           <h1>notes</h1>
 
