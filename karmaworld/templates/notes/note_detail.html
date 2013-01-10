@@ -49,6 +49,8 @@
         </div><!-- /note_name -->
       </div>
 
+      {% comment %}
+      <!-- disabiling viewCount and liked count -->
       <div class="row">
         <div id="note_status" class="twelve columns">
           <div class="activity_details_status">
@@ -56,7 +58,12 @@
           </div><!-- /activity_details_status -->
         </div><!-- /note_status -->
       </div>
+      {% endcomment %}
 
+
+
+      {% comment %}
+      <!-- uploaded by style -->
       <div class="row">
         <div id="note_author" class="twelve columns">
           uploaded by
@@ -68,6 +75,7 @@
         </div><!-- /note_author -->
       </div>
 
+      <!-- vote html -->
       <div class="row">
         <div id="note_actions" class="three columns centered">
           {% if not owns_file %}
@@ -89,16 +97,15 @@
               </span>
              this file
             </div>
-            {% comment %}
             <!-- disabling downloads for now -->
             <div class="four column">
               <img src="/static/img/note_download.png" alt="note_download" width="51" height="36" />
             </div>
-            {% endcomment %}
           </div>
           {% endif %} <!-- not owns_file -->
         </div><!-- /note_actions -->
       </div>
+      {% endcomment %}
     </div><!-- /note_header -->
 
 
