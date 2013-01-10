@@ -7,5 +7,3 @@ class CourseDetailView(DetailView):
     # name passed to template
     context_object_name = u"course"
     model = Course
-
-
