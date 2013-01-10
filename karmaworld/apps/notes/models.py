@@ -30,6 +30,7 @@ class Note(models.Model):
     tags            = TaggableManager()
 
     name            = models.CharField(max_length=255, blank=True, null=True)
+    slug            = models.SlugField(null=True)
     desc            = models.TextField(max_length=511, blank=True, null=True)
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
 
@@ -57,8 +58,19 @@ class Note(models.Model):
         # TODO: If self.name isn't set, generate one based on uploaded_name
         # if we fail to set the Note.name earlier than this, use the saved filename
 
-        # resume save
+        if not self.slug:
+            self.slug = defaultfilters.slugify(self.name)
         super(Note, self).save(*args, **kwargs)
+
+    @models.permalink
+    def get_absolute_url(self):
+        """ Resolve note url, use 'note' route and slug if slug
+            otherwise use note and id
+        """
+        if self.slug:
+            return ('note_detail', [unicode(self.slug)])
+        else:
+            return ('note_detail', [self.id])
 
 
 # FIXME: replace the following GOOGLE_USER in a settings.py
