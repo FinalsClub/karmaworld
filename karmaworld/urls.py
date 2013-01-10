@@ -15,8 +15,6 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 
-    #url(r'^/(?P<school_slug>[^/]+)/(?P<slug>[^/]+)$',
-    #url(r'^/[a-z0-9\-]+$', CourseDetailView.as_view(), name='course_detail'),
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[^/]+)$', CourseDetailView.as_view(), name='course_detail'),
 
     url(r'^$', ListView.as_view(model=Course), name='home'),
