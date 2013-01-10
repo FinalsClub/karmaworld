@@ -17,7 +17,7 @@ urlpatterns = patterns('',
 
     #url(r'^/(?P<school_slug>[^/]+)/(?P<slug>[^/]+)$',
     #url(r'^/[a-z0-9\-]+$', CourseDetailView.as_view(), name='course_detail'),
-    url(r'^(?P<slug>[^/]+)$', CourseDetailView.as_view(), name='course_detail'),
+    url(r'^(?P<school_slug>[^/]+)/(?P<slug>[^/]+)$', CourseDetailView.as_view(), name='course_detail'),
 
     url(r'^$', ListView.as_view(model=Course), name='home'),
 )
