@@ -26,7 +26,7 @@ def course_to_dict(course):
 #    course_dict['file_count']
     course_dict['desc'] = c_dict['desc']
     course_dict['url'] = c_dict['url']
-    course_dict['academic_year'] = c_dict['acacemic_year']
+    course_dict['academic_year'] = c_dict['academic_year']
 #    course_dict['instructor_name']
 #    course_dict['instructor_email']
     course_dict['updated_at'] = c_dict['last_updated']
