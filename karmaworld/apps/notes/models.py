@@ -27,7 +27,7 @@ class Note(models.Model):
 
     course          = models.ForeignKey(Course)
     # Tagging system
-    tags            = TaggableManager()
+    tags            = TaggableManager(blank=True)
 
     name            = models.CharField(max_length=255, blank=True, null=True)
     slug            = models.SlugField(null=True)
