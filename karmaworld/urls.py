@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic import ListView, DetailView
+from django.views.generic.simple import direct_to_template
 
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.views import CourseDetailView
@@ -15,6 +16,8 @@ urlpatterns = patterns('',
     # Admin panel and documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^about/$', direct_to_template, { 'template': 'about.html' }, name='about'), 
 
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[^/]+)$', CourseDetailView.as_view(), name='course_detail'),
     url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', NoteDetailView.as_view(), name='note_detail'),
