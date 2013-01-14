@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding:utf8 -*-
+# Copyright (C) 2012  FinalsClub Foundation
 """Development settings and globals."""
 
 

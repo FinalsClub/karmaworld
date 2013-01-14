@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 """ Administration configuration for notes """

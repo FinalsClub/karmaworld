@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 
