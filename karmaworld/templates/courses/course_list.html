@@ -10,8 +10,17 @@
   <link rel="stylesheet" href="{{ STATIC_URL }}/css/responsive-tables.css">
 {% endblock %}
 
-{% block pagescript %}
+{% block pagescripts %}
 <script src="stylesheet" href="{{ STATIC_URL }}/js/responsive-tables.js"></script>
+<script src="{{ STATIC_URL }}/js/jquery.tablesorter.min.js"></script>
+<script>
+$(document).ready(function()
+    {
+        $("#course_list").tablesorter();
+    }
+);
+console.log('tablesorter called');
+</script>
 {% endblock %}
 
 {% block content %}
@@ -31,7 +40,7 @@
   </div> <!-- #page_header -->
   <div class="row">
     <div class="ten columns offset-by-one">
-      <table id="course_list" class="responsive">
+      <table id="course_list" class="tablesorter responsive">
         <thead>
           <tr>
             <th> School </th>
