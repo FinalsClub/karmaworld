@@ -36,3 +36,5 @@ migrations
 local_settings.py
 # uploaded media
 karmaworld/media/
+# collected staticfiles
+karmaworld/static/
