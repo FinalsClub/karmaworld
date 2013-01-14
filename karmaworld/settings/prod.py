@@ -1,4 +1,7 @@
-"""Production settings and globals."""
+#!/usr/bin/env python
+# -*- coding:utf8 -*-
+# Copyright (C) 2012  FinalsClub Foundation
+""" Production settings and globals. """
 
 
 from os import environ

@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# -*- coding:utf8 -*-
+# Copyright (C) 2012  FinalsClub Foundation
+
 from django.views.generic import DetailView
 from karmaworld.apps.notes.models import Note
 
