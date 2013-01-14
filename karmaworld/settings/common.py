@@ -1,4 +1,7 @@
-"""Common settings and globals."""
+#!/usr/bin/env python
+# -*- coding:utf8 -*-
+# Copyright (C) 2012  FinalsClub Foundation
+""" Common settings and globals. """
 
 
 from datetime import timedelta
@@ -36,7 +39,9 @@ TEMPLATE_DEBUG = DEBUG
 ########## MANAGER CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = (
-    ('Your Name', 'your_email@example.com'),
+    ('Seth Woodworth', 'seth@finalsclub.org'),
+    ('Charles Holbrow', 'charles@finalsclub.org'),
+    ('Andrew Magliozzi', 'andrew@finalsclub.org'),
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
@@ -61,7 +66,7 @@ DATABASES = {
 
 ########## GENERAL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#time-zone
-TIME_ZONE = 'America/Los_Angeles'
+TIME_ZONE = 'America/New_York'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'en-us'
