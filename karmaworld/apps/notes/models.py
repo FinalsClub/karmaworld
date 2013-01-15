@@ -50,8 +50,10 @@ class Note(models.Model):
     #course      = models.ForeignKey(Course, blank=True, null=True, related_name="files")
     #school      = models.ForeignKey(School, blank=True, null=True)
 
+
     def __unicode__(self):
         return u"{0}: {1} -- {2}".format(self.file_type, self.name, self.uploaded_at)
+
 
     def save(self, *args, **kwargs):
         """ override built-in save to ensure contextual self.name """
@@ -62,15 +64,12 @@ class Note(models.Model):
             self.slug = defaultfilters.slugify(self.name)
         super(Note, self).save(*args, **kwargs)
 
-    @models.permalink
+
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug
             otherwise use note and id
         """
-        if self.slug:
-            return ('note_detail', [unicode(self.slug)])
-        else:
-            return ('note_detail', [self.id])
+        return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.slug)
 
 
 # FIXME: replace the following GOOGLE_USER in a settings.py
