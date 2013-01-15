@@ -22,13 +22,10 @@ class School(models.Model):
     # Facebook keeps a unique identifier for all schools
     facebook_id = models.BigIntegerField(blank=True, null=True)
 
+
     def __unicode__(self):
         return self.name
 
-    @models.permalink
-    def get_absolute_url(self):
-        """ Not implemented yet """
-        pass
 
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
@@ -57,22 +54,26 @@ class Course(models.Model):
 
     created_at      = models.DateTimeField(auto_now_add=True)
 
+
     class Meta:
         ordering = ['-file_count', 'school', 'name']
+
 
     def __unicode__(self):
         return u"{0}: {1}".format(self.name, self.school)
 
-    @models.permalink
+
     def get_absolute_url(self):
         """ Not implemented yet """
-        pass
+        return u"/{0}/{1}".format(self.school.slug, self.slug)
+
 
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
         if not self.slug:
             self.slug = defaultfilters.slugify(self.name)
         super(Course, self).save(*args, **kwargs)
+
 
     def update_note_count(self):
         self.file_count = self.note_set.count()
