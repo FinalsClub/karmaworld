@@ -1,28 +1,16 @@
 """Management utilities."""
 
+import os
+from contextlib import contextmanager as _contextmanager
 
 from fabric.contrib.console import confirm
-from fabric.api import abort, env, local, settings, task
+from fabric.api import abort, cd, env, local, prefix, run, settings, task
 
 
 ########## GLOBALS
-env.run = 'heroku run python manage.py'
-HEROKU_ADDONS = (
-    'cloudamqp:lemur',
-    'heroku-postgresql:dev',
-    'scheduler:standard',
-    'memcache:5mb',
-    'newrelic:standard',
-    'pgbackups:auto-month',
-    'sentry:developer',
-)
-HEROKU_CONFIGS = (
-    'DJANGO_SETTINGS_MODULE=karmaworld.settings.prod',
-    'SECRET_KEY=(s1k!&amp;^7l28k&amp;nrm2ek(qqo&amp;19%y(zn#=^zq_*ur2@irjun0x4'
-    'AWS_ACCESS_KEY_ID=xxx',
-    'AWS_SECRET_ACCESS_KEY=xxx',
-    'AWS_STORAGE_BUCKET_NAME=xxx',
-)
+env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
+env.virtualenv = 'venv-kw'
+env.activate = 'workon %s' % env.virtualenv
 ########## END GLOBALS
 
 
@@ -48,7 +36,39 @@ def cont(cmd, message):
 
     if message and result.failed and not confirm(message):
         abort('Stopped execution per user request.')
+
+
+@_contextmanager
+def _virtualenv():
+    """
+    Changes to the proj_dir and activates the virtualenv
+    """
+    with cd(env.proj_dir):
+        with prefix(env.activate):
+            yield
+
 ########## END HELPERS
+
+########## ENVIRONMENTS
+def beta():
+    """
+    Beta connection information
+    """
+    env.user = 'djkarma'
+    env.hosts = ['beta.karmanotes.org']
+    env.proj_root = '/var/www/karmaworld'
+    env.proj_dir = os.path.join(env.proj_root, 'karmaworld')
+
+
+def prod():
+    """
+    Production connection information
+    """
+    env.user = 'djkarma'
+    env.hosts = ['karmanotes.org']
+    env.proj_root = '/var/www/karmaworld'
+    env.proj_dir = os.path.join(env.proj_root, 'karmaworld')
+########## END ENVIRONMENTS
 
 
 ########## DATABASE MANAGEMENT
@@ -80,44 +100,55 @@ def collectstatic():
 ########## END FILE MANAGEMENT
 
 
-########## HEROKU MANAGEMENT
-@task
-def bootstrap():
-    """Bootstrap your new application with Heroku, preparing it for a production
-    deployment. This will:
+########## COMMANDS
 
-        - Create a new Heroku application.
-        - Install all ``HEROKU_ADDONS``.
-        - Sync the database.
-        - Apply all database migrations.
-        - Initialize New Relic's monitoring add-on.
+def make_virtualenv():
     """
-    cont('heroku create', "Couldn't create the Heroku app, continue anyway?")
+    Creates a virtualenv on the remote host
+    """
+    run('mkvirtualenv %s' % env.virtualenv)
 
-    for addon in HEROKU_ADDONS:
-        cont('heroku addons:add %s' % addon,
-            "Couldn't add %s to your Heroku app, continue anyway?" % addon)
 
-    for config in HEROKU_CONFIGS:
-        cont('heroku config:add %s' % config,
-            "Couldn't add %s to your Heroku app, continue anyway?" % config)
+def update_reqs():
+    """
+    Makes sure all packages listed in requirements are installed
+    """
+    with _virtualenv():
+        with cd(env.proj_dir):
+            run('pip install -r requirements/production.pip')
 
-    cont('git push heroku master',
-            "Couldn't push your application to Heroku, continue anyway?")
 
+def clone():
+    """
+    Clones the project from the central repository
+    """
+    run('git clone %s %s' % (env.proj_repo, env.proj_dir))
+
+
+def update_code():
+    """
+    Pulls the latest changes from the central repository
+    """
+    with cd(env.proj_dir):
+        run('git pull')
+
+
+def deploy():
+    """
+    Creates or updates the project, runs migrations, installs dependencies.
+    """
+    first_deploy = False
+    with settings(warn_only=True):
+        if run('test -d %s' % env.proj_dir).failed:
+            # first_deploy var is for initial deploy information
+            first_deploy = True
+            clone()
+        if run('test -d $WORKON_HOME/%s' % env.virtualenv).failed:
+            make_virtualenv()
+
+    update_code()
+    update_reqs()
     syncdb()
-    migrate()
-
-    cont('%(run)s newrelic-admin validate-config - stdout' % env,
-            "Couldn't initialize New Relic, continue anyway?")
-
-
-@task
-def destroy():
-    """Destroy this Heroku application. Wipe it from existance.
-
-    .. note::
-        This really will completely destroy your application. Think twice.
-    """
-    local('heroku apps:destroy')
-########## END HEROKU MANAGEMENT
+    #TODO: run gunicorn
+    #restart_uwsgi()
+########## END COMMANDS
