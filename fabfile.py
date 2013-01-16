@@ -11,6 +11,7 @@ from fabric.api import abort, cd, env, local, prefix, run, settings, task
 env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
 env.virtualenv = 'venv-kw'
 env.activate = 'workon %s' % env.virtualenv
+env.run = './manage.py'
 ########## END GLOBALS
 
 
