@@ -11,10 +11,11 @@ from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from oauth2client.client import flow_from_clientsecrets
 
-from kamraworld.apps.notes.models import DriveAuth, Note
+from karmaworld.apps.notes.models import DriveAuth, Note
 
 CLIENT_SECRET = './notes/client_secrets.json' # FIXME
-from credentials import GOOGLE_USER # FIXME
+#from credentials import GOOGLE_USER # FIXME
+GOOGLE_USER = 'admin@karmanotes.org' # FIXME
 EXT_TO_MIME = {'.docx': 'application/msword'}
 
 def build_flow():
