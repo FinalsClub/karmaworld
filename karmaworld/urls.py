@@ -5,7 +5,7 @@ from django.views.generic.simple import direct_to_template
 
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.views import CourseDetailView
-from karmaworld.apps.notes.views import NoteDetailView, RawNoteDetailView
+from karmaworld.apps.notes.views import NoteDetailView, RawNoteDetailView, raw_file
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 admin.autodiscover()
@@ -21,7 +21,7 @@ urlpatterns = patterns('',
 
     # the raw route must come before routes with a capture group after the
     # first / of the url
-    url(r'^raw/(?P<pk>\d+)$', RawNoteDetailView.as_view(), name='note_raw'),
+    url(r'^raw/(?P<pk>\d+)$', raw_file, name='note_raw'),
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[^/]+)$', \
         CourseDetailView.as_view(), name='course_detail'),
     url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', \
