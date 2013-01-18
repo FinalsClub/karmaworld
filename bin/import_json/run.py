@@ -17,6 +17,7 @@ import taggit
 from os.path import join, exists, split, isdir
 
 from django.core.files import File as DjangoFile
+from django.template.defaultfilters import slugify
 
 from apps.courses.models import *
 from apps.notes.models import *
@@ -83,6 +84,19 @@ for course in course_dicts:
 print 'updating %i notes' % len(note_dicts)
 for note in note_dicts:
 
+	if not note['course_id']:
+		print 'using arbitrary course id for note_id:', note['id'], '-', note['name']
+		note['course_id'] = Course.objects.all()[0].id
+
+	if 'slug' not in note:
+		path, fn = split(note['file_path'])
+		note['slug'] = slugify(fn)
+
+	course = Course.objects.get(id=note['course_id'])
+	if Note.objects.filter(slug=note['slug']).filter(course__slug=course.slug).exists():
+		print 'note_slug and course slug not unique together. skipping note with id:', note['id'], '-', note['name']
+		continue
+
 	# These keys cannot be pased as keyword arguments
 	tags = note['tags']
 	del note['tags']
@@ -92,14 +106,13 @@ for note in note_dicts:
 	# replace the string with this value
 	note['uploaded_at'] = datetime.datetime.utcnow()
 
-	if not note['course_id']:
-		print 'using arbitrary course id for note_id:', note['id'], '-', note['name']
-		note['course_id'] = Course.objects.all()[0].id
-
 	try:
 		n = Note(**note)
 
-		# double check if the file path exists before trying to open file
+		# Add the tags, if any
+		for t in tags: n.tags.add(t)
+
+		# double check if the file exists before trying to open file
 		if exists(file_path):
 			with open(file_path) as f:
 				df = DjangoFile(f)
@@ -107,8 +120,6 @@ for note in note_dicts:
 				print 'copying file', note['id'], ' - ', filename
 				n.note_file.save(join('imported', filename), df)
 
-		# this is where tags are added
-		for t in tags: n.tags.add(t)
 		n.save()
 
 	except (TypeError, ) as error:
