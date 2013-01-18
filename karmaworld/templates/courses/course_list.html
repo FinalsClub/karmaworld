@@ -55,7 +55,7 @@ console.log('tablesorter called');
         {% for course in object_list %}
           <tr>
             <td> {{ course.school.name }} </td>
-            <td> {{ course.name }} </td>
+            <td> <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> </td>
             <td> {{ course.instructor_name }} </td>
             <td> {{ course.file_count }} </td>
             <td> {{ course.updated_at|date:"gA // D M d o" }} </td>
