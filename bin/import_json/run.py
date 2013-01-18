@@ -13,6 +13,7 @@ import os
 import shutil
 import datetime
 import taggit
+import re
 
 from os.path import join, exists, split, isdir
 
@@ -108,6 +109,10 @@ for note in note_dicts:
 
 	try:
 		n = Note(**note)
+
+		# fix the weird javascript issue
+		if n.html:
+			n.html = re.sub(r'\\(.)', r'\1', n.html)
 
 		# Add the tags, if any
 		for t in tags: n.tags.add(t)
