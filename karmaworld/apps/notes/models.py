@@ -8,6 +8,7 @@
 """
 import datetime
 
+from django.template import defaultfilters
 from django.db import models
 from taggit.managers import TaggableManager
 from oauth2client.client import Credentials
