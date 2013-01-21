@@ -3,6 +3,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.views.generic import ListView, DetailView
 from django.views.generic.simple import direct_to_template
 
+from karmaworld.apps.ajaxuploader.views import AjaxFileUploader
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.notes.views import NoteDetailView, RawNoteDetailView, raw_file
@@ -26,6 +27,9 @@ urlpatterns = patterns('',
         CourseDetailView.as_view(), name='course_detail'),
     url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', \
         NoteDetailView.as_view(), name='note_detail'),
+
+    # uploading
+    url(r'ajax-upload$', AjaxFileUploader(), name='ajax_upload'),
 
     url(r'^$', ListView.as_view(model=Course), name='home'),
 )
