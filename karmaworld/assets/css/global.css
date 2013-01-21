@@ -463,6 +463,23 @@ a.activity_target, a.activity_target:hover
   text-transform: uppercase;
 }
 
+#upload_button_container
+{
+  height: 70px;
+  margin-top: 40px;
+}
+
+#upload_button
+{
+  height: 66px;
+  margin: 1px;
+  font-family: "MuseoSlab-900";
+  font-size: 32px;
+  text-align: center;
+  color: #FFF;
+  padding-top: 20px;
+}
+
 /* COPY */
 
 .body_copy h1
