@@ -89,14 +89,14 @@ def convert_with_google_drive(note):
     """
     # Get file_type and encoding of uploaded file
     # i.e: file_type = 'text/plain', encoding = None
-    (file_type, encoding) = mimetypes.guess_type(note.file.path)
+    (file_type, encoding) = mimetypes.guess_type(note.note_file.path)
 
     # If mimetype cannot be guessed
     # Check against known issues, then
     # finally, Raise Exception
     # Extract file extension and compare it to EXT_TO_MIME dict
 
-    fileName, fileExtension = os.path.splitext(note.file.path)
+    fileName, fileExtension = os.path.splitext(note.note_file.path)
 
     if file_type == None:
 
@@ -108,13 +108,13 @@ def convert_with_google_drive(note):
             raise Exception('Unknown file type')
 
     resource = {
-                'title':    note.title,
-                'desc':     note.description,
+                'title':    note.name,
+                'desc':     note.desc,
                 'mimeType': file_type
             }
     # TODO: set the permission of the file to permissive so we can use the 
     #       gdrive_url to serve files directly to users
-    media = MediaFileUpload(note.file.path, mimetype=file_type,
+    media = MediaFileUpload(note.note_file.path, mimetype=file_type,
                 chunksize=1024*1024, resumable=True)
 
     auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]
@@ -127,7 +127,6 @@ def convert_with_google_drive(note):
 
     # Upload the file
     # TODO: wrap this in a try loop that does a token refresh if it fails
-    print "Trying to upload document"
     file_dict = service.files().insert(body=resource, media_body=media, convert=True).execute()
 
     # set note.is_pdf
