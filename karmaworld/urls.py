@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# -*- coding:utf8 -*-
+# Copyright (C) 2012  FinalsClub Foundation
+
 from django.contrib import admin
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic import ListView, DetailView
