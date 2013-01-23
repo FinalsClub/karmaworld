@@ -23,7 +23,7 @@
         </div>
         <div class="eight columns">
           <div class="lightbox_copy">
-            {{ user.get_profile.school.name }}
+            {# user.get_profile.school.name #}
           </div><!-- /lightbox_copy -->
           <div class="lightbox_instruction">
             {# Not your school? <a href="#">Edit it now.</a> #}
@@ -42,9 +42,11 @@
             My Courses <img class="button_arrow" src="/static/img/global_button_orange_arrow.png" alt="global_button_orange_arrow" width="8" height="5" />
           </div><!-- /inverted_button -->
           <div id="upload_course_select_box" class="select_box">
+          {% comment %}
           {% for course in user.get_profile.courses.all %}
             <div class="course-select lightbox_instruction" data-id="{{ course.id }}" style="cursor: pointer;">{{ course.title }} </div>
           {% endfor %}
+          {% endcomment %}
           </div>
         </div>
         <div class="three columns end">
