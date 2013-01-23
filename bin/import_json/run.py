@@ -69,7 +69,10 @@ for school in school_dicts:
 	s.save()
 
 # Only Save this scool if we actually need it. 
-arbitrary_school = School(name='No School', slug='no_school')
+if not School.objects.filter(name='No School').exists():
+	arbitrary_school = School(name='No School', slug='no_school')
+else:
+	arbitrary_school = School.objects.get(name='No School')
 
 print 'updating %i courses' % len(course_dicts)
 for course in course_dicts:
@@ -79,8 +82,8 @@ for course in course_dicts:
 	# Somc courses have no school_id using arbitrary one for these
 	if not course['school_id']: 
 		print 'Using arbitrary school_id for course id:', course['id'], '-', course['name']
-		course['school_id'] = arbitrary_school.id
 		arbitrary_school.save()
+		course['school_id'] = arbitrary_school.id
 
 	c = Course(**course)
 	c.save()
@@ -89,15 +92,25 @@ for course in course_dicts:
 # Import the Notes
 print 'updating %i notes' % len(note_dicts)
 
-arbitrary_course = Course(name='No Course', slug='no_course', school=arbitrary_school)
+if not Course.objects.filter(name='No Course').exists():
+	arbitrary_course = Course(name='No Course', slug='no_course', school=arbitrary_school)
+else:
+	arbitrary_course = Course.objects.get(name='No Course')
 
 for note in note_dicts:
 
 	if not note['course_id']:
 		print 'using arbitrary course id for note_id:', note['id'], '-', note['name']
-		note['course_id'] = arbitrary_course.id
 		arbitrary_school.save()
 		arbitrary_course.save()
+		note['course_id'] = arbitrary_course.id
+
+	if 'name' not in note or not note['name']:
+		note['name'] = 'No Name - %i' % note['id']
+
+		if not note['html'] and not note['text']:
+			print 'skipping note with no html and no name:', note['id']
+			continue
 
 	if 'slug' not in note:
 		path, fn = split(note['file_path'])
