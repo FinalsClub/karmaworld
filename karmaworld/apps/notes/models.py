@@ -15,6 +15,11 @@ from oauth2client.client import Credentials
 
 from karmaworld.apps.courses.models import Course
 
+try:
+    from secrets.drive import GOOGLE_USER
+except:
+    GOOGLE_USER = u'admin@karmanotes.org'
+
 class Note(models.Model):
     """ A django model representing an uploaded file and associated metadata.
     """
