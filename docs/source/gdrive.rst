@@ -17,7 +17,7 @@ get the authorization url
 
 go to that url in your browser
 it will redirecto you to a url in the format of:
- ...?code=EXCHANGE_CODE
+   http://localhost:8000/oauth2callback?code=EXCHANGE_CODE
 take the EXCHANGE_CODE and feed it as a string to 
     credentials = flow.step2_exchange('EXCHANGE_CODE')
 This gives you a credentials object, keep this value
