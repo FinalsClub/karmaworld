@@ -68,9 +68,12 @@ class Note(models.Model):
 
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug
-            otherwise use note and id
+            otherwise use note.id
         """
-        return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.slug)
+        if self.slug == None:
+            return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.slug)
+        else:
+            return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.id)
 
 
 # FIXME: replace the following GOOGLE_USER in a settings.py

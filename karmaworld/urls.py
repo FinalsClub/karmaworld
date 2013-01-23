@@ -24,6 +24,10 @@ urlpatterns = patterns('',
     url(r'^raw/(?P<pk>\d+)$', raw_file, name='note_raw'),
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[^/]+)$', \
         CourseDetailView.as_view(), name='course_detail'),
+    # note file as id
+    url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<pk>[\d^/]+)$', \
+        NoteDetailView.as_view(), name='note_detail'),
+    # note file by note.slug
     url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', \
         NoteDetailView.as_view(), name='note_detail'),
 
