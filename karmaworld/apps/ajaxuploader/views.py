@@ -12,6 +12,7 @@ class AjaxFileUploader(object):
         self.get_backend = lambda: backend(**kwargs)
 
     def __call__(self,request):
+        print "ajax file uploader called"
         return self._ajax_upload(request)
 
     def _ajax_upload(self, request):
@@ -60,3 +61,5 @@ class AjaxFileUploader(object):
                 ret_json.update(extra_context)
 
             return HttpResponse(json.dumps(ret_json, cls=DjangoJSONEncoder))
+
+ajax_uploader = AjaxFileUploader()

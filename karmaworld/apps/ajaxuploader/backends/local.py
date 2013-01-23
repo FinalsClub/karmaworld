@@ -6,6 +6,7 @@ from django.conf import settings
 from ajaxuploader.backends.base import AbstractUploadBackend
 from karmaworld.apps.notes import tasks
 from karmaworld.apps.notes.models import Note
+from karmaworld.apps.courses.models import Course
 
 class LocalUploadBackend(AbstractUploadBackend):
     #UPLOAD_DIR = "uploads"
@@ -58,19 +59,24 @@ class LocalUploadBackend(AbstractUploadBackend):
 
         # Avoid File.objects.create, as this will try to make
         # Another file copy at FileField's 'upload_to' dir
+        print "creating note"
         note = Note()
         note.note_file = os.path.join(self._dir, filename)
+        note.course_id = request.GET['course_id']
+        print "saving note"
         note.save()
 
         # FIXME: Make get or create
-        if self.SESSION_UNCLAIMED_FILES_KEY in request.session:
+        print "setting up session vars"
+        #import ipdb; ipdb.set_trace()
+        if 'uploaded_files' in request.session:
             request.session['uploaded_files'].append(note.pk)
         else:
             request.session['uploaded_files'] = [note.pk]
 
         # Asynchronously process document with Google Documents API
         print "upload_complete, firing task"
-        tasks.process_document.delay(new_File)
+        tasks.process_document.delay(note)
 
         return {"path": path, "file_pk": note.pk}
 
