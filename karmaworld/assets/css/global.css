@@ -634,3 +634,14 @@ a.white:hover
   cursor: pointer;
   text-decoration: underline;
 }
+
+/* new form submit */
+.submit_upload
+{
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-family: "MuseoSlab-700";
+  font-size: 32px;
+}

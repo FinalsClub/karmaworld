@@ -7,6 +7,7 @@
     var ajax_upload_url = "{% url 'ajax_upload' %}";
     var csrf_token = "{{ csrf_token }}";
   </script>
+  <form>
   <div class="row">
     <div class="eight columns centered lightbox_modal" style="margin-top: 121px;">
       <div class="row">
@@ -15,46 +16,6 @@
         </div><!-- /modal_header -->
       </div>
 
-      <div class="row lightbox_row">
-        <div class="three columns offset-by-one">
-          <label class="lightbox_label">
-            Your School
-          </label><!-- lightbox_label -->
-        </div>
-        <div class="eight columns">
-          <div class="lightbox_copy">
-            {# user.get_profile.school.name #}
-          </div><!-- /lightbox_copy -->
-          <div class="lightbox_instruction">
-            {# Not your school? <a href="#">Edit it now.</a> #}
-          </div>
-        </div>
-      </div><!-- /lightbox_row -->
-
-      <div class="row lightbox_row">
-        <div class="three columns offset-by-one">
-          <label class="lightbox_label">
-            Which course would you like to add notes to?
-          </label><!-- lightbox_label -->
-        </div>
-        <div class="four columns">
-          <div id="button_my_course" class="inverted_button show_select" data-target="#upload_course_select_box">
-            My Courses <img class="button_arrow" src="/static/img/global_button_orange_arrow.png" alt="global_button_orange_arrow" width="8" height="5" />
-          </div><!-- /inverted_button -->
-          <div id="upload_course_select_box" class="select_box">
-          {% comment %}
-          {% for course in user.get_profile.courses.all %}
-            <div class="course-select lightbox_instruction" data-id="{{ course.id }}" style="cursor: pointer;">{{ course.title }} </div>
-          {% endfor %}
-          {% endcomment %}
-          </div>
-        </div>
-        <div class="three columns end">
-          <div id="lightbox_upload_course_sidebar" class="lightbox_instruction">
-            Don't see the course you want to add to?<br><a href="#">Join it now.</a>
-          </div><!-- /lightbox_instruction -->
-        </div>
-      </div><!-- /lightbox_row -->
 
       <div class="row lightbox_row">
         <div class="three columns offset-by-one">
@@ -87,40 +48,30 @@
       <div class="row lightbox_row">
         <div class="three columns offset-by-one">
           <label class="lightbox_label">
-            Title of Notes
+            Note Name
           </label><!-- lightbox_label -->
         </div>
         <div class="seven columns end">
-          <input type="text" class="lightbox_textfield" id="add_note_title_txt">
+          <input type="text" class="lightbox_textfield" id="id_name" name="name">
         </div>
+
       </div><!-- /lightbox_row -->
 
       <div class="row lightbox_row">
         <div class="three columns offset-by-one">
           <label class="lightbox_label">
-            Date Created
+            Tags
           </label><!-- lightbox_label -->
         </div>
-        <div class="seven columns end">
-          <input type="text" class="lightbox_textfield" id="datepicker" name="date" placeholder="{{ today }}">
-          <div class="lightbox_copy">
-          </div><!-- /lightbox_copy -->
-
+        <div class="four columns">
+          <input type="text" class="lightbox_textfield" id="id_name" name="name">
+        </div>
+        <div class="three columns end">
+          <div id="lightbox_instruction_file_info" class="lightbox_instruction">
+            Comma separated tag names
+          </div><!-- /lightbox_instruction -->
         </div>
       </div><!-- /lightbox_row -->
-
-      {% comment %}
-      <div class="row lightbox_row">
-        <div class="three columns offset-by-one">
-          <label class="lightbox_label">
-            What type of notes are you adding?
-          </label><!-- lightbox_label -->
-        </div>
-        <div class="seven columns end">
-          <input type="text" class="lightbox_textfield" id="add_note_type_txt" placeholder="Syllabus, Notes, Study Guide…">
-        </div>
-      </div><!-- /lightbox_row -->
-      {% endcomment %}
 
       <div class="row lightbox_row">
         <div class="three columns offset-by-one">
@@ -129,7 +80,7 @@
           </label><!-- lightbox_label -->
         </div>
         <div class="seven columns end">
-          <textarea class="lightbox_textfield lightbox_textarea" id="add_note_description_txt" placeholder="These notes are the bomb because…"></textarea>
+          <textarea class="lightbox_textfield lightbox_textarea" id="id_desc" placeholder="These notes are the bomb because…"></textarea>
         </div>
       </div><!-- /lightbox_row -->
       {# TODO: This is not the right styling, fixme #}
@@ -140,6 +91,7 @@
         </div>
         <div class="seven columns end">
           <a class="button white" id="submit-lightbox-upload" type="submit">FINISH UPLOAD</a>
+          <input class="submit_upload" type="submit" value="submit upload">
         </div>
       </div><!-- /lightbox_row -->
 
@@ -148,5 +100,6 @@
 
     </div><!-- /lightbox_modal -->
   </div>
+  </form>
 
 </section><!-- /modal_content -->
