@@ -7,7 +7,8 @@
     var ajax_upload_url = "{% url 'ajax_upload' %}";
     var csrf_token = "{{ csrf_token }}";
   </script>
-  <form>
+  <form id=upload_form method="POST">
+  {% csrf_token %}
   <div class="row">
     <div class="eight columns centered lightbox_modal" style="margin-top: 121px;">
       <div class="row">
@@ -64,7 +65,7 @@
           </label><!-- lightbox_label -->
         </div>
         <div class="four columns">
-          <input type="text" class="lightbox_textfield" id="id_name" name="name">
+          <input type="text" class="lightbox_textfield" id="id_tags" name="tags" class="taggit-tags">
         </div>
         <div class="three columns end">
           <div id="lightbox_instruction_file_info" class="lightbox_instruction">
@@ -80,18 +81,16 @@
           </label><!-- lightbox_label -->
         </div>
         <div class="seven columns end">
-          <textarea class="lightbox_textfield lightbox_textarea" id="id_desc" placeholder="These notes are the bomb because…"></textarea>
+          <textarea class="lightbox_textfield lightbox_textarea" id="id_desc" name="desc" placeholder="These notes are the bomb because…"></textarea>
         </div>
       </div><!-- /lightbox_row -->
-      {# TODO: This is not the right styling, fixme #}
       <div class="row lightbox_row">
         <div class="three columns offset-by-one">
           <label class="lightbox_label">
           </label><!-- lightbox_label -->
         </div>
         <div class="seven columns end">
-          <a class="button white" id="submit-lightbox-upload" type="submit">FINISH UPLOAD</a>
-          <input class="submit_upload" type="submit" value="submit upload">
+          <input class="submit_upload" type="submit" value="submit upload" style="display:none;">
         </div>
       </div><!-- /lightbox_row -->
 
