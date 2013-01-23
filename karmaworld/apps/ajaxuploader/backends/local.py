@@ -2,28 +2,25 @@ from io import FileIO, BufferedWriter
 import os
 
 from django.conf import settings
-from django.contrib.auth.models import User
 
 from ajaxuploader.backends.base import AbstractUploadBackend
-
-# Requires the KarmanNotes project
-from notes.models import File
-from notes import tasks
-from KNotes import settings as KarmaSettings
+from karmaworld.apps.notes import tasks
+from karmaworld.apps.notes.models import Note
+from karmaworld.apps.courses.models import Course
 
 class LocalUploadBackend(AbstractUploadBackend):
     #UPLOAD_DIR = "uploads"
     # The below key must be synchronized with the implementing project
     # Used to store an array of unclaimed file_pks in the django session
     # So they can be claimed later when the anon user authenticates
-    SESSION_UNCLAIMED_FILES_KEY = KarmaSettings.SESSION_UNCLAIMED_FILES_KEY
+    #SESSION_UNCLAIMED_FILES_KEY = KarmaSettings.SESSION_UNCLAIMED_FILES_KEY
 
     # When a file is uploaded anonymously, 
     # What username should we assign ownership to?
     # This is important because File.save
     # behavior will not set awarded_karma to True 
     # until an owner is assigned who has username != this
-    DEFAULT_UPLOADER_USERNAME = KarmaSettings.DEFAULT_UPLOADER_USERNAME
+    #DEFAULT_UPLOADER_USERNAME = KarmaSettings.DEFAULT_UPLOADER_USERNAME
 
     def setup(self, filename):
         self._path = os.path.join(
@@ -62,27 +59,26 @@ class LocalUploadBackend(AbstractUploadBackend):
 
         # Avoid File.objects.create, as this will try to make
         # Another file copy at FileField's 'upload_to' dir
-        new_File = File()
-        new_File.file = os.path.join(self._dir, filename)
-        new_File.type = "N"  # This field was initially not allowed NULL
-        if request.user.is_authenticated():
-            new_File.owner = request.user
+        print "creating note"
+        note = Note()
+        note.note_file = os.path.join(self._dir, filename)
+        note.course_id = request.GET['course_id']
+        print "saving note"
+        note.save()
+
+        # FIXME: Make get or create
+        print "setting up session vars"
+        #import ipdb; ipdb.set_trace()
+        if 'uploaded_files' in request.session:
+            request.session['uploaded_files'].append(note.pk)
         else:
-            new_File.owner, _created = User.objects.get_or_create(username=self.DEFAULT_UPLOADER_USERNAME)
-        new_File.save()
-        #print "uploaded file saved!"
-        if not request.user.is_authenticated():
-            #print 'adding unclaimed files to session'
-            if self.SESSION_UNCLAIMED_FILES_KEY in request.session:
-                request.session[self.SESSION_UNCLAIMED_FILES_KEY].append(new_File.pk)
-            else:
-                request.session['unclaimed_files'] = [new_File.pk]
+            request.session['uploaded_files'] = [note.pk]
 
         # Asynchronously process document with Google Documents API
         print "upload_complete, firing task"
-        tasks.process_document.delay(new_File)
+        tasks.process_document.delay(note)
 
-        return {"path": path, "file_pk": new_File.pk, "file_url": new_File.get_absolute_url()}
+        return {"path": path, "file_pk": note.pk}
 
     def update_filename(self, request, filename):
         """

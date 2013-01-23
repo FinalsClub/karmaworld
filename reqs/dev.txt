@@ -1,3 +1,5 @@
 -r common.txt
+django-kombu==0.9.4
 django-debug-toolbar==0.9.4
 ipython==0.13.1
+ipdb==0.7

@@ -5,6 +5,8 @@
 
 from django.contrib import admin
 
-import models
+from karmaworld.apps.notes import models
 
+
+admin.site.register(models.DriveAuth)
 admin.site.register(models.Note)

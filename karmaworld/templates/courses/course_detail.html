@@ -1,20 +1,56 @@
 {% extends "base.html" %}
 {% load url from future %}
 
+
 {% block pagescripts %}
-<script>
-var course_pk = {{ course.id }};
-var course_name = "{{ course.name }}";
-</script>
+    <script src="{{ STATIC_URL }}/js/bootstrap-modal.js" ></script>
+    <script src="{{STATIC_URL}}ajaxuploader/js/fileuploader.js" ></script>
+    <script>
+        var course_pk = {{ course.id }};
+        var course_name = "{{ course.name }}";
+
+        $(function(){
+            var uploader = new qq.FileUploader( {
+                action: "{% url 'ajax_upload' %}",
+                element: $('#file-uploader')[0],
+                multiple: true,
+                onComplete: function( id, fileName, responseJSON ) {
+                  if( responseJSON.success )
+                    alert( "success!" ) ;
+                  else
+                    alert( "upload failed!" ) ;
+                },
+                onAllComplete: function( uploads ) {
+                  // uploads is an array of maps
+                  // the maps look like this: { file: FileObject, response: JSONServerResponse }
+                  alert( "All complete!" ) ;
+                },
+                params: {
+                  'csrf_token': '{{ csrf_token }}',
+                  'csrf_name': 'csrfmiddlewaretoken',
+                  'csrf_xname': 'X-CSRFToken',
+                  'course_id': course_pk,
+                },
+              }) ;
+        });
+    </script>
 {% endblock %}
+
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="/static/css/note_course_pages.css">
 {% endblock %}
 
+
+{% block lightboxen %}
+  {% include 'lightbox/upload.html' %}
+{% endblock %}
+
+
 {% block title %}
   Share Notes for {{ course.name }} | {{ course.school.name }}
 {% endblock %}
+
 
 {% block content %}
   <section id="course_content">
@@ -75,6 +111,16 @@ var course_name = "{{ course.name }}";
          {% endif %}
           <!-- TODO: We don't provide a course description -->
         </div><!-- /course_description -->
+      </div>
+
+      <div class="row">
+        <div class="three columns centered">
+          <div id=upload_button_container class=button_bevel >
+            <div id=upload_button course=button_interior data-id="{{ course.id }}">
+              upload
+            </div>
+          </div>
+        </div>
       </div>
 
     </div><!-- /course_header -->

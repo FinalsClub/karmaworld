@@ -9,13 +9,19 @@ import os
 import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
+from django.conf import settings
 from oauth2client.client import flow_from_clientsecrets
 
 from karmaworld.apps.notes.models import DriveAuth, Note
 
-CLIENT_SECRET = './notes/client_secrets.json' # FIXME
+CLIENT_SECRET = os.path.join(settings.DJANGO_ROOT, \
+                    'secret/client_secrets.json')
 #from credentials import GOOGLE_USER # FIXME
-GOOGLE_USER = 'admin@karmanotes.org' # FIXME
+try:
+    from secrets.drive import GOOGLE_USER
+except:
+    GOOGLE_USER = 'admin@karmanotes.org' # FIXME
+
 EXT_TO_MIME = {'.docx': 'application/msword'}
 
 def build_flow():
@@ -83,14 +89,14 @@ def convert_with_google_drive(note):
     """
     # Get file_type and encoding of uploaded file
     # i.e: file_type = 'text/plain', encoding = None
-    (file_type, encoding) = mimetypes.guess_type(note.file.path)
+    (file_type, encoding) = mimetypes.guess_type(note.note_file.path)
 
     # If mimetype cannot be guessed
     # Check against known issues, then
     # finally, Raise Exception
     # Extract file extension and compare it to EXT_TO_MIME dict
 
-    fileName, fileExtension = os.path.splitext(note.file.path)
+    fileName, fileExtension = os.path.splitext(note.note_file.path)
 
     if file_type == None:
 
@@ -102,13 +108,13 @@ def convert_with_google_drive(note):
             raise Exception('Unknown file type')
 
     resource = {
-                'title':    note.title,
-                'desc':     note.description,
+                'title':    note.name,
+                'desc':     note.desc,
                 'mimeType': file_type
             }
     # TODO: set the permission of the file to permissive so we can use the 
     #       gdrive_url to serve files directly to users
-    media = MediaFileUpload(note.file.path, mimetype=file_type,
+    media = MediaFileUpload(note.note_file.path, mimetype=file_type,
                 chunksize=1024*1024, resumable=True)
 
     auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]
@@ -121,44 +127,34 @@ def convert_with_google_drive(note):
 
     # Upload the file
     # TODO: wrap this in a try loop that does a token refresh if it fails
-    print "Trying to upload document"
     file_dict = service.files().insert(body=resource, media_body=media, convert=True).execute()
 
-    # set note.is_pdf
-    if file_type == 'application/pdf':
-        # Get a new copy of the file from the database with the new metadata from filemeta
-        new_file = File.objects.get(id=note.id)
-        # If it's a pdf, instead save an embed_url from resource['selfLink']
-        new_file.is_pdf = True
-        new_file.embed_url = file_dict[u'selfLink']
-        new_file.gdrive_url = file_dict[u'downloadUrl']
-    else:
-        # get the converted filetype urls
-        download_urls = {}
-        download_urls['html'] = file_dict[u'exportLinks']['text/html']
-        download_urls['text'] = file_dict[u'exportLinks']['text/plain']
-        content_dict = {}
+    # get the converted filetype urls
+    download_urls = {}
+    download_urls['html'] = file_dict[u'exportLinks']['text/html']
+    download_urls['text'] = file_dict[u'exportLinks']['text/plain']
+    content_dict = {}
 
 
-        for download_type, download_url in download_urls.items():
-            print "\n%s -- %s" % (download_type, download_urls)
-            resp, content = http.request(download_url, "GET")
+    for download_type, download_url in download_urls.items():
+        print "\n%s -- %s" % (download_type, download_urls)
+        resp, content = http.request(download_url, "GET")
 
 
-            if resp.status in [200]:
-                print "\t downloaded!"
-                # save to the File.property resulting field
-                content_dict[download_type] = content
-            else:
-                print "\t Download failed: %s" % resp.status
+        if resp.status in [200]:
+            print "\t downloaded!"
+            # save to the File.property resulting field
+            content_dict[download_type] = content
+        else:
+            print "\t Download failed: %s" % resp.status
 
-        # Get a new copy of the file from the database with the new metadata from filemeta
-        new_file = Note.objects.get(id=note.id)
+    # Get a new copy of the file from the database with the new metadata from filemeta
+    new_note = Note.objects.get(id=note.id)
 
-        # set the .odt as the download from google link
-        new_file.gdrive_url = file_dict[u'exportLinks']['application/vnd.oasis.opendocument.text']
-        new_file.html = content_dict['html']
-        new_file.text = content_dict['text']
+    # set the .odt as the download from google link
+    new_note.gdrive_url = file_dict[u'exportLinks']['application/vnd.oasis.opendocument.text']
+    new_note.html = content_dict['html']
+    new_note.text = content_dict['text']
 
     # Finally, save whatever data we got back from google
-    new_file.save()
+    new_note.save()

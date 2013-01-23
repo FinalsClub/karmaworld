@@ -68,13 +68,15 @@ class Note(models.Model):
 
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug
-            otherwise use note and id
+            otherwise use note.id
         """
-        return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.slug)
+        if self.slug == None:
+            # return a url ending in slug
+            return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.slug)
+        else:
+            # return a url ending in id
+            return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.id)
 
-
-# FIXME: replace the following GOOGLE_USER in a settings.py
-GOOGLE_USER = 'seth.woodworth@gmail.com'
 
 class DriveAuth(models.Model):
     """ stored google drive authentication and refresh token
