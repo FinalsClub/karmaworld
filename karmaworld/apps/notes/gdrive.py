@@ -9,13 +9,19 @@ import os
 import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
+from django.conf import settings
 from oauth2client.client import flow_from_clientsecrets
 
 from karmaworld.apps.notes.models import DriveAuth, Note
 
-CLIENT_SECRET = './notes/client_secrets.json' # FIXME
+CLIENT_SECRET = os.path.join(settings.DJANGO_ROOT, \
+                    'secret/client_secrets.json')
 #from credentials import GOOGLE_USER # FIXME
-GOOGLE_USER = 'admin@karmanotes.org' # FIXME
+try:
+    from secrets.drive import GOOGLE_USER
+except:
+    GOOGLE_USER = 'admin@karmanotes.org' # FIXME
+
 EXT_TO_MIME = {'.docx': 'application/msword'}
 
 def build_flow():
