@@ -4,11 +4,9 @@
 
 {% block pagescripts %}
     <script src="{{ STATIC_URL }}/js/bootstrap-modal.js" ></script>
-    <script src="{{STATIC_URL}}ajaxuploader/js/fileuploader.js" ></script>
+    <script src="{{ STATIC_URL }}ajaxuploader/js/fileuploader.js" ></script>
+    <script src="{{ STATIC_URL }}/js/lightboxupload.js" ></script>
     <script>
-        var course_pk = {{ course.id }};
-        var course_name = "{{ course.name }}";
-
         $(function(){
             var uploader = new qq.FileUploader( {
                 action: "{% url 'ajax_upload' %}",
