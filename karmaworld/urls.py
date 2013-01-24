@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^about/$', direct_to_template, { 'template': 'about.html' }, name='about'),
+    url(r'^terms/$', direct_to_template, { 'template': 'terms.html' }, name='terms'),
 
     url(r'^raw/(?P<pk>\d+)$', raw_file, name='note_raw'),
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[^/]+)$', \
