@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.forms import NoteForm
 
+
 class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
     # name passed to template
@@ -20,9 +21,13 @@ class NoteDetailView(DetailView):
 
 
 class NoteSaveView(FormView, SingleObjectMixin):
-    template_name = 'notes/note_detail.html'
+    """ Save a Note and then view the page, 
+        behaves the same as NoteDetailView, except for saving the
+        NoteForm ModelForm
+    """
     form_class = NoteForm
     model = Note
+    template_name = 'notes/note_detail.html'
 
     def get_context_data(self, **kwargs):
         context = {
@@ -31,6 +36,8 @@ class NoteSaveView(FormView, SingleObjectMixin):
         return super(NoteSaveView, self).get_context_data(**context)
 
     def get_success_url(self):
+        """ On form submission success, redirect to what url """
+        #TODO: redirect to note slug if possible (auto-slugify)
         return u'/{school_slug}/{course_slug}/{pk}'.format(
                 school_slug=self.object.course.school.slug,
                 course_slug=self.object.course.slug,
@@ -38,6 +45,9 @@ class NoteSaveView(FormView, SingleObjectMixin):
             )
 
     def form_valid(self, form):
+        """ Actions to take if the submitted form is valid
+            namely, saving the new data to the existing note object
+        """
         self.object = self.get_object()
         self.object.name = form.cleaned_data['name']
         self.object.desc = form.cleaned_data['desc']
