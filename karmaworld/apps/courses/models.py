@@ -23,6 +23,10 @@ class School(models.Model):
     facebook_id = models.BigIntegerField(blank=True, null=True)
     file_count  = models.IntegerField(default=0)
 
+    class Meta:
+        """ Sort School by file_count descending, name abc=> """
+        ordering = ['-file_count', 'name']
+
 
     def __unicode__(self):
         return self.name
