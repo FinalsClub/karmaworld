@@ -9,6 +9,7 @@ from django.views.generic.simple import direct_to_template
 
 from karmaworld.apps.ajaxuploader.views import ajax_uploader
 from karmaworld.apps.courses.models import Course
+from karmaworld.apps.courses.views import AboutView
 from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.notes.views import NoteView
 from karmaworld.apps.notes.views import raw_file
@@ -22,8 +23,9 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^about/$', direct_to_template, { 'template': 'about.html' }, name='about'),
     url(r'^terms/$', direct_to_template, { 'template': 'terms.html' }, name='terms'),
+
+    url(r'^about/$', AboutView.as_view(), name='about'),
 
     url(r'^raw/(?P<pk>\d+)$', raw_file, name='note_raw'),
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[^/]+)$', \
