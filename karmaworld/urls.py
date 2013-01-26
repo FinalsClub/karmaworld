@@ -11,6 +11,7 @@ from karmaworld.apps.ajaxuploader.views import ajax_uploader
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.views import AboutView
 from karmaworld.apps.courses.views import CourseDetailView
+from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.notes.views import NoteView
 from karmaworld.apps.notes.views import raw_file
 
@@ -38,8 +39,12 @@ urlpatterns = patterns('',
     url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', \
         NoteView.as_view(), name='note_detail'),
 
-    # uploading
-    url(r'ajax-upload$', ajax_uploader, name='ajax_upload'),
+    # ---- JSON views ----#
+    # uploading files
+    url(r'^ajax-upload$', ajax_uploader, name='ajax_upload'),
+    # return json list of schools
+    url(r'^j/school/list$', school_list, name='json_school_list'),
+    # ---- end JSON views ----#
 
     url(r'^$', ListView.as_view(model=Course), name='home'),
 )
