@@ -1,4 +1,34 @@
 {% load url from future %}
+<script>
+    $("#id_school").autocomplete({
+        source: function(request, response){
+            $.ajax({
+                url: "{% url 'json_school_list' %}",
+                data: {q: request.term},
+                success: function(data) {
+                    if (data['status'] === 'success')
+                    {
+                        response($.map(data['schools'], function(item) {
+                            return {
+                                label: item.name,
+                                value: item.name,
+                                real_value: item.id
+                            };
+                        }));
+                    } else {
+                      // FIXME: do something if school not found
+                      $('#create_school_link').show();
+                    }
+                },
+                dataType: "json",
+                type: 'POST'
+            });
+        },
+        select: function(event, ui) { $('#id_school').val(ui.item.real_value); },
+        minLength: 3
+    });
+
+</script>
 
 <section id="add-course" class="modal_content">
 
@@ -6,9 +36,20 @@
     <div class="eight columns centered lightbox_modal" style="margin-top: 121px;">
       <div class="row">
         <div class="lightbox_header modal_header twelve columns">
-          Create a new course
+          Add a course
         </div><!-- /modal_header -->
       </div>
+
+      <div class="row lightbox_row">
+        <div class="seven columns centered">
+          <label class="lightbox_label">
+            School
+          </label><!-- lightbox_label -->
+          <div class="lightbox_field">
+            <input id="id_school" name="school"/>
+          </div><!-- .lightbox_filed -->
+        </div><!--  -->
+      </div> <!-- .row .lightbox_row -->
 
 
       <div class="row lightbox_row">
