@@ -595,6 +595,13 @@ table#course_list th
   font-size: 12px;
 }
 
+/* hack - table sorter moves the th into a div */
+table#course_list th div
+{
+  font-family: "MuseoSlab-500";
+  font-size: 12px;
+}
+
 table#course_list td
 {
   font-family: "MuseoSlab-700";
