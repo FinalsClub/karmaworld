@@ -652,3 +652,17 @@ a.white:hover
   font-family: "MuseoSlab-700";
   font-size: 32px;
 }
+
+/* GAAAH, random body p copy should be readable text */
+p.text
+{
+  font-family: "MuseoSlab-500";
+  font-size: 17px;
+  margin: 20px 0 0;
+  line-height: 150%;
+}
+p.text a
+{
+  color: #f05a28;
+  text-decoration: underline;
+}

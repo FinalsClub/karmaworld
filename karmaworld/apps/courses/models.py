@@ -21,17 +21,36 @@ class School(models.Model):
     url         = models.URLField(max_length=511, blank=True)
     # Facebook keeps a unique identifier for all schools
     facebook_id = models.BigIntegerField(blank=True, null=True)
+    file_count  = models.IntegerField(default=0)
+
+    class Meta:
+        """ Sort School by file_count descending, name abc=> """
+        ordering = ['-file_count', 'name']
 
 
     def __unicode__(self):
         return self.name
-
 
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
         if not self.slug:
             self.slug = defaultfilters.slugify(self.name)
         super(School, self).save(*args, **kwargs)
+
+    def update_note_count(self):
+        """ Update the School.file_count by summing the 
+            contained course.file_count
+        """
+        self.file_count = sum([course.file_count for course in self.course_set.all()])
+        self.save()
+
+    def update_related_note_count(self):
+        """ Runs the update_note_count function on all related course
+            objects, then generates the self.file_count
+        """
+        for course in self.course_set.all():
+            course.update_note_count()
+        self.update_note_count()
 
 
 class Course(models.Model):
@@ -58,22 +77,18 @@ class Course(models.Model):
     class Meta:
         ordering = ['-file_count', 'school', 'name']
 
-
     def __unicode__(self):
         return u"{0}: {1}".format(self.name, self.school)
-
 
     def get_absolute_url(self):
         """ Not implemented yet """
         return u"/{0}/{1}".format(self.school.slug, self.slug)
-
 
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
         if not self.slug:
             self.slug = defaultfilters.slugify(self.name)
         super(Course, self).save(*args, **kwargs)
-
 
     def update_note_count(self):
         self.file_count = self.note_set.count()

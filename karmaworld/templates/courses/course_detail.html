@@ -4,11 +4,9 @@
 
 {% block pagescripts %}
     <script src="{{ STATIC_URL }}/js/bootstrap-modal.js" ></script>
-    <script src="{{STATIC_URL}}ajaxuploader/js/fileuploader.js" ></script>
+    <script src="{{ STATIC_URL }}ajaxuploader/js/fileuploader.js" ></script>
+    <script src="{{ STATIC_URL }}/js/lightboxupload.js" ></script>
     <script>
-        var course_pk = {{ course.id }};
-        var course_name = "{{ course.name }}";
-
         $(function(){
             var uploader = new qq.FileUploader( {
                 action: "{% url 'ajax_upload' %}",
@@ -16,20 +14,20 @@
                 multiple: true,
                 onComplete: function( id, fileName, responseJSON ) {
                   if( responseJSON.success )
-                    alert( "success!" ) ;
-                  else
-                    alert( "upload failed!" ) ;
+                    console.log( "success!" ) ;
+                    $('form#upload_form').attr('action', responseJSON.note_url);
+                    $('input.submit_upload').show();
                 },
                 onAllComplete: function( uploads ) {
                   // uploads is an array of maps
                   // the maps look like this: { file: FileObject, response: JSONServerResponse }
-                  alert( "All complete!" ) ;
+                  console.log( "All complete!" ) ;
                 },
                 params: {
                   'csrf_token': '{{ csrf_token }}',
                   'csrf_name': 'csrfmiddlewaretoken',
                   'csrf_xname': 'X-CSRFToken',
-                  'course_id': course_pk,
+                  'course_id': {{ course.id }},
                 },
               }) ;
         });

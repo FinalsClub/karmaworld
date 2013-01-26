@@ -18,7 +18,7 @@
         <div id="hero_image_caption_container">
           <div class="row">
             <div id="hero_image_caption" class="seven columns offset-by-one">
-            <p>Meet the KarmaNotes team: Andrew, Charles, Bob, & Seth.</p>
+            <!-- <p>Meet the KarmaNotes team: Andrew, Charles, Bob, & Seth.</p> -->
             </div><!-- /hero_image_caption -->
           </div>
         </div><!-- /hero_image_caption_container -->
@@ -81,26 +81,25 @@
     </div>
 
 
-<!--     <div class="row">
+    <div class="row">
       <div id="leaderboard_table" class="ten columns offset-by-one">
 
-        {% for school in leader_schools %}
+        {% for school in schools %}
         <div class="row leaderboard_item">
           <div class="one column leaderboard_rank">
             {{ forloop.counter }}
           </div>
           <div class="eight columns leaderboard_school">
             {{ school.name }}
-          </div> /leaderboard_school 
+          </div> <!-- /leaderboard_school -->
           <div class="one column leaderboard_score">
-            {{ school.karma|intcomma }}
-          </div> /leaderboard_score 
-        </div> /leaderboard_item
+            {{ school.file_count }}
+          </div> <!-- /leaderboard_score -->
+        </div> <!-- /leaderboard_item -->
         {% endfor %}
 
-      </div> /leaderboard_table
+      </div> <!-- /leaderboard_table -->
     </div>  
--->
 
   </section><!--/about_content-->
 {% endblock %}
