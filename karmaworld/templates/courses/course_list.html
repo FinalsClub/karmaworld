@@ -14,6 +14,7 @@
 {% block pagescripts %}
 <script src="stylesheet" href="{{ STATIC_URL }}/js/responsive-tables.js"></script>
 <script src="{{ STATIC_URL }}/js/jquery.tablesorter.min.js"></script>
+<script src="{{ STATIC_URL }}/js/bootstrap-modal.js" ></script>
 <script>
 $(document).ready(function()
     {
@@ -24,8 +25,11 @@ console.log('tablesorter called');
 </script>
 {% endblock %}
 
-{% block content %}
+{% block lightboxen %}
+  {% include 'lightbox/add_course.html' %}
+{% endblock %}
 
+{% block content %}
 <section id="home_content">
   <div id="page_header" class="hero_gradient_bar">
     <div class="row">
@@ -65,7 +69,13 @@ console.log('tablesorter called');
       </table>
     </div><!-- .ten columns -->
   </div> <!-- .row -->
+  <div class="row">
+    <div class="ten columns offset-by-one">
+      <p class="text">Can't find your course? 
+        <a href="#add-course" role="button" class="btn" data-toggle="modal">Add it now</a>
+      </p>
+    </div><!-- .ten columns -->
+  </div> <!-- .row -->
 </section> <!-- #results_content -->
 
 {% endblock %}
-
