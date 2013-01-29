@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     # Admin panel and documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    # Grappelli django-admin improvment suite
+    url(r'^grappelli/', include('grappelli.urls')),
 
     url(r'^terms/$', direct_to_template, { 'template': 'terms.html' }, name='terms'),
 

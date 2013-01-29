@@ -8,3 +8,4 @@ git+git://github.com/FinalsClub/django-taggit.git
 oauth2client==1.0
 urllib3==1.5
 google-api-python-client==1.0
+django-grappelli==2.4.3
