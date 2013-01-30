@@ -38,3 +38,7 @@ local_settings.py
 karmaworld/media/
 # collected staticfiles
 karmaworld/static/
+
+## OS X
+# thumbnail cache
+.DS_Store
