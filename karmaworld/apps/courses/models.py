@@ -39,6 +39,10 @@ class School(models.Model):
             self.slug = defaultfilters.slugify(self.name)
         super(School, self).save(*args, **kwargs)
 
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("name__icontains",)
+
     def update_note_count(self):
         """ Update the School.file_count by summing the 
             contained course.file_count

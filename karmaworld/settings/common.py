@@ -187,6 +187,9 @@ DJANGO_APPS = (
     # Useful template tags:
     'django.contrib.humanize',
 
+    # grappelli django-admin improvment, must be added before admin
+    'grappelli',
+
     # Admin panel and documentation:
     'django.contrib.admin',
     'django.contrib.admindocs',

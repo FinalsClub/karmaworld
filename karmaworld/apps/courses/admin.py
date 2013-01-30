@@ -5,7 +5,15 @@
 
 from django.contrib import admin
 
-import models
+from karmaworld.apps.courses.models import School
+from karmaworld.apps.courses.models import Course
 
-admin.site.register(models.School)
-admin.site.register(models.Course)
+class CourseAdmin(admin.ModelAdmin):
+    """ an Admin handler for the Course model that handles fk search """
+    raw_id_fields = ('school',)
+    autocomplete_lookup_fields = {
+        'fk': ['school']
+    }
+
+admin.site.register(School)
+admin.site.register(Course, CourseAdmin)

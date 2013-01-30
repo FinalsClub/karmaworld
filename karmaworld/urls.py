@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     # Admin panel and documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    # Grappelli django-admin improvment suite
+    url(r'^grappelli/', include('grappelli.urls')),
 
     url(r'^terms/$', direct_to_template, { 'template': 'terms.html' }, name='terms'),
 
@@ -43,7 +45,7 @@ urlpatterns = patterns('',
     # uploading files
     url(r'^ajax-upload$', ajax_uploader, name='ajax_upload'),
     # return json list of schools
-    url(r'^j/school/list$', school_list, name='json_school_list'),
+    url(r'^school/list/$', school_list, name='json_school_list'),
     # ---- end JSON views ----#
 
     url(r'^$', ListView.as_view(model=Course), name='home'),

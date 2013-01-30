@@ -1,16 +1,32 @@
 {% load url from future %}
 <script>
-    $("#id_school").autocomplete({
+$(function() {
+
+  function setupAjax(){
+    // Assumes variable csrf_token is made available
+    // by embedding document
+    $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                  // Only send the token to relative URLs i.e. locally.
+                  xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+              }
+          }
+    });
+  }
+
+  setupAjax();
+
+    $("#school").autocomplete({
         source: function(request, response){
             $.ajax({
                 url: "{% url 'json_school_list' %}",
                 data: {q: request.term},
                 success: function(data) {
-                    if (data['status'] === 'success')
-                    {
+                    console.log(data);
+                    if (data['status'] === 'success') {
                         response($.map(data['schools'], function(item) {
                             return {
-                                label: item.name,
                                 value: item.name,
                                 real_value: item.id
                             };
@@ -24,14 +40,20 @@
                 type: 'POST'
             });
         },
-        select: function(event, ui) { $('#id_school').val(ui.item.real_value); },
+        select: function(event, ui) { 
+            // set the school id as the value of the hidden field
+            $('#id_school').val(ui.item.real_value); 
+            // set the School name as the textbox ield
+            $('#school').val(ui.item.value);
+          },
         minLength: 3
     });
+});
 
 </script>
 
 <section id="add-course" class="modal_content">
-
+<form action="">
   <div class="row">
     <div class="eight columns centered lightbox_modal" style="margin-top: 121px;">
       <div class="row">
@@ -46,7 +68,8 @@
             School
           </label><!-- lightbox_label -->
           <div class="lightbox_field">
-            <input id="id_school" name="school"/>
+            <input id="school" class="lightbox_textfield" type="text" name="school"/>
+            <input id="id_school" type='hidden'/>
           </div><!-- .lightbox_filed -->
         </div><!--  -->
       </div> <!-- .row .lightbox_row -->
@@ -122,6 +145,6 @@
     </div> <!-- .lightbox_modal -->
   </div> <!-- .row -->
 
-
+</form>
 </section><!--add_course_content-->
 
