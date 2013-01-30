@@ -45,7 +45,7 @@ urlpatterns = patterns('',
     # uploading files
     url(r'^ajax-upload$', ajax_uploader, name='ajax_upload'),
     # return json list of schools
-    url(r'^j/school/list$', school_list, name='json_school_list'),
+    url(r'^school/list/$', school_list, name='json_school_list'),
     # ---- end JSON views ----#
 
     url(r'^$', ListView.as_view(model=Course), name='home'),
