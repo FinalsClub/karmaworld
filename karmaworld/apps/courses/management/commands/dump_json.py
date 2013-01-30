@@ -62,6 +62,7 @@ def course_to_dict(course):
 		'name': course.name,
 		'slug': course.slug,
 		'school_id': course.school.id,
+		'id': course.id
 	}
 
 	if course.desc:
@@ -105,5 +106,5 @@ class Command(BaseCommand):
 		courses = [course_to_dict(course) for course in Course.objects.all()]
 		fn = 'courses_' + self.date + '.json'
 		with open(fn, 'w') as f:
-			json.dump(notes, f)
+			json.dump(courses, f)
 

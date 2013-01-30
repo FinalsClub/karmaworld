@@ -54,8 +54,8 @@ class Command(BaseCommand):
 
             except School.DoesNotExist:
                 school = School()
-                print d['institution_id']
-                print d['institution_name']
+                #print d['institution_id']
+                #print d['institution_name']
                 count += 1
 
 
