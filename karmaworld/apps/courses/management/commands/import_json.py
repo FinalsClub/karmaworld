@@ -64,10 +64,10 @@ class Command(BaseCommand):
 				tags = note['tags']
 				del note['tags']
 
-			file_path = None
-			if 'file_path' in note and note['file_path']:
-				file_path = os.path.join('files', note['file_path']) # specify folder for files
-				del note['file_path']
+			note_file = None
+			if 'note_file' in note and note['note_file']:
+				note_file = os.path.join('files', note['note_file']) # specify folder for files
+				del note['note_file']
 
 			# replace the string with this value
 			note['uploaded_at'] = datetime.datetime.utcnow()
@@ -78,10 +78,11 @@ class Command(BaseCommand):
 			if tags:
 				for t in tags: n.tags.add(t)
 
-			if file_path:
-				with open(file_path) as f:
+			if note_file:
+				printl(note_file + '\n')
+				with open(note_file) as f:
 					df = DjangoFile(f)
-					_, file_name = os.path.split(file_path) # careful
+					_, file_name = os.path.split(note_file) # careful
 					n.note_file.save(file_name, df)
 
 			n.save()
