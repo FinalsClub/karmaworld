@@ -102,19 +102,19 @@
       </div>
       {% endcomment %}
 
+      {% if course.desc %}
       <div class="row">
         <div id="course_description" class="eight columns centered">
-         {% if course.desc %}
             {{ course.desc }}
-         {% endif %}
           <!-- TODO: We don't provide a course description -->
         </div><!-- /course_description -->
       </div>
+      {% endif %}
 
       <div class="row">
         <div class="three columns centered">
-          <div id=upload_button_container class=button_bevel >
-            <div id=upload_button course=button_interior data-id="{{ course.id }}">
+          <div id="upload_button_container" class="button_bevel" >
+            <div id="upload_button" course="button_interior" data-id="{{ course.id }}" class="inverted_button">
               upload
             </div>
           </div>
