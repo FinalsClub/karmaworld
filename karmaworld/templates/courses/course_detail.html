@@ -3,9 +3,9 @@
 
 
 {% block pagescripts %}
-    <script src="{{ STATIC_URL }}/js/bootstrap-modal.js" ></script>
+    <script src="{{ STATIC_URL }}js/bootstrap-modal.js" ></script>
     <script src="{{ STATIC_URL }}ajaxuploader/js/fileuploader.js" ></script>
-    <script src="{{ STATIC_URL }}/js/lightboxupload.js" ></script>
+    <script src="{{ STATIC_URL }}js/lightboxupload.js" ></script>
     <script>
         $(function(){
             var uploader = new qq.FileUploader( {
@@ -36,7 +36,7 @@
 
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="/static/css/note_course_pages.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
 {% endblock %}
 
 
@@ -95,26 +95,26 @@
               {% endif %}
             </div>
             <div id="course_meta_action_gear" class="six columns">
-              <img src="/static/img/course_action_gear.png" alt="course_action_gear" width="39" height="37" />
+              <img src="{{ STATIC_URL }}img/course_action_gear.png" alt="course_action_gear" width="39" height="37" />
             </div>
           </div>
         </div>
       </div>
       {% endcomment %}
 
+      {% if course.desc %}
       <div class="row">
         <div id="course_description" class="eight columns centered">
-         {% if course.desc %}
             {{ course.desc }}
-         {% endif %}
           <!-- TODO: We don't provide a course description -->
         </div><!-- /course_description -->
       </div>
+      {% endif %}
 
       <div class="row">
         <div class="three columns centered">
-          <div id=upload_button_container class=button_bevel >
-            <div id=upload_button course=button_interior data-id="{{ course.id }}">
+          <div id="upload_button_container" class="button_bevel" >
+            <div id="upload_button" course="button_interior" data-id="{{ course.id }}" class="inverted_button">
               upload
             </div>
           </div>
@@ -157,7 +157,7 @@
               <div class="activity_details_callout">
                 <div class="row">
                   <div class="one column">
-                    <img src="/static/img/dashboard_activity_callout_icon_notebook.png" alt="dashboard_activity_callout_icon_notebook" width="44" height="44" />
+                    <img src="{{ STATIC_URL }}img/dashboard_activity_callout_icon_notebook.png" alt="dashboard_activity_callout_icon_notebook" width="44" height="44" />
                   </div>
                   <div class="eleven columns activity_details_callout_copy">
 

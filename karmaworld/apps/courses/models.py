@@ -21,6 +21,8 @@ class School(models.Model):
     url         = models.URLField(max_length=511, blank=True)
     # Facebook keeps a unique identifier for all schools
     facebook_id = models.BigIntegerField(blank=True, null=True)
+    # United States Department of Education institution_id
+    usde_id     = models.BigIntegerField(blank=True, null=True)
     file_count  = models.IntegerField(default=0)
 
     class Meta:

@@ -18,8 +18,12 @@ get the authorization url
 go to that url in your browser
 it will redirecto you to a url in the format of:
    http://localhost:8000/oauth2callback?code=EXCHANGE_CODE
-take the EXCHANGE_CODE and feed it as a string to 
+
+The url of the page you are re-directed to will contain the EXCHANGE_CODE required to complete the authentication
+
+take the EXCHANGE_CODE from the url, and feed it as a string to 
     credentials = flow.step2_exchange('EXCHANGE_CODE')
+
 This gives you a credentials object, keep this value
 Create an instance of DriveAuth()
     from karmaworld.apps.notes.models import DriveAuth
