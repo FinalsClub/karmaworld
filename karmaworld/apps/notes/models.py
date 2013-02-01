@@ -56,6 +56,10 @@ class Note(models.Model):
     #course      = models.ForeignKey(Course, blank=True, null=True, related_name="files")
     #school      = models.ForeignKey(School, blank=True, null=True)
 
+    class Meta:
+        """ Sort files by most recent first """
+        ordering = ['-uploaded_at']
+
 
     def __unicode__(self):
         return u"{0}: {1} -- {2}".format(self.file_type, self.name, self.uploaded_at)

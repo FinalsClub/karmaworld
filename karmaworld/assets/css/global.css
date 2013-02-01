@@ -665,3 +665,17 @@ p.text a
   color: #f05a28;
   text-decoration: underline;
 }
+
+#thankyou
+{
+  border: 1px solid #8e8e8e;
+  margin: 60px 20px;
+  padding: 20px;
+}
+
+#thankyou p
+{
+  font-family: "MuseoSlab-500";
+  font-size: 17px;
+  margin: 0px;
+}

@@ -38,16 +38,13 @@ DATABASES = {
 }
 ########## END DATABASE CONFIGURATION
 
+########## STATIC CONFIG
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url                                 
+STATIC_URL = '/static/'                                                                            
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+STATIC_ROOT = normpath(join(DJANGO_ROOT, 'static'))
 
-########## CACHE CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#caches
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    }
-}
-########## END CACHE CONFIGURATION
-
+########## END STATIC CONFIG
 
 ########## CELERY CONFIGURATION
 # See: http://docs.celeryq.org/en/latest/configuration.html#celery-always-eager
