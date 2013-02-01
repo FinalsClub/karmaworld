@@ -6,8 +6,6 @@
 
 from os import environ
 
-from memcacheify import memcacheify
-from postgresify import postgresify
 from S3 import CallingFormat
 
 from common import *
@@ -41,13 +39,26 @@ SERVER_EMAIL = EMAIL_HOST_USER
 
 
 ########## DATABASE CONFIGURATION
-DATABASES = postgresify()
+DATABASES = {
+    'default': {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': PROD_DB_NAME,
+    'USER': PROD_DB_USERNAME,
+    'PASSWORD': PROD_DB_PASSWORD,
+    'HOST': 'localhost',
+    'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
 ########## END DATABASE CONFIGURATION
 
 
 ########## CACHE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#caches
-CACHES = memcacheify()
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+    }
+}
 ########## END CACHE CONFIGURATION
 
 

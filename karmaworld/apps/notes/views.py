@@ -15,9 +15,8 @@ from karmaworld.apps.notes.forms import NoteForm
 
 class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
-    # name passed to template
-    context_object_name = u"note"
     model = Note
+    context_object_name = u"note" # name passed to template
 
 
 class NoteSaveView(FormView, SingleObjectMixin):

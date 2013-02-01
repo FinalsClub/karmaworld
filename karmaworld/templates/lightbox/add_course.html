@@ -17,7 +17,7 @@ $(function() {
 
   setupAjax();
 
-    $("#school").autocomplete({
+    $("#str_school").autocomplete({
         source: function(request, response){
             $.ajax({
                 url: "{% url 'json_school_list' %}",
@@ -28,7 +28,8 @@ $(function() {
                         response($.map(data['schools'], function(item) {
                             return {
                                 value: item.name,
-                                real_value: item.id
+                                real_value: item.id,
+                                label: item.name,
                             };
                         }));
                     } else {
@@ -41,10 +42,15 @@ $(function() {
             });
         },
         select: function(event, ui) { 
+            console.log("select func");
+            console.log("id");
+            console.log(ui.item.value);
+            console.log("name");
+            console.log(ui.item.label);
             // set the school id as the value of the hidden field
-            $('#id_school').val(ui.item.real_value); 
-            // set the School name as the textbox ield
-            $('#school').val(ui.item.value);
+            $('#id_school').val(ui.item.real_value);
+            // set the School name as the textbox field
+            //$('#str_school').val(ui.item.label);
           },
         minLength: 3
     });
@@ -53,7 +59,8 @@ $(function() {
 </script>
 
 <section id="add-course" class="modal_content">
-<form action="">
+<form method="POST" action="{% url 'api_course_post' %}">
+  {% csrf_token %}
   <div class="row">
     <div class="eight columns centered lightbox_modal" style="margin-top: 121px;">
       <div class="row">
@@ -68,8 +75,8 @@ $(function() {
             School
           </label><!-- lightbox_label -->
           <div class="lightbox_field">
-            <input id="school" class="lightbox_textfield" type="text" name="school"/>
-            <input id="id_school" type='hidden'/>
+            <input id="str_school" class="lightbox_textfield" type="text" name="str_school"/>
+            <input id="id_school" name="school" type='hidden'/>
           </div><!-- .lightbox_filed -->
         </div><!--  -->
       </div> <!-- .row .lightbox_row -->
@@ -81,18 +88,7 @@ $(function() {
             Title of Course:
           </label><!-- lightbox_label -->
           <div class="lightbox_field">
-            <input id="id_title" class="lightbox_textfield" type="text" name="title" maxlength="255" />
-          </div><!-- .lightbox_filed -->
-        </div><!--  -->
-      </div> <!-- .row .lightbox_row -->
-
-      <div class="row lightbox_row">
-        <div class="seven columns centered">
-          <label class="lightbox_label">
-            Subject:
-          </label><!-- lightbox_label -->
-          <div class="lightbox_field">
-            <input id="id_field" class="lightbox_textfield" type="text" name="field" maxlength="255" />
+            <input id="id_name" class="lightbox_textfield" type="text" name="name" maxlength="255" />
           </div><!-- .lightbox_filed -->
         </div><!--  -->
       </div> <!-- .row .lightbox_row -->
@@ -135,7 +131,7 @@ $(function() {
           <label class="lightbox_label">
           </label><!-- lightbox_label -->
           <div class="lightbox_field">
-            <a class="button" id="submit-lightbox-create-course" type="submit">CREATE COURSE</a>
+            <button class="lightbox-button" id="submit-lightbox-create-course" type="submit">CREATE COURSE</a>
           </div><!-- .lightbox_filed -->
         </div><!--  -->
       </div> <!-- .row .lightbox_row -->

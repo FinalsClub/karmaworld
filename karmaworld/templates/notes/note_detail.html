@@ -2,7 +2,7 @@
 {% load url from future %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="/static/css/note_course_pages.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
 {% endblock %}
 
 {% block pagescripts %}
@@ -37,7 +37,7 @@
         <div id="note_back_to_course" class="twelve columns">
           <a href="{{ note.course.get_absolute_url }}">
             {# TODO: style this not like a link #}
-            <img src="/static/img/search_arrow_left.png" alt="search_arrow_left" width="5" height="10" />&nbsp;back to {{ note.course.name }}
+            <img src="{{ STATIC_URL }}img/search_arrow_left.png" alt="search_arrow_left" width="5" height="10" />&nbsp;back to {{ note.course.name }}
           </a>
 
         </div>
@@ -81,10 +81,10 @@
           {% if not owns_file %}
           <div class="row">
             <div class="six column thank" {% if has_voted %} style="display:none" {% endif %} data-id={{ file.id }}>
-              <img src="/static/img/note_thank.png" alt="note_thank" width="34" height="34" />
+              <img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" width="34" height="34" />
             </div>
             <div class="six column flag" {% if has_voted %} style="display:none" {% endif %} data-id={{ file.id }}>
-               <img src="/static/img/note_flag.png" alt="note_flag" width="25" height="35" />
+               <img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35" />
             </div>
             <div class="twelve column voted_message" data-id={{ file.id }} {% if not has_voted %} style="display:none" {% endif %}>
               You've
@@ -99,7 +99,7 @@
             </div>
             <!-- disabling downloads for now -->
             <div class="four column">
-              <img src="/static/img/note_download.png" alt="note_download" width="51" height="36" />
+              <img src="{{ STATIC_URL }}img/note_download.png" alt="note_download" width="51" height="36" />
             </div>
           </div>
           {% endif %} <!-- not owns_file -->

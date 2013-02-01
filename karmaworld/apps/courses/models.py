@@ -87,15 +87,17 @@ class Course(models.Model):
         return u"{0}: {1}".format(self.name, self.school)
 
     def get_absolute_url(self):
-        """ Not implemented yet """
+        """ return url based on school slug and self slug """
         return u"/{0}/{1}".format(self.school.slug, self.slug)
 
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
+        super(Course, self).save(*args, **kwargs) # generate a self.id
         if not self.slug:
-            self.slug = defaultfilters.slugify(self.name)
-        super(Course, self).save(*args, **kwargs)
+            self.slug = defaultfilters.slugify("%s %s" % (self.name, self.id))
+            super(Course, self).save(*args, **kwargs) # Save the slug
 
     def update_note_count(self):
+        """ Update self.file_count by summing the note_set """
         self.file_count = self.note_set.count()
         self.save()
