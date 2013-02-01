@@ -11,6 +11,17 @@ from S3 import CallingFormat
 from common import *
 
 
+from karmaworld.secret.static_s3 import DEFAULT_FILE_STORAGE
+from karmaworld.secret.static_s3 import AWS_ACCESS_KEY_ID
+from karmaworld.secret.static_s3 import AWS_SECRET_ACCESS_KEY
+from karmaworld.secret.static_s3 import AWS_STORAGE_BUCKET_NAME
+from karmaworld.secret.static_s3 import S3_URL
+from karmaworld.secret.static_s3 import STATIC_URL
+
+from karmaworld.secret.db_settings import PROD_DB_NAME
+from karmaworld.secret.db_settings import PROD_DB_USERNAME
+from karmaworld.secret.db_settings import PROD_DB_PASSWORD
+
 ########## EMAIL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
