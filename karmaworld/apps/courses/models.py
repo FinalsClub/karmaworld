@@ -63,7 +63,7 @@ class Course(models.Model):
     """ First class object that contains many notes.Note objects """
     # Core metadata
     name        = models.CharField(max_length=255)
-    slug        = models.SlugField(null=True)
+    slug        = models.SlugField(max_length=150, null=True)
     school      = models.ForeignKey(School) # Should this be optional ever?
     file_count  = models.IntegerField(default=0)
 
