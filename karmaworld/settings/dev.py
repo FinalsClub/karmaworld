@@ -46,16 +46,6 @@ STATIC_ROOT = normpath(join(DJANGO_ROOT, 'static'))
 
 ########## END STATIC CONFIG
 
-########## CACHE CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#caches
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-    }
-}
-########## END CACHE CONFIGURATION
-
-
 ########## CELERY CONFIGURATION
 # See: http://docs.celeryq.org/en/latest/configuration.html#celery-always-eager
 CELERY_ALWAYS_EAGER = True
