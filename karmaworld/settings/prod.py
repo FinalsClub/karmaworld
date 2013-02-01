@@ -104,6 +104,7 @@ CELERY_RESULT_BACKEND = 'amqp'
 # See: http://django-storages.readthedocs.org/en/latest/index.html
 INSTALLED_APPS += (
     'storages',
+    'gunicorn',
 )
 
 # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
