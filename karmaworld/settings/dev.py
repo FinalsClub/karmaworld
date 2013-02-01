@@ -38,12 +38,19 @@ DATABASES = {
 }
 ########## END DATABASE CONFIGURATION
 
+########## STATIC CONFIG
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url                                 
+STATIC_URL = '/static/'                                                                            
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+STATIC_ROOT = normpath(join(DJANGO_ROOT, 'static'))
+
+########## END STATIC CONFIG
 
 ########## CACHE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#caches
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
     }
 }
 ########## END CACHE CONFIGURATION
