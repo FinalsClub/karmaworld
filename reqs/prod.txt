@@ -6,3 +6,4 @@ django-storages==1.1.4
 gunicorn==0.14.3
 jsmin==2.0.2
 psycopg2==2.4.5
+pylibmc==1.2.3

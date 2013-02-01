@@ -6,8 +6,6 @@
 
 from os import environ
 
-from memcacheify import memcacheify
-from postgresify import postgresify
 from S3 import CallingFormat
 
 from common import *
