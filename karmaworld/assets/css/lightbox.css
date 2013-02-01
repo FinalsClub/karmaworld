@@ -193,3 +193,17 @@ div#file-uploader-label h2
 {
   display: none;
 }
+
+button.lightbox-button {
+    background:none!important;
+    border:none; 
+    color: #FFF;
+    cursor: pointer;
+    padding:0!important;
+    font-family: "MuseoSlab-700";
+    font-size: 16px;
+}
+
+button.lightbox-button:hover {
+    text-decoration: underline;
+}
