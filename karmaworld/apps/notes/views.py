@@ -37,10 +37,11 @@ class NoteSaveView(FormView, SingleObjectMixin):
     def get_success_url(self):
         """ On form submission success, redirect to what url """
         #TODO: redirect to note slug if possible (auto-slugify)
-        return u'/{school_slug}/{course_slug}/{pk}'.format(
+        return u'/{school_slug}/{course_slug}?url=/{school_slug}/{course_slug}/{pk}&name={name}&thankyou'.format(
                 school_slug=self.object.course.school.slug,
                 course_slug=self.object.course.slug,
-                pk=self.object.pk
+                pk=self.object.pk,
+                name=self.object.name
             )
 
     def form_valid(self, form):
@@ -68,12 +69,12 @@ class NoteView(View):
         return view(request, *args, **kwargs)
 
 
-
 class RawNoteDetailView(DetailView):
     """ Class-based view for the raw note html for iframes """
     template_name = u'notes/note_raw.html'
     context_object_name = u"note"
     model = Note
+
 
 def raw_file(request, pk):
     """ Display the raw html from a Note object for embedding in an iframe """

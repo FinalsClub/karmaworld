@@ -123,6 +123,30 @@
 
     </div><!-- /course_header -->
 
+    {% if request.GET.thankyou == '' %}
+    <div class="row">
+      <div class="ten columns offset-by-one">
+        <div id="thankyou">
+          <p>
+            Thank you for uploading your notes:
+            <a href="{{ request.GET.url }}">{{ request.GET.name }}</a>! 
+            If you would like to upload another, click the UPLOAD button.
+            Would you like to tell us what features we should add next to the site? 
+            If so, please take this short 
+            <a href="https://docs.google.com/a/finalsclub.org/spreadsheet/viewform?formkey=dDlFVG5Jek0xby03d0NvTTdqdlJIR3c6MA#gid=0" target="_blank">survey</a>.
+          </p>
+          <script>
+          // when showing the thankyou button, flash it orangered first
+          $(function() {
+            $("#thankyou").effect("highlight", {'color': '#f05a28'}, 3000);
+          });
+          </script>
+
+        </div><!-- /thankyou -->
+      </div>
+    </div> <!-- .row -->
+    {% endif %}
+
     <div class="row">
       <div class="ten columns offset-by-one">
         <div class="column_header" style="margin: 17px 0 -25px 0">
@@ -130,6 +154,7 @@
         </div><!-- /column_header -->
       </div>
     </div> <!-- .row -->
+
 
     <div id="course_container">
       <div class="row">
