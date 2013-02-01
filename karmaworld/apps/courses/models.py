@@ -16,7 +16,7 @@ from django.template import defaultfilters
 class School(models.Model):
     """ A grouping that contains many courses """
     name        = models.CharField(max_length=255)
-    slug        = models.SlugField(null=True)
+    slug        = models.SlugField(max_length=150, null=True)
     location    = models.CharField(max_length=255, blank=True, null=True)
     url         = models.URLField(max_length=511, blank=True)
     # Facebook keeps a unique identifier for all schools
