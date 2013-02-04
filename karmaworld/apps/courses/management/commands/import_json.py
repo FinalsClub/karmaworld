@@ -11,82 +11,104 @@ from karmaworld.apps.courses.models import *
 
 class Command(BaseCommand):
 
-	def handle(self, *args, **kwargs):
+    def handle(self, *args, **kwargs):
 
-		printl = self.stdout.write
+        printl = self.stdout.write
 
-		if 'all' not in args:
-			printl('specify "all" - assumes schools.json, notes.json and courses.json')
-			return
+        if 'all' not in args:
+            printl('specify "all" - assumes schools.json, notes.json and courses.json')
+            return
 
-		if 'clean' in args:
-			for n in Note.objects.all(): n.delete()
-			for c in Course.objects.all(): c.delete()
-			for s in School.objects.all(): s.delete()
+        if 'clean' in args:
+            for n in Note.objects.all(): n.delete()
+            for c in Course.objects.all(): c.delete()
+            for s in School.objects.all(): s.delete()
 
-		# read json files
-		with open('schools.json', 'r') as f:
-			school_dicts = json.load(f)
+        # read json files
+        with open('schools.json', 'r') as f:
+            school_dicts = json.load(f)
 
-		with open('notes.json', 'r') as f:
-			note_dicts = json.load(f)
+        with open('notes.json', 'r') as f:
+            note_dicts = json.load(f)
 
-		with open('courses.json', 'r') as f:
-			course_dicts = json.load(f)
+        with open('courses.json', 'r') as f:
+            course_dicts = json.load(f)
 
-		printl('Schools found: %d\n' % len(school_dicts))
-		printl('Notes found: %d\n' % len(note_dicts))
-		printl('Courses found: %d\n' % len(course_dicts))
+        printl('Schools found: %d\n' % len(school_dicts))
+        printl('Notes found: %d\n' % len(note_dicts))
+        printl('Courses found: %d\n' % len(course_dicts))
 
-		#Schools
-		printl('Importing Schools\n')
-		for school in school_dicts:
-			s = School(**school)
-			s.save()
+        # Store all the new School orm objects in a dictionary
+        schools_by_old_id = {}
+        courses_by_old_id = {}
 
-		# Courses
-		printl('Importing Courses\n')
-		for course in course_dicts:
-			#printl('Course: ' + course['name'] + '\n')
-			course['updated_at'] = datetime.datetime.utcnow()
-			course['created_at'] = datetime.datetime.utcnow()
+        #Schools
+        printl('Importing Schools\n')
+        for school in school_dicts:
+            old_id = school['id']
+            del school['id']
+            s = School(**school)
+            s.save()
+            schools_by_old_id[old_id] = s
 
-			c = Course(**course)
-			c.save()
+        # Courses
+        printl('Importing Courses\n')
+        for course in course_dicts:
+            #printl('Course: ' + course['name'] + '\n')
+            course['updated_at'] = datetime.datetime.utcnow()
+            course['created_at'] = datetime.datetime.utcnow()
 
-		# Notes
-		printl('Importing Notes\n')
-		for note in note_dicts:
+            # remove the old ids from the dict
+            old_id = course['id']
+            old_school_id = course['school_id']
+            del course['id']        # Have this auto generated
+            del course['school_id'] # use the actual school instead
 
-			# These keys cannot be pased as keyword arguments
-			tags = None
-			if 'tags' in note:
-				tags = note['tags']
-				del note['tags']
+            c = Course(**course)
+            c.school = schools_by_old_id[old_school_id]
+            c.save()
+            courses_by_old_id[old_id] = c
 
-			note_file = None
-			if 'note_file' in note and note['note_file']:
-				note_file = os.path.join('files', note['note_file']) # specify folder for files
-				del note['note_file']
+        # Notes
+        printl('Importing Notes\n')
+        for note in note_dicts:
 
-			# replace the string with this value
-			note['uploaded_at'] = datetime.datetime.utcnow()
+            # These keys cannot be pased as keyword arguments
+            tags = None
+            if 'tags' in note:
+                tags = note['tags']
+                del note['tags']
 
-			n = Note(**note)
+            note_file = None
+            if 'note_file' in note and note['note_file']:
+                note_file = os.path.join('files', note['note_file']) # specify folder for files
+                del note['note_file']
 
-			# Add the tags, if any
-			if tags:
-				for t in tags: n.tags.add(t)
+            # replace the string with this value
+            note['uploaded_at'] = datetime.datetime.utcnow()
 
-			if note_file:
-				printl(note_file + '\n')
-				with open(note_file) as f:
-					df = DjangoFile(f)
-					_, file_name = os.path.split(note_file) # careful
-					n.note_file.save(file_name, df)
+            old_course_id = note['course_id']
+            del note['id']
+            del note['course_id']
 
-			n.save()
+            n = Note(**note)
 
-		for c in Course.objects.all(): c.update_note_count()
-		for s in School.objects.all(): s.update_note_count()
+            n.course = courses_by_old_id[old_course_id]
+            n.save()
+
+            # Add the tags, if any
+            if tags:
+                for t in tags: n.tags.add(t)
+
+            if note_file:
+                printl(note_file + '\n')
+                with open(note_file) as f:
+                    df = DjangoFile(f)
+                    _, file_name = os.path.split(note_file) # careful
+                    n.note_file.save(file_name, df)
+
+            n.save()
+
+        for c in Course.objects.all(): c.update_note_count()
+        for s in School.objects.all(): s.update_note_count()
 
