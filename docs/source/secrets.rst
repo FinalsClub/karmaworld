@@ -20,3 +20,23 @@ db_settings.py
 + PROD_DB_NAME = "" # is the database name in postgres
 + PROD_DB_USERNAME = "" # is the postgres login username
 + PROD_DB_PASSWORD = "" # is the postgres login user password
+
+
+drive.py
+--------
+
+`drive.py` specifies the google drive user that we are uploading documents too.
+
++ GOOGLE_USER = "" # a google drive email address that we authenticate with
+
+static_s3.py
+------------
+
+`static_s3.py` sets up variables in `settings/prod.py` for AWS S3 static file storage. 
+
++ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
++ AWS_ACCESS_KEY_ID = ''
++ AWS_SECRET_ACCESS_KEY = ''
++ AWS_STORAGE_BUCKET_NAME = '' # this will differ between production and beta
++ S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
++ STATIC_URL = S3_URL
