@@ -5,8 +5,16 @@
 
 from django.contrib import admin
 
-from karmaworld.apps.notes import models
+from karmaworld.apps.notes.models import DriveAuth
+from karmaworld.apps.notes.models import Note
 
+class NoteAdmin(admin.ModelAdmin):
+    """ an Admin handler for the Note model that handles autocomplete to Course 
+    """
+    raw_id_fields = ('course',)
+    autocomplete_lookup_fields = {
+        'fk': ['course']
+    }
 
-admin.site.register(models.DriveAuth)
-admin.site.register(models.Note)
+admin.site.register(DriveAuth)
+admin.site.register(Note, NoteAdmin)
