@@ -1,4 +1,3 @@
-=========
 os-install.rst
 ==========
 
@@ -6,15 +5,15 @@ This document defines the deployment of the KarmaNotes / karmaworld platform on 
 
 
 Required packages:
-- django-1.4.x
-- virtualenv
-- python-pip
-- memcached
++ django-1.4.x
++ virtualenv
++ python-pip
++ memcached
 
 Production Requirements:
 
-- rabbitmq-server
-- postgresql-server 9.1.x
++ rabbitmq-server
++ postgresql-server 9.1.x
 
 ## 0. Check out code
 
