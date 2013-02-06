@@ -1,7 +1,7 @@
 os-install.rst
 ==========
 
-This document defines the deployment of the KarmaNotes / karmaworld platform on ubuntu server.
+This document defines the deployment of the KarmaNotes / karmaworld platform on ubuntu server. 
 
 
 Required packages:
@@ -15,17 +15,19 @@ Production Requirements:
 + rabbitmq-server
 + postgresql-server 9.1.x
 
-## 0. Check out code
+0. Check out code
+----------------------
 
    git clone https://github.com/finalsclub/karmaworld.git
 
-## 1. setup virtual environment
-
+1. setup virtual environment
+----------------------
    cd $SRC_ROOT
    virtualenv beta
    source beta/bin/activate
 
 a) Development
+
 
    pip install -r reqs/dev.txt
 
@@ -39,7 +41,8 @@ Ex.
 	os.environ.setdefault("DJANGO_SETTINGS_MODULE", "karmaworld.settings.dev")
 
 
-## 2. Set up database
+2. Set up database
+----------------------
 
 a) Development
 
@@ -78,7 +81,8 @@ Then create a file called karmaworld/secret/db_secret.py with the following defi
 After we have configured postgresql and set our secret db_secret file, we then need to preform
 the instructions in the beta section of this document.
 
-## 3. Import previous notes (needs more docs)
+3. Import previous notes (needs more docs)
+----------------------
 
-
-## 4. Set up S3 bucket support for
+4. Set up S3 bucket support (optional)
+----------------------
