@@ -9,25 +9,69 @@ Required packages:
 + virtualenv
 + python-pip
 + memcached
++ (See $SRC_ROOT)/reqs/common.py)
 
 Production Requirements:
 
 + rabbitmq-server
 + postgresql-server 9.1.x
++ ($SRC_ROOT)/reqs/prod.py)
+
+Before we begin, we are going to need a few commonly installed tools:
+
+      sudo apt-get install git-core make gcc libmemcached-dev python-pip 
+      sudo pip install virtualenv
+
+If we are in a production environment, we need:
+
+      sudo apt-get install rabbitmq-server postgresql-server
+
 
 0. Check out code
 ----------------------
 
    git clone https://github.com/finalsclub/karmaworld.git
 
-1. setup virtual environment
+Generally, it is advised to have a common $WEB_ROOT. Ours
+is in:
+
+   /var/www
+
+So, for our use case, our $SRC_ROOT is:
+
+  /var/www/karmaworld
+
+Also note that /var/www needs to have proper permissions and creating a separate
+user to interact with the app is advised (with basic user permissions).
+
+1. setup environment
 ----------------------
-   cd $SRC_ROOT
-   virtualenv beta
-   source beta/bin/activate
+   
+In a production environment we use the following:
+
++ ubuntu server 12.04 LTS
++ postgresql-server 9.1.x
++ rabbitmq-server (our broker)
++ python-pip
++ virutalenv
++ django-1.4.3+
++ libmemcached-dev
++ (see $SRC_ROOT/reqs/prod.txt)
+
+Installing virtualenv is advised for both development and production environments.
+
+  sudo pip install virtualenv
+
+We then need to set up a virtual environment so we have a nice container
+to work from. This allows regular users to set up a proper environment 
+without the need of superuser permissions or to install python modules to
+the system directly.
+
+  cd $SRC_ROOT
+  virtualenv beta
+  source beta/bin/activate
 
 a) Development
-
 
    pip install -r reqs/dev.txt
 
@@ -72,11 +116,7 @@ b) Production
    sudo service postgresql restart
    ./manage.py syncdb
 
-Then create a file called karmaworld/secret/db_secret.py with the following defined with:
-
-     PROD_DB_NAME
-     PROD_DB_USERNAME
-     PROD_DB_PASSWORD
+Then create a file called karmaworld/secret/db_secret.py. Please see 'secrets.rst' in $SRC_ROOT/docs/source/secrets.rst.
 
 After we have configured postgresql and set our secret db_secret file, we then need to preform
 the instructions in the beta section of this document.
@@ -86,3 +126,5 @@ the instructions in the beta section of this document.
 
 4. Set up S3 bucket support (optional)
 ----------------------
+
+See $SRC_ROOT/docs/source/secrets.rst
