@@ -6,27 +6,7 @@
 {% endblock %}
 
 {% block pagescripts %}
-<script>
-  var view_note_pk = {{ note.id }};
-  var view_note_title = "{{ note.name }}";
-  var view_note_description = "{{ note.desc }}";
-  var editing_note = false;
-
-  function autoResize(id){
-      var newheight;
-      var newwidth;
-
-      if(document.getElementById){
-        newheight = document.getElementById(id).contentWindow.document .body.scrollHeight;
-        newwidth = document.getElementById(id).contentWindow.document .body.scrollWidth;
-      }
-
-      document.getElementById(id).height = (newheight+ 10) + "px";
-      document.getElementById(id).width= (newwidth + 5) + "px";
-      //alert('height: ' + newheight);
-  }
-
-</script>
+  <script src="{{ STATIC_URL }}js/note-iframe.js" ></script>
 {% endblock %}
 
 {% block content %}

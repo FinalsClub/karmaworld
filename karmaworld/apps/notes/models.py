@@ -8,8 +8,10 @@
 """
 import datetime
 
-from django.template import defaultfilters
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.db import models
+from django.template import defaultfilters
 from taggit.managers import TaggableManager
 from oauth2client.client import Credentials
 
@@ -19,6 +21,8 @@ try:
     from secrets.drive import GOOGLE_USER
 except:
     GOOGLE_USER = u'admin@karmanotes.org'
+
+fs = FileSystemStorage(location=settings.MEDIA_ROOT)
 
 class Note(models.Model):
     """ A django model representing an uploaded file and associated metadata.
@@ -42,7 +46,7 @@ class Note(models.Model):
 
     file_type   = models.CharField(max_length=15, blank=True, null=True, choices=FILE_TYPE_CHOICES, default=UNKNOWN_FILE)
     # Upload files to MEDIA_ROOT/notes/YEAR/MONTH/DAY, 2012/10/30/filename
-    note_file   = models.FileField(upload_to="notes/%Y/%m/%j/", blank=True, null=True)
+    note_file   = models.FileField(storage=fs, upload_to="notes/%Y/%m/%j/", blank=True, null=True)
 
     ## post gdrive conversion data
     embed_url   = models.URLField(max_length=1024, blank=True, null=True)

@@ -97,6 +97,10 @@ class Course(models.Model):
             self.slug = defaultfilters.slugify("%s %s" % (self.name, self.id))
             super(Course, self).save(*args, **kwargs) # Save the slug
 
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("name__icontains",)
+
     def update_note_count(self):
         """ Update self.file_count by summing the note_set """
         self.file_count = self.note_set.count()
