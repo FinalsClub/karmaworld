@@ -82,6 +82,7 @@ def course_to_dict(course):
 
 class Command(BaseCommand):
 
+	help = 'Dump the database to three json files. The json format is expected by the import_json management command.'
 	month = datetime.datetime.now().month
 	day = datetime.datetime.now().day
 	year = datetime.datetime.now().year
