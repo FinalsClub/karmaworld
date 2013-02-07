@@ -10,6 +10,25 @@ from karmaworld.apps.notes.models import *
 from karmaworld.apps.courses.models import *
 
 class Command(BaseCommand):
+    args = 'all [clean]'
+    help = """Import data to the database from .json. 
+        The 'all' argument is required. When the 'all' argument is used, 
+        import_json expects the following files:
+            - schools.json
+            - courses.json
+            - notes.json
+        If an notes object in notes.json include a 'note_file' key, assume this 
+        file can be found relative to the following directory:
+            files/ 
+
+        If the optional 'clean' argument is specified, all notes, courses and 
+        files will be deleted from the db before importing 
+
+        When importing notes and courses, it is not currently possible to 
+        import ForeignKey values for schools or courses that have already been 
+        saved in the db. ForeignKey values within json files may only refer to 
+        id values included in the current batch of .json files
+    """
 
     def handle(self, *args, **kwargs):
 
