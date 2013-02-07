@@ -39,8 +39,8 @@ DATABASES = {
 ########## END DATABASE CONFIGURATION
 
 ########## STATIC CONFIG
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url                                 
-STATIC_URL = '/static/'                                                                            
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
+STATIC_URL = '/static/'
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 STATIC_ROOT = normpath(join(DJANGO_ROOT, 'static'))
 
@@ -56,6 +56,7 @@ CELERY_ALWAYS_EAGER = True
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
 INSTALLED_APPS += (
     'debug_toolbar',
+    'django_extensions',
 )
 
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
@@ -66,7 +67,7 @@ MIDDLEWARE_CLASSES += (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
-DEBUG_TOOLBAR_CONFIG = { 
+DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False # Don't interrput our redirects!
 }
 ########## END TOOLBAR CONFIGURATION
