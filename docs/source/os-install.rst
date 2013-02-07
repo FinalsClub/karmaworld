@@ -1,7 +1,7 @@
 os-install.rst
-==========
+==============
 
-This document defines the deployment of the KarmaNotes / karmaworld platform on ubuntu server. 
+This document defines the deployment of the KarmaNotes / karmaworld platform on ubuntu server.
 
 
 Required packages:
@@ -19,8 +19,9 @@ Production Requirements:
 
 Before we begin, we are going to need a few commonly installed tools:
 
-      sudo apt-get install git-core make gcc libmemcached-dev python-pip 
-      sudo pip install virtualenv
+    sudo apt-get install git-core make gcc libmemcached-dev python-pip
+    sudo pip install pip --upgrade # upgrade pip to the latest pip for our version of python
+    sudo pip install virtualenv
 
 If we are in a production environment, we need:
 
@@ -28,25 +29,22 @@ If we are in a production environment, we need:
 
 
 0. Check out code
-----------------------
+-----------------
 
    git clone https://github.com/finalsclub/karmaworld.git
 
-Generally, it is advised to have a common $WEB_ROOT. Ours
-is in:
-
-   /var/www
-
+Generally, it is advised to have a common $WEB_ROOT.
+Ours is in:  `/var/www`
 So, for our use case, our $SRC_ROOT is:
 
-  /var/www/karmaworld
+    /var/www/karmaworld
 
 Also note that /var/www needs to have proper permissions and creating a separate
 user to interact with the app is advised (with basic user permissions).
 
 1. setup environment
-----------------------
-   
+--------------------
+
 In a production environment we use the following:
 
 + ubuntu server 12.04 LTS
@@ -63,13 +61,13 @@ Installing virtualenv is advised for both development and production environment
   sudo pip install virtualenv
 
 We then need to set up a virtual environment so we have a nice container
-to work from. This allows regular users to set up a proper environment 
+to work from. This allows regular users to set up a proper environment
 without the need of superuser permissions or to install python modules to
 the system directly.
 
-  cd $SRC_ROOT
-  virtualenv beta
-  source beta/bin/activate
+    cd $SRC_ROOT
+    virtualenv beta
+    source beta/bin/activate
 
 a) Development
 
@@ -86,7 +84,7 @@ Ex.
 
 
 2. Set up database
-----------------------
+------------------
 
 a) Development
 
@@ -97,9 +95,9 @@ If notes / apps migrations exist, then:
 
    ./manage.py schemamigration notes --auto
    ./manage.py schemamigration courses --auto
-   
+
 If they do not exist:
-  
+
   ./manage.py schemamigration notes --init
   ./manage.py schemamigration courses --init
 
@@ -122,9 +120,9 @@ After we have configured postgresql and set our secret db_secret file, we then n
 the instructions in the beta section of this document.
 
 3. Import previous notes (needs more docs)
-----------------------
+------------------------------------------
 
 4. Set up S3 bucket support (optional)
-----------------------
+--------------------------------------
 
 See $SRC_ROOT/docs/source/secrets.rst
