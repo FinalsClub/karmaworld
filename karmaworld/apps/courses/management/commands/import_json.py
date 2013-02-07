@@ -11,7 +11,8 @@ from karmaworld.apps.courses.models import *
 
 class Command(BaseCommand):
     args = 'all [clean]'
-    help = """Import data to the database from .json. 
+    help = """Import data to the database from .json. Expect the json in the 
+        format exported by the dump_json manage command.
         The 'all' argument is required. When the 'all' argument is used, 
         import_json expects the following files:
             - schools.json
