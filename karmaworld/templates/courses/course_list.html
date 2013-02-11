@@ -24,8 +24,7 @@ $(document).ready(function()
     headers: { 3: { filter: false, sorter: true }, 4: { filter: false, sorter: true } },
     widgetOptions : 
     { 
-      // This isn't working how I hoped. It appears that tablesorter isn't actually changing the 
-      // even odd in accordance with the filter 
+      // Doesn't work with filter plugin
       zebra : [ "odd", "even" ],
 
       //Resizable widget: If this option is set to false, resized column widths will not be saved. 
