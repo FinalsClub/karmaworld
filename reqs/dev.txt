@@ -3,4 +3,7 @@ django-kombu==0.9.4
 django-debug-toolbar==0.9.4
 ipython==0.13.1
 ipdb==0.7
-django-extensions==1.0.3
+django-extensions==1.0.3 # some extra debugging tools for manage.py
+# Testing requirements
+django-nose==1.1
+coverage==3.6
