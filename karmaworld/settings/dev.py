@@ -57,6 +57,7 @@ CELERY_ALWAYS_EAGER = True
 INSTALLED_APPS += (
     'debug_toolbar',
     'django_extensions',
+    'django_nose',
 )
 
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
@@ -71,3 +72,8 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False # Don't interrput our redirects!
 }
 ########## END TOOLBAR CONFIGURATION
+
+########## TESTING CONFIGURATION
+# Use django-nose to test our app, see https://github.com/jbalogh/django-nose
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+########## END TESTING CONFIGURATION
