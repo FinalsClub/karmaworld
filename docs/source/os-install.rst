@@ -1,10 +1,10 @@
 os-install.rst
 ==============
 
-This document defines the deployment of the KarmaNotes / karmaworld platform on ubuntu server.
-
+This document defines the deployment of the KarmaNotes / karmaworld platform on Ubuntu server. 
 
 Required packages:
+
 + django-1.4.x
 + virtualenv
 + python-pip
@@ -42,8 +42,12 @@ So, for our use case, our $SRC_ROOT is:
 Also note that /var/www needs to have proper permissions and creating a separate
 user to interact with the app is advised (with basic user permissions).
 
-1. setup environment
+1. Environment Setup
 --------------------
+
+First we need to setup our environment to run the app. This includes installing 
+necessary dependencies, setting proper config files and creating a new databases 
+(if in production).
 
 In a production environment we use the following:
 
@@ -56,14 +60,14 @@ In a production environment we use the following:
 + libmemcached-dev
 + (see $SRC_ROOT/reqs/prod.txt)
 
-Installing virtualenv is advised for both development and production environments.
+In all of our deployments, we use virtualenv to provide a clean way of
+installing dependencies and providing a solid environment from which the app can
+be run from. It is advised that virtualenv be used for all deployments.
 
   sudo pip install virtualenv
 
-We then need to set up a virtual environment so we have a nice container
-to work from. This allows regular users to set up a proper environment
-without the need of superuser permissions or to install python modules to
-the system directly.
+After installing virtualenv, we need to configure our new environment. Note that
+installing packages within the environment does not need superuser permissions.
 
     cd $SRC_ROOT
     virtualenv beta
@@ -77,14 +81,24 @@ b) Production
 
    pip install -r reqs/prod.txt
 
-Also edit manage.py to reflect dev / prod settings file.
+Once all dependencies have been installed, we need to edit our manage.py file
+so that we are reading the proper settings.py file:
 
-Ex.
+a) Development
+
 	os.environ.setdefault("DJANGO_SETTINGS_MODULE", "karmaworld.settings.dev")
+
+b) Production
+
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "karmaworld.settings.prod")
 
 
 2. Set up database
 ------------------
+
+In both development and production we do set up databases, but dev. uses
+SQLite out of the box and requires minimal interaction. If in a production 
+environment, make sure to follow the instructions in section b first.
 
 a) Development
 
@@ -122,7 +136,27 @@ the instructions in the beta section of this document.
 3. Import previous notes (needs more docs)
 ------------------------------------------
 
+Materials from previous instances of karmaworld / djKarma can be imported into a new clean database via. json files.
+Karmaworld has facilities built-in so that these json files can easily be imported.
+
+To get started, we need to get the .json files:
+
+   git clone https://github.com/FinalsClub/notesjson.git
+   mv notesjson/* .
+
+Then we run the imports (in our virtual environment):
+
+   ./manage.py import_json all
+
+
 4. Set up S3 bucket support (optional)
 --------------------------------------
+
+S3 is a storage service that is provided by Amazon. Buckets
+are storage lockers where files can be stored and served from.
+The reason that we would want to serve files out of said buckets
+is so that we can move some traffic from production and provide
+a more reliable experience to the user.
+
 
 See $SRC_ROOT/docs/source/secrets.rst
