@@ -44,21 +44,24 @@ class Note(models.Model):
     desc            = models.TextField(max_length=511, blank=True, null=True)
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
 
-    file_type   = models.CharField(max_length=15, blank=True, null=True, choices=FILE_TYPE_CHOICES, default=UNKNOWN_FILE)
+    file_type       = models.CharField(max_length=15,
+                            choices=FILE_TYPE_CHOICES,
+                            default=UNKNOWN_FILE,
+                            blank=True, null=True)
+
     # Upload files to MEDIA_ROOT/notes/YEAR/MONTH/DAY, 2012/10/30/filename
-    note_file   = models.FileField(storage=fs, upload_to="notes/%Y/%m/%j/", blank=True, null=True)
+    note_file       = models.FileField(
+                            storage=fs,
+                            upload_to="notes/%Y/%m/%j/",
+                            blank=True, null=True)
 
     ## post gdrive conversion data
-    embed_url   = models.URLField(max_length=1024, blank=True, null=True)
-    download_url = models.URLField(max_length=1024, blank=True, null=True)
+    embed_url       = models.URLField(max_length=1024, blank=True, null=True)
+    download_url    = models.URLField(max_length=1024, blank=True, null=True)
     # for word processor documents
-    html        = models.TextField(blank=True, null=True)
-    text        = models.TextField(blank=True, null=True)
+    html            = models.TextField(blank=True, null=True)
+    text            = models.TextField(blank=True, null=True)
 
-    # FIXME: Not Implemented
-    #uploader    = models.ForeignKey(User, blank=True, null=True, related_name='notes')
-    #course      = models.ForeignKey(Course, blank=True, null=True, related_name="files")
-    #school      = models.ForeignKey(School, blank=True, null=True)
 
     class Meta:
         """ Sort files by most recent first """
@@ -68,22 +71,21 @@ class Note(models.Model):
     def __unicode__(self):
         return u"{0}: {1} -- {2}".format(self.file_type, self.name, self.uploaded_at)
 
-
     def save(self, *args, **kwargs):
         """ override built-in save to ensure contextual self.name """
         # TODO: If self.name isn't set, generate one based on uploaded_name
         # if we fail to set the Note.name earlier than this, use the saved filename
 
-        if not self.slug:
+        if not self.slug and self.name:
+            # only generate a slug if the name has been set, and slug hasn't
             self.slug = defaultfilters.slugify(self.name)
         super(Note, self).save(*args, **kwargs)
-
 
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug
             otherwise use note.id
         """
-        if self.slug == None:
+        if self.slug is not None:
             # return a url ending in slug
             return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.slug)
         else:
