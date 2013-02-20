@@ -6,22 +6,15 @@
 {% endblock %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
-  <link rel="stylesheet" href="{{ STATIC_URL }}css/responsive-tables.css">
-  <link rel="stylesheet" href="{{ STATIC_URL }}css/table_sort.css">
-  <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.tablesorter.pager.css">
-  <link rel="stylesheet" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css"> <!-- dataTables -->
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/responsive-tables.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css"> <!-- dataTables -->
 {% endblock %}
 
 {% block pagescripts %}
-<script src="{{ STATIC_URL }}js/jquery.tablesorter.min.js"></script>
-<script src="{{ STATIC_URL }}js/jquery.tablesorter.widgets.min.js"></script>
-<script src="{{ STATIC_URL }}js/jquery.tablesorter.pager.min.js"></script>
 <script src="{{ STATIC_URL }}js/bootstrap-modal.js" ></script>
-<!-- <script src="{{ STATIC_URL }}js/sort-tables.js"></script> -->
 <script src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
 <script>
-console.log('IT WORKS@@@!!');
 $(document).ready(function() {
   $('#course_list').dataTable();
 } );
