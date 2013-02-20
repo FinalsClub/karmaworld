@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="{{ STATIC_URL }}css/responsive-tables.css">
   <link rel="stylesheet" href="{{ STATIC_URL }}css/table_sort.css">
   <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.tablesorter.pager.css">
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css"> <!-- dataTables -->
 {% endblock %}
 
 {% block pagescripts %}
@@ -17,7 +18,14 @@
 <script src="{{ STATIC_URL }}js/jquery.tablesorter.widgets.min.js"></script>
 <script src="{{ STATIC_URL }}js/jquery.tablesorter.pager.min.js"></script>
 <script src="{{ STATIC_URL }}js/bootstrap-modal.js" ></script>
-<script src="{{ STATIC_URL }}js/sort-tables.js"></script>
+<!-- <script src="{{ STATIC_URL }}js/sort-tables.js"></script> -->
+<script src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script>
+console.log('IT WORKS@@@!!');
+$(document).ready(function() {
+  $('#course_list').dataTable();
+} );
+</script>
 {% endblock %}
 
 {% block lightboxen %}
@@ -40,22 +48,6 @@
   </div> <!-- #page_header -->
   <div class="row">
     <div class="ten columns offset-by-one">
-      <!-- Pagination controlls -->
-      <div id="pager" class="pager">
-        <form>
-          <img src="{{ STATIC_URL }}img/tablesorterpager/first.png" class="first"/>
-          <img src="{{ STATIC_URL }}img/tablesorterpager/prev.png" class="prev"/>
-          <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
-          <img src="{{ STATIC_URL }}img/tablesorterpager/next.png" class="next"/>
-          <img src="{{ STATIC_URL }}img/tablesorterpager/last.png" class="last"/>
-          <select class="pagesize">
-            <option selected="selected" value="10">10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-            <option value="40">40</option>
-          </select>
-        </form>
-      </div>
       <!-- Main course table -->
       <table id="course_list" class="tablesorter responsive">
         <thead>
