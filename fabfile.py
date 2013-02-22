@@ -53,21 +53,8 @@ def prod():
 ########## DATABASE MANAGEMENT
 @task
 def syncdb():
-    """Run a syncdb."""
-    local('%(run)s syncdb --noinput' % env)
-
-
-@task
-def migrate(app=None):
-    """Apply one (or more) migrations. If no app is specified, fabric will
-    attempt to run a site-wide migration.
-
-    :param str app: Django app name to migrate.
-    """
-    if app:
-        local('%s migrate %s --noinput' % (env.run, app))
-    else:
-        local('%(run)s migrate --noinput' % env)
+    """Runs syncdb (along with any pending South migrations)"""
+    run('python manage.py syncdb --noinput --migrate')
 ########## END DATABASE MANAGEMENT
 
 
