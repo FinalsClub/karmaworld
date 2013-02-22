@@ -3,13 +3,19 @@
 import os
 from contextlib import contextmanager as _contextmanager
 
-from fabric.api import cd, env, prefix, run, settings, task
+from fabric.api import cd, env, prefix, run, settings, task, local
 
 
 ########## GLOBALS
 env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
 env.virtualenv = 'venv-kw'
 env.activate = 'workon %s' % env.virtualenv
+
+# Using this env var to be able to specify the function
+# used to run the commands. By default it's `run`, which
+# runs commands remotely, but in the `here` task we set
+# env.run to `local` to run commands locally.
+env.run = run
 ########## END GLOBALS
 
 
@@ -27,6 +33,17 @@ def _virtualenv():
 
 ########## ENVIRONMENTS
 @task
+def here():
+    """
+    Connection information for the local machine
+    """
+    env.proj_dir = os.getcwd()
+    env.proj_root = os.path.dirname(env.proj_dir)
+    env.run = local
+    env.reqs = 'reqs/dev.txt'
+
+
+@task
 def beta():
     """
     Beta connection information
@@ -35,6 +52,7 @@ def beta():
     env.hosts = ['beta.karmanotes.org']
     env.proj_root = '/var/www/karmaworld'
     env.proj_dir = os.path.join(env.proj_root, 'karmaworld')
+    env.reqs = 'reqs/prod.txt'
 
 
 @task
@@ -46,6 +64,7 @@ def prod():
     env.hosts = ['karmanotes.org']
     env.proj_root = '/var/www/karmaworld'
     env.proj_dir = os.path.join(env.proj_root, 'karmaworld')
+    env.reqs = 'reqs/prod.txt'
 ########## END ENVIRONMENTS
 
 
@@ -53,7 +72,7 @@ def prod():
 @task
 def syncdb():
     """Runs syncdb (along with any pending South migrations)"""
-    run('python manage.py syncdb --noinput --migrate')
+    env.run('python manage.py syncdb --noinput --migrate')
 ########## END DATABASE MANAGEMENT
 
 
@@ -61,7 +80,7 @@ def syncdb():
 @task
 def collectstatic():
     """Collect all static files, and copy them to S3 for production usage."""
-    run('python manage.py collectstatic --noinput')
+    env.run('python manage.py collectstatic --noinput')
 ########## END FILE MANAGEMENT
 
 
@@ -72,7 +91,7 @@ def make_virtualenv():
     """
     Creates a virtualenv on the remote host
     """
-    run('mkvirtualenv %s' % env.virtualenv)
+    env.run('mkvirtualenv %s' % env.virtualenv)
 
 
 @task
@@ -82,7 +101,7 @@ def update_reqs():
     """
     with _virtualenv():
         with cd(env.proj_dir):
-            run('pip install -r requirements/production.pip')
+            env.run('pip install -r %s' % env.reqs)
 
 
 @task
@@ -90,7 +109,7 @@ def clone():
     """
     Clones the project from the central repository
     """
-    run('git clone %s %s' % (env.proj_repo, env.proj_dir))
+    env.run('git clone %s %s' % (env.proj_repo, env.proj_dir))
 
 
 @task
@@ -99,7 +118,7 @@ def update_code():
     Pulls the latest changes from the central repository
     """
     with cd(env.proj_dir):
-        run('git pull')
+        env.run('git pull')
 
 
 @task
@@ -109,11 +128,11 @@ def deploy():
     """
     first_deploy = False
     with settings(warn_only=True):
-        if run('test -d %s' % env.proj_dir).failed:
+        if env.run('test -d %s' % env.proj_dir).failed:
             # first_deploy var is for initial deploy information
             first_deploy = True
             clone()
-        if run('test -d $WORKON_HOME/%s' % env.virtualenv).failed:
+        if env.run('test -d $WORKON_HOME/%s' % env.virtualenv).failed:
             make_virtualenv()
 
     update_code()
