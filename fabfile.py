@@ -78,9 +78,32 @@ def syncdb():
 
 ########## FILE MANAGEMENT
 @task
-def collectstatic():
+def manage_static():
+    collect_static()
+    compress_static()
+    upload_static()
+
+
+@task
+def collect_static():
     """Collect all static files, and copy them to S3 for production usage."""
     env.run('python manage.py collectstatic --noinput')
+
+
+@task
+def compress_static():
+    """
+    Compresses the static files.
+    """
+    pass
+
+
+@task
+def upload_static():
+    """
+    Uploads the static files to the specified host.
+    """
+    pass
 ########## END FILE MANAGEMENT
 
 
