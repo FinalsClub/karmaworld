@@ -27,6 +27,7 @@ def _virtualenv():
 ########## END HELPERS
 
 ########## ENVIRONMENTS
+@task
 def beta():
     """
     Beta connection information
@@ -37,6 +38,7 @@ def beta():
     env.proj_dir = os.path.join(env.proj_root, 'karmaworld')
 
 
+@task
 def prod():
     """
     Production connection information
@@ -79,6 +81,7 @@ def collectstatic():
 
 ########## COMMANDS
 
+@task
 def make_virtualenv():
     """
     Creates a virtualenv on the remote host
@@ -86,6 +89,7 @@ def make_virtualenv():
     run('mkvirtualenv %s' % env.virtualenv)
 
 
+@task
 def update_reqs():
     """
     Makes sure all packages listed in requirements are installed
@@ -95,6 +99,7 @@ def update_reqs():
             run('pip install -r requirements/production.pip')
 
 
+@task
 def clone():
     """
     Clones the project from the central repository
@@ -102,6 +107,7 @@ def clone():
     run('git clone %s %s' % (env.proj_repo, env.proj_dir))
 
 
+@task
 def update_code():
     """
     Pulls the latest changes from the central repository
@@ -110,6 +116,7 @@ def update_code():
         run('git pull')
 
 
+@task
 def deploy():
     """
     Creates or updates the project, runs migrations, installs dependencies.
