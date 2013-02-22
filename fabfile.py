@@ -184,6 +184,30 @@ def restart_celery():
 
 
 @task
+def start_gunicorn():
+    """
+    Starts the gunicorn process
+    """
+    manage_supervisor_proc('gunicorn', 'start')
+
+
+@task
+def stop_gunicorn():
+    """
+    Stops the gunicorn process
+    """
+    manage_supervisor_proc('gunicorn', 'stop')
+
+
+@task
+def restart_gunicorn():
+    """
+    Restarts the gunicorn process
+    """
+    manage_supervisor_proc('gunicorn', 'restart')
+
+
+@task
 def deploy():
     """
     Creates or updates the project, runs migrations, installs dependencies.
