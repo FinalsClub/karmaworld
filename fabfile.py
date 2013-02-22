@@ -114,7 +114,6 @@ def upload_static():
 
 
 ########## COMMANDS
-
 @task
 def make_virtualenv():
     """
@@ -148,6 +147,35 @@ def update_code():
     """
     with cd(env.proj_dir):
         env.run('git pull && git checkout %s' % env.branch)
+
+
+def manage_celeryd(action):
+    supervisor_conf = os.path.join(env.confs, 'supervisord.conf')
+    env.run('supervisorctl -c %s celeryd %s' % (supervisor_conf, action))
+
+
+@task
+def start_celeryd():
+    """
+    Starts the celeryd process
+    """
+    manage_celeryd('start')
+
+
+@task
+def stop_celeryd():
+    """
+    Stops the celeryd process
+    """
+    manage_celeryd('stop')
+
+
+@task
+def restart_celery():
+    """
+    Restarts the celeryd process
+    """
+    manage_celeryd('restart')
 
 
 @task
