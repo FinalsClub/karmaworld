@@ -144,10 +144,10 @@ def clone():
 @task
 def update_code():
     """
-    Pulls the latest changes from the central repository
+    Pulls changes from the central repo and checks out the right branch
     """
     with cd(env.proj_dir):
-        env.run('git pull')
+        env.run('git pull && git checkout %s' % env.branch)
 
 
 @task
