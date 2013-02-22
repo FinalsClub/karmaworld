@@ -149,9 +149,14 @@ def update_code():
         env.run('git pull && git checkout %s' % env.branch)
 
 
-def manage_celeryd(action):
+def manage_supervisor_proc(proc, action):
+    """
+    Takes as arguments the name of the process as is
+    defined in supervisord.conf and the action that should
+    be performed on it: start|stop|restart.
+    """
     supervisor_conf = os.path.join(env.confs, 'supervisord.conf')
-    env.run('supervisorctl -c %s celeryd %s' % (supervisor_conf, action))
+    env.run('supervisorctl -c %s %s %s' % (supervisor_conf, proc, action))
 
 
 @task
@@ -159,7 +164,7 @@ def start_celeryd():
     """
     Starts the celeryd process
     """
-    manage_celeryd('start')
+    manage_supervisor_proc('celeryd', 'start')
 
 
 @task
@@ -167,7 +172,7 @@ def stop_celeryd():
     """
     Stops the celeryd process
     """
-    manage_celeryd('stop')
+    manage_supervisor_proc('celeryd', 'stop')
 
 
 @task
@@ -175,7 +180,7 @@ def restart_celery():
     """
     Restarts the celeryd process
     """
-    manage_celeryd('restart')
+    manage_supervisor_proc('celeryd', 'restart')
 
 
 @task
