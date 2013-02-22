@@ -3,14 +3,13 @@
 import os
 from contextlib import contextmanager as _contextmanager
 
-from fabric.api import cd, env, local, prefix, run, settings, task
+from fabric.api import cd, env, prefix, run, settings, task
 
 
 ########## GLOBALS
 env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
 env.virtualenv = 'venv-kw'
 env.activate = 'workon %s' % env.virtualenv
-env.run = './manage.py'
 ########## END GLOBALS
 
 
@@ -62,7 +61,7 @@ def syncdb():
 @task
 def collectstatic():
     """Collect all static files, and copy them to S3 for production usage."""
-    local('%(run)s collectstatic --noinput' % env)
+    run('python manage.py collectstatic --noinput')
 ########## END FILE MANAGEMENT
 
 
