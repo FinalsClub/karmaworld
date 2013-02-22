@@ -42,6 +42,7 @@ def here():
     env.run = local
     env.reqs = 'reqs/dev.txt'
     env.confs = 'confs/dev/'
+    env.branch = 'master'
 
 
 @task
@@ -55,6 +56,7 @@ def beta():
     env.proj_dir = os.path.join(env.proj_root, 'karmaworld')
     env.reqs = 'reqs/prod.txt'
     env.confs = 'confs/beta/'
+    env.branch = 'beta'
 
 
 @task
@@ -68,6 +70,7 @@ def prod():
     env.proj_dir = os.path.join(env.proj_root, 'karmaworld')
     env.reqs = 'reqs/prod.txt'
     env.confs = 'confs/prod/'
+    env.branch = 'master'
 ########## END ENVIRONMENTS
 
 
