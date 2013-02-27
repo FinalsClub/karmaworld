@@ -42,3 +42,8 @@ karmaworld/static/
 ## OS X
 # thumbnail cache
 .DS_Store
+
+## Sublime Text 
+*.sublime-project
+*.sublime-workspace
+
