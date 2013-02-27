@@ -108,7 +108,7 @@ function usage() {
 
 function env_check() {
     
-
+}
 while getopts b:h:n:r:w: option
 do
 	case "${option}"
