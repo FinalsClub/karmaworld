@@ -78,7 +78,8 @@ class CourseAjaxList(BaseListView):
         queries = [
             (
                 Q(name__icontains=s) |
-                Q(instructor_name__icontains=s)
+                Q(instructor_name__icontains=s) |
+                Q(school_name__icontains=s)
             ) 
             for s in search_strings 
         ]
