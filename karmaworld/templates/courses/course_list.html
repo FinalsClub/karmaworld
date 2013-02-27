@@ -16,8 +16,11 @@
 <script src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
 <script>
 $(document).ready(function() {
-  $('#course_list').dataTable();
-} );
+  $('#course_list').dataTable({
+    'bServerSide': true,
+    'sAjaxSource': "{% url 'api_course_list' %}"
+  });
+});
 </script>
 {% endblock %}
 

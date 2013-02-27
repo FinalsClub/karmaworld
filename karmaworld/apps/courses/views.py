@@ -13,10 +13,28 @@ from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import ProcessFormView
 from django.views.generic.edit import ModelFormMixin
+from django.views.generic.list import BaseListView
 
 from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
+
+
+class JSONCourseMixin(object):
+    """ JSON mixin for returning course lists """
+    response_class = HttpResponse
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Returns a JSON response, transforming 'context' to make the payload.
+        """
+        response_kwargs['content_type'] = 'application/json'
+        return self.response_class(
+            # replace convert_context_to_json with our whatever function
+            self.convert_context_to_json(context),
+            **response_kwargs
+        )
+
 
 class CourseDetailView(DetailView):
     """ Class-based view for the course html page """
@@ -57,6 +75,20 @@ class CourseSaveView(ModelFormMixin, ProcessFormView):
         print dir(form)
         print form.errors
         print "\n\n"
+
+
+class CourseAjaxList(BaseListView, JSONCourseMixin):
+
+
+    def get_queryset(self):
+        """ generate a contexual query based on arguments """
+        req = self.request # HTTPrequest is stored in the class
+        print "\nxxxXXXxxx datatables ajax arguments xxxXXXxxx\n"
+        print req
+        print '\n'
+        print 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        print "printing the request.GET dict"
+        print req.GET
 
 
 def school_list(request):

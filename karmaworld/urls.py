@@ -12,6 +12,7 @@ from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.views import AboutView
 from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.courses.views import CourseSaveView
+from karmaworld.apps.courses.views import CourseAjaxList
 from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.notes.views import NoteView
 from karmaworld.apps.notes.views import raw_file
@@ -21,17 +22,21 @@ admin.autodiscover()
 
 # See: https://docs.djangoproject.com/en/dev/topics/http/urls/
 urlpatterns = patterns('',
+    ## Administrative URLpatterns
     # Admin panel and documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
     # Grappelli django-admin improvment suite
     url(r'^grappelli/', include('grappelli.urls')),
 
+    ## Single-serving page URLpatterns
     url(r'^terms/$', direct_to_template, { 'template': 'terms.html' }, name='terms'),
-
     url(r'^about/$', AboutView.as_view(), name='about'),
 
+    # VIEW for viewing a Note's gdrive generated html, used as iframe
     url(r'^raw/(?P<pk>\d+)$', raw_file, name='note_raw'),
+
+    # VIEW for displaying a single Course
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[-A-Za-z0-9_]+)$', \
         CourseDetailView.as_view(), name='course_detail'),
 
@@ -48,6 +53,8 @@ urlpatterns = patterns('',
     # return json list of schools
     url(r'^school/list/$', school_list, name='json_school_list'),
     url(r'^course/post/$', CourseSaveView.as_view(), name='api_course_post'),
+    url(r'^course/list/$', CourseAjaxList.as_view(), name='api_course_list'),
+
     # ---- end JSON views ----#
 
     url(r'^$', ListView.as_view(model=Course), name='home'),
