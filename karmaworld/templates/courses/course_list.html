@@ -42,7 +42,15 @@ $(document).ready(function() {
   <div class="row">
     <div class="ten columns offset-by-one">
       <!-- Main course table -->
-      <table id="course_list" class="tablesorter responsive">
+      <table id="course_list" class="responsive">
+        <!-- specify col widths -->
+        <colgroup> 
+          <col span="1" style="width: 15%">
+          <col span="1" style="width: 43%">
+          <col span="1" style="width: 15%">
+          <col span="1" style="width: 5%">
+          <col span="1" style="width: 22%">
+        </colgroup>
         <thead>
           <tr>
             <th> School </th>
