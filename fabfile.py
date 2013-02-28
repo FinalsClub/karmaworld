@@ -3,7 +3,7 @@
 import os
 from contextlib import contextmanager as _contextmanager
 
-from fabric.api import cd, env, prefix, run, task, local
+from fabric.api import cd, env, prefix, run, task, local, settings
 
 
 ########## GLOBALS
@@ -237,6 +237,32 @@ def restart_gunicorn():
     Restarts the gunicorn process
     """
     supervisorctl('restart', 'gunicorn')
+
+
+@task
+def first_deploy():
+    """
+    Sets up and deploys the project for the first time.
+    """
+    # If we're on the local machine, there's no point in cloning
+    # the project, because it's already been cloned. Otherwise
+    # the user couldn't run this file
+    if env.run == run:
+        # We're doing this to filter out the hosts that have
+        # already been setup and deployed to
+        with settings(warn_only=True):
+            if env.run('test -d %s' % env.project).failed:
+                return
+        clone()
+
+    make_virtualenv()
+    update_reqs()
+    syncdb()
+    manage_static()
+
+    # We don't start supervisor on development machines
+    if env.run == run:
+        start_supervisord()
 
 
 @task
