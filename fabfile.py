@@ -3,7 +3,7 @@
 import os
 from contextlib import contextmanager as _contextmanager
 
-from fabric.api import cd, env, prefix, run, settings, task, local
+from fabric.api import cd, env, prefix, run, task, local
 
 
 ########## GLOBALS
@@ -242,20 +242,11 @@ def restart_gunicorn():
 @task
 def deploy():
     """
-    Creates or updates the project, runs migrations, installs dependencies.
+    Deploys the latest changes
     """
-    first_deploy = False
-    with settings(warn_only=True):
-        if env.run('test -d %s' % env.proj_dir).failed:
-            # first_deploy var is for initial deploy information
-            first_deploy = True
-            clone()
-        if env.run('test -d $WORKON_HOME/%s' % env.virtualenv).failed:
-            make_virtualenv()
-
     update_code()
     update_reqs()
     syncdb()
-    #TODO: run gunicorn
-    #restart_uwsgi()
+    manage_static()
+    restart_supervisord()
 ########## END COMMANDS
