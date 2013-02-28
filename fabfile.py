@@ -85,6 +85,9 @@ def syncdb():
 ########## FILE MANAGEMENT
 @task
 def manage_static():
+    """
+    Collects, compresses and uploads static files.
+    """
     collect_static()
     compress_static()
     upload_static()
@@ -149,14 +152,43 @@ def update_code():
         env.run('git pull && git checkout %s' % env.branch)
 
 
-def manage_supervisor_proc(proc, action):
+@task
+def start_supervisord():
+    """
+    Starts supervisord
+    """
+    with _virtualenv():
+        config_file = os.path.join(env.confs, 'supervisord.conf')
+        env.run('supervisord -c %s' % config_file)
+
+
+@task
+def stop_supervisord():
+    """
+    Restarts supervisord
+    """
+    with _virtualenv():
+        config_file = os.path.join(env.confs, 'supervisord.conf')
+        env.run('supervisorctl -c %s shutdown' % config_file)
+
+
+@task
+def restart_supervisord():
+    """
+    Restarts supervisord
+    """
+    stop_supervisord()
+    start_supervisord()
+
+
+def supervisorctl(action, process):
     """
     Takes as arguments the name of the process as is
     defined in supervisord.conf and the action that should
     be performed on it: start|stop|restart.
     """
     supervisor_conf = os.path.join(env.confs, 'supervisord.conf')
-    env.run('supervisorctl -c %s %s %s' % (supervisor_conf, proc, action))
+    env.run('supervisorctl -c %s %s %s' % (supervisor_conf, action, process))
 
 
 @task
@@ -164,7 +196,7 @@ def start_celeryd():
     """
     Starts the celeryd process
     """
-    manage_supervisor_proc('celeryd', 'start')
+    supervisorctl('start', 'celeryd')
 
 
 @task
@@ -172,7 +204,7 @@ def stop_celeryd():
     """
     Stops the celeryd process
     """
-    manage_supervisor_proc('celeryd', 'stop')
+    supervisorctl('stop', 'celeryd')
 
 
 @task
@@ -180,7 +212,7 @@ def restart_celery():
     """
     Restarts the celeryd process
     """
-    manage_supervisor_proc('celeryd', 'restart')
+    supervisorctl('restart', 'celeryd')
 
 
 @task
@@ -188,7 +220,7 @@ def start_gunicorn():
     """
     Starts the gunicorn process
     """
-    manage_supervisor_proc('gunicorn', 'start')
+    supervisorctl('start', 'gunicorn')
 
 
 @task
@@ -196,7 +228,7 @@ def stop_gunicorn():
     """
     Stops the gunicorn process
     """
-    manage_supervisor_proc('gunicorn', 'stop')
+    supervisorctl('stop', 'gunicorn')
 
 
 @task
@@ -204,7 +236,7 @@ def restart_gunicorn():
     """
     Restarts the gunicorn process
     """
-    manage_supervisor_proc('gunicorn', 'restart')
+    supervisorctl('restart', 'gunicorn')
 
 
 @task
