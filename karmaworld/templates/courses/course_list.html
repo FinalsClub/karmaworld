@@ -17,8 +17,8 @@
 <script>
 $(document).ready(function() {
   $('#course_list').dataTable({
-    'bServerSide': true,
-    'sAjaxSource': "{% url 'api_course_list' %}"
+    'bLengthChange': false,
+    //'sAjaxSource': "{% url 'api_course_list' %}" 
   });
 });
 </script>
