@@ -17,9 +17,28 @@
 <script>
 $(document).ready(function() {
   $('#course_list').dataTable({
+    // remove the default filter label
+    'oLanguage': {
+      'sSearch': '',
+    },
+    // don't provide a option for the user to change the table page length
     'bLengthChange': false,
+    // Position the filter bar at the top
+    'sDom': '<"top"f>rt<"bottom"p><"clear">', 
+    // Specify options for each column
+    'aoColumns': [
+      null,
+      null,
+      null,
+      { "bSearchable": false },
+      { "bSearchable": false },
+    ],
+    // Initial sorting
+    'aaSorting': [[3,'desc']]
+    // Use out Ajax endpoing to populate the list
     //'sAjaxSource': "{% url 'api_course_list' %}" 
   });
+$('.dataTables_filter input').attr("placeholder", "Search for a class");
 });
 </script>
 {% endblock %}
@@ -33,13 +52,15 @@ $(document).ready(function() {
   <div id="page_header" class="hero_gradient_bar">
     <div class="row">
       <div id="subhead" class="twelve columns">
-        Share and access a growing database of college lecture notes
-      </div> <!-- #subhead -->
-    </div> <!-- .row -->
-    <div class="row">
-      <div id="page_instruction" class="twelve columns center">
-        Choose a course to browse or upload
-      </div> <!-- #subhead -->
+        <div class="row">
+          Share and access a growing database of college lecture notes
+        </div>
+        <div class="row">
+          <div id="page_instruction" class="twelve columns center">
+            Choose a course to browse or upload
+          </div> 
+        </div> <!-- .row -->
+      </div><!-- #subhead -->
     </div> <!-- .row -->
   </div> <!-- #page_header -->
   <div class="row">
@@ -48,8 +69,8 @@ $(document).ready(function() {
       <table id="course_list" class="responsive">
         <!-- specify col widths -->
         <colgroup> 
-          <col span="1" style="width: 15%">
-          <col span="1" style="width: 43%">
+          <col span="1" style="width: 18%">
+          <col span="1" style="width: 40%">
           <col span="1" style="width: 15%">
           <col span="1" style="width: 5%">
           <col span="1" style="width: 22%">
@@ -59,7 +80,7 @@ $(document).ready(function() {
             <th> School </th>
             <th> Course Name </th>
             <th> Instructor </th>
-            <th> Notes # </th>
+            <th> Notes </th>
             <th> Last Updated </th>
           </tr>
         </thead>
