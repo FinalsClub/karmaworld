@@ -97,6 +97,10 @@ class Course(models.Model):
             self.slug = defaultfilters.slugify("%s %s" % (self.name, self.id))
             super(Course, self).save(*args, **kwargs) # Save the slug
 
+    def get_updated_at_string(self):
+        """ return the formatted style for datetime strings """
+        return self.updated_at.strftime("%I%p // %a %b %d %Y")
+
     @staticmethod
     def autocomplete_search_fields():
         return ("name__icontains",)
