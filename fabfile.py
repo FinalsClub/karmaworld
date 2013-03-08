@@ -3,7 +3,7 @@
 import os
 from contextlib import contextmanager as _contextmanager
 
-from fabric.api import cd, env, prefix, run, task, local, settings
+from fabric.api import cd, env, lcd, prefix, run, task, local, settings
 
 
 ########## GLOBALS
@@ -16,6 +16,7 @@ env.activate = 'workon %s' % env.virtualenv
 # runs commands remotely, but in the `here` task we set
 # env.run to `local` to run commands locally.
 env.run = run
+env.cd = cd
 ########## END GLOBALS
 
 
@@ -25,7 +26,7 @@ def _virtualenv():
     """
     Changes to the proj_dir and activates the virtualenv
     """
-    with cd(env.proj_dir):
+    with env.cd(env.proj_dir):
         with prefix(env.activate):
             yield
 
@@ -37,9 +38,18 @@ def here():
     """
     Connection information for the local machine
     """
+    # This is required, because local doesn't read the user's
+    # .bashrc file, because it doesn't use an interactive shell
+    def _custom_local(command):
+        prefixed_command = '/bin/bash -l -i -c "%s"' % command
+        return local(prefixed_command)
+
+    # This is required for the same reason as above
+    env.activate = '/bin/bash -l -i -c "workon %s"' % env.virtualenv
     env.proj_dir = os.getcwd()
     env.proj_root = os.path.dirname(env.proj_dir)
-    env.run = local
+    env.run = _custom_local
+    env.cd = lcd
     env.reqs = 'reqs/dev.txt'
     env.confs = 'confs/dev/'
     env.branch = 'master'
@@ -122,7 +132,7 @@ def make_virtualenv():
     """
     Creates a virtualenv on the remote host
     """
-    env.run('mkvirtualenv %s' % env.virtualenv)
+    env.run('mkvirtualenv --no-site-packages %s' % env.virtualenv)
 
 
 @task
@@ -131,8 +141,7 @@ def update_reqs():
     Makes sure all packages listed in requirements are installed
     """
     with _virtualenv():
-        with cd(env.proj_dir):
-            env.run('pip install -r %s' % env.reqs)
+        env.run('pip install -r %s' % env.reqs)
 
 
 @task
@@ -148,7 +157,7 @@ def update_code():
     """
     Pulls changes from the central repo and checks out the right branch
     """
-    with cd(env.proj_dir):
+    with env.cd(env.proj_dir):
         env.run('git pull && git checkout %s' % env.branch)
 
 
@@ -258,10 +267,11 @@ def first_deploy():
     make_virtualenv()
     update_reqs()
     syncdb()
-    manage_static()
 
-    # We don't start supervisor on development machines
+    # We don't collect the static files and start supervisor on
+    # development machines
     if env.run == run:
+        manage_static()
         start_supervisord()
 
 
