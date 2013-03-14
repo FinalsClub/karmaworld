@@ -1,6 +1,11 @@
 // setup ajax based autocomplete for the school field in the add course lightbox
 $(function() {
 
+  // Dismiss on exit x click
+  $(".lightbox_close").click(function() {
+    $(".modal_content").hide();
+  });
+
   function setupAjax(){
     // Assumes variable csrf_token is made available
     // by embedding document

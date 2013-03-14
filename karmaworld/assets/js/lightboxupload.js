@@ -3,8 +3,8 @@ $(function(){
   $('#upload_button_container').click(function(){
     $('#lightbox_upload').show()
   });
-  // Dismiss all lightboxen on exit x click
 
+  // Dismiss x click
   $(".lightbox_close").click(function() {
     $(".modal_content").hide();
   });
