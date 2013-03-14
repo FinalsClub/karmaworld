@@ -38,11 +38,30 @@ th.instructor-name {
 /***************
 Table Data 
 ***************/
-table#course_list td
-{
+table#course_list {
+  /*border-collapse: collapse;*/
+}
+
+tr.course-row {
+  border-color: white;
+  border-style: dotted none; 
+  border-width: 2px;
+}
+
+tr.course-row:hover {
+  border-color: gray;
+  border-style: dotted none; 
+}
+
+table#course_list td {
   font-family: "MuseoSlab-700";
-  font-size: 12px;
+  font-size: 18px;
   float:left;
+}
+
+table#course_list tbody tr td.slim {
+  font-family: "MuseoSlab-500";
+  font-size: 12px;
 }
 
 table#course_list tr:nth-child(even)
@@ -50,22 +69,35 @@ table#course_list tr:nth-child(even)
   /*background: url(../img/dashboard_activity_alt_on_bg.gif);*/
 }
 
+/* underline all linksin the table body */
+table#course_list tbody td a {
+  text-decoration: underline;
+}
+
+/* rows of course data */
+table#course_list tbody tr {
+  height: 100px;
+  width: 840px;
+}
+
 td.date {
-  width: 40%;
+  font-size: 12px; 
+  width: 200px;
 }
 
 td.note-count {
-  width: 60%;
+  font-size: 12px;
+  width: 600px; /* 100% minus td.date width -- make sure the next line wraps */
 }
 
 td.school-name {
-  width:40%;
+  width:200px; /* make this the same as td.date -- line up the artificial columns */
 }
 
 td.course-name {
-  width:30%;
+  width:400px;
 }
 
 td.instructor-name {
-  width:30%;
+  width:200px;
 }
