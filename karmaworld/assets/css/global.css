@@ -571,40 +571,6 @@ ul#course_menu li a
   font-family: "MuseoSlab-700";
   font-size: 12px;
 }
-
-table#course_list
-{
-  margin:14px auto;
-}
-
-table#course_list tr:nth-child(even)
-{
-  background: url(../img/dashboard_activity_alt_on_bg.gif);
-}
-
-table#course_list thead
-{
-  border-bottom: solid 1px black;
-}
-
-table#course_list th
-{
-  font-family: "MuseoSlab-500";
-  font-size: 12px;
-}
-
-/* hack - table sorter moves the th into a div */
-table#course_list th div
-{
-  font-family: "MuseoSlab-500";
-  font-size: 12px;
-}
-
-table#course_list td
-{
-  font-family: "MuseoSlab-700";
-  font-size: 12px;
-}
 /* end new course-list homepage css */
 
 a.white
