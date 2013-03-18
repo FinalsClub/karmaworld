@@ -2,7 +2,12 @@
 
 body
 {
-  font-family: "MuseoSlab-700";
+  font-family: "MuseoSlab-300";
+}
+
+time
+{
+  font: 12px/2em "MuseoSlab-300";
 }
 
 .half-padding
@@ -69,9 +74,13 @@ header#global_header
 {
   color: #FFF;
   padding-top: 18px;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
   padding-bottom: 16px;
+}
+#login_container a
+{
+  float: right;
 }
 
 #login_container.clicked
@@ -376,8 +385,8 @@ a.course_link, a.course_link:hover, a.school_link, a.school_link:hover, a.prof_l
 
 .activity_details_action, .activity_details_action a
 {
-  font-family: "MuseoSlab-500";
-  font-size: 20px;
+  font-family: "MuseoSlab-300";
+  font-size: 22px;
   line-height: 125%;
 }
 
@@ -387,16 +396,20 @@ a.activity_actor, a.activity_actor:hover
   text-decoration: underline;
 }
 
-a.activity_target, a.activity_target:hover
+a.activity_target
 {
-  color: #9ccf00;
+  color: black;
   text-decoration: underline;
+}
+
+a.activity_target:hover
+{
+  color: #f1592a;
 }
 
 .activity_details_context, .activity_details_context a
 {
-  font-family: "MuseoSlab-500";
-  font-size: 14px;
+  font-size: 12px;
   line-height: 2em;
 }
 
@@ -409,6 +422,8 @@ a.activity_target, a.activity_target:hover
 .activity_details_callout_copy
 {
   line-height: 125%;
+  font: 14px/1.4em "Georga", Serif;
+  font-style: italic;
 }
 
 .activity_details_status
@@ -653,4 +668,10 @@ p.text a
   
 }
 
-
+hr.midrule
+{
+  border: dotted black;
+  border-width: 1px 0 0;
+  width: 60px;
+  margin: 2em auto;
+}
