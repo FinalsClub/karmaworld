@@ -32,15 +32,15 @@
 {% block content %}
   <section id="course_content">
 
-    <div id="course_header" class="hero_gradient_bar">
+    <div id="course_header">
       <div class="row">
-        <div id="course_subhead" class="twelve columns">
-          course
+        <div id="breadcrumbs" class="ten columns offset-by-one">
+          <a href="/">Home</a> > <a href="{{ course.get_absolute_url }}">{{ course.name }}</a>
         </div><!-- /course_subhead -->
       </div>
 
       <div class="row">
-        <div id="note_name" class="twelve columns">
+        <div id="course_name" class="twelve columns">
           {{ course.name }}
         </div><!-- /note_name -->
       </div>
@@ -48,48 +48,14 @@
       <div class="row">
         <div id="course_meta" class="twelve columns">
           <div class="activity_details_context">
-            {% comment %}
-            <!-- Version of the instructor//school with links to instructor//school
-            <a href="#" class="prof_link">{{ course.instructor_name }}</a> // <a href="{{ course.school.get_absolute_url }}" class="school_link">{{ course.school.name }}</a>
-            {% endcomment %}
-            {{ course.instructor_name }} // {{ course.school.name }}
+            {{ course.instructor_name }} | {{ course.school.name }}
           </div><!-- /activity_details_context -->
         </div><!-- /course_meta -->
       </div>
 
-
-      {% comment %}
       <div class="row">
-        <div id="course_actions" class="two columns centered">
-          <div class="row">
-            <div class="six columns">
-              {% if course in user.get_profile.courses.all %}
-                <div class="course_meta_action course_meta_drop" data-id="{{ course.id }}">
-                  drop
-                </div>
-              {% else %}
-                <div class="course_meta_action course_meta_join" data-id="{{ course.id }}">
-                  join
-                </div>
-              {% endif %}
-            </div>
-            <div id="course_meta_action_gear" class="six columns">
-              <img src="{{ STATIC_URL }}img/course_action_gear.png" alt="course_action_gear" width="39" height="37" />
-            </div>
-          </div>
-        </div>
+        <div class="ten columns offset-by-one"> <hr/> </div>
       </div>
-      {% endcomment %}
-
-      {% if course.desc %}
-      <div class="row">
-        <div id="course_description" class="eight columns centered">
-            {{ course.desc }}
-          <!-- TODO: We don't provide a course description -->
-        </div><!-- /course_description -->
-      </div>
-      {% endif %}
-
       <div class="row">
         <div class="three columns centered">
           <div id="upload_button_container" class="button_bevel" >
@@ -99,6 +65,13 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="ten columns offset-by-one doubleline">
+          <hr/>
+          <hr/>
+        </div>
+      </div>
+
 
     </div><!-- /course_header -->
 
@@ -107,9 +80,9 @@
       <div class="ten columns offset-by-one">
         <div id="thankyou">
           <p>
-            Thank you for uploading 
+            Thank you for uploading
             <a href="{{ request.GET.url }}">{{ request.GET.name }}</a>
-            Share another or take a 
+            Share another or take a
             <a href="https://docs.google.com/a/finalsclub.org/spreadsheet/viewform?usp=sharing&formkey=dFg1WnI2cUVfckZyYnJpZ0ExQmUxSnc6MQ#gid=0" target="_blank">quick survey</a> to help us make KarmaNotes even better.
           </p>
           <script>
