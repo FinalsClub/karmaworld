@@ -9,6 +9,9 @@
 *.swo
 *~
 
+# project cruft
+.ropeproject*
+
 # Sphinx docs:
 build
 
