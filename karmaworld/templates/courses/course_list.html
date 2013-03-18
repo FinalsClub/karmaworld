@@ -7,7 +7,8 @@
 
 {% block pagestyle %}
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}css/responsive-tables.css">
+<!-- <link rel="stylesheet" href="{{ STATIC_URL }}css/responsive-tables.css"> -->
+<link rel="stylesheet" href="{{ STATIC_URL }}css/course_list_table.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css"> <!-- dataTables -->
 {% endblock %}
 
@@ -17,9 +18,32 @@
 <script>
 $(document).ready(function() {
   $('#course_list').dataTable({
+    // remove the default filter label
+    'oLanguage': {
+      'sSearch': '',
+    },
+    // we will set column widths explicitly
+    'bAutoWidth': false,
+    // don't provide a option for the user to change the table page length
     'bLengthChange': false,
+    // sepcify the number of rows in a page
+    'iDisplayLength': 20,
+    // Position the filter bar at the top
+    'sDom': '<"top"f>rt<"bottom"p><"clear">', 
+    // Specify options for each column
+    'aoColumns': [
+      { "bSearchable": false },
+      { "bSearchable": false },
+      null,
+      null,
+      null,
+    ],
+    // Initial sorting
+    'aaSorting': [[1,'desc']]
+    // Use out Ajax endpoing to populate the list
     //'sAjaxSource': "{% url 'api_course_list' %}" 
   });
+$('.dataTables_filter input').attr("placeholder", "Search for a class");
 });
 </script>
 {% endblock %}
@@ -33,44 +57,46 @@ $(document).ready(function() {
   <div id="page_header" class="hero_gradient_bar">
     <div class="row">
       <div id="subhead" class="twelve columns">
-        Share and access a growing database of college lecture notes
-      </div> <!-- #subhead -->
-    </div> <!-- .row -->
-    <div class="row">
-      <div id="page_instruction" class="twelve columns center">
-        Choose a course to browse or upload
-      </div> <!-- #subhead -->
+        <div class="row">
+          Share and access a growing database of college lecture notes
+        </div>
+        <div class="row">
+          <div id="page_instruction" class="twelve columns center">
+            Choose a course to browse or upload
+          </div> 
+        </div> <!-- .row -->
+      </div><!-- #subhead -->
     </div> <!-- .row -->
   </div> <!-- #page_header -->
   <div class="row">
     <div class="ten columns offset-by-one">
       <!-- Main course table -->
-      <table id="course_list" class="responsive">
+      <table id="course_list" class="">
         <!-- specify col widths -->
         <colgroup> 
-          <col span="1" style="width: 15%">
-          <col span="1" style="width: 43%">
-          <col span="1" style="width: 15%">
-          <col span="1" style="width: 5%">
-          <col span="1" style="width: 22%">
-        </colgroup>
+          <col span="1" style="width: 100%">
+          <col span="1" style="width: 0%">
+          <col span="1" style="width: 0%">
+          <col span="1" style="width: 0%">
+          <col span="1" style="width: 0%">
+        </colgroup> 
         <thead>
           <tr>
-            <th> School </th>
-            <th> Course Name </th>
-            <th> Instructor </th>
-            <th> Notes # </th>
-            <th> Last Updated </th>
+            <th class="date"> Last Updated </th>
+            <th class="note-count"> Notes </th>
+            <th class="school-name"> School </th>
+            <th class="course-name"> Course Name </th>
+            <th class="instructor-name"> Instructor </th>
           </tr>
         </thead>
         <tbody>
         {% for course in object_list %}
           <tr>
-            <td> {{ course.school.name }} </td>
-            <td> <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> </td>
-            <td> {{ course.instructor_name }} </td>
-            <td> {{ course.file_count }} </td>
-            <td> {{ course.updated_at|date:"gA // D M d o" }} </td>
+            <td class="date slim">        Updated on {{ course.updated_at|date:"M d o" }} </td>
+            <td class="note-count slim">  {{ course.file_count }} </td>
+            <td class="school-name">      {{ course.school.name }} </td>
+            <td class="course-name">      <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> </td>
+            <td class="instructor-name">  {{ course.instructor_name }} </td>
           </tr>
         {% endfor %}
         </tbody>
