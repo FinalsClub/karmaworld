@@ -453,20 +453,16 @@ a.activity_target, a.activity_target:hover
   text-transform: uppercase;
 }
 
-#upload_button_container
-{
-  height: 70px;
-  margin: 10px 0px;
-}
-
 #upload_button
 {
   height: 66px;
   margin: 1px;
-  font-family: "MuseoSlab-900";
-  font-size: 32px;
+  font-family: "MuseoSlab-300";
+  font-size: 30px;
   text-align: center;
   padding-top: 20px;
+  color: #f05a28;
+  text-transform: uppercase;
 }
 
 /* COPY */
