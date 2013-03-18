@@ -107,40 +107,31 @@
                 <a href="{{ note.get_absolute_url }}" class="activity_target">{{ note.name }}</a>
               </div>
 
-              <div class="activity_timestamp"> <!-- TODO: use the <time> tag -->
-                {{ note.uploaded_at|date:"gA" }} // {{ note.uploaded_at|date:"D M d o" }}
-              </div>
-
+              <time datetime="{{ note.uploaded_at }}">
+                {{ note.uploaded_at|date:"l M d o" }}
+              </time>
 
               {% if note.tags.count > 0 %}
               <div class="activity_details_context">
                 Tags:
                   {% for tag in note.tags.all %}
                     {{ tag.name }}
+                    {% if not forloop.last %}, {% endif %}
                   {% endfor %}
               </div>
               {% endif %}
 
 
-              <div class="activity_details_callout">
-                <div class="row">
-                  <div class="one column">
-                    <img src="{{ STATIC_URL }}img/dashboard_activity_callout_icon_notebook.png" alt="dashboard_activity_callout_icon_notebook" width="44" height="44" />
-                  </div>
-                  <div class="eleven columns activity_details_callout_copy">
-
-                    {% if note.text %}
-                      {{ note.text|slice:":500" }}&hellip;
-                    {% else %}
-                      {{ note.description }}
-                    {% endif %}
-                  </div>
-                </div>
+              <div class="activity_details_callout_copy">
+                {{ note.text|slice:":500" }} &hellip;
               </div>
 
 
             </div><!-- /notes_result -->
           </div><!-- /notes_result_container -->
+
+          <hr class=midrule>
+
           {% endfor %}
         </div>
       </div>
