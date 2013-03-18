@@ -27,6 +27,7 @@ log
 
 # virtual enviroment
 venv
+vkarma
 
 # ignore south migrations
 migrations
