@@ -21,12 +21,7 @@ body
 
 header#global_header
 {
-  background-color: #45484c;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#45484c), to(#000000)); /* Safari 4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #45484c, #000000); /* Chrome 10+, Safari 5.1+, iOS 5+ */
-  background-image:    -moz-linear-gradient(top, #45484c, #000000); /* Firefox 3.6-15 */
-  background-image:      -o-linear-gradient(top, #45484c, #000000); /* Opera 11.10-12.00 */
-  background-image:         linear-gradient(to bottom, #45484c, #000000); /* Firefox 16+, IE10, Opera 12.50+ */
+  background-color: black;
   height: 46px;
   width: 100%;
   position: fixed;
@@ -400,10 +395,9 @@ a.activity_target, a.activity_target:hover
 
 .activity_details_context, .activity_details_context a
 {
-  font-family: "MuseoSlab-900";
-  font-size: 11px;
-  text-transform: uppercase;
-  line-height: 200%;
+  font-family: "MuseoSlab-500";
+  font-size: 14px;
+  line-height: 2em;
 }
 
 .activity_details_callout
@@ -677,4 +671,33 @@ p.text a
   font-family: "MuseoSlab-500";
   font-size: 17px;
   margin: 0px;
+}
+
+/* Nick redesign for course page */
+#breadcrumbs, #breadcrumbs a
+{
+  font-family: "MuseoSans-300";
+  font-size: 12px;
+  padding-top: 10px;
+  color: black;
+}
+
+#note_name, #course_name, #school_name
+{
+  margin-top: 1em;
+  text-align: center;
+  font-family: "MuseoSlab-500";
+  font-size: 24px;
+}
+
+.doubleline
+{
+  border: dotted black;
+  border-width: 1px 0 0;
+
+}
+
+.doubleline hr
+{
+  
 }
