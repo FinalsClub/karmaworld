@@ -39,6 +39,10 @@ $(document).ready(function() {
       null,
       null, 
     ],
+    // Add the 'Notes' label string to the notes row
+    'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+      $('td:eq(2)', nRow).append(' Notes');
+    },
     // Initial sorting
     'aaSorting': [[2,'desc']]
     // Use out Ajax endpoing to populate the list
