@@ -8,13 +8,6 @@ table.dataTable {
 	width: 100%;
 }
 
-table.dataTable thead th {
-	padding: 3px 18px 3px 10px;
-	border-bottom: 1px solid black;
-	cursor: pointer;
-	*cursor: hand;
-}
-
 table.dataTable tfoot th {
 	padding: 3px 18px 3px 10px;
 	border-top: 1px solid black;

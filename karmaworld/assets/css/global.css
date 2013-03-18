@@ -546,20 +546,13 @@ ul#course_menu li a
   color: white;
 }
 
-.subhead
-{
-  color: #F05A28;
-  font-family: "MuseoSlab-700";
-  font-size: 38px;
-}
-
 /* New course-list homepage css */
-#subhead
+div#subhead
 {
   padding: 15px;
   text-align: center;
-  font-family: "MuseoSlab-500";
-  font-size: 24px;
+  font-family: "MuseoSlab-300";
+  font-size: 22px;
 }
 
 .center

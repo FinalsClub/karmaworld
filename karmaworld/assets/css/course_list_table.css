@@ -4,19 +4,46 @@ table#course_list
 }
 
 /***************
+Search Bar
+***************/
+#course_list_filter input {
+  font-size: 22px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+}
+
+
+/***************
 Table Headers
 ***************/
-table#course_list thead
+table.dataTable thead th {
+  padding: 3px 18px 3px 10px;
+  cursor: pointer;
+  *cursor: hand;
+}
+
+table.dataTable thead th.sort_by {
+  padding-right: 0px;
+}
+
+table#course_list thead tr
 {
-  border-bottom: solid 1px black;
+  height: 50px;
 }
 
 table#course_list th
 {
-  float:right;
-  font-family: "MuseoSlab-500";
+  float:left;
+  font-family: "MuseoSlab-300";
   font-size: 12px;
-  margin-right: 25px;
+  font-weight: normal;
+}
+
+th.sorting_asc, th.sorting_desc {
+  text-decoration: underline;
 }
 
 th.date {
@@ -54,13 +81,13 @@ tr.course-row:hover {
 }
 
 table#course_list td {
-  font-family: "MuseoSlab-700";
+  font-family: "MuseoSlab-300";
   font-size: 18px;
   float:left;
 }
 
 table#course_list tbody tr td.slim {
-  font-family: "MuseoSlab-500";
+  font-family: "MuseoSlab-300";
   font-size: 12px;
 }
 
@@ -78,6 +105,11 @@ table#course_list tbody td a {
 table#course_list tbody tr {
   height: 100px;
   width: 840px;
+}
+
+/* hack - Provide positioning for the "sort by text" */
+table.dataTable td.sort_by {
+  display:none;
 }
 
 td.date {
