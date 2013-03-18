@@ -1,0 +1,5 @@
+# Ignore everything
+*
+# but this file and any other directories
+!.gitignore
+!gunicorn

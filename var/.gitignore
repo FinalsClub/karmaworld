@@ -1,0 +1,6 @@
+# Ignore everything
+*
+# but this file and some other directories
+!.gitignore
+!log
+!run
