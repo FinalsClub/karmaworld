@@ -35,7 +35,7 @@
     <div id="course_header">
       <div class="row">
         <div id="breadcrumbs" class="ten columns offset-by-one">
-          <a href="/">Home</a> > <a href="{{ course.get_absolute_url }}">{{ course.name }}</a>
+          <a href="/">Home</a> &gt; <a href="{{ course.get_absolute_url }}">{{ course.name }}</a>
         </div><!-- /course_subhead -->
       </div>
 
@@ -56,6 +56,7 @@
       <div class="row">
         <div class="ten columns offset-by-one"> <hr/> </div>
       </div>
+
       <div class="row">
         <div class="three columns centered">
           <div id="upload_button_container" class="button_bevel" >
@@ -65,11 +66,9 @@
           </div>
         </div>
       </div>
+
       <div class="row">
-        <div class="ten columns offset-by-one doubleline">
-          <hr/>
-          <hr/>
-        </div>
+        <div class="ten columns offset-by-one"> <hr/> </div>
       </div>
 
 
@@ -97,15 +96,6 @@
     </div> <!-- .row -->
     {% endif %}
 
-    <div class="row">
-      <div class="ten columns offset-by-one">
-        <div class="column_header" style="margin: 17px 0 -25px 0">
-          Latest uploaded notes
-        </div><!-- /column_header -->
-      </div>
-    </div> <!-- .row -->
-
-
     <div id="course_container">
       <div class="row">
         <div class="ten columns offset-by-one">
@@ -113,22 +103,27 @@
           {% for note in course.note_set.all %}
 
           <div class="row notes_result_container wide">
-            <div class="twelve columns notes_result {% if forloop.counter|divisibleby:"2" %}row_alt_on{% endif %}">
-              <div class="activity_timestamp">
-                {{ note.uploaded_at|date:"gA" }} // {{ note.uploaded_at|date:"D M d o" }}
-              </div>
+            <div class="twelve columns notes_result">
 
               <div class="activity_details_action">
                 <a href="{{ note.get_absolute_url }}" class="activity_target">{{ note.name }}</a>
-                {% comment %}
-                <!-- file name and info with uploader info -->
-                <a href="#" class="activity_actor">{{ note.owner.get_profile.get_name }}</a> added <a href="{{ note.get_absolute_url }}" class="activity_target">{{ file.name }}</a>
-                {% endcomment %}
               </div>
 
-              <div class="activity_details_context">
-                <a href="{{ course.get_absolute_url }}" class="course_link">{{ course.name }}</a>//<a href="{{ course.school.get_absolute_url }}" class="school_link">{{ course.school.name }}</a>
+              <div class="activity_timestamp"> <!-- TODO: use the <time> tag -->
+                {{ note.uploaded_at|date:"gA" }} // {{ note.uploaded_at|date:"D M d o" }}
               </div>
+
+
+              {% if note.tags.count > 0 %}
+              <div class="activity_details_context">
+                Tags:
+                  {% for tag in note.tags.all %}
+                    {{ tag.name }}
+                  {% endfor %}
+              </div>
+              {% endif %}
+
+
               <div class="activity_details_callout">
                 <div class="row">
                   <div class="one column">
@@ -144,14 +139,8 @@
                   </div>
                 </div>
               </div>
-              {% comment %}
-              <!-- # users have liked, # users have viewed -->
-              <div class="row">
-                <div class="twelve columns activity_details_status">
-                  So far, <span class="activity_details_status_number">{{ note.numUpVotes }}</span> people have completely fallen in love with with these notes. <span class="activity_details_status_secondary_number">{{ note.viewCount }}</span> people have viewed them.
-                </div><!-- /activity_details_status -->
-              </div>
-              {% endcomment %}
+
+
             </div><!-- /notes_result -->
           </div><!-- /notes_result_container -->
           {% endfor %}
