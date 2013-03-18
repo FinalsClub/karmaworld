@@ -32,18 +32,19 @@ $(document).ready(function() {
     'sDom': '<"top"f>rt<"bottom"p><"clear">', 
     // Specify options for each column
     'aoColumns': [
+      { "bSearchable": false, "bSortable":false, },
       { "bSearchable": false },
       { "bSearchable": false },
       null,
       null,
-      null,
+      null, 
     ],
     // Initial sorting
-    'aaSorting': [[1,'desc']]
+    'aaSorting': [[2,'desc']]
     // Use out Ajax endpoing to populate the list
     //'sAjaxSource': "{% url 'api_course_list' %}" 
   });
-$('.dataTables_filter input').attr("placeholder", "Search for a class");
+$('.dataTables_filter input').attr("placeholder", "search courses");
 });
 </script>
 {% endblock %}
@@ -54,20 +55,13 @@ $('.dataTables_filter input').attr("placeholder", "Search for a class");
 
 {% block content %}
 <section id="home_content">
-  <div id="page_header" class="hero_gradient_bar">
+  <div id="page_header" class="">
     <div class="row">
-      <div id="subhead" class="twelve columns">
-        <div class="row">
-          Share and access a growing database of college lecture notes
-        </div>
-        <div class="row">
-          <div id="page_instruction" class="twelve columns center">
-            Choose a course to browse or upload
-          </div> 
-        </div> <!-- .row -->
-      </div><!-- #subhead -->
-    </div> <!-- .row -->
-  </div> <!-- #page_header -->
+      <div id="subhead" class="">
+        Share and access a growing database of college lecture notes
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="ten columns offset-by-one">
       <!-- Main course table -->
@@ -75,16 +69,14 @@ $('.dataTables_filter input').attr("placeholder", "Search for a class");
         <!-- specify col widths -->
         <colgroup> 
           <col span="1" style="width: 100%">
-          <col span="1" style="width: 0%">
-          <col span="1" style="width: 0%">
-          <col span="1" style="width: 0%">
-          <col span="1" style="width: 0%">
+          <col span="5" style="width: 0%">
         </colgroup> 
         <thead>
           <tr>
-            <th class="date"> Last Updated </th>
-            <th class="note-count"> Notes </th>
-            <th class="school-name"> School </th>
+            <th class="sort_by">Sort by:</th>
+            <th class="date"> Date </th>
+            <th class="note-count"> #Notes </th>
+            <th class="school-name"> Institution </th>
             <th class="course-name"> Course Name </th>
             <th class="instructor-name"> Instructor </th>
           </tr>
@@ -92,6 +84,7 @@ $('.dataTables_filter input').attr("placeholder", "Search for a class");
         <tbody>
         {% for course in object_list %}
           <tr>
+            <td class="sort_by"></td>
             <td class="date slim">        Updated on {{ course.updated_at|date:"M d o" }} </td>
             <td class="note-count slim">  {{ course.file_count }} </td>
             <td class="school-name">      {{ course.school.name }} </td>
