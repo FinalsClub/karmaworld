@@ -10,6 +10,11 @@ time
   font: 12px/2em "MuseoSlab-300";
 }
 
+input[type="text"]
+{
+  font: 22px/1em "MuseoSlab-300" #afafaf;
+}
+
 .half-padding
 {
   padding-left: 5px;
@@ -18,13 +23,13 @@ time
 
 .no-padding
 {
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* GLOBAL HEADER */
 
-header#global_header
+#global_header
 {
   background-color: black;
   height: 46px;
@@ -173,7 +178,7 @@ header#global_header
 
 #global_header_mycourses_list ul
 {
-  margin: 0px;
+  margin: 0;
 }
 
 #global_header_mycourses_list li
@@ -222,7 +227,7 @@ header#global_header
   background-color: #f05a28;
   font-size: 12px;
   height: 33px;
-  padding: 12px 0px;
+  padding: 12px 0;
   text-align: center;
 }
 
@@ -387,7 +392,7 @@ a.course_link, a.course_link:hover, a.school_link, a.school_link:hover, a.prof_l
 {
   font-family: "MuseoSlab-300";
   font-size: 22px;
-  line-height: .4em%;
+  line-height: .4em;
 }
 
 a.activity_actor, a.activity_actor:hover
@@ -482,14 +487,12 @@ a.activity_target:hover
   text-transform: uppercase;
 }
 
-#upload_button
+#upload_button, #add-course
 {
-  height: 66px;
   margin: 1px;
   font-family: "MuseoSlab-300";
   font-size: 30px;
   text-align: center;
-  padding-top: 20px;
   color: #f05a28;
   text-transform: uppercase;
 }
@@ -564,9 +567,19 @@ ul#course_menu li a
 div#subhead
 {
   padding: 15px;
-  text-align: center;
+  padding-left: 17px;
   font-family: "MuseoSlab-300";
   font-size: 22px;
+}
+
+#subhead img
+{
+  vertical-align: middle;
+}
+
+#subhead span
+{
+  margin-left: 2em;
 }
 
 .center

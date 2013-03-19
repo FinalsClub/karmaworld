@@ -61,7 +61,8 @@ $(document).ready(function() {
     // Use out Ajax endpoing to populate the list
     //'sAjaxSource': "{% url 'api_course_list' %}" 
   });
-  $('.dataTables_filter input').attr("placeholder", "search courses");
+  $('.dataTables_filter input').attr("placeholder", "  search courses");
+  // TODO: can't prepend html to .dataTables_filter input html for fontawesome search icon
 });
 </script>
 {% endblock %}
@@ -74,8 +75,9 @@ $(document).ready(function() {
 <section id="home_content">
   <div id="page_header" class="">
     <div class="row">
-      <div id="subhead" class="">
-        Share and access a growing database of college lecture notes
+      <div id="subhead" class="ten columns offset-by-one">
+        <img src='{{ STATIC_URL }}img/noun_project_6858.svg' alt="Pieter J. Smits, from The Noun Project">
+        <span>Share and access a growing database of college lecture notes</span>
       </div>
     </div>
   </div>
@@ -113,13 +115,24 @@ $(document).ready(function() {
       </table>
     </div><!-- .ten columns -->
   </div> <!-- .row -->
+
+  <div class="row">
+    <div class="ten columns offset-by-one"> <hr/> </div>
+  </div>
+
   <div class="row">
     <div class="ten columns offset-by-one">
-      <p class="text">Can't find your course? 
-        <a href="#add-course" role="button" class="btn" data-toggle="modal">Add it now</a>
-      </p>
+      <div id="add-course">
+        <i class=icon-upload></i> add a course
+      </div>
     </div><!-- .ten columns -->
   </div> <!-- .row -->
+
+  <div class="row">
+    <div class="ten columns offset-by-one"> <hr/> </div>
+  </div>
+
+
 </section> <!-- #results_content -->
 
 {% endblock %}
