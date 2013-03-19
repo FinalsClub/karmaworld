@@ -7,7 +7,7 @@ table#course_list
 Search Bar
 ***************/
 #course_list_filter input {
-  font-size: 22px;
+  font: 22px/1em "MuseoSlab-300" #afafaf;
   margin-top: 20px;
   margin-bottom: 20px;
   border-style: solid;
