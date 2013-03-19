@@ -13,6 +13,9 @@ Search Bar
   border-style: solid;
   border-color: black;
   border-width: 1px;
+  background-image: url(../img/lightbox_search_icon.png);
+  background-position: 8px 50%;
+  background-repeat: no-repeat;
 }
 
 
