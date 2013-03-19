@@ -39,8 +39,9 @@ $(document).ready(function() {
       null,
       null, 
     ],
-    "aoColumnDefs": [ {
-      "aTargets": [ 2 ],
+    "aoColumnDefs": [ 
+    {
+      "aTargets": [ 'note-count' ], // matches a 'th' element class name
       "mData": function ( source, type, val ) {
         //console.log(source);
         if (type === 'set') {
@@ -54,8 +55,24 @@ $(document).ready(function() {
         }
         // 'sort', 'type', 'filter' and undefined all just use the integer
         return source.count;
+      } 
+    },
+    {
+      "aTargets": [ 'date' ], // matches a 'th' element class name
+      "mData": function ( source, type, val ) {
+        //console.log(source);
+        if (type === 'set') {
+          source.date = val;
+          source.date_display = val=="" ? "" : "Updated on "+val;
+          return;
+        }
+        else if (type === 'display') {
+          return source.date_display;
+        }
+        // for types 'sort', 'type', 'filter' and undefined use raw date
+        return source.date;
       }
-    } ],
+    }],
     // Initial sorting
     'aaSorting': [[2,'desc']]
     // Use out Ajax endpoing to populate the list
@@ -102,7 +119,7 @@ $(document).ready(function() {
         {% for course in object_list %}
           <tr>
             <td class="sort_by"></td>
-            <td class="date slim">        Updated on {{ course.updated_at|date:"M d o" }} </td>
+            <td class="date slim">        {{ course.updated_at|date:"F d, o" }} </td> <!-- https://docs.djangoproject.com/en/1.4/ref/templates/builtins/#date -->
             <td class="note-count slim">  {{ course.file_count }} </td>
             <td class="school-name">      {{ course.school.name }} </td>
             <td class="course-name">      <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> </td>
