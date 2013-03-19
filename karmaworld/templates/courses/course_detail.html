@@ -47,7 +47,7 @@
 
       <div class="row">
         <div id="course_meta" class="twelve columns">
-          <div class="activity_details_context">
+          <div class="course_details">
             {{ course.instructor_name }} | {{ course.school.name }}
           </div><!-- /activity_details_context -->
         </div><!-- /course_meta -->
@@ -122,7 +122,7 @@
               {% endif %}
 
 
-              <div class="activity_details_callout_copy">
+              <div class="note_preview">
                 {{ note.text|slice:":500" }} &hellip;
               </div>
 
