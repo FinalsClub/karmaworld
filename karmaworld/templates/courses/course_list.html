@@ -39,12 +39,29 @@ $(document).ready(function() {
       null,
       null, 
     ],
+    "aoColumnDefs": [ {
+      "aTargets": [ 2 ],
+      "mData": function ( source, type, val ) {
+        //console.log(source);
+        if (type === 'set') {
+          source.count = val;
+          // Store the computed dislay and filter values for efficiency
+          source.count_display = val=="" ? "" : val+" Notes";
+          return;
+        }
+        else if (type === 'display') {
+          return source.count_display;
+        }
+        // 'sort', 'type', 'filter' and undefined all just use the integer
+        return source.count;
+      }
+    } ],
     // Initial sorting
     'aaSorting': [[2,'desc']]
     // Use out Ajax endpoing to populate the list
     //'sAjaxSource': "{% url 'api_course_list' %}" 
   });
-$('.dataTables_filter input').attr("placeholder", "search courses");
+  $('.dataTables_filter input').attr("placeholder", "search courses");
 });
 </script>
 {% endblock %}
