@@ -13,6 +13,10 @@ Search Bar
   border-style: solid;
   border-color: black;
   border-width: 1px;
+  padding-left: 32px; /* move the placeholder text to the right*/
+  background-image: url(../img/lightbox_search_icon.png);
+  background-position: 8px 50%;
+  background-repeat: no-repeat;
 }
 
 
