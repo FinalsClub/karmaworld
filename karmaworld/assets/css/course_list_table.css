@@ -2,6 +2,12 @@ table#course_list
 {
   margin:14px auto;
 }
+a {
+  color:black;
+}
+a:hover {
+  color:#f05a28;
+}
 
 /***************
 Search Bar
@@ -88,11 +94,13 @@ table#course_list td {
   font-family: "MuseoSlab-300";
   font-size: 18px;
   float:left;
+  height:80px; /* required for :hover on Table Rows  (when floating td elements) */
 }
 
 table#course_list tbody tr td.slim {
   font-family: "MuseoSlab-300";
   font-size: 12px;
+  height: 20px; /* required for :hover on Table Rows  (when floating td elements) */
 }
 
 table#course_list tr:nth-child(even)
@@ -107,7 +115,6 @@ table#course_list tbody td a {
 
 /* rows of course data */
 table#course_list tbody tr {
-  height: 100px;
   width: 840px;
 }
 
@@ -127,11 +134,40 @@ td.note-count {
 }
 
 td.school-name {
-  width:200px; /* make this the same as td.date -- line up the artificial columns */
+  width: 200px; /* make this the same as td.date -- line up the artificial columns */
 }
 
 td.course-name {
-  width:400px;
+  width: 320px;
+}
+
+
+table#course_list td div.upload {
+  width: 45px;
+  height: 45px;
+  visibility: hidden;
+  font-size: 34px;
+  color: #f05a28;
+  text-align: center;
+  vertical-align: middle;
+}
+
+table#course_list td div.upload i { 
+  padding-top: 1px;
+  width: 1.1em;
+  display: block;
+  cursor: pointer;
+}
+table#course_list td div.upload:hover i {
+  padding-top: 0px; /* prevent font awesome from moving on :hover */
+  border: solid 1px black;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+table#course_list tr:hover td div.upload {
+  visibility: visible;
 }
 
 td.instructor-name {

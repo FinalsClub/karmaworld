@@ -37,6 +37,7 @@ $(document).ready(function() {
       { "bSearchable": false },
       null,
       null,
+      null,
       null, 
     ],
     "aoColumnDefs": [ 
@@ -125,6 +126,7 @@ $(document).ready(function() {
             <td class="note-count slim">  {{ course.file_count }} </td>
             <td class="school-name">      {{ course.school.name }} </td>
             <td class="course-name">      <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> </td>
+            <td class="upload">           <div class="upload"><i class="icon-upload"></i></div></td>
             <td class="instructor-name">  {{ course.instructor_name }} </td>
           </tr>
         {% endfor %}
