@@ -57,13 +57,16 @@
         <div class="ten columns offset-by-one"> <hr/> </div>
       </div>
 
+      {% include 'partial/add_note.html' %}
+
       <div class="row">
         <div class="three columns centered">
-          <div id="upload_button" data-id="{{ course.id }}">
+          <div id="add-note-btn" data-id="{{ course.id }}">
             <i class=icon-upload></i> add a note
           </div>
         </div>
       </div>
+
 
       <div class="row">
         <div class="ten columns offset-by-one"> <hr/> </div>
@@ -103,7 +106,7 @@
           <div class="row notes_result_container wide">
             <div class="twelve columns notes_result">
 
-              <div class="activity_details_action">
+              <div class="note_name">
                 <a href="{{ note.get_absolute_url }}" class="activity_target">{{ note.name }}</a>
               </div>
 

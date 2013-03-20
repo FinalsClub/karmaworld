@@ -1,0 +1,39 @@
+{% load url from future %}
+<section id=add-note-form class="extend-form">
+  <script>
+    var ajax_upload_url = "{% url 'ajax_upload' %}";
+    var csrf_token = "{{ csrf_token }}";
+  </script>
+
+  <form id=upload_form method="POST">
+    {% csrf_token %}
+    <div class="row">
+      <div class="eight columns offset-by-one">
+        <legend>Title of Note</legend>
+        <input type="text" class="" id="id_name" name="name">
+      </div>
+      <div class="two columns end">
+        <legend>Academic Year</legend>
+        <input type="text" class="" id="id_year" name="year">
+      </div>
+    </div>
+    <div class="row">
+      <div class="ten columns offset-by-one end">
+        <legend>Tags (comma seperated)</legend>
+        <input type="text" id="id_tags" name="tags" class="taggit-tags">
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="three columns centered">
+        <div id="upload_button" data-id="{{ course.id }}">
+          <i class=icon-upload></i> add a note
+          <input class="submit_upload" type="submit" value="save">
+        </div>
+      </div>
+    </div>
+
+
+    </form> <!-- #upload_form -->
+</section>

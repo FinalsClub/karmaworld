@@ -41,6 +41,8 @@ class Note(models.Model):
 
     name            = models.CharField(max_length=255, blank=True, null=True)
     slug            = models.SlugField(max_length=255, null=True)
+    year            = models.IntegerField(blank=True, null=True, 
+                        default=datetime.datetime.utcnow().year)
     desc            = models.TextField(max_length=511, blank=True, null=True)
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
 

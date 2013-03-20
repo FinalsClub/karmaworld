@@ -392,7 +392,14 @@ a.course_link, a.course_link:hover, a.school_link, a.school_link:hover, a.prof_l
 {
   font-family: "MuseoSlab-300";
   font-size: 22px;
-  line-height: .4em;
+  line-height: 1.4em;
+}
+
+.note_name, .note_name a
+{
+  font-family: "MuseoSlab-300";
+  font-size: 22px;
+  line-height: 1.4em;
 }
 
 a.activity_actor, a.activity_actor:hover
@@ -487,14 +494,20 @@ a.activity_target:hover
   text-transform: uppercase;
 }
 
-#upload_button, #add-course
+#add-note-btn, #add-course-btn
 {
-  margin: 1px;
-  font-family: "MuseoSlab-300";
-  font-size: 30px;
-  text-align: center;
   color: #f05a28;
+  cursor: pointer;
+  font: 30px/1.2em "MuseoSlab-300", serif;
+  margin: 1px;
+  text-align: center;
   text-transform: uppercase;
+  /* transition: ease-out ? ? ? */
+}
+
+#add-note-form, #add-course
+{
+  display: none;
 }
 
 /* COPY */
@@ -702,3 +715,9 @@ hr.midrule
   width: 140px;
   margin: 2em auto;
 }
+
+legend
+{
+  font: 12px/2em "MuseoSlab-300";
+}
+
