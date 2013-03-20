@@ -153,22 +153,11 @@ table#course_list td div.upload {
 }
 
 table#course_list td div.upload i { 
-  padding-top: 1px;
-  width: 1.1em;
   display: block;
   cursor: pointer;
 }
 table#course_list td div.upload a { 
-  color: #f05a28;
   text-decoration: none;
-}
-
-table#course_list td div.upload:hover i {
-  padding-top: 0px; /* prevent font awesome from moving on :hover */
-  border: solid 1px black;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
 }
 
 table#course_list tr:hover td div.upload {
