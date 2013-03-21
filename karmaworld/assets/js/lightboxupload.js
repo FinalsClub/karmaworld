@@ -8,6 +8,12 @@ $(function(){
   $('#add-note-btn').click(function(){
     // TODO: rewrite to .show the form with a slide transition
     $('#add-note-form').show();
+    $('input#file_upload_input').click();
+  });
+
+  // Submit the add-note form
+  $('#save-btn').click(function(){
+    $('#add-note-form').submit();
   });
 
   // Dismiss x click
@@ -16,9 +22,9 @@ $(function(){
   });
 
   var uploader = new qq.FileUploader( {
-      action: uploadUrl, // added to page via template var
+      action: ajax_upload_url, // added to page via template var
       element: $('#file-uploader')[0],
-      multiple: true,
+      multiple: false,
       onComplete: function( id, fileName, responseJSON ) {
         if( responseJSON.success ) {
           //console.log( "success!" ) ;
@@ -31,6 +37,12 @@ $(function(){
         // the maps look like this: { file: FileObject, response: JSONServerResponse }
         console.log( "All complete!" ) ;
         // TODO: set a success state
+      },
+      onProgress: function(id, fileName, loaded, total) {
+        console.log("running onProgress " + fileName + " " + loaded);
+        console.log(String((100*loaded/total)+'%'));
+        $('#progress-fill').animate({
+          width: String((100*loaded/total)+'%')}, 5000);
       },
       params: {
         'csrf_token': csrf_token,

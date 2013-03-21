@@ -10,10 +10,32 @@ time
   font: 12px/2em "MuseoSlab-300";
 }
 
-input[type="text"]
+.intext, input[type="text"], textarea
 {
-  font: 22px/1em "MuseoSlab-300" #afafaf;
+  height: 40px;
+  line-height: 40px;
+  padding: 6px 0 0 12px;
+
+  font-family: "MuseoSlab-300", serif;
+  font-size: 22px;
+  color: black;
+  border-color: black;
+  border-radius: 0;
 }
+
+small.form
+{
+  color: #f1592a;
+}
+
+input[type="text"]:focus, textarea:focus
+{
+  color: black;
+  background-color: white;
+  border-color: black;
+  border-radius: 0;
+}
+
 
 .half-padding
 {
@@ -494,7 +516,7 @@ a.activity_target:hover
   text-transform: uppercase;
 }
 
-#add-note-btn, #add-course-btn
+#add-note-btn, #add-course-btn, #save-btn
 {
   color: #f05a28;
   cursor: pointer;
@@ -508,6 +530,19 @@ a.activity_target:hover
 #add-note-form, #add-course
 {
   display: none;
+}
+
+.progress
+{
+  border: solid 1px black;
+  height: 10px;
+}
+
+#progress-fill
+{
+  height: 100%;
+  width: 0;
+  background-color: #f1592a;
 }
 
 /* COPY */
@@ -647,7 +682,7 @@ a.white:hover
   border: none;
   color: white;
   cursor: pointer;
-  font-family: "MuseoSlab-700";
+  font-family: "MuseoSlab-300";
   font-size: 32px;
 }
 
