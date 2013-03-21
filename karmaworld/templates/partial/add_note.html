@@ -2,34 +2,47 @@
 <section id=add-note-form class="extend-form">
   <script>
     var ajax_upload_url = "{% url 'ajax_upload' %}";
-    var csrf_token = "{{ csrf_token }}";
+    //var csrf_token = "{{ csrf_token }}";
   </script>
 
-  <form id=upload_form method="POST">
+  <div id=file-uploader style="display:none"></div>
+  <form id=add-note method="POST">
     {% csrf_token %}
     <div class="row">
+      <div class="four columns offset-by-one">
+        <legend>Title of Note <small class="form">* Required</small></legend>
+        <div class=progress> <div id="progress-fill"></div> </div>
+      </div>
+      <div class="one columns offset-by-five end">
+        <i class="icon-remove-circle"></i>
+      </div>
+    </div>
+    <div class="row">
       <div class="eight columns offset-by-one">
-        <legend>Title of Note</legend>
-        <input type="text" class="" id="id_name" name="name">
+        <legend>Title of Note <small class="form">* Required</small></legend>
+        <input type="text" class="intext" id="id_name" name="name"
+            placeholder="ENG 102 - Chaucer to Shakespeare">
       </div>
       <div class="two columns end">
         <legend>Academic Year</legend>
-        <input type="text" class="" id="id_year" name="year">
+        <input type="text" class="" id="id_year" name="year"
+            placeholder="2013"> {# FIXME: fill in with current year #}
       </div>
     </div>
     <div class="row">
       <div class="ten columns offset-by-one end">
         <legend>Tags (comma seperated)</legend>
-        <input type="text" id="id_tags" name="tags" class="taggit-tags">
+        <input type="text" id="id_tags" name="tags" class="taggit-tags"
+              placeholder="Chaucer, Shakespeare, literature, review">
       </div>
     </div>
 
 
+
     <div class="row">
       <div class="three columns centered">
-        <div id="upload_button" data-id="{{ course.id }}">
-          <i class=icon-upload></i> add a note
-          <input class="submit_upload" type="submit" value="save">
+        <div id="save-btn">
+          <i class=icon-save></i> Save
         </div>
       </div>
     </div>
