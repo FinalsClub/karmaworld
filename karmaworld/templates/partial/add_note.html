@@ -10,7 +10,7 @@
     {% csrf_token %}
     <div class="row">
       <div class="four columns offset-by-one">
-        <legend>Title of Note <small class="form">* Required</small></legend>
+        <legend><span id=add-note-status>Uploading</span> <span id=filename>note</span>...</legend>
         <div class=progress> <div id="progress-fill"></div> </div>
       </div>
       <div class="one columns offset-by-five end">

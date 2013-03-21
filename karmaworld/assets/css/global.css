@@ -527,6 +527,12 @@ a.activity_target:hover
   /* transition: ease-out ? ? ? */
 }
 
+.disabled
+{
+  color: #afafaf;
+  cursor: auto;
+}
+
 #add-note-form, #add-course
 {
   display: none;
