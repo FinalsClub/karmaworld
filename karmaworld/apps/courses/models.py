@@ -75,9 +75,6 @@ class Course(models.Model):
     instructor_name     = models.CharField(max_length=255, blank=True, null=True)
     instructor_email    = models.EmailField(blank=True, null=True)
 
-    # Save school name redundantly to speed filtering
-    school_name     = models.CharField(max_length=255, blank=True, null=True)
-
     updated_at      = models.DateTimeField(default=datetime.datetime.utcnow)
     created_at      = models.DateTimeField(auto_now_add=True)
 

@@ -61,59 +61,6 @@ class CourseSaveView(ModelFormMixin, ProcessFormView):
         print "\n\n"
 
 
-class CourseAjaxList(BaseListView):
-
-    def get_queryset(self):
-        """ generate a contexual query based on arguments """
-
-        req = self.request # HTTPrequest is stored in the class
-
-        # Handle empty argument sSearch
-        if req.GET['sSearch'] == '':
-            return []
-
-        search_query = req.GET['sSearch']
-
-        search_strings = search_query.strip().split(' ')
-        queries = [
-            (
-                Q(name__icontains=s) |
-                Q(instructor_name__icontains=s) |
-                Q(school_name__icontains=s)
-            ) 
-            for s in search_strings 
-        ]
-
-        full_query = queries.pop()
-        for q in queries:
-            full_query &= q
-
-        object_list = Course.objects.filter(full_query).values_list(
-                'school__name', 
-                'name', 
-                'instructor_name', 
-                'file_count', 
-                'updated_at')
-
-        # this works too
-        # return map(lambda row: [row[:3], row[4].strftime("%I%p // %a %b %d %Y")], object_list)
-        return [[a, b, c, d, e.strftime("%I%p // %a %b %d %Y")] for a, b, c, d, e in object_list]
-
-    def render_to_response(self, context, **response_kwargs):
-        """ Returns a JSON response, transforming 'context' to make the payload """
-        response_dict = {
-            'aaData': self.object_list,
-            'iTotalRecords': len(self.object_list),
-            'iTotalDisplayRecords': len(self.object_list),
-            'sEcho': int(self.request.GET['sEcho'])
-        }
-        return HttpResponse(
-            # replace convert_context_to_json with our whatever function
-            json.dumps(response_dict),
-            content_type = 'application/json'
-        )
-
-
 def school_list(request):
     """ Return JSON describing Schools that match q query on name """
     if request.method == 'POST' and request.is_ajax() \
