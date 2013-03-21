@@ -2,18 +2,24 @@ table#course_list
 {
   margin:14px auto;
 }
+a {
+  color:black;
+}
+a:hover {
+  color:#f05a28;
+}
 
 /***************
 Search Bar
 ***************/
 #course_list_filter input {
-  font: 22px/1em "MuseoSlab-300" #afafaf;
+  font: 22px/1em "MuseoSlab-300";
   margin-top: 20px;
   margin-bottom: 20px;
   border-style: solid;
   border-color: black;
   border-width: 1px;
-  padding-left: 32px; /* move the placeholder text to the right*/
+  padding-left: 32px; /* move the placeholder text to the right of the search icon*/
   background-image: url(../img/lightbox_search_icon.png);
   background-position: 8px 50%;
   background-repeat: no-repeat;
@@ -88,11 +94,13 @@ table#course_list td {
   font-family: "MuseoSlab-300";
   font-size: 18px;
   float:left;
+  height:80px; /* required for :hover on Table Rows  (when floating td elements) */
 }
 
 table#course_list tbody tr td.slim {
   font-family: "MuseoSlab-300";
   font-size: 12px;
+  height: 20px; /* required for :hover on Table Rows  (when floating td elements) */
 }
 
 table#course_list tr:nth-child(even)
@@ -107,7 +115,6 @@ table#course_list tbody td a {
 
 /* rows of course data */
 table#course_list tbody tr {
-  height: 100px;
   width: 840px;
 }
 
@@ -127,11 +134,34 @@ td.note-count {
 }
 
 td.school-name {
-  width:200px; /* make this the same as td.date -- line up the artificial columns */
+  width: 200px; /* make this the same as td.date -- line up the artificial columns */
 }
 
 td.course-name {
-  width:400px;
+  width: 340px;
+}
+
+
+table#course_list td div.upload {
+  width: 45px;
+  height: 45px;
+  visibility: hidden;
+  font-size: 34px;
+  text-align: center;
+  vertical-align: middle;
+  margin-top: -8px;
+}
+
+table#course_list td div.upload i { 
+  display: block;
+  cursor: pointer;
+}
+table#course_list td div.upload a { 
+  text-decoration: none;
+}
+
+table#course_list tr:hover td div.upload {
+  visibility: visible;
 }
 
 td.instructor-name {
