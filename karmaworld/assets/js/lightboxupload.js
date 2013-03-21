@@ -25,7 +25,7 @@ $(function(){
     // Bring up the file picker automatically
     $('input#file_upload_input').click();
     // hide the add a note button
-    $('#add-note-btn').hide()
+    $('#add-note-btn').hide();
   });
 
   // Dismiss x click
@@ -46,12 +46,15 @@ $(function(){
 
       onComplete: function( id, fileName, responseJSON ) {
         if( responseJSON.success ) {
+          console.log("responseJSON.note_url " + responseJSON.note_url);
           // activate the form for submitting
-          $('form#upload_form').attr('action', responseJSON.note_url);
+          $('form#add-note').attr('action', responseJSON.note_url);
           // inform the user of success
           $('#add-note-status').text('Uploaded');
           // TODO: activate the save button
           $('#save-btn').removeClass('disabled');
+          // add the save url to form as ACTION
+
           // add a click handler to submit the add-note form
           $('#save-btn').click(function(){
             $('form#add-note').submit();

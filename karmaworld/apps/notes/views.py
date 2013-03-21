@@ -33,6 +33,7 @@ class NoteSaveView(FormView, SingleObjectMixin):
         context = {
             'object': self.get_object(),
         }
+        print "get context for NoteSaveView"
         return super(NoteSaveView, self).get_context_data(**context)
 
     def get_success_url(self):
@@ -51,7 +52,7 @@ class NoteSaveView(FormView, SingleObjectMixin):
         """
         self.object = self.get_object()
         self.object.name = form.cleaned_data['name']
-        self.object.desc = form.cleaned_data['desc']
+        self.object.year = form.cleaned_data['year']
         # use *arg expansion to pass tags a list of tags
         self.object.tags.add(*form.cleaned_data['tags'])
         self.object.save()
@@ -59,6 +60,7 @@ class NoteSaveView(FormView, SingleObjectMixin):
 
     def form_invalid(self, form):
         """ Do stuff when the form is invalid !!! TODO """
+        print "running form_invalid"
         print self.form
         print self.form.errors
 
