@@ -57,6 +57,11 @@ class NoteSaveView(FormView, SingleObjectMixin):
         self.object.save()
         return super(NoteSaveView, self).form_valid(form)
 
+    def form_invalid(self, form):
+        """ Do stuff when the form is invalid !!! TODO """
+        print self.form
+        print self.form.errors
+
 
 class NoteView(View):
     """ Notes superclass that wraps http methods """
