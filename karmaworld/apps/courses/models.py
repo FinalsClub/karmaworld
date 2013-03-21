@@ -76,6 +76,7 @@ class Course(models.Model):
     instructor_email    = models.EmailField(blank=True, null=True)
 
     updated_at      = models.DateTimeField(default=datetime.datetime.utcnow)
+
     created_at      = models.DateTimeField(auto_now_add=True)
 
 
@@ -91,8 +92,6 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
-        if self.school_name != self.school.name:
-            self.school_name = self.school.name
         super(Course, self).save(*args, **kwargs) # generate a self.id
         if not self.slug:
             self.slug = defaultfilters.slugify("%s %s" % (self.name, self.id))

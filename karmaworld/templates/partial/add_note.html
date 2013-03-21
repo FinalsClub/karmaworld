@@ -8,6 +8,7 @@
 
   <form id=add-note method="POST">
     {% csrf_token %}
+
     <div class="row">
       <div class="four columns offset-by-one upload-status" style="display:none">
         <legend><span id=add-note-status>Uploading</span> <span id=filename>note</span>...</legend>
@@ -39,8 +40,6 @@
               placeholder="Chaucer, Shakespeare, literature, review">
       </div>
     </div>
-
-
 
     <div class="row">
       <div class="three columns centered">

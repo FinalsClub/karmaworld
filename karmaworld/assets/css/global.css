@@ -518,6 +518,8 @@ a.activity_target:hover
 
 #add-note-btn, #add-course-btn, #save-btn
 {
+  border: none;
+  background-color: white;
   color: #f05a28;
   cursor: pointer;
   font: 30px/1.2em "MuseoSlab-300", serif;
@@ -533,7 +535,7 @@ a.activity_target:hover
   cursor: auto;
 }
 
-#add-note-form, #add-course
+#add-note-form, #add-course-form
 {
   display: none;
 }
