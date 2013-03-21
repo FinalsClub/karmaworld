@@ -12,7 +12,7 @@ $(function(){
     // Bring up the file picker automatically
     $('input#file_upload_input').click();
     // hide the add a note button
-    $('#add-note-btn').hide()
+    $('#add-note-btn').hide();
   });
 
   // Dismiss x click
@@ -28,6 +28,7 @@ $(function(){
 
       onComplete: function( id, fileName, responseJSON ) {
         if( responseJSON.success ) {
+          console.log("responseJSON.note_url " + responseJSON.note_url);
           // activate the form for submitting
           $('form#add-note').attr('action', responseJSON.note_url);
           // inform the user of success
