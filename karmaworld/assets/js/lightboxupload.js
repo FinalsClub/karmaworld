@@ -12,14 +12,11 @@ $(function(){
     var hash = window.location.hash.substring(1);
     if (hash === 'add-note'){
       $('#add-note-form').show();
-      $('div.upload-status').hide();
       $('#add-note-btn').hide();
     }
   }
 
   $('#add-note-btn').click(function(){
-    // hide the button added by qq
-    $('#file-uploader').hide();
     // show the add note form
     // TODO: rewrite to .show the form with a slide transition
     $('#add-note-form').show();
@@ -43,8 +40,18 @@ $(function(){
       onSubmit: function (id, fileName) {
         $('#file-uploader').hide();
         $('div.upload-status').show();
+        // hide the button added by qq
+        $('#file-uploader').hide();
+        // show the progress bar
+        $('div.upload-status').show();
+        console.log('fileName:', fileName);
       },
-
+      onError: function (id, fileName, errorReason) {
+        console.log('FileUploader error:', errorReason);
+      },
+      onCancel: function (id, fileName) {
+        console.log('FileUploader cancel:', onCancel);
+      },
       onComplete: function( id, fileName, responseJSON ) {
         if( responseJSON.success ) {
           console.log("responseJSON.note_url " + responseJSON.note_url);
