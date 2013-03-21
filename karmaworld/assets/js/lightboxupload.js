@@ -29,11 +29,13 @@ $(function(){
       onComplete: function( id, fileName, responseJSON ) {
         if( responseJSON.success ) {
           // activate the form for submitting
-          $('form#upload_form').attr('action', responseJSON.note_url);
+          $('form#add-note').attr('action', responseJSON.note_url);
           // inform the user of success
           $('#add-note-status').text('Uploaded');
           // TODO: activate the save button
           $('#save-btn').removeClass('disabled');
+          // add the save url to form as ACTION
+
           // add a click handler to submit the add-note form
           $('#save-btn').click(function(){
             $('form#add-note').submit();
