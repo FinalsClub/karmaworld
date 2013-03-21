@@ -11,14 +11,15 @@ $(function(){
     // Get the first hasgh, remove the # character
     var hash = window.location.hash.substring(1);
     if (hash === 'add-note'){
-
       $('#add-note-form').show();
-      $('#file-uploader').show();
       $('div.upload-status').hide();
+      $('#add-note-btn').hide();
     }
   }
 
   $('#add-note-btn').click(function(){
+    // hide the button added by qq
+    $('#file-uploader').hide();
     // show the add note form
     // TODO: rewrite to .show the form with a slide transition
     $('#add-note-form').show();

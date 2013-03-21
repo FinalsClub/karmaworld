@@ -5,7 +5,7 @@
     //var csrf_token = "{{ csrf_token }}";
   </script>
 
-  <div id=file-uploader style="display:none"></div>
+
   <form id=add-note method="POST">
     {% csrf_token %}
     <div class="row">
@@ -13,6 +13,9 @@
         <legend><span id=add-note-status>Uploading</span> <span id=filename>note</span>...</legend>
         <div class=progress> <div id="progress-fill"></div> </div>
       </div>
+      <div id=file-uploader class="four columns offset-by-one">
+        <!-- the upload button gets attached here -->
+      </div> 
       <div class="one columns offset-by-five end">
         <i class="icon-remove-circle"></i>
       </div>
