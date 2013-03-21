@@ -9,7 +9,7 @@
   <form id=add-note method="POST">
     {% csrf_token %}
     <div class="row">
-      <div class="four columns offset-by-one">
+      <div class="four columns offset-by-one upload-status">
         <legend><span id=add-note-status>Uploading</span> <span id=filename>note</span>...</legend>
         <div class=progress> <div id="progress-fill"></div> </div>
       </div>
