@@ -27,9 +27,9 @@ $(function(){
   });
 
   // Dismiss x click
-  // FIXME:
-  $(".lightbox_close").click(function() {
-    $(".modal_content").hide();
+  $(".icon-remove-circle").click(function() {
+    $("#add-note-form").hide();
+    $('#add-note-btn').show();
   });
 
   var uploader = new qq.FileUploader( {

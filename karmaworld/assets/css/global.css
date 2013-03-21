@@ -766,3 +766,7 @@ legend
   margin-bottom:12px;
 }
 
+.awesome-action:hover {
+  color: #f05a28;
+  cursor: pointer;
+}
