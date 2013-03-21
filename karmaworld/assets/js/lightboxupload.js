@@ -5,6 +5,17 @@ $(function(){
   // TODO: connect it to the '^ save' form submit
   // Show the upload lightbox on upload button click
 
+  // check if we arrived at this page planning on uploading a note
+  if(window.location.hash) {
+
+    // Get the first hasgh, remove the # character
+    var hash = window.location.hash.substring(1);
+    if (hash === 'upload-note'){
+      $('#add-note-form').show();
+      $('#add-note-btn').hide();
+    }
+  }
+
   $('#add-note-btn').click(function(){
     // show the add note form
     // TODO: rewrite to .show the form with a slide transition
@@ -26,6 +37,21 @@ $(function(){
       element: $('#file-uploader')[0],
       multiple: false,
 
+      onSubmit: function (id, fileName) {
+        $('#file-uploader').hide();
+        $('div.upload-status').show();
+        // hide the button added by qq
+        $('#file-uploader').hide();
+        // show the progress bar
+        $('div.upload-status').show();
+        console.log('fileName:', fileName);
+      },
+      onError: function (id, fileName, errorReason) {
+        console.log('FileUploader error:', errorReason);
+      },
+      onCancel: function (id, fileName) {
+        console.log('FileUploader cancel:', onCancel);
+      },
       onComplete: function( id, fileName, responseJSON ) {
         if( responseJSON.success ) {
           console.log("responseJSON.note_url " + responseJSON.note_url);
