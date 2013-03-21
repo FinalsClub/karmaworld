@@ -6,17 +6,17 @@ $(function(){
   // Show the upload lightbox on upload button click
 
   $('#add-note-btn').click(function(){
+    // show the add note form
     // TODO: rewrite to .show the form with a slide transition
     $('#add-note-form').show();
+    // Bring up the file picker automatically
     $('input#file_upload_input').click();
-  });
-
-  // Submit the add-note form
-  $('#save-btn').click(function(){
-    $('#add-note-form').submit();
+    // hide the add a note button
+    $('#add-note-btn').hide()
   });
 
   // Dismiss x click
+  // FIXME:
   $(".lightbox_close").click(function() {
     $(".modal_content").hide();
   });
@@ -25,11 +25,20 @@ $(function(){
       action: ajax_upload_url, // added to page via template var
       element: $('#file-uploader')[0],
       multiple: false,
+
       onComplete: function( id, fileName, responseJSON ) {
         if( responseJSON.success ) {
-          //console.log( "success!" ) ;
+          // activate the form for submitting
           $('form#upload_form').attr('action', responseJSON.note_url);
-          $('input.submit_upload').show();
+          // inform the user of success
+          $('#add-note-status').text('Uploaded');
+          // TODO: activate the save button
+          $('#save-btn').removeClass('disabled');
+          // add a click handler to submit the add-note form
+          $('#save-btn').click(function(){
+            $('form#add-note').submit();
+          });
+
         }
       },
       onAllComplete: function( uploads ) {
@@ -41,8 +50,11 @@ $(function(){
       onProgress: function(id, fileName, loaded, total) {
         console.log("running onProgress " + fileName + " " + loaded);
         console.log(String((100*loaded/total)+'%'));
+        // Animate the progress bar
         $('#progress-fill').animate({
           width: String((100*loaded/total)+'%')}, 5000);
+        // fill out the filename
+        $('#filename').text(fileName);
       },
       params: {
         'csrf_token': csrf_token,
