@@ -10,7 +10,7 @@ $(function(){
 
     // Get the first hasgh, remove the # character
     var hash = window.location.hash.substring(1);
-    if (hash === 'add-note'){
+    if (hash === 'upload-note'){
       $('#add-note-form').show();
       $('#add-note-btn').hide();
     }
