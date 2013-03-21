@@ -1,0 +1,56 @@
+{% load url from future %}
+<script>
+  var json_course_list = "{% url 'json_school_list' %}"
+  var csrf_token = "{{ csrf_token }}";
+</script>
+<script src="{{ STATIC_URL }}js/lightbox-add-course.js"></script>
+
+<section id="add-course-form">
+  <form method="POST" action="{% url 'api_course_post' %}">
+  {% csrf_token %}
+
+    <div class="row">
+      <div class="ten columns offset-by-one end">
+        <legend>
+          School
+        </legend>
+        <div>
+          <input id="str_school" class="" type="text" name="str_school"/>
+          <input id="id_school" name="school" type='hidden'/>
+        </div>
+      </div>
+    </div> <!-- .row -->
+
+    <div class="row">
+      <div class="ten columns offset-by-one end">
+        <legend> Title of Course: </legend>
+        <input id="id_name" class="" type="text" name="name" maxlength="255" />
+      </div>
+    </div> <!-- .row -->
+
+    <div class="row">
+      <div class="five columns offset-by-one">
+        <legend class="">
+          Instructor Name:
+        </legend><!-- -->
+        <input id="id_instructor_name" class="" type="text" name="instructor_name" maxlength="75" />
+      </div>
+
+      <div class="five columns end">
+        <legend class="">
+          Instructor Email:
+        </legend>
+        <input id="id_instructor_email" class="" type="text" name="instructor_email" maxlength="75" />
+      </div><!--  -->
+    </div> <!-- .row .lightbox_row -->
+
+    <div class="row">
+      <div class="three columns centered">
+        <button id="save-btn">
+          <i class=icon-save></i> Save
+        </div>
+      </div>
+    </div>
+
+  </form>
+</section>

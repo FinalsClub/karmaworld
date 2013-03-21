@@ -83,10 +83,6 @@ $(document).ready(function() {
 </script>
 {% endblock %}
 
-{% block lightboxen %}
-  {% include 'lightbox/add_course.html' %}
-{% endblock %}
-
 {% block content %}
 <section id="home_content">
   <div id="page_header" class="">
@@ -142,6 +138,7 @@ $(document).ready(function() {
       <div id="add-course-btn">
         <i class=icon-upload></i> add a course
       </div>
+        {% include 'partial/add_course.html' %}
     </div><!-- .ten columns -->
   </div> <!-- .row -->
 

@@ -1,7 +1,15 @@
 // setup ajax based autocomplete for the school field in the add course lightbox
 $(function() {
 
-  // Dismiss on exit x click
+  // Show the add-course-form
+  $('#add-course-btn').click(function() {
+    // Show the add a course form
+    $('#add-course-form').show();
+    // Hide the add a course button
+    $('#add-course-btn').hide();
+  });
+
+  // Dismiss on exit x click FIXME
   $(".lightbox_close").click(function() {
     $(".modal_content").hide();
   });
@@ -13,7 +21,7 @@ $(function() {
       beforeSend: function(xhr, settings) {
         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
           // Only send the token to relative URLs i.e. locally.
-          xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+          xhr.setRequestHeader("X-CSRFToken", csrf_token);
         }
       }
     });
@@ -24,7 +32,7 @@ $(function() {
   $("#str_school").autocomplete({
     source: function(request, response){
       $.ajax({
-        url: "{% url 'json_school_list' %}",
+        url: json_course_list,
         data: {q: request.term},
         success: function(data) {
           console.log(data);
