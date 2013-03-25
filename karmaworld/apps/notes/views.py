@@ -24,7 +24,6 @@ class NoteSaveView(FormView, SingleObjectMixin):
         behaves the same as NoteDetailView, except for saving the
         NoteForm ModelForm
     """
-    # TODO: implement def form_invalid for returning a form with input and error
     form_class = NoteForm
     model = Note
     template_name = 'notes/note_detail.html'
@@ -60,9 +59,10 @@ class NoteSaveView(FormView, SingleObjectMixin):
 
     def form_invalid(self, form):
         """ Do stuff when the form is invalid !!! TODO """
+        # TODO: implement def form_invalid for returning a form with input and error
         print "running form_invalid"
-        print self.form
-        print self.form.errors
+        print form
+        print form.errors
 
 
 class NoteView(View):
