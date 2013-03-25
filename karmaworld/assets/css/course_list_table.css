@@ -63,12 +63,15 @@ th.note-count {
 }
 
 th.school-name {
+  display: none;
 }
 
 th.course-name {
+  display: none;
 }
 
 th.instructor-name {
+  display: none;
 }
 
 
@@ -108,7 +111,7 @@ table#course_list tr:nth-child(even)
   /*background: url(../img/dashboard_activity_alt_on_bg.gif);*/
 }
 
-/* underline all linksin the table body */
+/* underline all links in the table body */
 table#course_list tbody td a {
   text-decoration: underline;
 }
@@ -118,29 +121,30 @@ table#course_list tbody tr {
   width: 840px;
 }
 
-/* hack - Provide positioning for the "sort by text" */
+/***************
+Slim Row
+***************/
 table.dataTable td.sort_by {
+  /* hack - Provide positioning for the "sort by text" */
   display:none;
 }
 
 td.date {
   font-size: 12px; 
-  width: 200px;
+  width: 405px;
 }
 
 td.note-count {
   font-size: 12px;
-  width: 600px; /* 100% minus td.date width -- make sure the next line wraps */
+  width: 400px; /* 100% minus td.date width -- make sure the next line wraps */
 }
 
-td.school-name {
-  width: 200px; /* make this the same as td.date -- line up the artificial columns */
-}
-
+/***************
+Fat Row
+***************/
 td.course-name {
   width: 340px;
 }
-
 
 table#course_list td div.upload {
   width: 45px;
@@ -151,6 +155,17 @@ table#course_list td div.upload {
   vertical-align: middle;
   margin-top: -8px;
 }
+
+td.school-name {
+  width: 200px; /* make this the same as td.date -- line up the artificial columns */
+}
+
+td.instructor-name {
+  width:200px;
+}
+
+
+
 
 table#course_list td div.upload i { 
   display: block;
@@ -164,6 +179,4 @@ table#course_list tr:hover td div.upload {
   visibility: visible;
 }
 
-td.instructor-name {
-  width:200px;
-}
+

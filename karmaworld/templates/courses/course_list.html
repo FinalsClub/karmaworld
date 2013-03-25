@@ -107,8 +107,8 @@ $(document).ready(function() {
             <th class="sort_by">Sort by:</th>
             <th class="date"> Date </th>
             <th class="note-count"> #Notes </th>
-            <th class="school-name"> Institution </th>
             <th class="course-name"> Course Name </th>
+            <th class="school-name"> Institution </th>
             <th class="instructor-name"> Instructor </th>
           </tr>
         </thead>
@@ -118,9 +118,9 @@ $(document).ready(function() {
             <td class="sort_by"></td>
             <td class="date slim">        {{ course.updated_at|date:"F d, o" }} </td> <!-- https://docs.djangoproject.com/en/1.4/ref/templates/builtins/#date -->
             <td class="note-count slim">  {{ course.file_count }} </td>
-            <td class="school-name">      {{ course.school.name }} </td>
             <td class="course-name">      <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> </td>
             <td class="upload">           <div class="upload"><a href="{{ course.get_absolute_url }}#upload-note"><i class="icon-upload"></i></a></div></td>
+            <td class="school-name">      {{ course.school.name }} </td>
             <td class="instructor-name">  {{ course.instructor_name }} </td>
           </tr>
         {% endfor %}
