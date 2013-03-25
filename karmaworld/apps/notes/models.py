@@ -81,6 +81,13 @@ class Note(models.Model):
         if not self.slug and self.name:
             # only generate a slug if the name has been set, and slug hasn't
             self.slug = defaultfilters.slugify(self.name)
+
+        # Check if Note.uploaded_at is after Course.updated_at
+        if self.uploaded_at and self.uploaded_at > self.course.updated_at:
+            self.course.updated_at = self.uploaded_at
+            # if it is, update Course.updated_at
+            self.course.save()
+
         super(Note, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
