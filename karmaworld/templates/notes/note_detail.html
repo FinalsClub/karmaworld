@@ -12,95 +12,32 @@
 {% block content %}
   <section id="note_content">
 
-    <div id="note_header" class="hero_gradient_bar">
+    <div id="course_header"> 
       <div class="row">
-        <div id="note_back_to_course" class="twelve columns">
-          <a href="{{ note.course.get_absolute_url }}">
-            {# TODO: style this not like a link #}
-            <img src="{{ STATIC_URL }}img/search_arrow_left.png" alt="search_arrow_left" width="5" height="10" />&nbsp;back to {{ note.course.name }}
-          </a>
-
-        </div>
+        <div id="breadcrumbs" class="ten columns offset-by-one">
+          <a href="/">Home</a> &gt; 
+          <a href="{{ note.course.get_absolute_url }}">{{ note.course.name }}</a> &gt;
+          <a href="{{ note.get_absolute_url }}"> {{ note.name }} </a>
+        </div><!-- /course_subhead -->
       </div>
 
       <div class="row">
-        <div id="note_name" class="twelve columns">
+        <div id="course_name" class="twelve columns">
           {{ note.name }}
         </div><!-- /note_name -->
       </div>
 
-      {% comment %}
-      <!-- disabiling viewCount and liked count -->
       <div class="row">
-        <div id="note_status" class="twelve columns">
-          <div class="activity_details_status">
-            So far, <span class="activity_details_status_number">{{ note.numUpVotes }}</span> people have completely fallen in love with with these notes. <span class="activity_details_status_secondary_number">{{ note.viewCount }}</span> people have viewed them.
-          </div><!-- /activity_details_status -->
-        </div><!-- /note_status -->
-      </div>
-      {% endcomment %}
-
-
-
-      {% comment %}
-      <!-- uploaded by style -->
-      <div class="row">
-        <div id="note_author" class="twelve columns">
-          uploaded by
-          {% if owns_file %}
-            you
-          {% else %}
-            {{ note.owner.get_profile.get_name }}
-          {% endif %}
-        </div><!-- /note_author -->
+        <div class="ten columns offset-by-one">
+          <hr/>
+        </div>
       </div>
 
-      <!-- vote html -->
-      <div class="row">
-        <div id="note_actions" class="three columns centered">
-          {% if not owns_file %}
-          <div class="row">
-            <div class="six column thank" {% if has_voted %} style="display:none" {% endif %} data-id={{ file.id }}>
-              <img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" width="34" height="34" />
-            </div>
-            <div class="six column flag" {% if has_voted %} style="display:none" {% endif %} data-id={{ file.id }}>
-               <img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35" />
-            </div>
-            <div class="twelve column voted_message" data-id={{ file.id }} {% if not has_voted %} style="display:none" {% endif %}>
-              You've
-              <span id="thanked_or_flagged">
-                {% if not lovable %}
-                  thanked
-                {% elif not flaggable %}
-                  flagged
-                {% endif %}
-              </span>
-             this file
-            </div>
-            <!-- disabling downloads for now -->
-            <div class="four column">
-              <img src="{{ STATIC_URL }}img/note_download.png" alt="note_download" width="51" height="36" />
-            </div>
-          </div>
-          {% endif %} <!-- not owns_file -->
-        </div><!-- /note_actions -->
-      </div>
-      {% endcomment %}
-    </div><!-- /note_header -->
-
-
+    </div><!-- /course_header -->
     <div id="note_container">
 
       <div class="row">
         <div class="eight columns centered body_copy">
-
-          {% if note.desc %}
-            <h1>description</h1>
-
-            <p>{{ note.desc }}</p>
-          {% endif %}
-
-          <h1>notes</h1>
 
           <div class="note-text">
             <iframe style="border:none; width:100%;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')">
