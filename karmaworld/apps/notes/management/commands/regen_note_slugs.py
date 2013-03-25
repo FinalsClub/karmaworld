@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = "regenerate all note slugs"
 
     def handle(self, *args, **kwargs):
-        notes = Note.objects.fall()
+        notes = Note.objects.all()
         for n in notes:
             n.slug = None
             n.save()
