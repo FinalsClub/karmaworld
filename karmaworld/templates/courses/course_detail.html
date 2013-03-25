@@ -60,12 +60,12 @@
       {% include 'partial/add_note.html' %}
 
       {% if request.GET.thankyou == '' %}
-      <div class="row">
-        <div class="ten columns offset-by-one">
+      <div id=thankyou-wrapper class="row">
+        <div class="eight columns offset-by-two">
           <div id="thankyou">
             <p>
               Thank you for uploading
-              <a href="{{ request.GET.url }}">{{ request.GET.name }}</a>
+              <a href="{{ request.GET.url }}">{{ request.GET.name }}</a>.
               Share another or take a
               <a href="https://docs.google.com/a/finalsclub.org/spreadsheet/viewform?usp=sharing&formkey=dFg1WnI2cUVfckZyYnJpZ0ExQmUxSnc6MQ#gid=0" target="_blank">quick survey</a> to help us make KarmaNotes even better.
             </p>

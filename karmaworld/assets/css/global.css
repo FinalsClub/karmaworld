@@ -710,15 +710,14 @@ p.text a
 
 #thankyou
 {
-  border: 1px solid #8e8e8e;
   margin: 60px 20px;
   padding: 20px;
 }
 
 #thankyou p
 {
-  font-family: "MuseoSlab-500";
-  font-size: 17px;
+  font-family: "MuseoSlab-300";
+  font-size: 22px;
   margin: 0px;
 }
 
