@@ -61,6 +61,7 @@ class LocalUploadBackend(AbstractUploadBackend):
         # Another file copy at FileField's 'upload_to' dir
         print "creating note"
         note = Note()
+        note.name = filename
         note.note_file = os.path.join(self._dir, filename)
         note.course_id = request.GET['course_id']
         print "saving note"
