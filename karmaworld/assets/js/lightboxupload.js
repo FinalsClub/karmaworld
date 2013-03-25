@@ -1,14 +1,10 @@
 $(function(){
 
-  // Show the 'add note' form
-  // first, instantiate the fileuploader on page load
-  // TODO: connect it to the '^ save' form submit
-  // Show the upload lightbox on upload button click
 
   // check if we arrived at this page planning on uploading a note
   if(window.location.hash) {
 
-    // Get the first hasgh, remove the # character
+    // Get the first hash, remove the # character
     var hash = window.location.hash.substring(1);
     if (hash === 'upload-note'){
       $('#add-note-form').show();
@@ -17,6 +13,8 @@ $(function(){
   }
 
   $('#add-note-btn').click(function(){
+    // hide the thankyou message on add-another uploads
+    $('#thankyou-wrapper').hide();
     // show the add note form
     // TODO: rewrite to .show the form with a slide transition
     $('#add-note-form').show();
@@ -25,6 +23,7 @@ $(function(){
     // hide the add a note button
     $('#add-note-btn').hide();
   });
+
 
   // Dismiss x click
   $(".icon-remove-circle").click(function() {
