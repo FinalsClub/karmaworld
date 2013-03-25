@@ -59,6 +59,28 @@
 
       {% include 'partial/add_note.html' %}
 
+      {% if request.GET.thankyou == '' %}
+      <div class="row">
+        <div class="ten columns offset-by-one">
+          <div id="thankyou">
+            <p>
+              Thank you for uploading
+              <a href="{{ request.GET.url }}">{{ request.GET.name }}</a>
+              Share another or take a
+              <a href="https://docs.google.com/a/finalsclub.org/spreadsheet/viewform?usp=sharing&formkey=dFg1WnI2cUVfckZyYnJpZ0ExQmUxSnc6MQ#gid=0" target="_blank">quick survey</a> to help us make KarmaNotes even better.
+            </p>
+            <script>
+            // when showing the thankyou button, flash it orangered first
+            $(function() {
+              $("#thankyou").effect("highlight", {'color': '#f05a28'}, 3000);
+            });
+            </script>
+
+          </div><!-- /thankyou -->
+        </div>
+      </div> <!-- .row -->
+      {% endif %}
+
       <div class="row">
         <div class="three columns centered">
           <div id="add-note-btn" data-id="{{ course.id }}">
@@ -75,27 +97,6 @@
 
     </div><!-- /course_header -->
 
-    {% if request.GET.thankyou == '' %}
-    <div class="row">
-      <div class="ten columns offset-by-one">
-        <div id="thankyou">
-          <p>
-            Thank you for uploading
-            <a href="{{ request.GET.url }}">{{ request.GET.name }}</a>
-            Share another or take a
-            <a href="https://docs.google.com/a/finalsclub.org/spreadsheet/viewform?usp=sharing&formkey=dFg1WnI2cUVfckZyYnJpZ0ExQmUxSnc6MQ#gid=0" target="_blank">quick survey</a> to help us make KarmaNotes even better.
-          </p>
-          <script>
-          // when showing the thankyou button, flash it orangered first
-          $(function() {
-            $("#thankyou").effect("highlight", {'color': '#f05a28'}, 3000);
-          });
-          </script>
-
-        </div><!-- /thankyou -->
-      </div>
-    </div> <!-- .row -->
-    {% endif %}
 
     <div id="course_container">
       <div class="row">
