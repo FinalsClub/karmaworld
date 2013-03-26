@@ -22,6 +22,8 @@ $(function(){
     $('input#file_upload_input').click();
     // hide the add a note button
     $('#add-note-btn').hide();
+    // disable the save button -- it will be enabled when the upload is complete
+    $('#save-btn').addClass('disabled');
   });
 
 
