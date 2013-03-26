@@ -22,6 +22,8 @@ $(function(){
     $('input#file_upload_input').click();
     // hide the add a note button
     $('#add-note-btn').hide();
+    // disable the save button -- it will be enabled when the upload is complete
+    $('#save-btn').addClass('disabled');
   });
 
 
@@ -80,7 +82,7 @@ $(function(){
         console.log(String((100*loaded/total)+'%'));
         // Animate the progress bar
         $('#progress-fill').animate({
-          width: String((100*loaded/total)+'%')}, 5000);
+          width: String((100*loaded/total)+'%')}, 200);
         // fill out the filename
         $('#filename').text(fileName);
       },
