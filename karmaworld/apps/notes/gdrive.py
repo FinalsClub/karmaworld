@@ -5,6 +5,7 @@
 import datetime
 import mimetypes
 import os
+import time
 
 import httplib2
 from apiclient.discovery import build
@@ -49,7 +50,7 @@ def authorize():
 
 
 def accept_auth(code):
-    """ Callback endpoint for accepting the post `authorize()` google drive 
+    """ Callback endpoint for accepting the post `authorize()` google drive
         response, and generate a credentials object
         :code:  An authentication token from a WEB oauth dialog
         returns a oauth2client credentials object """
@@ -72,7 +73,7 @@ def check_and_refresh(creds, auth):
         :returns: updated creds and auth objects
     """
     if creds.token_expiry < datetime.datetime.utcnow():
-        # if we are passed the token expiry, 
+        # if we are passed the token expiry,
         # refresh the creds and store them
         http = httplib2.Http()
         http = creds.authorize(http)
@@ -87,6 +88,9 @@ def convert_with_google_drive(note):
         using Google Drive
         :note: a File model instance # FIXME
     """
+    # TODO: set the permission of the file to permissive so we can use the
+    #       gdrive_url to serve files directly to users
+
     # Get file_type and encoding of uploaded file
     # i.e: file_type = 'text/plain', encoding = None
     (file_type, encoding) = mimetypes.guess_type(note.note_file.path)
@@ -96,26 +100,20 @@ def convert_with_google_drive(note):
     # finally, Raise Exception
     # Extract file extension and compare it to EXT_TO_MIME dict
 
-    fileName, fileExtension = os.path.splitext(note.note_file.path)
 
-    if file_type == None:
-
-        if fileExtension.strip().lower() in EXT_TO_MIME:
-            file_type = EXT_TO_MIME[fileExtension.strip().lower()]
-        # If boy mimetypes.guess_type and EXT_TO_MIME fail to cover
-        # file, return error
-        else:
-            raise Exception('Unknown file type')
 
     resource = {
                 'title':    note.name,
-                'desc':     note.desc,
-                'mimeType': file_type
             }
-    # TODO: set the permission of the file to permissive so we can use the 
-    #       gdrive_url to serve files directly to users
-    media = MediaFileUpload(note.note_file.path, mimetype=file_type,
-                chunksize=1024*1024, resumable=True)
+
+
+    if file_type != None:
+        media = MediaFileUpload(note.note_file.path, mimetype=file_type,
+                    chunksize=1024*1024, resumable=True)
+
+    else:
+        media = MediaFileUpload(note.note_file.path,
+                    chunksize=1024*1024, resumable=True)
 
     auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]
     creds = auth.transform_to_cred()
@@ -127,7 +125,14 @@ def convert_with_google_drive(note):
 
     # Upload the file
     # TODO: wrap this in a try loop that does a token refresh if it fails
-    file_dict = service.files().insert(body=resource, media_body=media, convert=True).execute()
+    file_dict = service.files().insert(body=resource, media_body=media, convert=True, ocr=True).execute()
+
+    if u'exportLinks' not in file_dict:
+        # wait some seconds
+        # get the doc from gdrive
+        time.sleep(30)
+        file_dict = service.files().get(fileId=file_dict[u'id']).execute()
+
 
     # get the converted filetype urls
     download_urls = {}
