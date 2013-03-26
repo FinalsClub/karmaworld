@@ -529,7 +529,7 @@ a.activity_target:hover
   /* transition: ease-out ? ? ? */
 }
 
-.disabled
+#save-btn.disabled
 {
   color: #afafaf;
   cursor: auto;
