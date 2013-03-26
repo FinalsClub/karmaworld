@@ -82,7 +82,7 @@ $(function(){
         console.log(String((100*loaded/total)+'%'));
         // Animate the progress bar
         $('#progress-fill').animate({
-          width: String((100*loaded/total)+'%')}, 5000);
+          width: String((100*loaded/total)+'%')}, 200);
         // fill out the filename
         $('#filename').text(fileName);
       },
