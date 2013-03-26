@@ -111,6 +111,10 @@ class Command(BaseCommand):
             del note['id']
             del note['course_id']
 
+            # we need to re-generate the slug
+            if 'slug' in note:
+                del note['slug']
+
             n = Note(**note)
 
             n.course = courses_by_old_id[old_course_id]

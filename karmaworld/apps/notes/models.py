@@ -78,9 +78,17 @@ class Note(models.Model):
         # TODO: If self.name isn't set, generate one based on uploaded_name
         # if we fail to set the Note.name earlier than this, use the saved filename
 
+        # only generate a slug if the name has been set, and slug hasn't
         if not self.slug and self.name:
-            # only generate a slug if the name has been set, and slug hasn't
-            self.slug = defaultfilters.slugify(self.name)
+            slug = defaultfilters.slugify(self.name)
+            cursor = Note.objects.filter(slug=slug)
+            # If there are no other notes with this slug, then the slug does not need an id
+            if cursor.count() == 0:
+                self.slug = slug
+            else:
+                super(Note, self).save(*args, **kwargs) # generate self.id
+                self.slug = defaultfilters.slugify("%s %s" % (self.name, self.id))
+            super(Note, self).save(*args, **kwargs)
 
         # Check if Note.uploaded_at is after Course.updated_at
         if self.uploaded_at and self.uploaded_at > self.course.updated_at:
