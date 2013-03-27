@@ -123,9 +123,14 @@ def convert_with_google_drive(note):
 
     service, http = build_api_service(creds)
 
+    # get the file extension
+    filename, extension = os.path.splitext(note.note_file.path)
     # Upload the file
-    # TODO: wrap this in a try loop that does a token refresh if it fails
-    file_dict = service.files().insert(body=resource, media_body=media, convert=True, ocr=True).execute()
+    if extension.lower() in ['.pdf', '.jpg', '.png']:
+        # include OCR on ocr-able files
+        file_dict = service.files().insert(body=resource, media_body=media, convert=True, ocr=True).execute()
+    else:
+        file_dict = service.files().insert(body=resource, media_body=media, convert=True).execute()
 
     if u'exportLinks' not in file_dict:
         # wait some seconds
