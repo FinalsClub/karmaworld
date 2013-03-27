@@ -13,10 +13,19 @@
 {% endblock %}
 
 {% block pagescripts %}
-<script src="{{ STATIC_URL }}js/bootstrap-modal.js" ></script>
 <script src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
 <script>
 $(document).ready(function() {
+  // If there were form errors, open the form and jump to it
+  var jump_to_form = {% if jump_to_form %}true{% else%}false{% endif %};
+  if (jump_to_form) {
+    $("#add-course-form").show();
+    $('#add-course-btn').hide();
+    document.getElementById('add-course-form').scrollIntoView(true);
+  }
+
+
+  // load dataTable for course data
   $('#course_list').dataTable({
     // remove the default filter label
     'oLanguage': {
