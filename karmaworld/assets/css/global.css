@@ -529,6 +529,10 @@ a.activity_target:hover
   /* transition: ease-out ? ? ? */
 }
 
+#save-btn {
+  margin-top: 13px;
+}
+
 #save-btn.disabled
 {
   color: #afafaf;
@@ -769,6 +773,7 @@ hr.midrule
 legend
 {
   font: 12px/2em "MuseoSlab-300";
+  margin-top: 20px;
 }
 
 .qq-upload-button {
