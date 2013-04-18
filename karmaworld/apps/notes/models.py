@@ -12,8 +12,9 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.template import defaultfilters
-from taggit.managers import TaggableManager
+from lxml.html import fromstring, tostring
 from oauth2client.client import Credentials
+from taggit.managers import TaggableManager
 
 from karmaworld.apps.courses.models import Course
 
@@ -108,6 +109,31 @@ class Note(models.Model):
         else:
             # return a url ending in id
             return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.id)
+
+    def sanitize_html(self, save=True):
+        """ if self contains html, find all <a> tags and add target=_blank 
+            takes self
+            returns True/False on succ/fail and error or count
+        """
+        # build a tag sanitizer
+        def add_attribute_target(tag):
+            tag.attrib['target'] = '_blank'
+
+        # if no html, return false
+        if not self.html:
+            return False, "Note has no html"
+
+        _html = fromstring(self.html)
+        a_tags = _html.findall('.//a') # recursively find all a tags in document tree
+        # if there are a tags
+        if a_tags > 1:
+            #apply the add attribute function
+            map(add_attribute_target, a_tags)
+            self.html = _html
+            if save:
+                self.save()
+            return True, len(a_tags)
+
 
 
 class DriveAuth(models.Model):

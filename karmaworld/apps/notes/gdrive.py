@@ -166,5 +166,8 @@ def convert_with_google_drive(note):
     new_note.html = content_dict['html']
     new_note.text = content_dict['text']
 
+    # before we save new html, sanitize a tags in note.html
+    new_note.sanitize_html(save=False)
+
     # Finally, save whatever data we got back from google
     new_note.save()
