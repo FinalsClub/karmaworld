@@ -6,13 +6,25 @@
 <script src="{{ STATIC_URL }}js/lightbox-add-course.js"></script>
 
 <section id="add-course-form">
-  <form method="POST" action="{% url 'api_course_post' %}">
+  <form method="POST" action="{% url 'home' %}">
   {% csrf_token %}
+
+    <div class="row">
+      <div class="ten columns offset-by-one end">
+        {{ course_form.non_field.errors }}
+      </div>
+    </div>
+
 
     <div class="row">
       <div class="ten columns offset-by-one end">
         <legend>
           School
+         {% if course_form.school.errors %}
+          <span style="color:red">
+          * there was an error with this field
+          </span>
+         {% endif %}
         </legend>
         <div>
           <input id="str_school" class="" type="text" name="str_school"/>
@@ -23,7 +35,13 @@
 
     <div class="row">
       <div class="ten columns offset-by-one end">
-        <legend>Course Name: </legend>
+        <legend>Course Name: 
+          {% if course_form.name.errors %}
+            <span style="color:red">
+            * there was an error with this field
+            </span>
+          {% endif %}
+        </legend>
         <input id="id_name" class="" type="text" name="name" maxlength="255" />
       </div>
     </div> <!-- .row -->
@@ -32,6 +50,11 @@
       <div class="five columns offset-by-one">
         <legend class="">
           Instructor Name:
+          {% if course_form.instructor_name.errors %}
+            <span style="color:red">
+            * there was an error with this field
+            </span>
+          {% endif %}
         </legend><!-- -->
         <input id="id_instructor_name" class="" type="text" name="instructor_name" maxlength="75" />
       </div>
@@ -39,6 +62,11 @@
       <div class="five columns end">
         <legend class="">
           Instructor Email:
+          {% if course_form.instructor_email.errors %}
+            <span style="color:red">
+            * there was an error with this field
+            </span>
+          {% endif %}
         </legend>
         <input id="id_instructor_email" class="" type="text" name="instructor_email" maxlength="75" />
       </div><!--  -->
@@ -46,7 +74,13 @@
 
     <div class="row">
       <div class="ten columns offset-by-one end">
-        <legend>Course url:</legend>
+        <legend>Course url:
+          {% if course_form.url.errors %}
+            <span style="color:red">
+            * there was an error with this field
+            </span>
+          {% endif %}
+        </legend>
         <input id="id_url" class="" type="text" name="url" maxlength="255" />
       </div>
     </div> <!-- .row -->

@@ -738,6 +738,14 @@ p.text a
   font-size: 22px;
 }
 
+#course_name a {
+  color: black;
+}
+
+#course_name:hover a{
+  text-decoration: underline;
+}
+
 .doubleline
 {
   border: dotted black;
