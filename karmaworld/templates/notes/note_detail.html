@@ -38,14 +38,16 @@
 
       <div class="row">
         <div class="eight columns centered body_copy">
-
+          {% if note.html %}
           <div class="note-text">
             <iframe style="border:none; width:100%;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')">
             </iframe>
           </div> <!-- .note-text -->
-          <div class="note-error" style="display:none">
-            This document's content is currently unavailable. It's likely the document is still being processed. Please try again later.
+          {% else %}
+          <div class="note-error">
+            This document's content is currently unavailable. Please try again later.
           </div>
+          {% endif %}
 
         </div><!-- /body_copy -->
       </div>
