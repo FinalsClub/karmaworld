@@ -41,7 +41,13 @@
 
       <div class="row">
         <div id="course_name" class="twelve columns">
+          {% if course.url %}
+          <a rel="nofollow" href="{{ course.url }}">
+            {{ course.name }}
+          </a>
+          {% else %}
           {{ course.name }}
+          {% endif %}
         </div><!-- /note_name -->
       </div>
 
