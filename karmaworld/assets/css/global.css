@@ -358,19 +358,19 @@ input[type="text"]:focus, textarea:focus
 
   /* useful if you don't want a bg color from leaking outside the border: */
   -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
-  background-color: #ebebeb;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#cfcfcf)); /* Safari 4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #ebebeb, #cfcfcf); /* Chrome 10+, Safari 5.1+, iOS 5+ */
-  background-image:    -moz-linear-gradient(top, #ebebeb, #cfcfcf); /* Firefox 3.6-15 */
-  background-image:      -o-linear-gradient(top, #ebebeb, #cfcfcf); /* Opera 11.10-12.00 */
-  background-image:         linear-gradient(to bottom, #ebebeb, #cfcfcf); /* Firefox 16+, IE10, Opera 12.50+ */
-  border-top: solid 1px #fefefe;
-  color: #f05a28;
-  font-family: "MuseoSlab-700";
+  background-color: #dadada;
+  /*border-top: solid 1px #fefefe;*/
+  color: #000000;
+  font-family: "MuseoSlab-300";
   font-size: 16px;
   text-align: center;
   padding: 10px 19px;
   cursor: pointer;
+  border: 1px solid black;
+}
+.inverted_button:hover
+{
+  color:#f1592a;
 }
 
 .button_arrow
