@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
+""" Controller for the KarmaNotes website """
 
 from django.contrib import admin
 from django.conf.urls.defaults import patterns, include, url
-from django.views.generic import ListView
 from django.views.generic.simple import direct_to_template
 
 from karmaworld.apps.ajaxuploader.views import ajax_uploader
