@@ -109,39 +109,7 @@
         <div class="ten columns offset-by-one">
 
           {% for note in course.note_set.all %}
-
-          <div class="row notes_result_container wide">
-            <div class="twelve columns notes_result">
-
-              <div class="note_name">
-                <a href="{{ note.get_absolute_url }}" class="activity_target">{{ note.name }}</a>
-              </div>
-
-              <time datetime="{{ note.uploaded_at }}">
-                {{ note.uploaded_at|date:"l M d o" }}
-              </time>
-
-              {% if note.tags.count > 0 %}
-              <div class="activity_details_context">
-                Tags:
-                  {% for tag in note.tags.all %}
-                    {{ tag.name }}
-                    {% if not forloop.last %}, {% endif %}
-                  {% endfor %}
-              </div>
-              {% endif %}
-
-
-              <div class="note_preview">
-                {{ note.text|slice:":500" }} &hellip;
-              </div>
-
-
-            </div><!-- /notes_result -->
-          </div><!-- /notes_result_container -->
-
-          <hr class=midrule>
-
+            {% include 'notes/note_list_entry.html' with note=note %}
           {% endfor %}
         </div>
       </div>
