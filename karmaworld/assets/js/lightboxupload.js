@@ -1,5 +1,24 @@
 $(function(){
 
+  var showForm = function() {
+    $('#add-note-form').show();
+    $('#add-note-btn').hide();
+  };
+  var hideForm = function() {
+    $('#add-note-form').hide();
+    $('#add-note-btn').show();
+  };
+
+  // some but not all validation happens here
+  var validateAndSubmit = function() {
+    var year = $('#id_year').val()
+    if (year.match(/\d{4}/) || year === '') {
+      $('form#add-note').submit();
+    } else {
+      $("#id_year").css({'background-color': '#f05a28'});
+      console.log('Date is invalid');
+    };
+  };
 
   // check if we arrived at this page planning on uploading a note
   if(window.location.hash) {
@@ -7,30 +26,24 @@ $(function(){
     // Get the first hash, remove the # character
     var hash = window.location.hash.substring(1);
     if (hash === 'upload-note'){
-      $('#add-note-form').show();
-      $('#add-note-btn').hide();
+      showForm();
     }
   }
 
   $('#add-note-btn').click(function(){
     // hide the thankyou message on add-another uploads
     $('#thankyou-wrapper').hide();
-    // show the add note form
-    // TODO: rewrite to .show the form with a slide transition
-    $('#add-note-form').show();
+    showForm();
     // Bring up the file picker automatically
     $('input#file_upload_input').click();
-    // hide the add a note button
-    $('#add-note-btn').hide();
     // disable the save button -- it will be enabled when the upload is complete
     $('#save-btn').addClass('disabled');
   });
 
 
   // Dismiss x click
-  $(".icon-remove-circle").click(function() {
-    $("#add-note-form").hide();
-    $('#add-note-btn').show();
+  $(".icon-remove-sign").click(function() {
+    hideForm();
   });
 
   var uploader = new qq.FileUploader( {
@@ -60,22 +73,18 @@ $(function(){
           $('form#add-note').attr('action', responseJSON.note_url);
           // inform the user of success
           $('#add-note-status').text('Uploaded');
-          // TODO: activate the save button
+          // activate the save button
           $('#save-btn').removeClass('disabled');
-          // add the save url to form as ACTION
-
           // add a click handler to submit the add-note form
           $('#save-btn').click(function(){
-            $('form#add-note').submit();
+            validateAndSubmit();
           });
-
         }
       },
       onAllComplete: function( uploads ) {
         // uploads is an array of maps
         // the maps look like this: { file: FileObject, response: JSONServerResponse }
-        console.log( "All complete!" ) ;
-        // TODO: set a success state
+        console.log( "All complete!" );
       },
       onProgress: function(id, fileName, loaded, total) {
         console.log("running onProgress " + fileName + " " + loaded);
@@ -85,6 +94,7 @@ $(function(){
           width: String((100*loaded/total)+'%')}, 200);
         // fill out the filename
         $('#filename').text(fileName);
+        $('#id_name').attr('placeholder', fileName);
       },
       params: {
         'csrf_token': csrf_token,
