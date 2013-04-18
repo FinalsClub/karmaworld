@@ -6,7 +6,7 @@ KarmaWorld
 :License: GPLv3 except where otherwise noted
 :Contact: info@karmanotes.org
 
-v3.0 of the karmanotes.org website from the FinalsClub 
+v3.0 of the karmanotes.org website from the FinalsClub Foundation
 
 
 
@@ -14,7 +14,7 @@ v3.0 of the karmanotes.org website from the FinalsClub
 Purpose
 =======
 
-TODO: Explain what problems KarmaNotes is solving
+KarmaNotes is an online database of college lecture notes.  KarmaNotes empowers college students to participate in the free exchange of knowledge. 
 
 Docs
 ====
@@ -45,7 +45,7 @@ you don't, you can use the HTTP URL:
    ``karmaworld/settings/``.
 
 4. Make sure that you're in the root of the project that you just cloned and
-   run::
+   run
 
         fab here first_deploy
 
@@ -57,6 +57,6 @@ the database tables.
 Thanks
 ======
 
-* TODO: Add funders
-* [rdegges](https://github.com/rdegges/django-skel) for the django-skel template
+* KarmaNotes.org is a project of the FinalsClub Foundation with generous funding from the William and Flora Hewlett Foundation
 
+* Also thanks to [rdegges](https://github.com/rdegges/django-skel) for the django-skel template
