@@ -82,9 +82,3 @@ class RawNoteDetailView(DetailView):
     template_name = u'notes/note_raw.html'
     context_object_name = u"note"
     model = Note
-
-
-def raw_file(request, pk):
-    """ Display the raw html from a Note object for embedding in an iframe """
-    note = get_object_or_404(Note, pk=pk)
-    return HttpResponse(note.html)

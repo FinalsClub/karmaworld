@@ -14,7 +14,7 @@ from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.courses.views import CourseSaveView
 from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.notes.views import NoteView
-from karmaworld.apps.notes.views import raw_file
+from karmaworld.apps.notes.views import RawNoteDetailView
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 admin.autodiscover()
@@ -33,7 +33,7 @@ urlpatterns = patterns('',
     url(r'^about/$', AboutView.as_view(), name='about'),
 
     # VIEW for viewing a Note's gdrive generated html, used as iframe
-    url(r'^raw/(?P<pk>\d+)$', raw_file, name='note_raw'),
+    url(r'^raw/(?P<pk>\d+)$', RawNoteDetailView.as_view(), name='note_raw'),
 
     # VIEW for displaying a single Course
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[-A-Za-z0-9_]+)$', \
