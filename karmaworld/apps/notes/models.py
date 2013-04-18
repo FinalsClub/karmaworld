@@ -110,7 +110,7 @@ class Note(models.Model):
             # return a url ending in id
             return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.id)
 
-    def sanitize_html(self):
+    def sanitize_html(self, save=True):
         """ if self contains html, find all <a> tags and add target=_blank 
             takes self
             returns True/False on succ/fail and error or count
@@ -130,7 +130,8 @@ class Note(models.Model):
             #apply the add attribute function
             map(add_attribute_target, a_tags)
             self.html = _html
-            self.save()
+            if save:
+                self.save()
             return True, len(a_tags)
 
 
