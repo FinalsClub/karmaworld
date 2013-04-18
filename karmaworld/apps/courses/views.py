@@ -25,18 +25,14 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
 
     def get_context_data(self, **kwargs):
         """ Add the CourseForm to ListView context """
-        print "CourseListView context data getting"
-        # self.get() populates the object_list, fix this for form POST and redirect
         # get the original context
         context = super(CourseListView, self).get_context_data(**kwargs)
-        print "returned context and getting course_form"
         context['course_form'] = kwargs.get('course_form', CourseForm())
         if context['course_form'].errors:
             # if there was an error in the form
             context['jump_to_form'] = True
 
         return context
-
 
     def get_success_url(self):
         """ On form submission success, redirect to what url """
