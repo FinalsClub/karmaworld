@@ -50,7 +50,7 @@ class NoteSaveView(FormView, SingleObjectMixin):
             namely, saving the new data to the existing note object
         """
         self.object = self.get_object()
-        if len(form.cleaned_data['name']) > 0:
+        if len(form.cleaned_data['name'].strip()) > 0:
             self.object.name = form.cleaned_data['name']
         self.object.year = form.cleaned_data['year']
         # use *arg expansion to pass tags a list of tags
