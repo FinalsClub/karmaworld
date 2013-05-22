@@ -59,6 +59,9 @@ $(function() {
       console.log(ui.item.value);
       console.log("name");
       console.log(ui.item.label);
+      // don't let the user edit the field anymore
+      //$('#str_school').attr('readonly', true);
+
       // set the school id as the value of the hidden field
       $('#id_school').val(ui.item.real_value);
       // set the School name as the textbox field

@@ -19,13 +19,15 @@ Production Requirements:
 
 Before we begin, we are going to need a few commonly installed tools:
 
-    sudo apt-get install git-core make gcc libmemcached-dev python-pip
+    sudo apt-get install git-core make gcc libmemcached-dev python-pip  libxml2-dev python-dev libxslt-dev
+
     sudo pip install pip --upgrade # upgrade pip to the latest pip for our version of python
+
     sudo pip install virtualenv
 
 If we are in a production environment, we need:
 
-      sudo apt-get install rabbitmq-server postgresql-server
+      sudo apt-get install rabbitmq-server postgresql-server postgresql-server-dev-9.1
 
 
 0. Check out code
