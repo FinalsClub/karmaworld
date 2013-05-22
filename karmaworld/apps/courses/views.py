@@ -15,6 +15,7 @@ from django.views.generic.list import ListView
 from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
+from karmaworld.apps.notes.models import Note
 
 
 class CourseListView(ListView, ModelFormMixin, ProcessFormView):
@@ -27,6 +28,9 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
         """ Add the CourseForm to ListView context """
         # get the original context
         context = super(CourseListView, self).get_context_data(**kwargs)
+        # get the total number of notes
+        context['note_count'] = Note.objects.count()
+        # get the course form for the form at the bottom of the homepage
         context['course_form'] = kwargs.get('course_form', CourseForm())
         if context['course_form'].errors:
             # if there was an error in the form
