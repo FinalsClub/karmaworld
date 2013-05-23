@@ -162,3 +162,31 @@ a more reliable experience to the user.
 
 
 See $SRC_ROOT/docs/source/secrets.rst
+
+5. Celeryd setup
+--------------------------------------
+
+At the writing of this documentation, celeryd management
+does NOT currently work with our fabric configuration.
+
+In order to deploy celery, we need to add an init script
+to:
+
+	/etc/init.d
+	
+this script can be found in $SRC_ROOT/bin/celeryd . Just make sure
+to modify:
+
+	DJANGO_PROJECT_DIR
+	VIRTUAL_ENV
+	
+Also note that permissions for /var/run/*.pid and /var/log/*.log need
+to be fixed for the user that is running celeryd. 
+
+Run celeryd by:
+
+	sudo service celeryd start
+	
+Stop celeryd by:
+
+	sudo service celeryd stop
