@@ -95,13 +95,6 @@ def convert_with_google_drive(note):
     # i.e: file_type = 'text/plain', encoding = None
     (file_type, encoding) = mimetypes.guess_type(note.note_file.path)
 
-    # If mimetype cannot be guessed
-    # Check against known issues, then
-    # finally, Raise Exception
-    # Extract file extension and compare it to EXT_TO_MIME dict
-
-
-
     resource = {
                 'title':    note.name,
             }
@@ -126,7 +119,7 @@ def convert_with_google_drive(note):
     # get the file extension
     filename, extension = os.path.splitext(note.note_file.path)
     # Upload the file
-    if extension.lower() in ['.pdf', '.jpg', '.png']:
+    if extension.lower() in ['.pdf', '.jpeg', '.jpg', '.png']:
         # include OCR on ocr-able files
         file_dict = service.files().insert(body=resource, media_body=media, convert=True, ocr=True).execute()
     else:
