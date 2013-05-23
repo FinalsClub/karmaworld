@@ -179,4 +179,8 @@ table#course_list tr:hover td div.upload {
   visibility: visible;
 }
 
-
+/* OPENTIP configuration */
+.ot-content {
+  font-family: "MuseoSlab-300";
+  font-size: 18px;
+}

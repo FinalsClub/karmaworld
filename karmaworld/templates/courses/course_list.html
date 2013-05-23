@@ -10,10 +10,12 @@
 <!-- <link rel="stylesheet" href="{{ STATIC_URL }}css/responsive-tables.css"> -->
 <link rel="stylesheet" href="{{ STATIC_URL }}css/course_list_table.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css"> <!-- dataTables -->
+<link rel="stylesheet" href="{{ STATIC_URL }}css/vendor/opentip.css"> <!-- opentip -->
 {% endblock %}
 
 {% block pagescripts %}
 <script src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script src="{{ STATIC_URL }}js/opentip-jquery-excanvas.min.js"></script>
 <script>
 $(document).ready(function() {
   // If there were form errors, open the form and jump to it
@@ -128,7 +130,21 @@ $(document).ready(function() {
             <td class="date slim">        {{ course.updated_at|date:"F d, o" }} </td> <!-- https://docs.djangoproject.com/en/1.4/ref/templates/builtins/#date -->
             <td class="note-count slim">  {{ course.file_count }} </td>
             <td class="course-name">      <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> </td>
-            <td class="upload">           <div class="upload"><a href="{{ course.get_absolute_url }}#upload-note"><i class="icon-upload"></i></a></div></td>
+            <td class="upload">
+              <div class="upload">
+                <a href="{{ course.get_absolute_url }}#upload-note">
+                  <i
+                    data-ot="Upload directly to this course"
+                    data-ot-target="true"
+                    data-ot-tip-joint="top center"
+                    data-ot-target-joint="bottom center"
+                    data-ot-background="white"
+                    data-ot-border-color="black"
+                    class="icon-upload opentip"></i>
+                </a>
+              </div>
+
+            </td>
             <td class="school-name">      {{ course.school.name }} </td>
             <td class="instructor-name">  {{ course.instructor_name }} </td>
           </tr>
