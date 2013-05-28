@@ -35,19 +35,34 @@
 
     </div><!-- /course_header -->
     <div id="note_container">
+      {% if  note.file_type == 'pdf' %}
+        <!-- Add pdf.js -->
+        <script>
+          //var DEFAULT_URL = '{{ note.note_file.url }}';
+          var DEFAULT_URL = '{{ STATIC_URL }}Letter_to_Ishman_Click_5-14.pdf';
+        </script>
+        <script type="text/javascript" src="{{ STATIC_URL }}vendor/js/pdf.js"></script>
+        <script src="{{ STATIC_URL }}vendor/js/viewer.js"></script>
+        <link rel="stylesheet" href="{{ STATIC_URL }}vendor/css/viewer.css"> <!-- pdfjs.css -->
+        {% include 'partial/pdfembed.html' %}
+
+      {% else %} {# note.filetype == 'pdf' #}
 
       <div class="row">
         <div class="eight columns centered body_copy">
           {% if note.html %}
-          <div class="note-text">
-            <iframe style="border:none; width:100%;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')">
-            </iframe>
-          </div> <!-- .note-text -->
-          {% else %}
-          <div class="note-error">
-            This document's content is currently unavailable. Please try again later.
-          </div>
-          {% endif %}
+            <div class="note-text">
+              <iframe style="border:none; width:100%;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')">
+              </iframe>
+            </div> <!-- .note-text -->
+
+          {% else %} {# note.html #}
+            <div class="note-error">
+              This document's content is currently unavailable. Please try again later.
+            </div>
+          {% endif %} {# note.html #}
+
+      {% endif %} {# note.filetype == 'pdf' #}
 
         </div><!-- /body_copy -->
       </div>

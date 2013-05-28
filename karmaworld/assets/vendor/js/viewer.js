@@ -18,7 +18,7 @@
 
 'use strict';
 
-var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
+//var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
 var DEFAULT_SCALE = 'auto';
 var DEFAULT_SCALE_DELTA = 1.1;
 var UNKNOWN_SCALE = 0;
@@ -43,7 +43,7 @@ var FindStates = {
   FIND_PENDING: 3
 };
 
-  PDFJS.workerSrc = 'pdf.js';
+  PDFJS.workerSrc = '/static/vendor/js/pdf.js';
 
 var mozL10n = document.mozL10n || document.webL10n;
 
@@ -608,17 +608,15 @@ var PDFFindBar = {
         break;
 
       case FindStates.FIND_NOTFOUND:
-        findMsg = mozL10n.get('find_not_found', null, 'Phrase not found');
+        findMsg = 'Phrase not found';
         notFound = true;
         break;
 
       case FindStates.FIND_WRAPPED:
         if (previous) {
-          findMsg = mozL10n.get('find_reached_top', null,
-                      'Reached top of document, continued from bottom');
+          findMsg = 'Reached top of document, continued from bottom';
         } else {
-          findMsg = mozL10n.get('find_reached_bottom', null,
-                                'Reached end of document, continued from top');
+          findMsg = 'Reached end of document, continued from top';
         }
         break;
     }
@@ -1213,8 +1211,7 @@ var PDFView = {
           break;
         case 'complete':
           if (!args.data) {
-            PDFView.error(mozL10n.get('loading_error', null,
-                          'An error occurred while loading the PDF.'), e);
+            PDFView.error( 'An error occurred while loading the PDF.', e);
             break;
           }
           PDFView.open(args.data, 0);
@@ -1263,12 +1260,10 @@ var PDFView = {
     var self = this;
     self.loading = true;
     var passwordNeeded = function passwordNeeded(updatePassword, reason) {
-      var promptString = mozL10n.get('request_password', null,
-                                'PDF is protected by a password:');
+      var promptString = 'PDF is protected by a password:';
 
       if (reason === PDFJS.PasswordResponses.INCORRECT_PASSWORD) {
-        promptString += '\n' + mozL10n.get('invalid_password', null,
-                                'Invalid Password.');
+        promptString += '\n' + 'Invalid Password.';
       }
 
       password = prompt(promptString);
@@ -1283,19 +1278,16 @@ var PDFView = {
         self.loading = false;
       },
       function getDocumentError(message, exception) {
-        var loadingErrorMessage = mozL10n.get('loading_error', null,
-          'An error occurred while loading the PDF.');
+        var loadingErrorMessage = 'An error occurred while loading the PDF.';
 
         if (exception && exception.name === 'InvalidPDFException') {
           // change error message also for other builds
-          var loadingErrorMessage = mozL10n.get('invalid_file_error', null,
-                                        'Invalid or corrupted PDF file.');
+          var loadingErrorMessage = 'Invalid or corrupted PDF file.';
         }
 
         if (exception && exception.name === 'MissingPDFException') {
           // special message for missing PDF's
-          var loadingErrorMessage = mozL10n.get('missing_file_error', null,
-                                        'Missing PDF file.');
+          var loadingErrorMessage = 'Missing PDF file.';
 
         }
 
@@ -1450,27 +1442,19 @@ var PDFView = {
    *                            and optionally a 'stack' property.
    */
   error: function pdfViewError(message, moreInfo) {
-    var moreInfoText = mozL10n.get('error_version_info',
-      {version: PDFJS.version || '?', build: PDFJS.build || '?'},
-      'PDF.js v{{version}} (build: {{build}})') + '\n';
+    var moreInfoText = 'PDF.js v{{version}} (build: {{build}})';
     if (moreInfo) {
-      moreInfoText +=
-        mozL10n.get('error_message', {message: moreInfo.message},
-        'Message: {{message}}');
+      moreInfoText += 'Message: {{message}}' + moreInfo.message;
       if (moreInfo.stack) {
         moreInfoText += '\n' +
-          mozL10n.get('error_stack', {stack: moreInfo.stack},
-          'Stack: {{stack}}');
+          'Stack: {{stack}}' + moreInfo.stack;
       } else {
         if (moreInfo.filename) {
           moreInfoText += '\n' +
-            mozL10n.get('error_file', {file: moreInfo.filename},
-            'File: {{file}}');
+            'File: {{file}}' + moreInfo.filename
         }
         if (moreInfo.lineNumber) {
-          moreInfoText += '\n' +
-            mozL10n.get('error_line', {line: moreInfo.lineNumber},
-            'Line: {{line}}');
+          moreInfoText += '\n' + 'Line: {{line}}' + moreInfo.lineNumber;
         }
       }
     }
@@ -1553,7 +1537,7 @@ var PDFView = {
     var pagesCount = pdfDocument.numPages;
     var id = pdfDocument.fingerprint;
     document.getElementById('numPages').textContent =
-      mozL10n.get('page_of', {pageCount: pagesCount}, 'of {{pageCount}}');
+      'of ' + pagesCount;
     document.getElementById('pageNumber').max = pagesCount;
 
     PDFView.documentFingerprint = id;
@@ -1994,8 +1978,7 @@ var PDFView = {
 
   beforePrint: function pdfViewSetupBeforePrint() {
     if (!this.supportsPrinting) {
-      var printMessage = mozL10n.get('printing_not_supported', null,
-          'Warning: Printing is not fully supported by this browser.');
+      var printMessage = 'Warning: Printing is not fully supported by this browser.';
       this.error(printMessage);
       return;
     }
@@ -2012,8 +1995,7 @@ var PDFView = {
       }
     }
     if (alertNotReady) {
-      var notReadyMessage = mozL10n.get('printing_not_ready', null,
-          'Warning: The PDF is not fully loaded for printing.');
+      var notReadyMessage = 'Warning: The PDF is not fully loaded for printing.';
       window.alert(notReadyMessage);
       return;
     }
@@ -2305,7 +2287,7 @@ var PageView = function pageView(container, id, scale,
         }
 
         var element = annotation.getHtmlElement(pdfPage.commonObjs);
-        mozL10n.translate(element);
+        //mozL10n.translate(element);
 
         data = annotation.getData();
         var rect = data.rect;
@@ -2502,8 +2484,7 @@ var PageView = function pageView(container, id, scale,
       }
 
       if (error) {
-        PDFView.error(mozL10n.get('rendering_error', null,
-          'An error occurred while rendering the page.'), error);
+        PDFView.error('An error occurred while rendering the page.', error);
       }
 
       self.stats = pdfPage.stats;
@@ -2632,7 +2613,7 @@ var PageView = function pageView(container, id, scale,
 var ThumbnailView = function thumbnailView(container, id, defaultViewport) {
   var anchor = document.createElement('a');
   anchor.href = PDFView.getAnchorUrl('#page=' + id);
-  anchor.title = mozL10n.get('thumb_page_title', {page: id}, 'Page {{page}}');
+  anchor.title = 'Page ' + id;
   anchor.onclick = function stopNavigation() {
     PDFView.page = id;
     return false;
@@ -2720,8 +2701,7 @@ var ThumbnailView = function thumbnailView(container, id, defaultViewport) {
     canvas.width = this.canvasWidth;
     canvas.height = this.canvasHeight;
     canvas.className = 'thumbnailImage';
-    canvas.setAttribute('aria-label', mozL10n.get('thumb_page_canvas',
-      {page: id}, 'Thumbnail of Page {{page}}'));
+    canvas.setAttribute('aria-label', 'Thumbnail of Page ' + id);
 
     div.setAttribute('data-loaded', true);
 
@@ -3259,10 +3239,12 @@ document.addEventListener('DOMContentLoaded', function webViewerLoad(evt) {
     PDFJS.disableFontFace = (hashParams['disableFontFace'] === 'true');
   }
 
-  var locale = navigator.language;
-  if ('locale' in hashParams)
-    locale = hashParams['locale'];
-  mozL10n.setLanguage(locale);
+  /*
+   *var locale = navigator.language;
+   *if ('locale' in hashParams)
+   *  locale = hashParams['locale'];
+   *mozL10n.setLanguage(locale);
+   */
 
   if ('textLayer' in hashParams) {
     switch (hashParams['textLayer']) {
@@ -3539,7 +3521,7 @@ function selectScaleOption(value) {
 }
 
 window.addEventListener('localized', function localized(evt) {
-  document.getElementsByTagName('html')[0].dir = mozL10n.getDirection();
+  document.getElementsByTagName('html')[0].dir = 'ltr';
 
   // Adjust the width of the zoom box to fit the content.
   PDFView.animationStartedPromise.then(
