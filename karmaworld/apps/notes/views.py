@@ -94,7 +94,9 @@ class RawNoteDetailView(DetailView):
     context_object_name = u"note"
     model = Note
 
-class PDFView(TemplateView):
-    """ A testing view to render a PDF """
+
+class PDFView(DetailView):
+    """ Render PDF files in an iframe based on ID"""
     template_name = u'partial/pdfembed.html'
+    model = Note
 
