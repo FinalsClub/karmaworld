@@ -2,10 +2,12 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 
+from django.contrib.sites.models import Site
 from django.http import HttpResponse
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import View
+from django.views.generic import TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.shortcuts import get_object_or_404
 
@@ -17,6 +19,14 @@ class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
     model = Note
     context_object_name = u"note" # name passed to template
+
+    def get_context_data(self, **kwargs):
+        """ add the hostname to the PDF embed for PDF.js
+            from the Sites admin database record """
+        kwargs = {
+            'hostname': Site.objects.get_current()
+        }
+        return super(NoteDetailView, self).get_context_data(**kwargs)
 
 
 class NoteSaveView(FormView, SingleObjectMixin):
@@ -83,3 +93,8 @@ class RawNoteDetailView(DetailView):
     template_name = u'notes/note_raw.html'
     context_object_name = u"note"
     model = Note
+
+class PDFView(TemplateView):
+    """ A testing view to render a PDF """
+    template_name = u'partial/pdfembed.html'
+
