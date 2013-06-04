@@ -15,6 +15,7 @@ from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.notes.views import NoteView
 from karmaworld.apps.notes.views import RawNoteDetailView
+from karmaworld.apps.notes.views import PDFView
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 admin.autodiscover()
@@ -53,5 +54,6 @@ urlpatterns = patterns('',
     url(r'^school/list/$', school_list, name='json_school_list'),
     # ---- end JSON views ----#
 
+    url(r'^pdftest$', PDFView.as_view(), name='pdf'),
     url(r'^$', CourseListView.as_view(model=Course), name='home'),
 )
