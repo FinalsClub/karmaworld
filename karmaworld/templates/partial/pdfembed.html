@@ -8,6 +8,16 @@
   </div> <!-- mainContainer -->
 </div> <!-- outerContainer -->
 {% endcomment %}
+
+<script>
+  //var DEFAULT_URL = '{{ note.note_file.url }}';
+  //var DEFAULT_URL = '{{ STATIC_URL }}Letter_to_Ishman_Click_5-14.pdf';
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}vendor/js/pdf.js"></script>
+<script src="{{ STATIC_URL }}vendor/js/viewer.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}vendor/css/viewer.css"> <!-- pdfjs.css -->
+
+<div id=pdf-wrapper>
 <!-- PDFviewer start -->
     <div id="outerContainer" class="loadingInProgress">
 
