@@ -37,14 +37,18 @@
     <div id="note_container">
       {% if  note.file_type == 'pdf' %}
         <!-- Add pdf.js -->
-        <script>
-          //var DEFAULT_URL = '{{ note.note_file.url }}';
-          var DEFAULT_URL = '{{ STATIC_URL }}Letter_to_Ishman_Click_5-14.pdf';
-        </script>
-        <script type="text/javascript" src="{{ STATIC_URL }}vendor/js/pdf.js"></script>
-        <script src="{{ STATIC_URL }}vendor/js/viewer.js"></script>
-        <link rel="stylesheet" href="{{ STATIC_URL }}vendor/css/viewer.css"> <!-- pdfjs.css -->
+        <div class="row">
+          <div class="twelve columns">
+            <iframe
+                style="border:none; width:100%; min-height: 700px; margins:auto" 
+                id="noteframe" 
+                src="/pdfview?file='http://{{ hostname|urlencode }}{{ note.note_file.url|urlencode }}'" 
+                onload="autoResize('noteframe')"> </iframe>
+          </div>
+        </div> <!-- .row -->
+        {% comment %}
         {% include 'partial/pdfembed.html' %}
+        {% endcomment %}
 
       {% else %} {# note.filetype == 'pdf' #}
 
@@ -52,8 +56,7 @@
         <div class="eight columns centered body_copy">
           {% if note.html %}
             <div class="note-text">
-              <iframe style="border:none; width:100%;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')">
-              </iframe>
+              <iframe style="border:none; width:100%;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')"> </iframe>
             </div> <!-- .note-text -->
 
           {% else %} {# note.html #}
