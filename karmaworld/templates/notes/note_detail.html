@@ -41,9 +41,10 @@
           <div class="twelve columns">
             <iframe
                 style="border:none; width:100%; min-height: 700px; margins:auto" 
-                id="noteframe" 
-                src="/pdfview?file='http://{{ hostname|urlencode }}{{ note.note_file.url|urlencode }}'" 
+                id="noteframe"
+                src="/pdfview/{{ note.id }}"
                 onload="autoResize('noteframe')"> </iframe>
+                <!--src="/pdfview?file={{ "http://"|urlencode }}{{ hostname|urlencode }}{{ note.note_file.url|urlencode }}"  -->
           </div>
         </div> <!-- .row -->
         {% comment %}
