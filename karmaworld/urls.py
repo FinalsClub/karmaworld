@@ -54,6 +54,6 @@ urlpatterns = patterns('',
     url(r'^school/list/$', school_list, name='json_school_list'),
     # ---- end JSON views ----#
 
-    url(r'^pdftest$', PDFView.as_view(), name='pdf'),
+    url(r'^pdfview$', PDFView.as_view(), name='pdf'),
     url(r'^$', CourseListView.as_view(model=Course), name='home'),
 )
