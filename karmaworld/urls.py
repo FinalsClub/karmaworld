@@ -35,6 +35,8 @@ urlpatterns = patterns('',
 
     # VIEW for viewing a Note's gdrive generated html, used as iframe
     url(r'^raw/(?P<pk>\d+)$', RawNoteDetailView.as_view(), name='note_raw'),
+    #url(r'^pdfview$', PDFView.as_view(), name='pdf'),
+    url(r'^pdfview/(?P<pk>\d+)$', PDFView.as_view(), name='pdf'),
 
     # VIEW for displaying a single Course
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[-A-Za-z0-9_]+)$', \
@@ -54,6 +56,5 @@ urlpatterns = patterns('',
     url(r'^school/list/$', school_list, name='json_school_list'),
     # ---- end JSON views ----#
 
-    url(r'^pdfview$', PDFView.as_view(), name='pdf'),
     url(r'^$', CourseListView.as_view(model=Course), name='home'),
 )
