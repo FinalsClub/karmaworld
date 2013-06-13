@@ -43,7 +43,7 @@ var FindStates = {
   FIND_PENDING: 3
 };
 
-  PDFJS.workerSrc = '/static/vendor/js/pdf.js';
+PDFJS.workerSrc = '../static/vendor/js/pdf.js';
 
 var mozL10n = document.mozL10n || document.webL10n;
 
