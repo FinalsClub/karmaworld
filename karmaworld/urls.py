@@ -4,6 +4,7 @@
 """ Controller for the KarmaNotes website """
 
 from django.contrib import admin
+from django.conf import settings
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic.simple import direct_to_template
 
@@ -37,6 +38,10 @@ urlpatterns = patterns('',
     url(r'^raw/(?P<pk>\d+)$', RawNoteDetailView.as_view(), name='note_raw'),
     #url(r'^pdfview$', PDFView.as_view(), name='pdf'),
     url(r'^pdfview/(?P<pk>\d+)$', PDFView.as_view(), name='pdf'),
+
+    # Media handling
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', 
+            {'document_root': settings.MEDIA_ROOT, }),
 
     # VIEW for displaying a single Course
     url(r'^(?P<school_slug>[^/]+)/(?P<slug>[-A-Za-z0-9_]+)$', \
