@@ -2,6 +2,9 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 
+import os
+
+from django.conf import settings
 from django.contrib.sites.models import Site
 from django.http import HttpResponse
 from django.views.generic import DetailView
@@ -21,11 +24,21 @@ class NoteDetailView(DetailView):
     context_object_name = u"note" # name passed to template
 
     def get_context_data(self, **kwargs):
-        """ add the hostname to the PDF embed for PDF.js
-            from the Sites admin database record """
-        kwargs = {
-            'hostname': Site.objects.get_current()
-        }
+        """ Generate custom context for the page rendering a Note
+            + if pdf, set the `pdf` flag
+        """
+        #kwargs['file_url'] = os.path.basename(_path)
+        #kwargs['hostname'] = Site.objects.get_current()
+
+        def is_pdf(self):
+            _path = self.object.note_file.name
+            _, _extension = os.path.splitext(_path)
+            if _extension.lower() == '.pdf':
+                return True
+            return False
+
+        kwargs['pdf'] = is_pdf(self)
+
         return super(NoteDetailView, self).get_context_data(**kwargs)
 
 
@@ -100,3 +113,13 @@ class PDFView(DetailView):
     template_name = u'partial/pdfembed.html'
     model = Note
 
+    def get_context_data(self, **kwargs):
+        """ Generate a path to the pdf file associated with this note
+            by generating a path to the MEDIA_URL by hand """
+        # FIXME: There may be an undocumented,
+        #   but better way of handling media files in django
+
+        kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
+            os.path.basename(self.object.note_file.name))
+
+        return super(PDFView, self).get_context_data(**kwargs)
