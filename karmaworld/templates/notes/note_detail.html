@@ -35,7 +35,7 @@
 
     </div><!-- /course_header -->
     <div id="note_container">
-      {% if  note.file_type == 'pdf' %}
+      {% if  pdf %}
         <!-- Add pdf.js -->
         <div class="row">
           <div class="twelve columns">
@@ -44,14 +44,15 @@
                 id="noteframe"
                 src="/pdfview/{{ note.id }}"
                 onload="autoResize('noteframe')"> </iframe>
-                <!--src="/pdfview?file={{ "http://"|urlencode }}{{ hostname|urlencode }}{{ note.note_file.url|urlencode }}"  -->
           </div>
         </div> <!-- .row -->
+
         {% comment %}
+        # TODO: embed and pass the url with this included when we fix the css integration issues
         {% include 'partial/pdfembed.html' %}
         {% endcomment %}
 
-      {% else %} {# note.filetype == 'pdf' #}
+      {% else %} {# if pdf #}
 
       <div class="row">
         <div class="eight columns centered body_copy">
