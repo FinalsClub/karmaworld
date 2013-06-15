@@ -21,6 +21,25 @@ from karmaworld.apps.notes.views import PDFView
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 admin.autodiscover()
 
+# reused named regex capture groups
+SLUG = r'(?P<{0}slug>[-A-Za-z0-9_]+)'
+
+"""
+# ex: SLUG.format('')  :> (?P<slug>[-A-Za-z0-9_]+)
+# ex: SLUG.format('school_')  :> (?P<school_slug>[-A-Za-z0-9_]+)
+
+  ex: course url
+  url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '/'
+        CourseDetailView.as_view(), name='course_detail'),
+
+  (?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<pk>[\d^/]+)$', \
+        NoteView.as_view(), name='note_detail_pk'),
+"""
+
+SCHOOL_SLUG = r'(?P<school_slug>[-A-Za-z0-9_]+)'
+COURSE_SLUG = r'(?P<course_slug>[-A-Za-z0-9_]+)'
+NOTE_SLUG   = r'(?P<slug>[-A-Za-z0-9_]+)'
+
 # See: https://docs.djangoproject.com/en/dev/topics/http/urls/
 urlpatterns = patterns('',
     ## Administrative URLpatterns
@@ -44,15 +63,22 @@ urlpatterns = patterns('',
             {'document_root': settings.MEDIA_ROOT, }),
 
     # VIEW for displaying a single Course
-    url(r'^(?P<school_slug>[^/]+)/(?P<slug>[-A-Za-z0-9_]+)$', \
+    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '$',
         CourseDetailView.as_view(), name='course_detail'),
 
+    ## NOTE MODEL
+    # Valid url cases to the Note page
+    # a: school/course/id
+    # b: school/course/id/slug
+    # c: s../c../slug
     # note file as id, for notes without titles yet
     url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<pk>[\d^/]+)$', \
         NoteView.as_view(), name='note_detail_pk'),
     # note file by note.slug
-    url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', \
+    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'$',
         NoteView.as_view(), name='note_detail'),
+    #url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', \
+    #    NoteView.as_view(), name='note_detail'),
 
     # ---- JSON views ----#
     # uploading files
