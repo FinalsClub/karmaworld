@@ -10,7 +10,8 @@
 {% endcomment %}
 
 <script>
-  var DEFAULT_URL = '{{ pdf_path }}'
+  var DEFAULT_URL = '{{ pdf_path }}';
+  var PDF_JS_PATH = "{{ STATIC_URL }}vendor/js/pdf.js";
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}vendor/js/pdf.js"></script>
 <script src="{{ STATIC_URL }}vendor/js/viewer.js"></script>
