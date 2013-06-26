@@ -118,3 +118,8 @@
   font-size: 25px;
   margin: 40px 0;
 }
+
+/* override jquery ui autocomplete styles */
+.ui-menu .ui-menu-item a {
+  font-size: 18px;
+}
