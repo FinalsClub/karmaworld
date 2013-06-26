@@ -18,6 +18,21 @@ from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.forms import NoteForm
 
 
+
+def is_pdf(self):
+    _path = self.object.note_file.name
+    _, _extension = os.path.splitext(_path)
+    if _extension.lower() == '.pdf':
+        return True
+    return False
+
+def is_ppt(self):
+    if self.object.pdf_file:
+        print "is a ppt"
+        return True
+    return False
+
+
 class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
     model = Note
@@ -30,14 +45,8 @@ class NoteDetailView(DetailView):
         #kwargs['file_url'] = os.path.basename(_path)
         #kwargs['hostname'] = Site.objects.get_current()
 
-        def is_pdf(self):
-            _path = self.object.note_file.name
-            _, _extension = os.path.splitext(_path)
-            if _extension.lower() == '.pdf':
-                return True
-            return False
-
         kwargs['pdf'] = is_pdf(self)
+        kwargs['ppt'] = is_ppt(self)
 
         return super(NoteDetailView, self).get_context_data(**kwargs)
 
@@ -119,7 +128,11 @@ class PDFView(DetailView):
         # FIXME: There may be an undocumented,
         #   but better way of handling media files in django
 
-        kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
-            os.path.basename(self.object.note_file.name))
+        if is_ppt:
+            kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
+                os.path.basename(self.object.pdf_file.name))
+        elif is_pdf:
+            kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
+                os.path.basename(self.object.note_file.name))
 
         return super(PDFView, self).get_context_data(**kwargs)

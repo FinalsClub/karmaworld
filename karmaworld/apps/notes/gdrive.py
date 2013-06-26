@@ -171,25 +171,24 @@ def convert_with_google_drive(note):
         new_note.file_type = 'pdf'
 
     elif extension.lower() in ['.ppt', '.pptx']:
-        print "try to save ppt"
         now = datetime.datetime.utcnow()
         # create a folder path to store the ppt > pdf file with year and month folders
-        _path = os.path.join(settings.MEDIA_ROOT, 'ppt_pdf/%s/%s' % (now.year, now.month), filename)
+        nonce_path = '/ppt_pdf/%s/%s/' % (now.year, now.month)
+
+        _path = filename + '.pdf'
         try:
             # If those folders don't exist, create them
             os.makedirs(os.path.realpath(os.path.dirname(_path)))
+        except:
+            print "we failed to create those directories"
 
         _writer = BufferedWriter(FileIO(_path, "w"))
         _writer.write(content_dict['pdf'])
         _writer.close()
 
 
-        new_note.pdf_file = os.path.join(_path, filename)
+        new_note.pdf_file = _path
 
-    # set the .odt as the download from google link
-    if extension.lower() in ['.ppt', '.pptx']:
-        print "is ppt"
-        new_note.pdf_file = File(content_dict['pdf'])
     else:
         # PPT files do not have this export ability
         new_note.gdrive_url = file_dict[u'exportLinks']['application/vnd.oasis.opendocument.text']
