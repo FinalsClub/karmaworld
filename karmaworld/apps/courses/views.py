@@ -78,8 +78,12 @@ def school_list(request):
                         and request.POST.has_key('q'):
         # if an ajax get request with a 'q' name query
         # get the schools as a id name dict,
-        schools = [{'id': s.id, 'name': s.name} for s in \
-              School.objects.filter(name__icontains=request.POST['q'])[:4]]
+        _query = request.POST['q']
+        matching_school_aliases = list(School.objects.filter(alias__icontains=_query))
+        matching_school_names = list(School.objects.filter(name__icontains=_query)[:20])
+        _schools = matching_school_aliases[:2] + matching_school_names
+        schools = [{'id': s.id, 'name': s.name} for s in _schools]
+
         # return as json
         return HttpResponse(json.dumps({'status':'success', 'schools': schools}), mimetype="application/json")
     else:
