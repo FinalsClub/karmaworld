@@ -62,11 +62,35 @@
         </div>
 
         <div class="three columns offset-by-two end">
-          <div id="donate_button_container" class="button_bevel">
-            <div id="donate_button" class="button_interior">
-              DONATE
-            </div><!-- /donate_button -->
-          </div><!-- /donate_button_container -->
+
+          <!-- Amazon form submit for donations -->
+          <form action="https://authorize.payments.amazon.com/pba/paypipeline" method="post">
+            <input type="hidden" name="returnUrl" value="http://KarmaNotes.org" >
+            <input type="hidden" name="processImmediate" value="1" >
+            <input type="hidden" name="accessKey" value="11SEM03K88SD016FS1G2" >
+            <input type="hidden" name="signatureMethod" value="HmacSHA256" >
+            <input type="hidden" name="collectShippingAddress" value="1" >
+            <input type="hidden" name="isDonationWidget" value="1" >
+            <input type="hidden" name="amazonPaymentsAccountId" value="RLXQCTZFRUFP5TMB3RMQC4LKDXN6AKE874PGB9" >
+            <input type="hidden" name="referenceId" value="FinalsClub.org Inc" >
+            <input type="hidden" name="cobrandingStyle" value="logo" >
+            <input type="hidden" name="immediateReturn" value="1" >
+            <input type="hidden" name="description" value="Support the free exchange of student learning resources" >
+            <input type="hidden" name="abandonUrl" value="http://KarmaNotes.org" >
+            <input type="hidden" name="signatureVersion" value="2" >
+            <input type="hidden" name="signature" value="0eQB5Jxoa1rE+NuI7IupDKQUZSjfLwQeZdFnSSwFa+A=" >
+            <!-- Default donation amount -->
+            <input type="hidden" name="amount" value="USD 20" >
+
+            <!-- DONATE BUTTON -->
+            <div id="donate_button_container" class="button_bevel">
+              <button id="donate_button" class="button_interior"  type="submit">
+                DONATE
+              </button>
+            </div><!-- /donate_button_container -->
+          </form>
+
+
         </div>
 
       </div>

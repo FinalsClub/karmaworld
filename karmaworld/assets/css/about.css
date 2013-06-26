@@ -108,7 +108,9 @@
   font-size: 32px;
   text-align: center;
   color: #FFF;
-  padding-top: 20px;
+  padding-top: 14px;
+  width: 100%;
+  border: 0;
 }
 
 /* LEADERBOARD */
