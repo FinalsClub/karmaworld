@@ -24,10 +24,12 @@ class School(models.Model):
     # United States Department of Education institution_id
     usde_id     = models.BigIntegerField(blank=True, null=True)
     file_count  = models.IntegerField(default=0)
+    priority    = models.BooleanField(default=0)
+    alias       = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         """ Sort School by file_count descending, name abc=> """
-        ordering = ['-file_count', 'name']
+        ordering = ['-file_count','-priority', 'name']
 
 
     def __unicode__(self):
