@@ -3,6 +3,7 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import datetime
+from io import FileIO, BufferedWriter
 import mimetypes
 import os
 import time
@@ -169,6 +170,21 @@ def convert_with_google_drive(note):
     if extension.lower() == '.pdf':
         new_note.file_type = 'pdf'
 
+    elif extension.lower() in ['.ppt', '.pptx']:
+        print "try to save ppt"
+        now = datetime.datetime.utcnow()
+        # create a folder path to store the ppt > pdf file with year and month folders
+        _path = os.path.join(settings.MEDIA_ROOT, 'ppt_pdf/%s/%s' % (now.year, now.month), filename)
+        try:
+            # If those folders don't exist, create them
+            os.makedirs(os.path.realpath(os.path.dirname(_path)))
+
+        _writer = BufferedWriter(FileIO(_path, "w"))
+        _writer.write(content_dict['pdf'])
+        _writer.close()
+
+
+        new_note.pdf_file = os.path.join(_path, filename)
 
     # set the .odt as the download from google link
     if extension.lower() in ['.ppt', '.pptx']:
