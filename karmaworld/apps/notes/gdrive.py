@@ -124,10 +124,6 @@ def convert_with_google_drive(note):
         # include OCR on ocr-able files
         file_dict = service.files().insert(body=resource, media_body=media, convert=True, ocr=True).execute()
 
-    elif extension.lower() in ['.ppt', 'pptx']:
-        # FIXME VVVV
-        file_dict = service.files().insert(body=resource, media_body=media, convert=True, ocr=True).execute()
-
     else:
         file_dict = service.files().insert(body=resource, media_body=media, convert=True).execute()
 
