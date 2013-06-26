@@ -83,6 +83,48 @@ def check_and_refresh(creds, auth):
         auth.save()
     return creds, auth
 
+def download_from_gdrive(file_dict, http, extension):
+    """ get urls from file_dict and download contextual files from google """
+    download_urls = {}
+    download_urls['text'] = file_dict[u'exportLinks']['text/plain']
+    if extension.lower() in ['.ppt', 'pptx']:
+        download_urls['pdf'] = file_dict[u'exportLinks']['application/pdf']
+    else:
+        download_urls['html'] = file_dict[u'exportLinks']['text/html']
+
+
+    content_dict = {}
+    for download_type, download_url in download_urls.items():
+        print "\n%s -- %s" % (download_type, download_urls)
+        resp, content = http.request(download_url, "GET")
+
+        if resp.status in [200]:
+            print "\t downloaded!"
+            # save to the File.property resulting field
+            content_dict[download_type] = content
+        else:
+            print "\t Download failed: %s" % resp.status
+
+    return content_dict
+
+def upload_to_gdrive(service, media, filename, extension):
+    """ take a gdrive service object, and a media wrapper and upload to gdrive
+        returns a file_dict """
+    _resource = {'title': filename}
+    if extension.lower() in ['.pdf', '.jpeg', '.jpg', '.png']:
+        # include OCR on ocr-able files
+        file_dict = service.files().insert(body=_resource, media_body=media, convert=True, ocr=True).execute()
+
+    else:
+        file_dict = service.files().insert(body=_resource, media_body=media, convert=True).execute()
+
+    if u'exportLinks' not in file_dict:
+        # wait some seconds
+        # get the doc from gdrive
+        time.sleep(30)
+        file_dict = service.files().get(fileId=file_dict[u'id']).execute()
+
+    return file_dict
 
 def convert_with_google_drive(note):
     """ Upload a local note and download HTML
@@ -96,9 +138,6 @@ def convert_with_google_drive(note):
     # i.e: file_type = 'text/plain', encoding = None
     (file_type, encoding) = mimetypes.guess_type(note.note_file.path)
 
-    resource = {
-                'title':    note.name,
-            }
 
 
     if file_type != None:
@@ -119,51 +158,27 @@ def convert_with_google_drive(note):
 
     # get the file extension
     filename, extension = os.path.splitext(note.note_file.path)
-    # Upload the file
-    if extension.lower() in ['.pdf', '.jpeg', '.jpg', '.png']:
-        # include OCR on ocr-able files
-        file_dict = service.files().insert(body=resource, media_body=media, convert=True, ocr=True).execute()
 
-    else:
-        file_dict = service.files().insert(body=resource, media_body=media, convert=True).execute()
+    file_dict = upload_to_gdrive(service, media, filename, extension)
 
-    if u'exportLinks' not in file_dict:
-        # wait some seconds
-        # get the doc from gdrive
-        time.sleep(30)
-        file_dict = service.files().get(fileId=file_dict[u'id']).execute()
+    content_dict = download_from_gdrive(file_dict, http, extension)
 
-    # get the converted filetype urls
-    download_urls = {}
-    download_urls['html'] = file_dict[u'exportLinks']['text/html']
-    download_urls['text'] = file_dict[u'exportLinks']['text/plain']
-    if extension.lower() in ['.ppt', 'pptx']:
-
-        download_urls['pdf'] = file_dict[u'exportLinks']['application/pdf']
-
-
-    content_dict = {}
-    for download_type, download_url in download_urls.items():
-        print "\n%s -- %s" % (download_type, download_urls)
-        resp, content = http.request(download_url, "GET")
-
-
-        if resp.status in [200]:
-            print "\t downloaded!"
-            # save to the File.property resulting field
-            content_dict[download_type] = content
-        else:
-            print "\t Download failed: %s" % resp.status
 
     # Get a new copy of the file from the database with the new metadata from filemeta
     new_note = Note.objects.get(id=note.id)
     if extension.lower() == '.pdf':
         new_note.file_type = 'pdf'
-        new_note.pdf_file = File(content_dict['pdf'])
+
 
     # set the .odt as the download from google link
-    new_note.gdrive_url = file_dict[u'exportLinks']['application/vnd.oasis.opendocument.text']
-    new_note.html = content_dict['html']
+    if extension.lower() in ['.ppt', '.pptx']:
+        print "is ppt"
+        new_note.pdf_file = File(content_dict['pdf'])
+    else:
+        # PPT files do not have this export ability
+        new_note.gdrive_url = file_dict[u'exportLinks']['application/vnd.oasis.opendocument.text']
+        new_note.html = content_dict['html']
+
     new_note.text = content_dict['text']
 
     # before we save new html, sanitize a tags in note.html
