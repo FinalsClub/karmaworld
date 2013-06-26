@@ -58,6 +58,10 @@ class Note(models.Model):
                             storage=fs,
                             upload_to="notes/%Y/%m/%j/",
                             blank=True, null=True)
+    pdf_file       = models.FileField(
+                            storage=fs,
+                            upload_to="notes/%Y/%m/%j/",
+                            blank=True, null=True)
 
     ## post gdrive conversion data
     embed_url       = models.URLField(max_length=1024, blank=True, null=True)

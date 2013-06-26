@@ -11,6 +11,7 @@ import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from django.conf import settings
+from django.core.files import File
 from oauth2client.client import flow_from_clientsecrets
 
 from karmaworld.apps.notes.models import DriveAuth, Note
@@ -122,6 +123,11 @@ def convert_with_google_drive(note):
     if extension.lower() in ['.pdf', '.jpeg', '.jpg', '.png']:
         # include OCR on ocr-able files
         file_dict = service.files().insert(body=resource, media_body=media, convert=True, ocr=True).execute()
+
+    elif extension.lower() in ['.ppt', 'pptx']:
+        # FIXME VVVV
+        file_dict = service.files().insert(body=resource, media_body=media, convert=True, ocr=True).execute()
+
     else:
         file_dict = service.files().insert(body=resource, media_body=media, convert=True).execute()
 
@@ -131,14 +137,16 @@ def convert_with_google_drive(note):
         time.sleep(30)
         file_dict = service.files().get(fileId=file_dict[u'id']).execute()
 
-
     # get the converted filetype urls
     download_urls = {}
     download_urls['html'] = file_dict[u'exportLinks']['text/html']
     download_urls['text'] = file_dict[u'exportLinks']['text/plain']
+    if extension.lower() in ['.ppt', 'pptx']:
+
+        download_urls['pdf'] = file_dict[u'exportLinks']['application/pdf']
+
+
     content_dict = {}
-
-
     for download_type, download_url in download_urls.items():
         print "\n%s -- %s" % (download_type, download_urls)
         resp, content = http.request(download_url, "GET")
@@ -153,6 +161,9 @@ def convert_with_google_drive(note):
 
     # Get a new copy of the file from the database with the new metadata from filemeta
     new_note = Note.objects.get(id=note.id)
+    if extension.lower() == '.pdf':
+        new_note.file_type = 'pdf'
+        new_note.pdf_file = File(content_dict['pdf'])
 
     # set the .odt as the download from google link
     new_note.gdrive_url = file_dict[u'exportLinks']['application/vnd.oasis.opendocument.text']
