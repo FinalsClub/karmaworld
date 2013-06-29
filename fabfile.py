@@ -27,6 +27,17 @@ Connection information for the local machine
     env.branch = 'beta'
     env.run = virtenv_exec
 
+@task
+def prod():
+    env.user = 'djkarma'
+    env.hosts = ['beta.karmanotes.org']
+    env.proj_root = '/var/www/karmaworld'
+    env.proj_dir = '/var/www/karmaworld'
+    env.reqs = 'reqs/prod.txt'
+    env.confs = 'confs/beta/'
+    env.branch = 'beta'
+    env.run = virtenv_exec
+
 ######## Run Commands in Virutal Environment
 def virtenv_exec(command):
         with virtualenv('%s/%s' % (env.proj_dir, env.branch)):
@@ -62,3 +73,6 @@ def start_supervisord():
 	config_file = '%s/%ssupervisord.conf' % (env.proj_dir,env.confs)
 	env.run('supervisord -c %s' % config_file)
 
+@task
+def update_code():
+	env.run('cd %s; git pull' % env.proj_dir)
