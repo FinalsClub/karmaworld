@@ -27,8 +27,7 @@ def is_pdf(self):
     return False
 
 def is_ppt(self):
-    if self.object.pdf_file:
-        print "is a ppt"
+    if self.object.file_type == 'ppt':
         return True
     return False
 
@@ -42,7 +41,7 @@ class NoteDetailView(DetailView):
         """ Generate custom context for the page rendering a Note
             + if pdf, set the `pdf` flag
         """
-        #kwargs['file_url'] = os.path.basename(_path)
+        # not current using these
         #kwargs['hostname'] = Site.objects.get_current()
 
         kwargs['pdf'] = is_pdf(self)
@@ -125,8 +124,6 @@ class PDFView(DetailView):
     def get_context_data(self, **kwargs):
         """ Generate a path to the pdf file associated with this note
             by generating a path to the MEDIA_URL by hand """
-        # FIXME: There may be an undocumented,
-        #   but better way of handling media files in django
 
         if is_ppt:
             kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,

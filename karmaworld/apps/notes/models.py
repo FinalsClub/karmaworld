@@ -33,6 +33,7 @@ class Note(models.Model):
         ('doc', 'MS Word compatible file (.doc, .docx, .rtf, .odf)'),
         ('img', 'Scan or picture of notes'),
         ('pdf', 'PDF file'),
+        ('ppt', 'Powerpoint'),
         (UNKNOWN_FILE, 'Unknown file'),
     )
 
