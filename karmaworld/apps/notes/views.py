@@ -125,10 +125,10 @@ class PDFView(DetailView):
         """ Generate a path to the pdf file associated with this note
             by generating a path to the MEDIA_URL by hand """
 
-        if is_ppt:
+        if is_ppt(self):
             kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
                 os.path.basename(self.object.pdf_file.name))
-        elif is_pdf:
+        elif is_pdf(self):
             kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
                 os.path.basename(self.object.note_file.name))
 
