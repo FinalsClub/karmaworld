@@ -170,7 +170,9 @@ def convert_with_google_drive(note):
     if extension.lower() == '.pdf':
         new_note.file_type = 'pdf'
 
+
     elif extension.lower() in ['.ppt', '.pptx']:
+        new_note.file_type = 'ppt'
         now = datetime.datetime.utcnow()
         # create a folder path to store the ppt > pdf file with year and month folders
         nonce_path = '/ppt_pdf/%s/%s/' % (now.year, now.month)
