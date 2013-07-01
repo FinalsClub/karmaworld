@@ -1,0 +1,12 @@
+/* FOR LARGE SCREENS ONLY */
+@media only screen and (min-width: 768px) {
+  /* Front page intro text, large on wide, resize on small */
+  #subhead span {
+    font-size: 22px;
+  }
+
+
+
+
+
+}
