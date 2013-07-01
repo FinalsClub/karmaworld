@@ -27,6 +27,7 @@ def here():
     env.branch = 'beta'
     env.run = virtenv_exec
 
+####### Define production host
 @task
 def prod():
     """
@@ -51,8 +52,6 @@ def virtenv_exec(command):
 
         with virtualenv('%s/%s' % (env.proj_dir, env.branch)):
                 run('%s' % (command))
-
-
 
 ######## Sync database
 @task
@@ -89,9 +88,10 @@ def make_virtualenv():
 	Create our Virtualenv in $SRC_ROOT
 	"""
 
-	run('virtualenv %s/%s' % (env.proj_dir, env.branch))
+	run('virtualenv %s/%s' % (env.proj_root, env.branch))
 	env.run('pip install -r %s/reqs/dev.txt' % env.proj_dir )
 
+####### Start Gunicorn
 @task
 def start_gunicorn():
     """
@@ -99,27 +99,13 @@ def start_gunicorn():
     """
     env.run('%s/manage.py run_gunicorn -b %s -u %s -p var/run/gunicorn.pid' % (env.proj_root, env.gunicorn_addr, env.user)
 
+####### Update Requirements
 @task
 def update_reqs():
-	env.run('pip install -r reqs/dev.txt')
+	env.run('pip install -r reqs/prod.txt')
 
-
+####### Pull new code
 @task
 def update_code():
 	env.run('cd %s; git pull' % env.proj_dir)
 
-@task
-def deploy():
-    """
-    Deploys the latest changes
-    """
-    update_code()
-    update_reqs()
-    syncdb()
-    collect_static()
-    restart_supervisord()
-
-
-@task
-def User():
-	env.run('whoami')
