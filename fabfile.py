@@ -97,8 +97,7 @@ def start_gunicorn():
     """
     Starts the gunicorn process
     """
-    env.run('%s/manage.py run_gunicorn -b %s -u %s -p var/run/gunicorn.pid' % (env.proj_root, env.gunicorn_addr, env.user)
-
+	env.run('%s/manage.py run_gunicorn -b %s -p %s/var/run/gunicorn.pid --daemon' % (env.proj_dir, env.gunicorn_addr, env.proj_dir))
 ####### Update Requirements
 @task
 def update_reqs():
