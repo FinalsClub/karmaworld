@@ -96,8 +96,8 @@ tr.course-row:hover {
 table#course_list td {
   font-family: "MuseoSlab-300";
   font-size: 18px;
-  float:left;
-  height:80px; /* required for :hover on Table Rows  (when floating td elements) */
+  /*float:left;*/
+  /*height:80px; [> required for :hover on Table Rows  (when floating td elements) <]*/
 }
 
 table#course_list tbody tr td.slim {
@@ -129,21 +129,16 @@ table.dataTable td.sort_by {
   display:none;
 }
 
-td.date {
-  font-size: 12px; 
-  width: 405px;
-}
-
 td.note-count {
   font-size: 12px;
-  width: 400px; /* 100% minus td.date width -- make sure the next line wraps */
+  /*width: 400px; [> 100% minus td.date width -- make sure the next line wraps <]*/
 }
 
 /***************
 Fat Row
 ***************/
 td.course-name {
-  width: 340px;
+  /*width: 340px;*/
 }
 
 table#course_list td div.upload {
@@ -155,16 +150,6 @@ table#course_list td div.upload {
   vertical-align: middle;
   margin-top: -8px;
 }
-
-td.school-name {
-  width: 200px; /* make this the same as td.date -- line up the artificial columns */
-}
-
-td.instructor-name {
-  width:200px;
-}
-
-
 
 
 table#course_list td div.upload i { 
@@ -183,4 +168,11 @@ table#course_list tr:hover td div.upload {
 .ot-content {
   font-family: "MuseoSlab-300";
   font-size: 18px;
+}
+
+
+/* CSS HACKS */
+/* Makes lines look better */
+td.columns {
+  line-height: 1.5em;
 }

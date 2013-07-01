@@ -97,19 +97,22 @@ $(document).ready(function() {
 {% block content %}
 <section id="home_content">
   <div id="page_header" class="">
-    <div class="row">
-      <div id="subhead" class="ten columns offset-by-one">
+    <div id="subhead" class="row">
+      <div class="small-3 large-2 columns">
         <img src='{{ STATIC_URL }}img/noun_project_6858.svg' alt="Pieter J. Smits, from The Noun Project">
+      </div>
+      <div class="small-9 large-10 columns">
+        <div class="row subhead-spacer hide-for-small"> </div>
         <span>Access a growing database of {{ note_count }} college lecture notes</span>
       </div>
     </div>
   </div>
   <div class="row">
-    <div class="ten columns offset-by-one">
+    <div class="small-12 columns">
       <!-- Main course table -->
       <table id="course_list" class="">
         <!-- specify col widths -->
-        <colgroup> 
+        <colgroup>
           <col span="1" style="width: 100%">
           <col span="5" style="width: 0%">
         </colgroup> 
@@ -126,27 +129,29 @@ $(document).ready(function() {
         <tbody>
         {% for course in object_list %}
           <tr>
-            <td class="sort_by"></td>
-            <td class="date slim">        {{ course.updated_at|date:"F d, o" }} </td> <!-- https://docs.djangoproject.com/en/1.4/ref/templates/builtins/#date -->
-            <td class="note-count slim">  {{ course.file_count }} </td>
-            <td class="course-name">      <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> </td>
-            <td class="upload">
-              <div class="upload">
-                <a href="{{ course.get_absolute_url }}#upload-note">
-                  <i
-                    data-ot="Upload directly to this course"
-                    data-ot-target="true"
-                    data-ot-tip-joint="top center"
-                    data-ot-target-joint="bottom center"
-                    data-ot-background="white"
-                    data-ot-border-color="black"
-                    class="icon-upload opentip"></i>
-                </a>
-              </div>
+              <td class="sort_by"></td>
+              <td class="slim large-4 columns">{{ course.updated_at|date:"F d, o" }} </td>
+              <td class="note-count slim large-2 large-offset-2 columns">  {{ course.file_count }} </td>
 
-            </td>
-            <td class="school-name">      {{ course.school.name }} </td>
-            <td class="instructor-name">  {{ course.instructor_name }} </td>
+              <td class="course-name large-5 columns">
+                <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> 
+              </td>
+              <td class="upload large-1 column">
+                <div class="upload">
+                  <a href="{{ course.get_absolute_url }}#upload-note">
+                    <i
+                      data-ot="Upload directly to this course"
+                      data-ot-target="true"
+                      data-ot-tip-joint="top center"
+                      data-ot-target-joint="bottom center"
+                      data-ot-background="white"
+                      data-ot-border-color="black"
+                      class="icon-upload opentip"></i>
+                  </a>
+                </div>
+              </td>
+              <td class="school-name large-3 columns">      {{ course.school.name }} </td>
+              <td class="instructor-name large-3 columns">  {{ course.instructor_name }} </td>
           </tr>
         {% endfor %}
         </tbody>
@@ -155,11 +160,11 @@ $(document).ready(function() {
   </div> <!-- .row -->
 
   <div class="row">
-    <div class="ten columns offset-by-one"> <hr/> </div>
+    <div class="small-10 columns small-offset-1"> <hr/> </div>
   </div>
 
   <div class="row">
-    <div class="ten columns offset-by-one">
+    <div class="small-12 columns large-10 large-offset-1">
       <div id="add-course-btn">
         <i class=icon-upload></i> add a course
       </div>
@@ -168,7 +173,7 @@ $(document).ready(function() {
   </div> <!-- .row -->
 
   <div class="row">
-    <div class="ten columns offset-by-one"> <hr/> </div>
+    <div class="small-10 columns small-offset-1"> <hr/> </div>
   </div>
 
 
