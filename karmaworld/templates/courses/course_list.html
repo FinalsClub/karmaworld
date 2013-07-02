@@ -59,7 +59,7 @@ $(document).ready(function() {
         if (type === 'set') {
           source.count = val;
           // Store the computed dislay and filter values for efficiency
-          source.count_display = val=="" ? "" : val+" Notes";
+          source.count_display = val=="" ? "" : "<span>"+val+" Notes</span>";
           return;
         }
         else if (type === 'display') {
@@ -75,7 +75,7 @@ $(document).ready(function() {
         //console.log(source);
         if (type === 'set') {
           source.date = val;
-          source.date_display = val=="" ? "" : "Updated on "+val;
+          source.date_display = val=="" ? "" : "<span>Updated on "+val+"</span>";
           return;
         }
         else if (type === 'display') {
@@ -128,31 +128,7 @@ $(document).ready(function() {
         </thead>
         <tbody>
         {% for course in object_list %}
-          <tr>
-              <td class="sort_by"></td>
-              <td class="slim large-4 columns">{{ course.updated_at|date:"F d, o" }} </td>
-              <td class="note-count slim large-2 large-offset-2 columns">  {{ course.file_count }} </td>
-
-              <td class="course-name large-5 columns">
-                <a href="{{ course.get_absolute_url }}">{{ course.name }}</a> 
-              </td>
-              <td class="upload large-1 column">
-                <div class="upload">
-                  <a href="{{ course.get_absolute_url }}#upload-note">
-                    <i
-                      data-ot="Upload directly to this course"
-                      data-ot-target="true"
-                      data-ot-tip-joint="top center"
-                      data-ot-target-joint="bottom center"
-                      data-ot-background="white"
-                      data-ot-border-color="black"
-                      class="icon-upload opentip"></i>
-                  </a>
-                </div>
-              </td>
-              <td class="school-name large-3 columns">      {{ course.school.name }} </td>
-              <td class="instructor-name large-3 columns">  {{ course.instructor_name }} </td>
-          </tr>
+          {% include 'courses/course_list_entry.html' %}
         {% endfor %}
         </tbody>
       </table>
