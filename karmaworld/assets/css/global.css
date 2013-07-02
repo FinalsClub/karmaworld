@@ -68,6 +68,7 @@ input[type="text"]:focus, textarea:focus
 #logo_container img
 {
   margin-top: 10px;
+  height: 17px;
 }
 
 #browse_container
@@ -581,7 +582,7 @@ a.activity_target:hover
 footer#global_footer
 {
   width: 100%;
-  height: 164px;
+  min-height: 164px;
   color: #FFF;
   padding-top: 36px;
   background-color: #000;
@@ -624,22 +625,20 @@ ul#course_menu li a
 }
 
 /* New course-list homepage css */
-div#subhead
-{
-  padding: 15px;
-  padding-left: 17px;
-  font-family: "MuseoSlab-300";
-  font-size: 22px;
-}
-
-#subhead img
-{
-  vertical-align: middle;
-}
 
 #subhead span
 {
-  margin-left: 2em;
+  /*margin-left: 2em;*/
+  font-family: "MuseoSlab-300";
+  font-size: 19px;
+}
+
+.subhead-spacer {
+  height: 42px;
+}
+
+#course_list_filter {
+  margin: 0;
 }
 
 .center
@@ -732,6 +731,12 @@ p.text a
   font-size: 12px;
   padding-top: 10px;
   color: black;
+}
+
+#breadcrumbs > .breadcrumbs {
+  /* override foundation 4 panel and outline for breadcrumbs */
+  border-style: none;
+  background-color: white;
 }
 
 #note_name, #course_name, #school_name
