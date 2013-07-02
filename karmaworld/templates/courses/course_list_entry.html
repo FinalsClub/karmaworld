@@ -1,0 +1,25 @@
+<tr>
+  <td class="sort_by"></td>
+  <td class="small-8 columns large-4 slim">{{ course.updated_at|date:"b d, o"|capfirst }}</td>
+  <td class="note-count small-4 columns large-2 large-offset-2 slim">{{ course.file_count }}</td>
+
+  <td class="course-name small-12 large-5 columns">
+    <a class="" href="{{ course.get_absolute_url }}">{{ course.name }}</a> 
+  </td>
+  <td class="upload hide-for-small large-1 column">
+    <div class="upload">
+      <a href="{{ course.get_absolute_url }}#upload-note">
+        <i
+          data-ot="Upload directly to this course"
+          data-ot-target="true"
+          data-ot-tip-joint="top center"
+          data-ot-target-joint="bottom center"
+          data-ot-background="white"
+          data-ot-border-color="black"
+          class="icon-upload opentip"></i>
+      </a>
+    </div>
+  </td>
+  <td class="school-name small-6 large-3 columns"><span class="table-font">{{ course.school.name }}</span></td>
+  <td class="instructor-name small-6 large-3 columns"><span class="table-font">{{ course.instructor_name }}</span></td>
+</tr>

@@ -10,31 +10,31 @@
     {% csrf_token %}
 
     <div class="row">
-      <div class="four columns offset-by-one upload-status" style="display:none">
+      <div class="small-8 small-offset-1 columns large-4 large-offset-1 upload-status" style="display:none">
         <legend><span id=add-note-status>Uploading</span> <span id=filename>note</span>...</legend>
         <div class=progress> <div id="progress-fill"></div> </div>
       </div>
-      <div id=file-uploader class="four columns offset-by-one">
+      <div id=file-uploader class="small-8 small-offset-1  columns large-4 large-offset-1">
         <!-- the upload button gets attached here -->
       </div> 
-      <div class="one columns offset-by-five end">
+      <div class="small-2 columns large-1 end">
         <i class="icon-remove-sign awesome-action"></i>
       </div>
     </div>
     <div class="row">
-      <div class="eight columns offset-by-one">
+      <div class="small-10 small-offset-1 columns large-8 large-offset-1">
         <legend>Title of Note <small class="form">* Required</small></legend>
         <input type="text" class="intext" id="id_name" name="name"
             placeholder="ENG 102 - Chaucer to Shakespeare">
       </div>
-      <div class="two columns end">
+      <div class="small-10 small-offset-1 columns large-2 large-offset-0 end">
         <legend>Academic Year</legend>
         <input type="text" class="" id="id_year" name="year"
             placeholder="2013"> {# FIXME: fill in with current year #}
       </div>
     </div>
     <div class="row">
-      <div class="ten columns offset-by-one end">
+      <div class="small-10 small-offset-1 columns large-8 large-offset-1">
         <legend>Tags (comma seperated)</legend>
         <input type="text" id="id_tags" name="tags" class="taggit-tags"
               placeholder="Chaucer, Shakespeare, literature, review">
@@ -42,7 +42,7 @@
     </div>
 
     <div class="row">
-      <div class="three columns centered">
+      <div class="small-8 small-offset-1 columns large-4 small-centered">
         <div id="save-btn" class="disabled">
           <i class=icon-save></i> Save
         </div>

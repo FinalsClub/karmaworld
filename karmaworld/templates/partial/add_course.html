@@ -10,14 +10,14 @@
   {% csrf_token %}
 
     <div class="row">
-      <div class="ten columns offset-by-one end">
+      <div class="small-12 columns">
         {{ course_form.non_field.errors }}
       </div>
     </div>
 
 
     <div class="row">
-      <div class="ten columns offset-by-one end">
+      <div class="small-12 columns">
         <legend>
           School
          {% if course_form.school.errors %}
@@ -34,7 +34,7 @@
     </div> <!-- .row -->
 
     <div class="row">
-      <div class="ten columns offset-by-one end">
+      <div class="small-12 columns">
         <legend>Course Name: 
           {% if course_form.name.errors %}
             <span style="color:red">
@@ -47,7 +47,7 @@
     </div> <!-- .row -->
 
     <div class="row">
-      <div class="five columns offset-by-one">
+      <div class="small-12 columns large-6">
         <legend class="">
           Instructor Name:
           {% if course_form.instructor_name.errors %}
@@ -59,7 +59,7 @@
         <input id="id_instructor_name" class="" type="text" name="instructor_name" maxlength="75" />
       </div>
 
-      <div class="five columns end">
+      <div class="small-12 columns large-6">
         <legend class="">
           Instructor Email:
           {% if course_form.instructor_email.errors %}
@@ -73,7 +73,7 @@
     </div> <!-- .row .lightbox_row -->
 
     <div class="row">
-      <div class="ten columns offset-by-one end">
+      <div class="small-12 columns">
         <legend>Course url:
           {% if course_form.url.errors %}
             <span style="color:red">
@@ -86,7 +86,7 @@
     </div> <!-- .row -->
 
     <div class="row">
-      <div class="three columns centered">
+      <div class="small-4 columns small-centered">
         <button id="save-btn">
           <i class=icon-save></i> Save
         </div>

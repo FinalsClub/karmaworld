@@ -33,14 +33,19 @@
   <section id="course_content">
 
     <div id="course_header">
+
       <div class="row">
-        <div id="breadcrumbs" class="ten columns offset-by-one">
-          <a href="/">Home</a> &gt; <a href="{{ course.get_absolute_url }}">{{ course.name }}</a>
+        <div id="breadcrumbs" class="small-12 hide-for-small columns">
+          <ul class="breadcrumbs">
+            <li><a href="/">Home</a></li>
+            <li class="unavailable"><a href="#">{{ course.school.name }}</a></li>
+            <li class="current"><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></li>
+          </ul>
         </div><!-- /course_subhead -->
       </div>
 
       <div class="row">
-        <div id="course_name" class="twelve columns">
+        <div id="course_name" class="small-12 columns">
           {% if course.url %}
           <a rel="nofollow" href="{{ course.url }}">
             {{ course.name }}
@@ -52,7 +57,7 @@
       </div>
 
       <div class="row">
-        <div id="course_meta" class="twelve columns">
+        <div id="course_meta" class="small-12 columns">
           <div class="course_details">
             {{ course.instructor_name }} | {{ course.school.name }}
           </div><!-- /activity_details_context -->
@@ -60,14 +65,14 @@
       </div>
 
       <div class="row">
-        <div class="ten columns offset-by-one"> <hr/> </div>
+        <div class="small-10 columns small-offset-1"> <hr/> </div>
       </div>
 
       {% include 'partial/add_note.html' %}
 
       {% if request.GET.thankyou == '' %}
       <div id=thankyou-wrapper class="row">
-        <div class="eight columns offset-by-two">
+        <div class="small-8 columns small-offset-2">
           <div id="thankyou">
             <p>
               Thank you for uploading
@@ -88,7 +93,7 @@
       {% endif %}
 
       <div class="row">
-        <div class="three columns centered">
+        <div class="small-8 columns large-4 small-centered">
           <div id="add-note-btn" data-id="{{ course.id }}">
             <i class=icon-upload></i> add a note
           </div>
@@ -97,7 +102,7 @@
 
 
       <div class="row">
-        <div class="ten columns offset-by-one"> <hr/> </div>
+        <div class="small-10 columns small-offset-1"> <hr/> </div>
       </div>
 
 
@@ -106,7 +111,7 @@
 
     <div id="course_container">
       <div class="row">
-        <div class="ten columns offset-by-one">
+        <div class="small-12 columns large-10 large-offset-1">
 
           {% for note in course.note_set.all %}
             {% include 'notes/note_list_entry.html' with note=note %}
