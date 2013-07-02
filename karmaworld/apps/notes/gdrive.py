@@ -164,12 +164,11 @@ def convert_with_google_drive(note):
 
     content_dict = download_from_gdrive(file_dict, http, extension)
 
-
     # Get a new copy of the file from the database with the new metadata from filemeta
     new_note = Note.objects.get(id=note.id)
+
     if extension.lower() == '.pdf':
         new_note.file_type = 'pdf'
-
 
     elif extension.lower() in ['.ppt', '.pptx']:
         new_note.file_type = 'ppt'
@@ -188,7 +187,6 @@ def convert_with_google_drive(note):
         _writer.write(content_dict['pdf'])
         _writer.close()
 
-
         new_note.pdf_file = _path
 
     else:
@@ -199,7 +197,8 @@ def convert_with_google_drive(note):
     new_note.text = content_dict['text']
 
     # before we save new html, sanitize a tags in note.html
-    new_note.sanitize_html(save=False)
+    #new_note.sanitize_html(save=False)
+    #FIXME: ^^^ disabled until we can get html out of an Etree html element
 
     # Finally, save whatever data we got back from google
     new_note.save()
