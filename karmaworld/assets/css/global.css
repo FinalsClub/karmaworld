@@ -733,6 +733,12 @@ p.text a
   color: black;
 }
 
+#breadcrumbs > .breadcrumbs {
+  /* override foundation 4 panel and outline for breadcrumbs */
+  border-style: none;
+  background-color: white;
+}
+
 #note_name, #course_name, #school_name
 {
   margin-top: 1em;

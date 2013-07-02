@@ -35,8 +35,12 @@
     <div id="course_header">
 
       <div class="row">
-        <div id="breadcrumbs" class="small-12 columns">
-          <a href="/">Home</a> &gt; <a href="{{ course.get_absolute_url }}">{{ course.name }}</a>
+        <div id="breadcrumbs" class="small-12 hide-for-small columns">
+          <ul class="breadcrumbs">
+            <li><a href="/">Home</a></li>
+            <li class="unavailable"><a href="#">{{ course.school.name }}</a></li>
+            <li class="current"><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></li>
+          </ul>
         </div><!-- /course_subhead -->
       </div>
 

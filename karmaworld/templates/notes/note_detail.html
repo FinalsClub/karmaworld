@@ -14,21 +14,25 @@
 
     <div id="course_header"> 
       <div class="row">
-        <div id="breadcrumbs" class="ten columns offset-by-one">
-          <a href="/">Home</a> &gt; 
-          <a href="{{ note.course.get_absolute_url }}">{{ note.course.name }}</a> &gt;
-          <a href="{{ note.get_absolute_url }}"> {{ note.name }} </a>
+        <div id="breadcrumbs" class="small-12 hide-for-small columns ">
+          <ul class="breadcrumbs">
+            <li><a href="/">Home</a></li>
+            <li class="unavailable"><a href="#">{{ note.course.school.name }}</a></li>
+            <li><a href="{{ course.get_absolute_url }}">{{ note.course.name }}</a></li>
+            <li class="current"><a href="{{ note.get_absolute_url }}">{{ note.name }}</a></li>
+          </ul>
+
         </div><!-- /course_subhead -->
       </div>
 
       <div class="row">
-        <div id="course_name" class="twelve columns">
+        <div id="course_name" class="small-12 columns">
           {{ note.name }}
         </div><!-- /note_name -->
       </div>
 
       <div class="row">
-        <div class="ten columns offset-by-one">
+        <div class="small-10 columns small-offset-1">
           <hr/>
         </div>
       </div>
@@ -38,7 +42,7 @@
       {% if pdf or ppt %}
         <!-- Add pdf.js -->
         <div class="row">
-          <div class="twelve columns">
+          <div class="small-12 columns">
             <iframe
                 style="border:none; width:100%; min-height: 700px; margins:auto" 
                 id="noteframe"
@@ -55,7 +59,7 @@
       {% else %} {# if pdf #}
 
       <div class="row">
-        <div class="eight columns centered body_copy">
+        <div class="small-12 small-centered columns medium-12 large-10 body_copy">
           {% if note.html %}
             <div class="note-text">
               <iframe style="border:none; width:100%;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')"> </iframe>
