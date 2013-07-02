@@ -1,6 +1,6 @@
 <tr>
   <td class="sort_by"></td>
-  <td class="small-8 columns large-4 slim"><span>{{ course.updated_at|date:"F d, o" }}</span></td>
+  <td class="small-8 columns large-4 slim">{{ course.updated_at|date:"b d, o"|capfirst }}</td>
   <td class="note-count small-4 columns large-2 large-offset-2 slim">{{ course.file_count }}</td>
 
   <td class="course-name small-12 large-5 columns">
