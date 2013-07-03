@@ -27,6 +27,8 @@ def here():
     env.branch = 'beta'
     env.run = virtenv_exec
 
+
+
 ####### Define production host
 @task
 def prod():
@@ -35,10 +37,27 @@ def prod():
     """
 
     env.user = 'djkarma'
-    env.hosts = ['beta.karmanotes.org']
+    env.hosts = ['karmanotes.org']
     env.proj_root = '/var/www/karmaworld'
     env.proj_dir = '/var/www/karmaworld'
     env.reqs = 'reqs/prod.txt'
+    env.confs = 'confs/beta/'
+    env.branch = 'beta'
+    env.run = virtenv_exec
+    env.gunicorn_addr = '127.0.0.1:8000'
+
+####### Define beta host
+@task
+def beta():
+    """                                                                                                                                                                 
+    Connection Information for beta machine                                                                                                                       
+    """
+
+    env.user = 'djkarma'
+    env.hosts = ['beta.karmanotes.org']
+    env.proj_root = '/var/www/karmaworld'
+    env.proj_dir = '/var/www/karmaworld'
+    env.reqs = 'reqs/beta.txt'
     env.confs = 'confs/beta/'
     env.branch = 'beta'
     env.run = virtenv_exec
@@ -89,15 +108,92 @@ def make_virtualenv():
 	"""
 
 	run('virtualenv %s/%s' % (env.proj_root, env.branch))
-	env.run('pip install -r %s/reqs/dev.txt' % env.proj_dir )
+	env.run('pip install -r %s/reqs/%s.txt' % (env.proj_dir, env.branch) )
 
-####### Start Gunicorn
+@task
+def start_supervisord():
+    """
+    Starts supervisord
+    """
+    config_file = '/var/www/karmaworld/confs/prod/supervisord.conf'
+    env.run('supervisord -c %s' % config_file)
+
+
+@task
+def stop_supervisord():
+    """
+    Restarts supervisord
+    """
+    config_file = '/var/www/karmaworld/confs/prod/supervisord.conf'
+    env.run('supervisorctl -c %s shutdown' % config_file)
+
+
+@task
+def restart_supervisord():
+    """
+    Restarts supervisord
+    """
+    stop_supervisord()
+    start_supervisord()
+
+
+def supervisorctl(action, process):
+    """
+    Takes as arguments the name of the process as is
+    defined in supervisord.conf and the action that should
+    be performed on it: start|stop|restart.
+    """
+    supervisor_conf = '/var/www/karmaworld/confs/prod/supervisord.conf'
+    env.run('supervisorctl -c %s %s %s' % (supervisor_conf, action, process))
+
+
+@task
+def start_celeryd():
+    """
+    Starts the celeryd process
+    """
+    supervisorctl('start', 'celeryd')
+
+
+@task
+def stop_celeryd():
+    """
+    Stops the celeryd process
+    """
+    supervisorctl('stop', 'celeryd')
+
+
+@task
+def restart_celery():
+    """
+    Restarts the celeryd process
+    """
+    supervisorctl('restart', 'celeryd')
+
+
 @task
 def start_gunicorn():
     """
     Starts the gunicorn process
     """
-    env.run('%s/manage.py run_gunicorn -b %s -p %s/var/run/gunicorn.pid --daemon' % (env.proj_dir, env.gunicorn_addr, env.proj_dir))
+    supervisorctl('start', 'gunicorn')
+
+
+@task
+def stop_gunicorn():
+    """
+    Stops the gunicorn process
+    """
+    supervisorctl('stop', 'gunicorn')
+
+
+@task
+def restart_gunicorn():
+    """
+    Restarts the gunicorn process
+    """
+    supervisorctl('restart', 'gunicorn')
+
 
 ####### Update Requirements
 @task
