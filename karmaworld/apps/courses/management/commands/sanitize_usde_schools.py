@@ -29,7 +29,6 @@ class Command(BaseCommand):
     args = 'none'
     help = """ Delete Schools that contain RESTRICTED WORDS in their names """
 
-
     def get_input(self, input_prompt):
         """ Get user input with repeated requests on incorrect input """
 
@@ -46,9 +45,9 @@ class Command(BaseCommand):
             return self.get_input(error_prompt + input_prompt)
 
 
-
-
     def handle(self, *args, **kwargs):
+        """ The function that gets called to run this command """
+        # generate an |(or)'d list of queries searching inexact for each of RESTRICTED_WORDS
         queries_list    = map(lambda word: Q(name__icontains=word), RESTRICTED_WORDS)
         queries_or      = reduce(lambda a, b: a | b, queries_list)
         schools = School.objects.filter(queries_or)
