@@ -205,3 +205,9 @@ def update_reqs():
 def update_code():
 	env.run('cd %s; git pull' % env.proj_dir)
 
+@task
+def backup()
+    """
+    Create backup using bup
+    """
+    
