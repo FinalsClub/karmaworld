@@ -22,7 +22,11 @@ RESTRICTED_WORDS = [
                 'beauty',
                 'nail',
                 'acupuncture',
-                'chiropractic']
+                'chiropractic',
+                'careers',
+                'adults',
+                'hospital',
+                'childcare']
 
 class Command(BaseCommand):
     """ Delete Schools that contain RESTRICTED WORDS in their names """
