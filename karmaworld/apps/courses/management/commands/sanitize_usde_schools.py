@@ -24,6 +24,7 @@ RESTRICTED_WORDS = [
                 'acupuncture',
                 'chiropractic']
 
+
 class Command(BaseCommand):
     """ Delete Schools that contain RESTRICTED WORDS in their names """
     args = 'none'
