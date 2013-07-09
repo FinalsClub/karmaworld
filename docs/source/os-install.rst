@@ -27,7 +27,7 @@ Before we begin, we are going to need a few commonly installed tools:
 
 If we are in a production environment, we need:
 
-      sudo apt-get install rabbitmq-server postgresql-server postgresql-server-dev-9.1
+      sudo apt-get install rabbitmq-server postgresql-9.1 postgresql-server-dev-9.1
 
 
 0. Check out code
