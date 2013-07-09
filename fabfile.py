@@ -41,7 +41,7 @@ def prod():
     env.proj_root = '/var/www/karmaworld'
     env.proj_dir = '/var/www/karmaworld'
     env.reqs = 'reqs/prod.txt'
-    env.confs = 'confs/beta/'
+    env.confs = 'confs/prod/'
     env.branch = 'beta'
     env.run = virtenv_exec
     env.gunicorn_addr = '127.0.0.1:8000'
@@ -57,8 +57,8 @@ def beta():
     env.hosts = ['beta.karmanotes.org']
     env.proj_root = '/var/www/karmaworld'
     env.proj_dir = '/var/www/karmaworld'
-    env.reqs = 'reqs/beta.txt'
-    env.confs = 'confs/beta/'
+    env.reqs = 'reqs/prod.txt'
+    env.confs = 'confs/prod/'
     env.branch = 'beta'
     env.run = virtenv_exec
     env.gunicorn_addr = '127.0.0.1:8000'
@@ -206,8 +206,32 @@ def update_code():
 	env.run('cd %s; git pull' % env.proj_dir)
 
 @task
-def backup()
+def backup():
     """
     Create backup using bup
     """
+@task
+def first_deploy():
     
+    """
+    Sets up and deploys the project for the first time.
+    """
+    make_virtualenv()
+    update_reqs()
+    syncdb()
+    manage_static()
+    start_supervisord()
+
+
+@task
+def deploy():
+    """
+    Deploys the latest changes
+    """
+    update_code()
+    update_reqs()
+    syncdb()
+    collect_static()
+    restart_supervisord()
+########## END COMMANDS
+
