@@ -785,7 +785,14 @@ legend
   margin-bottom:12px;
 }
 
+/* Turning font awesome icons into buttons */
 .awesome-action:hover {
+  /* For awesome icons with clickstates */
   color: #f05a28;
+  cursor: pointer;
+}
+
+#drpbx-btn {
+  color: #3d9ae8;
   cursor: pointer;
 }

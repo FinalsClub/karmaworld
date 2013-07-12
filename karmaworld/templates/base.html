@@ -15,7 +15,7 @@
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}ajaxuploader/css/fileuploader.css">
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
   <!-- include Font Awesome -->
-  <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
@@ -66,6 +66,10 @@
 <!-- include footer-->
 {% include 'footer.html' %}
 <!-- end include footer-->
+
+{% block opentip %}
+<!-- Conditionally include opentip -->
+{% endblock opentip %}
 
 
 </body>

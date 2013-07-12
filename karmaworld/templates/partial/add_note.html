@@ -1,12 +1,12 @@
 {% load url from future %}
+{% include 'partial/opentip.html' %}
 <section id=add-note-form class="extend-form">
   <script>
     var ajax_upload_url = "{% url 'ajax_upload' %}";
     //var csrf_token = "{{ csrf_token }}";
   </script>
 
-
-  <form id=add-note method="POST">
+  <form id=add-note class="dropzone" method="POST">
     {% csrf_token %}
 
     <div class="row">
@@ -16,10 +16,26 @@
       </div>
       <div id=file-uploader class="small-8 small-offset-1  columns large-4 large-offset-1">
         <!-- the upload button gets attached here -->
-      </div> 
-      <div class="small-2 columns large-1 end">
+      </div>
+
+      <div class="small-2 columns large-1">
+        <!-- TODO: only show after file selected-->
         <i class="icon-remove-sign awesome-action"></i>
       </div>
+
+      <div id="drpbx-btn" class="small-2 columns large-1 end"
+          data-ot="Upload directly from Dropbox"
+          data-ot-target="true"
+          data-ot-tip-joint="top center"
+          data-ot-target-joint="bottom center"
+          data-ot-background="white"
+          data-ot-border-color="black" >
+        <i class="icon-dropbox icon-2x"></i>
+
+        <input type="text" class="hidden" id="id_drpbxURL" name="dropbxURL" style="display: none"/>
+      </div>
+
+
     </div>
     <div class="row">
       <div class="small-10 small-offset-1 columns large-8 large-offset-1">
@@ -51,4 +67,5 @@
 
 
     </form> <!-- #upload_form -->
+  {% include 'partial/dropbox_support.html' %}
 </section>
