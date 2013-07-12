@@ -4,11 +4,11 @@ from itertools import izip
 from django.core.management.base import BaseCommand
 from karmaworld.apps.courses.models import School
 
-    
+
 class Command(BaseCommand):
     args = '<filename>'
-    help = ("""Import USDE csv file. add schools to the UsdeSchool model. 
-        Assumes the following header: 
+    help = ("""Import USDE csv file. add schools to the UsdeSchool model.
+        Assumes the following header:
         Institution_ID,Institution_Name,Institution_Address,Institution_City,Institution_State,Institution_Zip,Institution_Phone,Institution_OPEID,Institution_IPEDS_UnitID,Institution_Web_Address,Campus_ID,Campus_Name,Campus_Address,Campus_City,Campus_State,Campus_Zip,Campus_IPEDS_UnitID,Accreditation_Type,Agency_Name,Agency_Status,Program_Name,Accreditation_Status,Accreditation_Date_Type,Periods,Last Action"""
     )
 
@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        if len(args) < 1: 
+        if len(args) < 1:
             self.stdout.write('Provide a filename\n')
             return
 
@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 print d
                 raise Exception('Error: School does not have an institution_id!')
 
-            try: 
+            try:
                 school = School.objects.get(usde_id=d['institution_id'])
 
             except School.DoesNotExist:
