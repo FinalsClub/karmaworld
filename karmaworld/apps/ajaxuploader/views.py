@@ -12,12 +12,17 @@ class AjaxFileUploader(object):
         self.get_backend = lambda: backend(**kwargs)
 
     def __call__(self,request):
-        print "ajax file uploader called"
+        """ Make the resulting AjaxFileUploader instance itself a callable object """
         return self._ajax_upload(request)
 
     def _ajax_upload(self, request):
+        #FIXME: `upload` is two possible types based on upload type
+
         if request.method == "POST":
             if request.is_ajax():
+                # This case is for:
+                # + async ajax upload
+
                 # the file is stored raw in the request
                 upload = request
                 is_raw = True
@@ -27,9 +32,32 @@ class AjaxFileUploader(object):
                     filename = request.GET['qqfile']
                 except KeyError:
                     return HttpResponseBadRequest("AJAX request not valid")
-            # not an ajax upload, so it was the "basic" iframe version with
-            # submission via form
+
+            elif 'drpbxURL' in request.GET:
+                # This case is for:
+                # + dropbox chooser URL submission
+                backend = self.get_backend()
+
+                # custom filename handler
+                filename = (backend.update_filename(request, filename)
+                            or filename)
+                # save the file
+                backend.setup(filename)
+
+                with open(settings.MEDIA_ROOT + filename, 'wb') as handle:
+                    request = requests.get('http://www.example.com/image.jpg', prefetch=False)
+
+                    # In requests 1.0, this would be:
+                    # request = requests.get('http://www.example.com/image.jpg', stream=True)
+
+                    for block in request.iter_content(1024):
+                        if not block:
+                            break
+
+                        handle.write(block)
             else:
+                # This is case is for:
+                # + fall-back normal file upload
                 is_raw = False
                 if len(request.FILES) == 1:
                     # FILES is a dictionary in Django but Ajax Upload gives
@@ -44,13 +72,15 @@ class AjaxFileUploader(object):
                     raise Http404("Bad Upload")
                 filename = upload.name
 
-            backend = self.get_backend()
+            if not backend:
+                backend = self.get_backend()
 
-            # custom filename handler
-            filename = (backend.update_filename(request, filename)
-                        or filename)
-            # save the file
-            backend.setup(filename)
+                # custom filename handler
+                filename = (backend.update_filename(request, filename)
+                            or filename)
+                # save the file
+                backend.setup(filename)
+
             success = backend.upload(upload, filename, is_raw)
             # callback
             extra_context = backend.upload_complete(request, filename, upload)

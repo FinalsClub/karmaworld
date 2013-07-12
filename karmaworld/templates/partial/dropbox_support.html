@@ -10,6 +10,7 @@
       success: function(file) {
                 console.log("Here is the file selected " + file[0].link);
                 console.log(file);
+                $('#id_drpbxURL').val(file[0].link);
               },
       }
 

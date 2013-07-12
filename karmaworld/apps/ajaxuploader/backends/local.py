@@ -91,8 +91,6 @@ class LocalUploadBackend(AbstractUploadBackend):
         unique_filename = False
         filename_suffix = 0
 
-        #print "orig filename: " + os.path.join(self._dir, filename)
-
         # Check if file at filename exists
         if os.path.isfile(os.path.join(self._dir, filename)):
             while not unique_filename:
