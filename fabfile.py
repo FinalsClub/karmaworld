@@ -17,14 +17,17 @@ def here():
     """
     Connection information for the local machine
     """
+    def _custom_local(command):
+        prefixed_command = '/bin/bash -l -i -c "%s"' % command
+        return local(prefixed_command)
 
+    env.run = _custom_local
     # This is required for the same reason as above
     env.proj_root = '/var/www/karmaworld'
     env.cd = lcd
     env.reqs = 'reqs/dev.txt'
-    env.confs = 'confs/%s' % env.branch
+    env.confs = 'confs/beta'
     env.branch = 'beta'
-    env.run = virtenv_exec
 
 
 
@@ -75,17 +78,17 @@ def syncdb():
 	Sync Database
 	"""
 
-	env.run('%s/manage.py syncdb --migrate' % env.proj_dir )
+	env.run('%s/manage.py syncdb --migrate' % env.proj_root )
 
 
 ####### Collect Static Files
 @task
 def collect_static():
 	"""
-	Collect static files (if AWS config. present, push to S3
+	Collect static files (if AWS config. present, push to S3)
 	"""
 
-	env.run('%s/manage.py collectstatic --noinput' % env.proj_dir )	
+	env.run('%s/manage.py collectstatic --noinput' % env.proj_root )	
 
 ####### Run Dev Server
 @task
@@ -94,7 +97,7 @@ def dev_server():
 	Runs the built-in django webserver
 	"""
 
-	env.run('%s/manage.py runserver' % env.proj_dir )	
+	env.run('%s/manage.py runserver' % env.proj_root)	
 
 ####### Create Virtual Environment
 @task
@@ -104,7 +107,7 @@ def make_virtualenv():
 	"""
 
 	run('virtualenv %s/%s' % (env.proj_root, env.branch))
-	env.run('pip install -r %s/reqs/%s.txt' % (env.proj_dir, env.branch) )
+	env.run('pip install -r %s/reqs/%s.txt' % (env.proj_root, env.branch) )
 
 @task
 def start_supervisord():
@@ -199,7 +202,7 @@ def update_reqs():
 ####### Pull new code
 @task
 def update_code():
-	env.run('cd %s; git pull' % env.proj_dir)
+	env.run('cd %s; git pull' % env.proj_root )
 
 @task
 def backup():
@@ -230,4 +233,3 @@ def deploy():
     collect_static()
     restart_supervisord()
 ########## END COMMANDS
- sethwoodworth started a discussion in the diff 6 days ago
