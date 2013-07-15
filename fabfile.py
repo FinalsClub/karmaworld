@@ -19,11 +19,10 @@ def here():
     """
 
     # This is required for the same reason as above
-    env.proj_dir = os.getcwd()
-    env.proj_root = os.path.dirname(env.proj_dir)
+    env.proj_root = '/var/www/karmaworld'
     env.cd = lcd
     env.reqs = 'reqs/dev.txt'
-    env.confs = 'confs/stag/'
+    env.confs = 'confs/%s' % env.branch
     env.branch = 'beta'
     env.run = virtenv_exec
 
@@ -39,7 +38,6 @@ def prod():
     env.user = 'djkarma'
     env.hosts = ['karmanotes.org']
     env.proj_root = '/var/www/karmaworld'
-    env.proj_dir = '/var/www/karmaworld'
     env.reqs = 'reqs/prod.txt'
     env.confs = 'confs/prod/'
     env.branch = 'beta'
@@ -56,12 +54,10 @@ def beta():
     env.user = 'djkarma'
     env.hosts = ['beta.karmanotes.org']
     env.proj_root = '/var/www/karmaworld'
-    env.proj_dir = '/var/www/karmaworld'
     env.reqs = 'reqs/prod.txt'
     env.confs = 'confs/prod/'
     env.branch = 'beta'
     env.run = virtenv_exec
-    env.gunicorn_addr = '127.0.0.1:8000'
 
 ######## Run Commands in Virutal Environment
 def virtenv_exec(command):
@@ -69,7 +65,7 @@ def virtenv_exec(command):
 	Execute command in Virtualenv
 	"""
 
-        with virtualenv('%s/%s' % (env.proj_dir, env.branch)):
+        with virtualenv('%s/%s' % (env.proj_root, env.branch)):
                 run('%s' % (command))
 
 ######## Sync database
@@ -79,7 +75,7 @@ def syncdb():
 	Sync Database
 	"""
 
-	env.run('%s/manage.py syncdb --noinput --migrate' % env.proj_dir )
+	env.run('%s/manage.py syncdb --migrate' % env.proj_dir )
 
 
 ####### Collect Static Files
@@ -234,4 +230,4 @@ def deploy():
     collect_static()
     restart_supervisord()
 ########## END COMMANDS
-
+ sethwoodworth started a discussion in the diff 6 days ago
