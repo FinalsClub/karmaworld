@@ -35,6 +35,7 @@ class LocalUploadBackend(AbstractUploadBackend):
         self._dest.write(chunk)
 
     def upload(self, uploaded, filename, raw_data):
+        """ :raw_data: is 0/1 """
         try:
             if raw_data:
                 # File was uploaded via ajax, and is streaming in.
@@ -64,6 +65,7 @@ class LocalUploadBackend(AbstractUploadBackend):
         note.name = filename
         note.note_file = os.path.join(self._dir, filename)
         note.course_id = request.GET['course_id']
+        note.draft = True # Pending approval from user
         print "saving note"
         note.save()
 

@@ -60,6 +60,12 @@ class CourseDetailView(DetailView):
     model = Course
     context_object_name = u"course" # name passed to template
 
+    def get_context_data(self, **kwargs):
+        """ filter the Course.note_set to return no Drafts """
+        kwargs = super(CourseDetailView, self).get_context_data()
+        kwargs['note_set'] = self.object.note_set.filter(draft=False)
+        return kwargs
+
 
 class AboutView(TemplateView):
     """ Display the About page with the Schools leaderboard """

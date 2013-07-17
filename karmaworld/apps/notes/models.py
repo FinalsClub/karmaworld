@@ -71,6 +71,9 @@ class Note(models.Model):
     html            = models.TextField(blank=True, null=True)
     text            = models.TextField(blank=True, null=True)
 
+    # if True, NEVER show this file
+    draft           = models.BooleanField(default=False)
+
 
     class Meta:
         """ Sort files by most recent first """

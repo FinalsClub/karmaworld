@@ -113,7 +113,7 @@
       <div class="row">
         <div class="small-12 columns large-10 large-offset-1">
 
-          {% for note in course.note_set.all %}
+          {% for note in note_set %}
             {% include 'notes/note_list_entry.html' with note=note %}
           {% endfor %}
         </div>
