@@ -1,10 +1,13 @@
 ==========
 KarmaWorld
 ==========
-:Description: A django application for sharing and uploading class notes.
-:Copyright: FinalsClub, a 501c3 non-profit organization
-:License: GPLv3 except where otherwise noted
-:Contact: info@karmanotes.org
+__Description__: A django application for sharing and uploading class notes.
+
+__Copyright__: FinalsClub, a 501c3 non-profit organization
+
+__License__: GPLv3 except where otherwise noted
+
+__Contact__: info@karmanotes.org
 
 v3.0 of the karmanotes.org website from the FinalsClub Foundation
 
