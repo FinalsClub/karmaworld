@@ -1,0 +1,125 @@
+{% load url from future %}
+{% include 'partial/opentip.html' %}
+<section id=filepicker-form class="extend-form">
+<!-- Javascript -->
+<script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
+  <div class="row" id="">
+    <div class="small-8 small-offset-1 columns large-4">
+        <input id="filepicker-file-upload"
+          type="filepicker"
+          data-fp-apikey="A5pg98pDjQk6k3lBZ8VDVz"
+          data-fp-multiple="true"
+          data-fp-button-class="add-note-btn"
+          data-fp-button-text="<i class=icon-upload></i> add notes"
+          data-fp-extensions=".pdf,.doc,.docx,.txt,.rtf,.odt,.png,.jpg,.jpeg,.ppt,.pptx,.md,.rst"
+          data-fp-store-path="{{ course.school.slug }}/ {{ course.slug }}/"
+          data-fp-services="COMPUTER,DROPBOX,URL,GOOGLE_DRIVE,GMAIL,EVERNOTE,BOX,FACEBOOK,FLICKR,GITHUB,SKYDRIVE,PICASA,IMAGE_SEARCH,INSTAGRAM,WEBCAM,FTP"
+          />
+    </div>
+    <div class="hide-for-small columns large-6">
+      <div id="filepicker_dropzone" class="fp_dropzone">
+      <span id=filepicker_dropzone_result>  Drop files here </span>
+      </div>
+    </div>
+  </div> <!--.row -->
+  <div class="row" >
+    <div class="small-10 small-offset-1 columns">
+      <div id="forms_container">
+      </div>
+    </div>
+    <div class="small-8 small-offset-1 columns large-4 small-centered">
+      <div id="save-btn" style="display:none">
+        <i class=icon-save></i> Save
+      </div>
+    </div>
+
+    <div id="form-template" class="row" style="display:none">
+      <form class="inline-form" method="POST">
+        <div class="small-6 columns">
+          <legend>Title of Note <small class="form">* Required</small></legend>
+          <input type="text" class="intext" id="id_name" name="name"
+                placeholder="">
+        </div>
+        <div class="small-6 columns">
+          <legend>Tags (comma seperated)</legend>
+          <input type="text" id="id_tags" name="tags" class="taggit-tags"
+                placeholder="shakespeare, econ, physics">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    $(function(){
+      var $dropzone = $('#filepicker_dropzone');
+      var $dropzone_result = $('#filepicker_dropzone_result');
+
+
+      /*
+       *  load the file form template and append it to the form container
+       *  takes a fileupload event
+       */
+      makeFileForm = function(upFile) {
+        var _form = document.getElementById('form-template').cloneNode(deep=true);
+        // FIXME: VVVVVV
+        $(_form.children[0].children[0].children[1]).val(upFile.filename); // replace with upFile name
+        _form.style.display = "inline";
+        _form.id = null; // clear the unique id
+        document.getElementById('forms_container').appendChild(_form);
+      };
+
+      var fileup = document.getElementById('filepicker-file-upload');
+      fileup.onchange = function(event){
+        $dropzone_result.text(event);
+        for (var i=0; i < event.fpfiles.length; i++){
+          makeFileForm(event.fpfiles[i]);
+        }
+        document.getElementById('save-btn').style.display = 'inline';
+
+      };
+
+      filepicker.setKey('A5pg98pDjQk6k3lBZ8VDVz')
+      filepicker.makeDropPane($dropzone[0], {
+          multiple: true,
+          extensions: ".pdf, .doc, .docx, .txt, .rtf, .odt, .png, .jpg, .jpeg, .ppt, .pptx, .md, .rst",
+          path: "{{ course.school.slug }}/ {{ course.slug }}/",
+          dragEnter: function() {
+              $dropzone.html("Drop to upload").css({
+                  'backgroundColor': "#E0E0E0",
+                  'border': "1px solid #000"
+              });
+          },
+          dragLeave: function() {
+              alert("drag leave");
+              $dropzone.html("Drop files here").css({
+                  'backgroundColor': "#F6F6F6",
+                  'border': "1px dashed #666"
+              });
+          },
+          onSuccess: function(InkBlobs) {
+              alert("on success");
+              $dropzone.text("Done, see result below");
+              $dropzone_result.text(JSON.stringify(InkBlobs));
+              console.log("this one also worked");
+              console.log(InkBlobs);
+              console.log('--------------------------------------------------');
+              console.log("starting form copy");
+              makeFileForm();
+          },
+          onError: function(type, message) {
+              alert("on error");
+              $dropzone_result.text('('+type+') '+ message);
+          },
+          onProgress: function(percentage) {
+              alert("on progress");
+              $dropzone.text("Uploading ("+percentage+"%)");
+          }
+      });
+    });
+  // TODO: js to submit all forms as POST to NEW ENDPOINT
+  // TODO: Cancel (x) for each upload
+  // FIXME: Style and arrange everything
+  </script>
+
+
+</section>

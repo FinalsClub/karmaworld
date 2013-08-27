@@ -5,22 +5,14 @@
 {% block pagescripts %}
   <script src="{{ STATIC_URL }}js/bootstrap-modal.js" ></script>
   <script src="{{ STATIC_URL }}ajaxuploader/js/fileuploader.js" ></script>
-  <script src="{{ STATIC_URL }}js/lightboxupload.js" ></script>
   <script>
-    var courseId  = {{ course.id }};
     var csrf_token = "{{ csrf_token }}";
-    var uploadUrl = "{% url 'ajax_upload' %}";
   </script>
 {% endblock %}
 
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
-{% endblock %}
-
-
-{% block lightboxen %}
-  {% include 'lightbox/upload.html' %}
 {% endblock %}
 
 
@@ -68,7 +60,9 @@
         <div class="small-10 columns small-offset-1"> <hr/> </div>
       </div>
 
-      {% include 'partial/add_note.html' %}
+
+      {% include 'partial/filepicker.html' %}
+
 
       {% if request.GET.thankyou == '' %}
       <div id=thankyou-wrapper class="row">
@@ -91,14 +85,6 @@
         </div>
       </div> <!-- .row -->
       {% endif %}
-
-      <div class="row">
-        <div class="small-8 columns large-4 small-centered">
-          <div id="add-note-btn" data-id="{{ course.id }}">
-            <i class=icon-upload></i> add a note
-          </div>
-        </div>
-      </div>
 
 
       <div class="row">
