@@ -88,6 +88,7 @@ def download_from_gdrive(file_dict, http, extension):
     """ get urls from file_dict and download contextual files from google """
     download_urls = {}
     download_urls['text'] = file_dict[u'exportLinks']['text/plain']
+
     if extension.lower() in ['.ppt', 'pptx']:
         download_urls['pdf'] = file_dict[u'exportLinks']['application/pdf']
     else:

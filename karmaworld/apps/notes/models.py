@@ -43,7 +43,7 @@ class Note(models.Model):
 
     name            = models.CharField(max_length=255, blank=True, null=True)
     slug            = models.SlugField(max_length=255, null=True)
-    year            = models.IntegerField(blank=True, null=True, 
+    year            = models.IntegerField(blank=True, null=True,
                         default=datetime.datetime.utcnow().year)
     desc            = models.TextField(max_length=511, blank=True, null=True)
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
@@ -120,7 +120,7 @@ class Note(models.Model):
             return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.id)
 
     def sanitize_html(self, save=True):
-        """ if self contains html, find all <a> tags and add target=_blank 
+        """ if self contains html, find all <a> tags and add target=_blank
             takes self
             returns True/False on succ/fail and error or count
         """
