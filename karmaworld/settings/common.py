@@ -72,7 +72,7 @@ TIME_ZONE = 'America/New_York'
 LANGUAGE_CODE = 'en-us'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
-SITE_ID = 1
+SITE_ID = 2
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
 USE_I18N = True
@@ -209,6 +209,7 @@ LOCAL_APPS = (
     'karmaworld.apps.notes',
     'karmaworld.apps.courses',
     'karmaworld.apps.ajaxuploader',
+    'karmaworld.apps.document_upload',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
