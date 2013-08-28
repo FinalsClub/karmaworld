@@ -1,0 +1,25 @@
+{% comment %}
+Integrate opentip seamlessly into any page, just use:
+
+`{% include 'partial/opentip/html' %}`
+anywhere in another template and then apply something like this:
+
+
+    <i
+      data-ot="Upload directly to this course"
+      data-ot-target="true"
+      data-ot-tip-joint="top center"
+      data-ot-target-joint="bottom center"
+      data-ot-background="white"
+      data-ot-border-color="black"
+      class="icon-upload opentip"></i>
+
+to create a Font Awesome with a rollover opentip
+
+{% endcomment %}
+
+
+{% block opentip %}
+  <script src="{{ STATIC_URL }}js/opentip-jquery-excanvas.min.js"></script>
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/vendor/opentip.css"> <!-- opentip -->
+{% endblock %}
