@@ -8,10 +8,12 @@ from django.db import models
 import django_filepicker
 
 from karmaworld.apps.notes.models import Document
+from karmaworld.apps.notes.models import Note
+from karmaworld.apps.document_upload import tasks
+
 
 class RawDocument(Document):
     is_processed = models.BooleanField(default=False)
-
 
     class Meta:
         """ Sort files most recent first """
@@ -23,4 +25,19 @@ class RawDocument(Document):
 
     def convert_to_note(self):
         """ polymorph this object into a note.models.Note object  """
-        pass
+        note = Note(
+                course=self.course,
+                name=self.name,
+                slug=self.slug,
+                ip=self.ip,
+                uploaded_at=self.uploaded_at,
+                fp_file=self.fp_file)
+        note.save()
+        for tag in self.tags.all():
+            note.tags.add(tag)
+        return note
+
+    def save(self, *args, **kwargs):
+        if not is_processed:
+            tasks.process_raw_document(self)
+        super(RawDocument, self).save(*args, **kwargs)
