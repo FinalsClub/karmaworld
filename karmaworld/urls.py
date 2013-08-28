@@ -17,7 +17,6 @@ from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.notes.views import NoteView
 from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.notes.views import PDFView
-from karmaworld.apps.document_upload.views import RawDocumentCreate
 from karmaworld.apps.document_upload.views import save_fp_upload
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
