@@ -87,7 +87,7 @@ class NoteSaveView(FormView, SingleObjectMixin):
         # use *arg expansion to pass tags a list of tags
         self.object.tags.add(*form.cleaned_data['tags'])
         # User has submitted this form, so set the SHOW flag
-        self.object.draft = False
+        self.object.is_hidden = False
         self.object.save()
         return super(NoteSaveView, self).form_valid(form)
 

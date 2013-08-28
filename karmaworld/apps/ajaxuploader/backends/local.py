@@ -65,7 +65,7 @@ class LocalUploadBackend(AbstractUploadBackend):
         note.name = filename
         note.note_file = os.path.join(self._dir, filename)
         note.course_id = request.GET['course_id']
-        note.draft = True # Pending approval from user
+        note.is_hidden = True # Pending approval from user
         print "saving note"
         note.save()
 

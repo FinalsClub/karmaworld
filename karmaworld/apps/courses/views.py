@@ -63,7 +63,7 @@ class CourseDetailView(DetailView):
     def get_context_data(self, **kwargs):
         """ filter the Course.note_set to return no Drafts """
         kwargs = super(CourseDetailView, self).get_context_data()
-        kwargs['note_set'] = self.object.note_set.filter(draft=False)
+        kwargs['note_set'] = self.object.note_set.filter(is_hidden=False)
         return kwargs
 
 
