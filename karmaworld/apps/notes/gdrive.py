@@ -203,3 +203,66 @@ def convert_with_google_drive(note):
 
     # Finally, save whatever data we got back from google
     new_note.save()
+
+def convert_raw_document(raw_document):
+    """ Upload a raw document to google drive and get a Note back """
+
+    # get the file's mimetype
+    file_type, _ = mimetypes=guess_type(raw_document.fp_file.path)
+    # get the file extension
+    filename, extension = os.path.splitext(raw_document.fp_file.path)
+
+    if file_type == None:
+        media = MediaFileUpload(note.note_file.path,
+                    chunksize=1024*1024, resumable=True)
+    else:
+        media = MediaFileUpload(note.note_file.path, mimetype=file_type,
+                    chunksize=1024*1024, resumable=True)
+
+    auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]
+    creds = auth.transform_to_cred()
+
+    creds, auth = check_and_refresh(creds, auth)
+    service, http = build_api_service(creds)
+
+    # prepare the upload
+    file_dict = upload_to_gdrive(service, media, filename, extension)
+    content_dict = download_from_gdrive(file_dict, http, extension)
+
+    note = raw_document.convert_to_note()
+    if extension.lower() == '.pdf':
+        note.file_type = 'pdf'
+
+    elif extension.lower() in ['.ppt', '.pptx']:
+        note.file_type = 'ppt'
+        now = datetime.datetime.utcnow()
+        # create a folder path to store the ppt > pdf file with year and month folders
+        nonce_path = '/ppt_pdf/%s/%s/' % (now.year, now.month)
+
+        _path = filename + '.pdf'
+        try:
+            # If those folders don't exist, create them
+            os.makedirs(os.path.realpath(os.path.dirname(_path)))
+        except:
+            print "we failed to create those directories"
+
+        _writer = BufferedWriter(FileIO(_path, "w"))
+        _writer.write(content_dict['pdf'])
+        _writer.close()
+
+        note.pdf_file = _path
+
+    else:
+        # PPT files do not have this export ability
+        note.gdrive_url = file_dict[u'exportLinks']['application/vnd.oasis.opendocument.text']
+        note.html = content_dict['html']
+
+    note.text = content_dict['text']
+
+    # before we save new html, sanitize a tags in note.html
+    #note.sanitize_html(save=False)
+    #FIXME: ^^^ disabled until we can get html out of an Etree html element
+
+    # Finally, save whatever data we got back from google
+    note.save()
+
