@@ -26,6 +26,15 @@ except:
 
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
 
+def _choose_upload_to(instance, filename):
+    # /school/course/year/month/day
+    return u"{school}/{course}/{year}/{month}/{day}".format(
+        school=instance.course.school.slug,
+        course=instance.course.slug,
+        year=instance.uploaded_at.year,
+        month=instance.uploaded_at.month,
+        day=instance.uploaded_at.day)
+
 class Document(models.Model):
     """ An Abstract Base Class representing a document
         intended to be subclassed
@@ -47,14 +56,13 @@ class Document(models.Model):
     is_hidden       = models.BooleanField(default=False)
 
     fp_file = django_filepicker.models.FPFileField(
-            upload_to='queue/%Y/%m/%j/',
+            upload_to=_choose_upload_to,
             null=True, blank=True,
             help_text=u"An uploaded file reference from Filepicker.io")
 
     class Meta:
         abstract = True
         ordering = ['-uploaded_at']
-
 
     def __unicode__(self):
         return u"Document: {1} -- {2}".format(self.name, self.uploaded_at)
