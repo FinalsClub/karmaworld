@@ -10,6 +10,10 @@ from sys import path
 
 from djcelery import setup_loader
 
+from karmaworld.secret.filepicker import FILEPICKER_API_KEY as fp_api
+
+FILEPICKER_API_KEY = fp_api
+
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:

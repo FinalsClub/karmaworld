@@ -46,7 +46,7 @@ class Document(models.Model):
     # WARNING: This may throw an error on migration
     is_hidden       = models.BooleanField(default=False)
 
-    fp_note = django_filepicker.models.FPFileField(
+    fp_file = django_filepicker.models.FPFileField(
             upload_to='queue/%Y/%m/%j/',
             null=True, blank=True,
             help_text=u"An uploaded file reference from Filepicker.io")

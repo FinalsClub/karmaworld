@@ -17,6 +17,8 @@ from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.notes.views import NoteView
 from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.notes.views import PDFView
+from karmaworld.apps.document_upload.views import RawDocumentCreate
+from karmaworld.apps.document_upload.views import save_fp_upload
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 admin.autodiscover()
@@ -62,6 +64,8 @@ urlpatterns = patterns('',
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', 
             {'document_root': settings.MEDIA_ROOT, }),
 
+    # Filepicker upload
+    url(r'^api/upload$', save_fp_upload, name='upload_post'),
     # VIEW for displaying a single Course
     url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '$',
         CourseDetailView.as_view(), name='course_detail'),

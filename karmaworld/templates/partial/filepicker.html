@@ -34,7 +34,7 @@
     </div>
 
     <div id="form-template" class="row" style="display:none">
-      <form class="inline-form" method="POST">
+      <form class="inline-form" method="POST" action="{% url 'upload_post' %}">
         <div class="small-6 columns">
           <legend>Title of Note <small class="form">* Required</small></legend>
           <input type="text" class="intext" id="id_name" name="name"
@@ -44,6 +44,13 @@
           <legend>Tags (comma seperated)</legend>
           <input type="text" id="id_tags" name="tags" class="taggit-tags"
                 placeholder="shakespeare, econ, physics">
+        </div>
+        <div class="hidden-fields" style="display:none;">
+          <input type="text" id="id_fpfile" name="fpfile" class="fpurl">
+          <input type="text" id="id_course" name="course" value="{{ course.id }}"
+            class="course_id">
+          {% csrf_token %}
+          <input type="text" class="csrf" value='{{ csrf_token }}'>
         </div>
       </form>
     </div>
@@ -65,6 +72,7 @@
         $(_form.children[0].children[0].children[1]).val(upFile.filename); // replace with upFile name
         _form.style.display = "inline";
         _form.id = null; // clear the unique id
+        $(_form.children[0].children[2].children[0]).val(upFile.url);
         document.getElementById('forms_container').appendChild(_form);
       };
 
@@ -114,6 +122,24 @@
               alert("on progress");
               $dropzone.text("Uploading ("+percentage+"%)");
           }
+      });
+      $('#save-btn').on('click', function(e){
+        $('.inline-form').each(function(i,el){
+            var name, tags, fpurl, course;
+            name = $(el).find('.intext').val();
+            fp_file = $(el).find('.fpurl').val();
+            tags = $(el).find('.taggit-tags').val();
+            course = $(el).find('.course_id').val();
+            csrf = $(el).find('.csrf').val();
+
+            $.post('{% url 'upload_post' %}', {
+              'name': name,
+              'fp_file': fp_file,
+              'tags': tags,
+              'course': course,
+              'csrfmiddlewaretoken': csrf,
+            });
+        });
       });
     });
   // TODO: js to submit all forms as POST to NEW ENDPOINT
