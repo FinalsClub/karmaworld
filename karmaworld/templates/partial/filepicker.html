@@ -158,6 +158,7 @@
 
       $('#icon-remove-sign').on('click', function(e){
         e.stopPropagation();
+        console.log($(this).parent());
         $(this).parent().remove();
       });
     });
