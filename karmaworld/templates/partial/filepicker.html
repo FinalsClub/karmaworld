@@ -47,7 +47,7 @@
           <input type="text" class="csrf" value='{{ csrf_token }}'>
         </div>
         <div class="show-for-medium-up columns large-1 end">
-          <i class="icon-remove-sign awesome-action"></i>
+          <i class="icon-remove-sign awesome-action" id="icon-remove-sign"></i>
         </div>
       </form>
     </div>
@@ -156,10 +156,10 @@
         });
       });
 
-      $('#icon-remove-sign').on('click', function(e){
+      $('.remove').on('click', function(e){
         e.stopPropagation();
-        console.log($(this).parent());
-        $(this).parent().remove();
+        console.log($(this).parent().parent());
+        $(this).parent().parent().remove();
       });
     });
   // TODO: js to submit all forms as POST to NEW ENDPOINT
