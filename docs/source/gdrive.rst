@@ -13,7 +13,7 @@ build a flow object called `flow`
 open a private browsing instance in a browser
 Log into the google drive account of the GOOGLE_USER set in `karmaworld.secrets.drive`
 get the authorization url
-    flow.step1_authorize_url()
+    flow.step1_get_authorize_url()
 
 go to that url in your browser
 it will redirecto you to a url in the format of:
