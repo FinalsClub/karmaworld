@@ -251,6 +251,7 @@ def convert_raw_document(raw_document):
     content_dict = download_from_gdrive(file_dict, http, mimetype=raw_document.mimetype)
 
     # this should have already happened, lets see why it hasn't
+    raw_document.is_processed = True
     raw_document.save()
 
     note = raw_document.convert_to_note()
