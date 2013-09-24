@@ -25,6 +25,7 @@ class RawDocument(Document):
 
     def convert_to_note(self):
         """ polymorph this object into a note.models.Note object  """
+        print "begin convert_to_note"
         note = Note(
                 course=self.course,
                 name=self.name,
@@ -35,9 +36,13 @@ class RawDocument(Document):
         note.save()
         for tag in self.tags.all():
             note.tags.add(tag)
+        print "finish convert_to_note"
         return note
 
     def save(self, *args, **kwargs):
-        if not is_processed:
-            tasks.process_raw_document(self)
+        print "`RawDocument.save()`"
         super(RawDocument, self).save(*args, **kwargs)
+        if not self.is_processed:
+            print "\t document not processed yet, doing that now"
+            tasks.process_raw_document.delay(self)
+            print "\t this arrow should point to the word now ^"

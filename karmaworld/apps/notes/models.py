@@ -7,8 +7,11 @@
     Contains only the minimum for handling files and their representation
 """
 import datetime
+import os
+import urllib
 
 from django.conf import settings
+from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.template import defaultfilters
@@ -57,8 +60,10 @@ class Document(models.Model):
 
     fp_file = django_filepicker.models.FPFileField(
             upload_to=_choose_upload_to,
+            storage=fs,                 \
             null=True, blank=True,
             help_text=u"An uploaded file reference from Filepicker.io")
+    mimetype = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -77,6 +82,35 @@ class Document(models.Model):
                     _slug, self.uploaded_at.month,
                     self.uploaded_at.day, self.uploaded_at.microsecond)
         self.slug = _slug
+
+    def get_file(self):
+        """ Downloads the file from filepicker.io and returns a
+        Django File wrapper object """
+        # clean up any old downloads that are still hanging around
+        if hasattr(self, 'tempfile'):
+            self.tempfile.close()
+            delattr(self, 'tempfile')
+
+        if hasattr(self, 'filename'):
+            # the file might have been moved in the meantime so
+            # check first
+            if os.path.exists(self.filename):
+                os.remove(self.filename)
+            delattr(self, 'filename')
+
+        # The temporary file will be created in a directory set by the
+        # environment (TEMP_DIR, TEMP or TMP)
+        self.filename, header = urllib.urlretrieve(self.fp_file.name)
+        name = os.path.basename(self.filename)
+        disposition = header.get('Content-Disposition')
+        if disposition:
+            name = disposition.rpartition("filename=")[2].strip('" ')
+        filename = header.get('X-File-Name')
+        if filename:
+            name = filename
+
+        self.tempfile = open(self.filename, 'r')
+        return File(self.tempfile, name=name)
 
     def save(self, *args, **kwargs):
         if self.name and not self.slug:

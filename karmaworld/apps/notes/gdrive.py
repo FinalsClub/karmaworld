@@ -11,6 +11,7 @@ import time
 import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
+from apiclient.http import MediaInMemoryUpload
 from django.conf import settings
 from django.core.files import File
 from oauth2client.client import flow_from_clientsecrets
@@ -26,6 +27,8 @@ except:
     GOOGLE_USER = 'admin@karmanotes.org' # FIXME
 
 EXT_TO_MIME = {'.docx': 'application/msword'}
+
+PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
 
 def build_flow():
     """ Create an oauth2 autentication object with our preferred details """
@@ -84,12 +87,16 @@ def check_and_refresh(creds, auth):
         auth.save()
     return creds, auth
 
-def download_from_gdrive(file_dict, http, extension):
+def download_from_gdrive(file_dict, http, extension=None, mimetype=None):
     """ get urls from file_dict and download contextual files from google """
     download_urls = {}
     download_urls['text'] = file_dict[u'exportLinks']['text/plain']
 
-    if extension.lower() in ['.ppt', 'pptx']:
+    if extension:
+        extension = extension.lower()
+
+    if extension in ['.ppt', 'pptx'] \
+        or mimetype in PPT_MIMETYPES:
         download_urls['pdf'] = file_dict[u'exportLinks']['application/pdf']
     else:
         download_urls['html'] = file_dict[u'exportLinks']['text/html']
@@ -109,11 +116,19 @@ def download_from_gdrive(file_dict, http, extension):
 
     return content_dict
 
-def upload_to_gdrive(service, media, filename, extension):
+def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
     """ take a gdrive service object, and a media wrapper and upload to gdrive
-        returns a file_dict """
+        returns a file_dict
+        You must provide an `extension` or `mimetype`
+    """
     _resource = {'title': filename}
-    if extension.lower() in ['.pdf', '.jpeg', '.jpg', '.png']:
+
+    # clean up extensions for type checking
+    if extension:
+        extension = extension.lower()
+
+    if extension in ['.pdf', '.jpeg', '.jpg', '.png'] \
+        or mimetype in ['application/pdf']:
         # include OCR on ocr-able files
         file_dict = service.files().insert(body=_resource, media_body=media, convert=True, ocr=True).execute()
 
@@ -206,17 +221,23 @@ def convert_with_google_drive(note):
 
 def convert_raw_document(raw_document):
     """ Upload a raw document to google drive and get a Note back """
+    fp_file = raw_document.get_file()
 
+    # download the file to memory
     # get the file's mimetype
-    file_type, _ = mimetypes=guess_type(raw_document.fp_file.path)
+    #file_type, _ = mimetypes.guess_type(raw_document.fp_file.path)
     # get the file extension
-    filename, extension = os.path.splitext(raw_document.fp_file.path)
+    #filename, extension = os.path.splitext(raw_document.fp_file.path)
+    filename = raw_document.name
+    print "this is the mimetype of the document to check:"
+    print raw_document.mimetype
+    print ""
 
-    if file_type == None:
-        media = MediaFileUpload(note.note_file.path,
+    if raw_document.mimetype == None:
+        media = MediaInMemoryUpload(fp_file.read(),
                     chunksize=1024*1024, resumable=True)
     else:
-        media = MediaFileUpload(note.note_file.path, mimetype=file_type,
+        media = MediaInMemoryUpload(fp_file.read(), mimetype=raw_document.mimetype,
                     chunksize=1024*1024, resumable=True)
 
     auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]
@@ -226,14 +247,18 @@ def convert_raw_document(raw_document):
     service, http = build_api_service(creds)
 
     # prepare the upload
-    file_dict = upload_to_gdrive(service, media, filename, extension)
-    content_dict = download_from_gdrive(file_dict, http, extension)
+    file_dict = upload_to_gdrive(service, media, filename, mimetype=raw_document.mimetype)
+    content_dict = download_from_gdrive(file_dict, http, mimetype=raw_document.mimetype)
+
+    # this should have already happened, lets see why it hasn't
+    raw_document.save()
 
     note = raw_document.convert_to_note()
-    if extension.lower() == '.pdf':
+
+    if raw_document.mimetype == 'application/pdf':
         note.file_type = 'pdf'
 
-    elif extension.lower() in ['.ppt', '.pptx']:
+    elif raw_document.mimetype in PPT_MIMETYPES:
         note.file_type = 'ppt'
         now = datetime.datetime.utcnow()
         # create a folder path to store the ppt > pdf file with year and month folders
