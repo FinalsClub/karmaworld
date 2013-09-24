@@ -76,10 +76,10 @@
         _form.style.display = "inline";
         _form.id = null; // clear the unique id
         // save the FP url to the form
-        $(_form.children[0].children[2].children[0]).val(upFile.url);
+        $(_form.children[0].children[3].children[0]).val(upFile.url);
         console.log(upFile);
         // save the mimetype to the form
-        $(_form.children[0].children[2].children[1]).val(upFile.mimetype);
+        $(_form.children[0].children[3].children[1]).val(upFile.mimetype);
 
         document.getElementById('forms_container').appendChild(_form);
       };
