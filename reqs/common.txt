@@ -11,4 +11,4 @@ google-api-python-client==1.0
 django-grappelli==2.4.3
 lxml==3.1.0
 git+https://github.com/FinalsClub/django-taggit.git
-django-filepicker==0.1.55
+django-filepicker==0.1.5
