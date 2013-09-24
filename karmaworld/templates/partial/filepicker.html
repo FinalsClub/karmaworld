@@ -35,6 +35,9 @@
           <input type="text" id="id_tags" name="tags" class="taggit-tags"
                 placeholder="shakespeare, econ, physics">
         </div>
+        <div class="show-for-small columns small-1 end">
+          <i class="icon-remove-sign awesome-action"></i>
+        </div>
         <div class="hidden-fields" style="display:none;">
           <input type="text" id="id_fpfile" name="fpfile" class="fpurl">
           <input type="text" id="id_mimetype" name="mimetype" class="mimetype">
@@ -42,6 +45,9 @@
             class="course_id">
           {% csrf_token %}
           <input type="text" class="csrf" value='{{ csrf_token }}'>
+        </div>
+        <div class="show-for-medium-up columns large-1 end">
+          <i class="icon-remove-sign awesome-action"></i>
         </div>
       </form>
     </div>
@@ -148,6 +154,11 @@
               'mimetype': mimetype
             });
         });
+      });
+
+      $('#icon-remove-sign').on('click', function(e){
+        e.stopPropagation();
+        $(this).parent().remove();
       });
     });
   // TODO: js to submit all forms as POST to NEW ENDPOINT
