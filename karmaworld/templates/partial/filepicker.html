@@ -22,11 +22,6 @@
       <div id="forms_container">
       </div>
     </div>
-    <div class="small-8 small-offset-1 columns large-4 small-centered">
-      <div id="save-btn" style="display:none">
-        <i class=icon-save></i> Save
-      </div>
-    </div>
 
     <div id="form-template" class="row" style="display:none">
       <form class="inline-form" method="POST" action="{% url 'upload_post' %}">
@@ -51,10 +46,16 @@
       </form>
     </div>
   </div>
+  <div class="small-8 small-offset-1 columns large-4 small-centered">
+    <div id="save-btn" style="display:none">
+      <i class=icon-save></i> Save
+    </div>
+  </div>
 
   <script>
     $(function(){
-      var $dropzone = $('#filepicker_dropzone');
+      // these are obsolete without the drag-drop widget that we removed from the partial above
+      // var $dropzone = $('#filepicker_dropzone');
       var $dropzone_result = $('#filepicker_dropzone_result');
 
 
@@ -86,44 +87,46 @@
         document.getElementById('save-btn').style.display = 'inline';
 
       };
+      
+      // below is obsolete without the drag-drop widget that we removed from the partial above
+      // filepicker.setKey('A5pg98pDjQk6k3lBZ8VDVz')
+      // filepicker.makeDropPane($dropzone[0], {
+      //     multiple: true,
+      //     extensions: ".pdf, .doc, .docx, .txt, .rtf, .odt, .png, .jpg, .jpeg, .ppt, .pptx, .md, .rst",
+      //     path: "{{ course.school.slug }}/ {{ course.slug }}/",
+      //     dragEnter: function() {
+      //         $dropzone.html("Drop to upload").css({
+      //             'backgroundColor': "#E0E0E0",
+      //             'border': "1px solid #000"
+      //         });
+      //     },
+      //     dragLeave: function() {
+      //         alert("drag leave");
+      //         $dropzone.html("Drop files here").css({
+      //             'backgroundColor': "#F6F6F6",
+      //             'border': "1px dashed #666"
+      //         });
+      //     },
+      //     onSuccess: function(InkBlobs) {
+      //         alert("on success");
+      //         $dropzone.text("Done, see result below");
+      //         $dropzone_result.text(JSON.stringify(InkBlobs));
+      //         console.log("this one also worked");
+      //         console.log(InkBlobs);
+      //         console.log('--------------------------------------------------');
+      //         console.log("starting form copy");
+      //         makeFileForm();
+      //     },
+      //     onError: function(type, message) {
+      //         alert("on error");
+      //         $dropzone_result.text('('+type+') '+ message);
+      //     },
+      //     onProgress: function(percentage) {
+      //         alert("on progress");
+      //         $dropzone.text("Uploading ("+percentage+"%)");
+      //     }
+      // });
 
-      filepicker.setKey('A5pg98pDjQk6k3lBZ8VDVz')
-      filepicker.makeDropPane($dropzone[0], {
-          multiple: true,
-          extensions: ".pdf, .doc, .docx, .txt, .rtf, .odt, .png, .jpg, .jpeg, .ppt, .pptx, .md, .rst",
-          path: "{{ course.school.slug }}/ {{ course.slug }}/",
-          dragEnter: function() {
-              $dropzone.html("Drop to upload").css({
-                  'backgroundColor': "#E0E0E0",
-                  'border': "1px solid #000"
-              });
-          },
-          dragLeave: function() {
-              alert("drag leave");
-              $dropzone.html("Drop files here").css({
-                  'backgroundColor': "#F6F6F6",
-                  'border': "1px dashed #666"
-              });
-          },
-          onSuccess: function(InkBlobs) {
-              alert("on success");
-              $dropzone.text("Done, see result below");
-              $dropzone_result.text(JSON.stringify(InkBlobs));
-              console.log("this one also worked");
-              console.log(InkBlobs);
-              console.log('--------------------------------------------------');
-              console.log("starting form copy");
-              makeFileForm();
-          },
-          onError: function(type, message) {
-              alert("on error");
-              $dropzone_result.text('('+type+') '+ message);
-          },
-          onProgress: function(percentage) {
-              alert("on progress");
-              $dropzone.text("Uploading ("+percentage+"%)");
-          }
-      });
       $('#save-btn').on('click', function(e){
         e.stopPropagation();
         $('#forms_container .inline-form').each(function(i,el){
