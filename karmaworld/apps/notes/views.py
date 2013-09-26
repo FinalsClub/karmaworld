@@ -20,9 +20,7 @@ from karmaworld.apps.notes.forms import NoteForm
 
 
 def is_pdf(self):
-    _path = self.object.note_file.name
-    _, _extension = os.path.splitext(_path)
-    if _extension.lower() == '.pdf':
+    if self.object.file_type == 'pdf':
         return True
     return False
 
@@ -131,7 +129,8 @@ class PDFView(DetailView):
             kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
                 os.path.basename(self.object.pdf_file.name))
         elif is_pdf(self):
-            kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
-                os.path.basename(self.object.note_file.name))
+            kwargs['pdf_path'] = self.object.fp_file
+            #kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
+            #    os.path.basename(self.object.note_file.name))
 
         return super(PDFView, self).get_context_data(**kwargs)
