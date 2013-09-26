@@ -136,15 +136,14 @@ class Note(Document):
                             blank=True, null=True)
 
     # Upload files to MEDIA_ROOT/notes/YEAR/MONTH/DAY, 2012/10/30/filename
-    # FIXME: because we are adding files by hand in tasks.py, upload_to is being ignored for media files
     pdf_file       = models.FileField(                  \
                             storage=fs,                 \
-                            upload_to="notes/%Y/%m/%j/",\
+                            upload_to="notes/%Y/%m/%d/",\
                             blank=True, null=True)
     # No longer keeping a local copy backed by django
     note_file       = models.FileField(                 \
                             storage=fs,                 \
-                            upload_to="notes/%Y/%m/%j/",\
+                            upload_to="notes/%Y/%m/%d/",\
                             blank=True, null=True)
 
     # Google Drive URLs

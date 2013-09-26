@@ -3,7 +3,6 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import datetime
-from io import FileIO, BufferedWriter
 import mimetypes
 import os
 import time
@@ -13,7 +12,7 @@ from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from apiclient.http import MediaInMemoryUpload
 from django.conf import settings
-from django.core.files import File
+from django.core.files.base import ContentFile
 from oauth2client.client import flow_from_clientsecrets
 
 from karmaworld.apps.notes.models import DriveAuth, Note
@@ -188,22 +187,7 @@ def convert_with_google_drive(note):
 
     elif extension.lower() in ['.ppt', '.pptx']:
         new_note.file_type = 'ppt'
-        now = datetime.datetime.utcnow()
-        # create a folder path to store the ppt > pdf file with year and month folders
-        nonce_path = '/ppt_pdf/%s/%s/' % (now.year, now.month)
-
-        _path = filename + '.pdf'
-        try:
-            # If those folders don't exist, create them
-            os.makedirs(os.path.realpath(os.path.dirname(_path)))
-        except:
-            print "we failed to create those directories"
-
-        _writer = BufferedWriter(FileIO(_path, "w"))
-        _writer.write(content_dict['pdf'])
-        _writer.close()
-
-        new_note.pdf_file = _path
+        new_note.pdf_file.save(filename + '.pdf', ContentFile(content_dict['pdf']))
 
     else:
         # PPT files do not have this export ability
@@ -261,22 +245,7 @@ def convert_raw_document(raw_document):
 
     elif raw_document.mimetype in PPT_MIMETYPES:
         note.file_type = 'ppt'
-        now = datetime.datetime.utcnow()
-        # create a folder path to store the ppt > pdf file with year and month folders
-        nonce_path = '/ppt_pdf/%s/%s/' % (now.year, now.month)
-
-        _path = filename + '.pdf'
-        try:
-            # If those folders don't exist, create them
-            os.makedirs(os.path.realpath(os.path.dirname(_path)))
-        except:
-            print "we failed to create those directories"
-
-        _writer = BufferedWriter(FileIO(_path, "w"))
-        _writer.write(content_dict['pdf'])
-        _writer.close()
-
-        note.pdf_file = _path
+        note.pdf_file.save(filename + '.pdf', ContentFile(content_dict['pdf']))
 
     else:
         # PPT files do not have this export ability
