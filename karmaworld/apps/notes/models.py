@@ -23,7 +23,7 @@ from taggit.managers import TaggableManager
 from karmaworld.apps.courses.models import Course
 
 try:
-    from secrets.drive import GOOGLE_USER
+    from secret.drive import GOOGLE_USER
 except:
     GOOGLE_USER = u'admin@karmanotes.org'
 
@@ -127,6 +127,7 @@ class Note(Document):
         ('img', 'Scan or picture of notes'),
         ('pdf', 'PDF file'),
         ('ppt', 'Powerpoint'),
+        ('txt', 'Text'),
         (UNKNOWN_FILE, 'Unknown file'),
     )
 
