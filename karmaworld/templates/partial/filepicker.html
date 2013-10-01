@@ -21,6 +21,13 @@
     <div class="small-10 small-offset-1 columns">
       <div id="forms_container">
       </div>
+      <div id="success" style="display: none;">
+          <p>Thank you for sharing:</p>
+          <ul id="uploaded_files">
+          </ul>
+          <p>Your files are being processed and should be viewable within a few minutes.</p>
+          <p>If you'd like to share again, please <a href="">click here</a>.</p>
+      </div>
     </div>
 
     <div id="form-template" class="row" style="display:none">
@@ -59,6 +66,7 @@
   </div>
 
   <script>
+    var uploaded_files = new Array();
     $(function(){
       // these are obsolete without the drag-drop widget that we removed from the partial above
       // var $dropzone = $('#filepicker_dropzone');
@@ -152,7 +160,25 @@
               'course': course,
               'csrfmiddlewaretoken': csrf,
               'mimetype': mimetype
+            }, function(data){
+              if (data == 'success') {
+                // For multiple uploads, we may end up clearing and re-
+                //  writing this multiple times, but show the same list
+                //  each time.
+                $('#uploaded_files').empty();
+                for (var i=0; i < uploaded_files.length; i++) {
+                  $('#uploaded_files').append($('<li>', {text: uploaded_files[i]}));
+                }
+                $('#success').show();
+                document.getElementById('save-btn').style.display = 'none';
+                $('#forms_container .inline-form').remove();
+                setTimeout(function(){
+                  location.reload(true);
+                }, 15000);
+              }
             });
+            // Add the name we've just uploaded to the list
+            uploaded_files.push(name);
         });
       });
 
@@ -162,8 +188,6 @@
         $(this).parent().parent().remove();
       });
     });
-  // TODO: js to submit all forms as POST to NEW ENDPOINT
-  // TODO: Cancel (x) for each upload
   // FIXME: Style and arrange everything
   </script>
 
