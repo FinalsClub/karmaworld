@@ -823,6 +823,9 @@ legend
   border-radius: 6px;
   padding: 20px;
 }
+.dragdrop {
+  text-align: center;
+}
 
 .inline-form {
   border-bottom: 1px dashed #666;
