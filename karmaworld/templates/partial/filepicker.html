@@ -154,7 +154,7 @@
 
       $('#save-btn').on('click', function(e){
         e.stopPropagation();
-        _trackEvent('upload', 'upload form submitted');
+        _gat._getTracker()._trackEvent('upload', 'upload form submitted');
         $('#forms_container .inline-form').each(function(i,el){
             console.log("inline form " + i + "el: " + el);
             var name, tags, fpurl, course;
