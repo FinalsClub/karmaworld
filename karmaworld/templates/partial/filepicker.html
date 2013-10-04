@@ -29,20 +29,9 @@
           </ul>
           <p>Your files are being processed and should be viewable within a few minutes.</p>
           <p>If you'd like to share again, please <a href="">click here</a>.</p>
-          <script type="text/javascript">
-
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-36897868-1']);
-            _gaq.push(['_setDomainName', 'karmanotes.org']);
-            _gaq.push(['_setAllowLinker', true]);
-            _gaq.push(['_trackPageview']);
-
-            (function() {
-              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-
+          
+          <script>
+            _trackEvent('upload', 'upload form submitted');
           </script>
       </div>
     </div>
@@ -107,12 +96,15 @@
         $(_form.children[0].children[3].children[1]).val(upFile.mimetype);
 
         document.getElementById('forms_container').appendChild(_form);
+        
+        _trackEvent('upload', 'filepicker file drop');
 
         $('.remove').on('click', function(e){
             e.stopPropagation();
             console.log($(this).parent().parent());
             $(this).parent().parent().remove();
         });
+      
       };
 
       var fileup = document.getElementById('filepicker-file-upload');
