@@ -266,10 +266,10 @@ def convert_raw_document(raw_document):
         note.file_type = 'ppt'
         note.pdf_file.save(filename + '.pdf', ContentFile(content_dict['pdf']))
 
-    else:
-        # PPT files do not have this export ability
-        note.gdrive_url = file_dict[u'exportLinks']['application/vnd.oasis.opendocument.text']
+    elif 'html' in content_dict and content_dict['html']:
         note.html = content_dict['html']
+        # before we save new html, sanitize a tags in note.html
+        note.sanitize_html(save=False)
 
     note.text = content_dict['text']
 
@@ -277,9 +277,6 @@ def convert_raw_document(raw_document):
     if 'year' in note_details and note_details['year']:
         note.year = note_details['year']
 
-    # before we save new html, sanitize a tags in note.html
-    #note.sanitize_html(save=False)
-    #FIXME: ^^^ disabled until we can get html out of an Etree html element
 
     # Finally, save whatever data we got back from google
     note.save()
