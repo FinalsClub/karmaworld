@@ -3,8 +3,10 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import datetime
+import magic
 import mimetypes
 import os
+import re
 import time
 
 import httplib2
@@ -28,6 +30,23 @@ except:
 EXT_TO_MIME = {'.docx': 'application/msword'}
 
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
+
+def extract_file_details(fileobj):
+    details = None
+    year = None
+
+    fileobj.open()
+    filebuf = fileobj.read()
+    with magic.Magic() as m:
+        details = m.id_buffer(filebuf)
+    fileobj.close()
+
+    result = re.search(r'Create Time/Date:[^,]+(?P<year>\d{4})', details)
+    if result:
+        if 'year' in result.groupdict():
+            year = result.groupdict()['year']
+
+    return {'year': year}
 
 def build_flow():
     """ Create an oauth2 autentication object with our preferred details """
@@ -253,6 +272,10 @@ def convert_raw_document(raw_document):
         note.html = content_dict['html']
 
     note.text = content_dict['text']
+
+    note_details = extract_file_details(fp_file)
+    if 'year' in note_details and note_details['year']:
+        note.year = note_details['year']
 
     # before we save new html, sanitize a tags in note.html
     #note.sanitize_html(save=False)
