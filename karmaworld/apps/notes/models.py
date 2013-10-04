@@ -23,7 +23,7 @@ from taggit.managers import TaggableManager
 from karmaworld.apps.courses.models import Course
 
 try:
-    from secret.drive import GOOGLE_USER
+    from secrets.drive import GOOGLE_USER
 except:
     GOOGLE_USER = u'admin@karmanotes.org'
 

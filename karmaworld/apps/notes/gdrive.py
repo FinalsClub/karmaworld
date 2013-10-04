@@ -23,7 +23,7 @@ CLIENT_SECRET = os.path.join(settings.DJANGO_ROOT, \
                     'secret/client_secrets.json')
 #from credentials import GOOGLE_USER # FIXME
 try:
-    from secret.drive import GOOGLE_USER
+    from secrets.drive import GOOGLE_USER
 except:
     GOOGLE_USER = 'admin@karmanotes.org' # FIXME
 
