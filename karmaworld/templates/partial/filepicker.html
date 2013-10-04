@@ -93,7 +93,7 @@
 
         document.getElementById('forms_container').appendChild(_form);
         
-        _trackEvent('upload', 'filepicker file drop');
+        _gat._getTracker()._trackEvent('upload', 'filepicker file drop');
 
         $('.remove').on('click', function(e){
             e.stopPropagation();
