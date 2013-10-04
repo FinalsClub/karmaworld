@@ -43,7 +43,7 @@
                 placeholder="shakespeare, econ, physics">
         </div>
         <div class="show-for-small columns small-1 end">
-          <i class="icon-remove-sign awesome-action"></i>
+          <i class="icon-remove-sign awesome-action remove"></i>
         </div>
         <div class="hidden-fields" style="display:none;">
           <input type="text" id="id_fpfile" name="fpfile" class="fpurl">
@@ -54,7 +54,7 @@
           <input type="text" class="csrf" value='{{ csrf_token }}'>
         </div>
         <div class="show-for-medium-up columns large-1 end">
-          <i class="icon-remove-sign awesome-action" id="icon-remove-sign"></i>
+          <i class="icon-remove-sign awesome-action remove" id="icon-remove-sign"></i>
         </div>
       </form>
     </div>
@@ -90,6 +90,12 @@
         $(_form.children[0].children[3].children[1]).val(upFile.mimetype);
 
         document.getElementById('forms_container').appendChild(_form);
+
+        $('.remove').on('click', function(e){
+            e.stopPropagation();
+            console.log($(this).parent().parent());
+            $(this).parent().parent().remove();
+        });
       };
 
       var fileup = document.getElementById('filepicker-file-upload');
@@ -182,11 +188,6 @@
         });
       });
 
-      $('.remove').on('click', function(e){
-        e.stopPropagation();
-        console.log($(this).parent().parent());
-        $(this).parent().parent().remove();
-      });
     });
   // FIXME: Style and arrange everything
   </script>
