@@ -100,15 +100,14 @@
             console.log($(this).parent().parent());
             $(this).parent().parent().remove();
         });
-      
-      };
 
-      var fileup = document.getElementById('filepicker-file-upload');
-      fileup.onchange = function(event){
-        $dropzone_result.text(event);
-        for (var i=0; i < event.fpfiles.length; i++){
-          makeFileForm(event.fpfiles[i]);
-        }
+        var fileup = document.getElementById('filepicker-file-upload');
+        fileup.onchange = function(event){
+          $dropzone_result.text(event);
+          for (var i=0; i < event.fpfiles.length; i++){
+            makeFileForm(event.fpfiles[i]);
+          }
+        
         document.getElementById('save-btn').style.display = 'inline';
 
       };
