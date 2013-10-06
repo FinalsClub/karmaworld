@@ -103,6 +103,48 @@
         
         document.getElementById('save-btn').style.display = 'inline';
 
+        $('#save-btn').on('click', function(e){
+          e.stopPropagation();
+          _gat._getTracker()._trackEvent('upload', 'upload form submitted');
+          $('#forms_container .inline-form').each(function(i,el){
+              console.log("inline form " + i + "el: " + el);
+              var name, tags, fpurl, course;
+              name = $(el).find('.intext').val();
+              fp_file = $(el).find('.fpurl').val();
+              tags = $(el).find('.taggit-tags').val();
+              course = $(el).find('.course_id').val();
+              csrf = $(el).find('.csrf').val();
+              mimetype = $(el).find('.mimetype').val();
+
+              $.post('{% url 'upload_post' %}', {
+                'name': name,
+                'fp_file': fp_file,
+                'tags': tags,
+                'course': course,
+                'csrfmiddlewaretoken': csrf,
+                'mimetype': mimetype
+              }, function(data){
+                if (data == 'success') {
+                  // For multiple uploads, we may end up clearing and re-
+                  //  writing this multiple times, but show the same list
+                  //  each time.
+                  $('#uploaded_files').empty();
+                  for (var i=0; i < uploaded_files.length; i++) {
+                    $('#uploaded_files').append($('<li>', {text: uploaded_files[i]}));
+                  }
+                  $('#success').show();
+                  document.getElementById('save-btn').style.display = 'none';
+                  $('#forms_container .inline-form').remove();
+                  setTimeout(function(){
+                    location.reload(true);
+                  }, 15000);
+                }
+              });
+              // Add the name we've just uploaded to the list
+              uploaded_files.push(name);
+          });
+        });
+
       };
       
       var fileup = document.getElementById('filepicker-file-upload');
@@ -112,90 +154,8 @@
             makeFileForm(event.fpfiles[i]);
           }
       };
-      
-      // below is obsolete without the drag-drop widget that we removed from the partial above
-      // filepicker.setKey('A5pg98pDjQk6k3lBZ8VDVz')
-      // filepicker.makeDropPane($dropzone[0], {
-      //     multiple: true,
-      //     extensions: ".pdf, .doc, .docx, .txt, .rtf, .odt, .png, .jpg, .jpeg, .ppt, .pptx, .md, .rst",
-      //     path: "{{ course.school.slug }}/ {{ course.slug }}/",
-      //     dragEnter: function() {
-      //         $dropzone.html("Drop to upload").css({
-      //             'backgroundColor': "#E0E0E0",
-      //             'border': "1px solid #000"
-      //         });
-      //     },
-      //     dragLeave: function() {
-      //         alert("drag leave");
-      //         $dropzone.html("Drop files here").css({
-      //             'backgroundColor': "#F6F6F6",
-      //             'border': "1px dashed #666"
-      //         });
-      //     },
-      //     onSuccess: function(InkBlobs) {
-      //         alert("on success");
-      //         $dropzone.text("Done, see result below");
-      //         $dropzone_result.text(JSON.stringify(InkBlobs));
-      //         console.log("this one also worked");
-      //         console.log(InkBlobs);
-      //         console.log('--------------------------------------------------');
-      //         console.log("starting form copy");
-      //         makeFileForm();
-      //     },
-      //     onError: function(type, message) {
-      //         alert("on error");
-      //         $dropzone_result.text('('+type+') '+ message);
-      //     },
-      //     onProgress: function(percentage) {
-      //         alert("on progress");
-      //         $dropzone.text("Uploading ("+percentage+"%)");
-      //     }
-      // });
-
-      $('#save-btn').on('click', function(e){
-        e.stopPropagation();
-        _gat._getTracker()._trackEvent('upload', 'upload form submitted');
-        $('#forms_container .inline-form').each(function(i,el){
-            console.log("inline form " + i + "el: " + el);
-            var name, tags, fpurl, course;
-            name = $(el).find('.intext').val();
-            fp_file = $(el).find('.fpurl').val();
-            tags = $(el).find('.taggit-tags').val();
-            course = $(el).find('.course_id').val();
-            csrf = $(el).find('.csrf').val();
-            mimetype = $(el).find('.mimetype').val();
-
-            $.post('{% url 'upload_post' %}', {
-              'name': name,
-              'fp_file': fp_file,
-              'tags': tags,
-              'course': course,
-              'csrfmiddlewaretoken': csrf,
-              'mimetype': mimetype
-            }, function(data){
-              if (data == 'success') {
-                // For multiple uploads, we may end up clearing and re-
-                //  writing this multiple times, but show the same list
-                //  each time.
-                $('#uploaded_files').empty();
-                for (var i=0; i < uploaded_files.length; i++) {
-                  $('#uploaded_files').append($('<li>', {text: uploaded_files[i]}));
-                }
-                $('#success').show();
-                document.getElementById('save-btn').style.display = 'none';
-                $('#forms_container .inline-form').remove();
-                setTimeout(function(){
-                  location.reload(true);
-                }, 15000);
-              }
-            });
-            // Add the name we've just uploaded to the list
-            uploaded_files.push(name);
-        });
-      });
 
     });
-  // FIXME: Style and arrange everything
   </script>
 
 
