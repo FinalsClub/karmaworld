@@ -105,7 +105,6 @@
 
         $('#save-btn').on('click', function(e){
           e.stopPropagation();
-          _gat._getTracker()._trackEvent('upload', 'upload form submitted');
           $('#forms_container .inline-form').each(function(i,el){
               console.log("inline form " + i + "el: " + el);
               var name, tags, fpurl, course;
@@ -135,6 +134,7 @@
                   $('#success').show();
                   document.getElementById('save-btn').style.display = 'none';
                   $('#forms_container .inline-form').remove();
+                  _gat._getTracker()._trackEvent('upload', 'upload form submitted');
                   setTimeout(function(){
                     location.reload(true);
                   }, 15000);
