@@ -134,7 +134,7 @@
                   $('#success').show();
                   document.getElementById('save-btn').style.display = 'none';
                   $('#forms_container .inline-form').remove();
-                  // _gat._getTracker()._trackEvent('upload', 'upload form submitted');
+                  _gat._getTracker()._trackEvent('upload', 'upload form submitted');
                   setTimeout(function(){
                     location.reload(true);
                   }, 15000);
