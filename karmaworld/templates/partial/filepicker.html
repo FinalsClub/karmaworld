@@ -123,7 +123,7 @@
                 'csrfmiddlewaretoken': csrf,
                 'mimetype': mimetype
               }, function(data){
-                if (data == 'success') {
+                if (data === 'success') {
                   // For multiple uploads, we may end up clearing and re-
                   //  writing this multiple times, but show the same list
                   //  each time.
