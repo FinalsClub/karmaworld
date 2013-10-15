@@ -76,7 +76,8 @@ class Document(models.Model):
         """ generate a unique slug based on name and uploaded_at  """
         _slug = defaultfilters.slugify(self.name)
         klass = self.__class__
-        collision = klass.objects.filter(slug=_slug)
+        #collision = klass.objects.filter(slug=_slug)
+        collision = True
         if collision:
             _slug = u"{0}-{1}-{2}-{3}".format(
                     _slug, self.uploaded_at.month,
