@@ -269,7 +269,8 @@ def convert_raw_document(raw_document):
     elif 'html' in content_dict and content_dict['html']:
         note.html = content_dict['html']
         # before we save new html, sanitize a tags in note.html
-        note.sanitize_html(save=False)
+        #note.sanitize_html(save=False)
+        #FIXME: ^^^ disabled
 
     note.text = content_dict['text']
 
