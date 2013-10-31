@@ -47,10 +47,10 @@ you don't, you can use the HTTP URL:
    ``DATABASES`` setting in a ``local.py`` file that you'll place in
    ``karmaworld/settings/``.
 
-4. Make sure that you're in the root of the project that you just cloned and
-   run
+4. Work in progress. Please see docs/source/os-install.rst.
 
-        fab here first_deploy
+TODO: see `./docs/`
+TODO: Put docs on [RTFD](https://readthedocs.org/)
 
 This will make a virtualenv, install the development dependencies and create
 the database tables.
