@@ -28,34 +28,10 @@ TODO: Put docs on [RTFD](https://readthedocs.org/)
 
 Install
 =======
-If you're starting to work on this project and you need it setup on your local
-machine, follow the steps below.
 
-1. Make sure you have installed ``git``, the ``PostgreSQL`` server, client and
-   development files, ``Python`` including the development files, ``Fabric``,
-   ``pip``, ``virtualenv`` and ``virtualenvwrapper``.
-
-2. Clone the project from the central repo::
-
-        git clone git@github.com:FinalsClub/karmaworld.git
-
-Note that you have to have your SSH keys setup on GitHub to use this URL. If
-you don't, you can use the HTTP URL:
-``https://github.com/FinalsClub/karmaworld.git``.
-
-3. Create a database and optionally a username and put them in the
-   ``DATABASES`` setting in a ``local.py`` file that you'll place in
-   ``karmaworld/settings/``.
-
-4. Work in progress. Please see docs/source/os-install.rst.
-
-TODO: see `./docs/`
+TODO: see `./docs/source/os-install.rst`
 TODO: Put docs on [RTFD](https://readthedocs.org/)
 
-This will make a virtualenv, install the development dependencies and create
-the database tables.
-
-5. Now you can run ``./manage.py runserver`` and visit the site in the browser.
 
 Thanks
 ======
