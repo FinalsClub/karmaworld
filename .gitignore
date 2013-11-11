@@ -1,3 +1,9 @@
+# Project secret files
+karmaworld/secret/*.py
+
+# ignore vagrant virtual machines
+.vagrant
+
 # Python bytecode:
 *.py[co]
 
