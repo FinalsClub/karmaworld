@@ -40,9 +40,10 @@ directory underneath that (`{project_root}/karmaworld`) alongside files like
 # Development Install
 
 If you need to setup the project for development, it is highly recommend that
-you grab an existing development virtual machine for create one yourself, and
-then configure the virtual machine for production with the steps shown in the
-next section. Instructions for creating a virtual machine follow:
+you grab an existing development virtual machine or create one yourself. 
+Configure the virtual machine for production with the steps shown in the
+next section (Production Install). Instructions for creating a virtual machine
+follow:
 
 1. Install [VirtualBox](http://www.virtualbox.com/)
 
