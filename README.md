@@ -44,9 +44,9 @@ you grab an existing development virtual machine for create one yourself, and
 then configure the virtual machine for production with the steps shown in the
 next section. Instructions for creating a virtual machine follow:
 
-1. Install (VirtualBox)[http://www.virtualbox.com/]
+1. Install [VirtualBox](http://www.virtualbox.com/)
 
-1. Install (vagrant)[http://www.vagrantup.com/]
+1. Install [vagrant](http://www.vagrantup.com/)
 
 1. Use Vagrant to create the virtual machine.
     * While in `cd {project_root}`, type `vagrant up`
@@ -114,7 +114,7 @@ pulls from the local repository on your local file system without needing
 credentials, etc.
 
 ## Other Vagrant commands
-Please see (vagrant documentation)[http://docs.vagrantup.com/v2/cli/index.html]
+Please see [vagrant documentation](http://docs.vagrantup.com/v2/cli/index.html)
 for more information on how to use the vagrant CLI to manage your development
 VM.
 
