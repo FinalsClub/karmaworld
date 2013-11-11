@@ -97,6 +97,15 @@ follow the steps below.
 If you have installed a virtual machine using `vagrant up`, you can connect
 to it by running `vagrant ssh` from `{project_root}`.
 
+## Connecting to the development website on the VM
+To access the website running on the VM, point your browser at
+http://localhost:6659/ using your host computer.
+
+Port 6659 on your local machine is set to forward to the VM's port 80.
+
+Fun fact: 6659 was chosen because of OM (sanskrit) and KW (KarmaWorld) on a
+phone: 66 59.
+
 ## Updating the VM code repository
 Once connected to the virtual machine by SSH, you will see `karmaworld` in
 the home directory. That is the `{project_root}` in the virtual machine.
