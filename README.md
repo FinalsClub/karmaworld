@@ -47,7 +47,7 @@ follow:
 
 1. Install [VirtualBox](http://www.virtualbox.com/)
 
-1. Install [vagrant](http://www.vagrantup.com/)
+1. Install [vagrant](http://www.vagrantup.com/) 1.3 or higher
 
 1. Use Vagrant to create the virtual machine.
     * While in `cd {project_root}`, type `vagrant up`
