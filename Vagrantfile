@@ -14,18 +14,25 @@ VAGRANTFILE_API_VERSION = "2"
 
 # Install fabric so that the KarmaWorld fabfile may be run.
 
-# build a shell script that installs prereqs, configures the database, pulls in
-# the code from the host machine, and then runs fabric.
+# build a shell script that installs prereqs, configures the database, sets up
+# the user/group associations, pulls in the code from the host machine, and
+# then runs fabric.
 shellscript = <<SCRIPT
 apt-get update
 apt-get upgrade -y
-apt-get install -y python-pip postgresql python-virtualenv virtualenvwrapper git
+apt-get install -y python-pip postgresql python-virtualenv virtualenvwrapper \
+                   git nginx
 
 echo "CREATE USER vagrant WITH CREATEROLE LOGIN; CREATE DATABASE karmaworld OWNER vagrant;" | su postgres -c "psql"
 
+mkdir -m 775 -p /var/www
+chown -R :www-data /var/www
+usermod -a -G www-data vagrant
+
 su vagrant -c "git clone /vagrant karmaworld"
 
-pip install fabric
+# TODO run pip commands in the virtualenv
+pip install fabric fabric-virtualenv
 #su vagrant -c "cd karmaworld; fab here first_deploy"
 SCRIPT
 # end of script

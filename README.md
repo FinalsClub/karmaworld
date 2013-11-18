@@ -60,6 +60,7 @@ follow the steps below.
 1. Ensure the following are installed:
    * `git`
    * `PostgreSQL` (server and client)
+   * `nginx`
    * `Python`
    * `PIP`
    * `virtualenv` and `virtualenvwrapper`
@@ -81,10 +82,13 @@ follow the steps below.
        * Ensure *.py in `secret/` are never added to the git repo. (.gitignore
          should help warn against taking this action)
 
+1. Make sure that /var/www exists, is owned by the www-data group, and that
+   the user is a member of the www-data group.
+
 1. Make sure that you're in the root of the project that you just cloned and
    run
 
-        fab here first_deploy
+        fab -H 127.0.0.1 first_deploy
 
    This will make a virtualenv, install the development dependencies and create
    the database tables.
