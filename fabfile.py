@@ -5,14 +5,16 @@
 import os
 
 from fabric.api import cd, env, lcd, prefix, run, task, local, settings
-from fabvenv import virtualenv
+from fabric.contrib import files
 
 ######### GLOBAL
 env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
-
+env.repo_root = '~/karmaworld'
+env.proj_root = '/var/www/karmaworld'
+env.branch = 'prod'
+env.code_root = '{0}/{1}-code'.format(env.proj_root, env.branch)
 
 ######## Define host(s)
-@task
 def here():
     """
     Connection information for the local machine
@@ -50,8 +52,8 @@ def prod():
 ####### Define beta host
 @task
 def beta():
-    """                                                                                                                                                                 
-    Connection Information for beta machine                                                                                                                       
+    """
+    Connection Information for beta machine
     """
 
     env.user = 'djkarma'
@@ -64,21 +66,21 @@ def beta():
 
 ######## Run Commands in Virutal Environment
 def virtenv_exec(command):
-        """
-	Execute command in Virtualenv
-	"""
+    """
+    Execute command in Virtualenv
+    """
 
-        with virtualenv('%s/%s' % (env.proj_root, env.branch)):
-                run('%s' % (command))
+    path = os.path.sep.join( (env.proj_root, env.branch) )
+    with prefix('source {0}/bin/activate'.format(path)):
+        run(command)
 
 ######## Sync database
 @task
 def syncdb():
-	"""
-	Sync Database
-	"""
-
-	env.run('%s/manage.py syncdb --migrate' % env.proj_root )
+    """
+    Sync Database
+    """
+    virtenv_exec('{0}/manage.py syncdb --migrate'.format(env.code_root))
 
 
 ####### Collect Static Files
@@ -103,11 +105,14 @@ def dev_server():
 @task
 def make_virtualenv():
 	"""
-	Create our Virtualenv in $SRC_ROOT
+	Create our Virtualenv in env.proj_root
 	"""
 
-	run('virtualenv %s/%s' % (env.proj_root, env.branch))
-	env.run('pip install -r %s/reqs/%s.txt' % (env.proj_root, env.branch) )
+        path = os.path.sep.join( (env.proj_root, env.branch) )
+        if not files.exists(path):
+            run('virtualenv {0}'.format(path))
+        if not files.exists(env.code_root):
+            run('ln -s {0} {1}'.format(env.repo_root, env.code_root))
 
 @task
 def start_supervisord():
@@ -197,21 +202,21 @@ def restart_gunicorn():
 ####### Update Requirements
 @task
 def update_reqs():
-	env.run('pip install -r reqs/prod.txt')
+    virtenv_exec('pip install -r {0}/reqs/{1}.txt'.format(env.repo_root, env.branch))
 
 ####### Pull new code
 @task
 def update_code():
-	env.run('cd %s; git pull' % env.proj_root )
+    virtenv_exec('cd %s; git pull' % env.proj_root )
 
-@task
 def backup():
     """
     Create backup using bup
     """
+    pass
+
 @task
 def first_deploy():
-    
     """
     Sets up and deploys the project for the first time.
     """
