@@ -56,7 +56,7 @@ DATABASES = {
     'NAME': PROD_DB_NAME,
     'USER': PROD_DB_USERNAME,
     'PASSWORD': PROD_DB_PASSWORD,
-    'HOST': 'localhost',
+    'HOST': '',
     'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
