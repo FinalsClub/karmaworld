@@ -219,7 +219,6 @@ def first_deploy():
     make_virtualenv()
     update_reqs()
     syncdb()
-    manage_static()
     start_supervisord()
 
 
