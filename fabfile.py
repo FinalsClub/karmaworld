@@ -23,7 +23,6 @@ def here():
         prefixed_command = '/bin/bash -l -i -c "%s"' % command
         return local(prefixed_command)
 
-    env.run = _custom_local
     # This is required for the same reason as above
     env.proj_root = '/var/www/karmaworld'
     env.cd = lcd
@@ -46,7 +45,6 @@ def prod():
     env.reqs = 'reqs/prod.txt'
     env.confs = 'confs/prod/'
     env.branch = 'beta'
-    env.run = virtenv_exec
     env.gunicorn_addr = '127.0.0.1:8000'
 
 ####### Define beta host
@@ -62,7 +60,6 @@ def beta():
     env.reqs = 'reqs/prod.txt'
     env.confs = 'confs/prod/'
     env.branch = 'beta'
-    env.run = virtenv_exec
 
 ######## Run Commands in Virutal Environment
 def virtenv_exec(command):
@@ -90,7 +87,7 @@ def collect_static():
 	Collect static files (if AWS config. present, push to S3)
 	"""
 
-	env.run('%s/manage.py collectstatic --noinput' % env.proj_root )	
+	virtenv_exec('%s/manage.py collectstatic --noinput' % env.proj_root )	
 
 ####### Run Dev Server
 @task
@@ -99,7 +96,7 @@ def dev_server():
 	Runs the built-in django webserver
 	"""
 
-	env.run('%s/manage.py runserver' % env.proj_root)	
+	virtenv_exec('%s/manage.py runserver' % env.proj_root)	
 
 ####### Create Virtual Environment
 @task
@@ -119,8 +116,7 @@ def start_supervisord():
     """
     Starts supervisord
     """
-    config_file = '/var/www/karmaworld/confs/prod/supervisord.conf'
-    env.run('supervisord -c %s' % config_file)
+    virtenv_exec('supervisord -c {0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch))
 
 
 @task
@@ -129,7 +125,7 @@ def stop_supervisord():
     Restarts supervisord
     """
     config_file = '/var/www/karmaworld/confs/prod/supervisord.conf'
-    env.run('supervisorctl -c %s shutdown' % config_file)
+    virtenv_exec('supervisorctl -c %s shutdown' % config_file)
 
 
 @task
@@ -148,7 +144,7 @@ def supervisorctl(action, process):
     be performed on it: start|stop|restart.
     """
     supervisor_conf = '/var/www/karmaworld/confs/prod/supervisord.conf'
-    env.run('supervisorctl -c %s %s %s' % (supervisor_conf, action, process))
+    virtenv_exec('supervisorctl -c %s %s %s' % (supervisor_conf, action, process))
 
 
 @task
