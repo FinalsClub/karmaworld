@@ -3,17 +3,20 @@
     Finals Club (c) 2013"""
 
 import os
+import ConfigParser
 
 from fabric.api import cd, env, lcd, prefix, run, task, local, settings
 from fabric.contrib import files
 
 ######### GLOBAL
+env.user = 'vagrant'
+env.group = 'vagrant'
 env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
 env.repo_root = '~/karmaworld'
 env.proj_root = '/var/www/karmaworld'
 env.branch = 'prod'
 env.code_root = '{0}/{1}-code'.format(env.proj_root, env.branch)
-env.supervisor_conf = '{0}/confs/{1}/supervisord-root.conf'.format(env.code_root, env.branch))
+env.supervisor_conf = '{0}/confs/{1}/supervisord-root.conf'.format(env.code_root, env.branch)
 
 ######## Define host(s)
 def here():
@@ -211,10 +214,26 @@ def backup():
     pass
 
 @task
+def file_setup():
+    """
+    Deploy expected files and directories from non-apt system services.
+    """
+    ini_parser = ConfigParser.SafeConfigParser()
+    ini_parser.read(env.supervisor_conf)
+    for section, option in (('supervisord','logfile'),
+                            ('supervisord','pidfile'),
+                            ('unix_http_server','file'),
+                            ('program:celeryd','stdout_logfile')):
+      filepath = ini_parser.get(section, option)
+      # generate file's directory structure if needed
+      run('mkdir -p {0}'.format(os.path.split(filepath))
+
+@task
 def first_deploy():
     """
     Sets up and deploys the project for the first time.
     """
+    file_setup()
     make_virtualenv()
     update_reqs()
     syncdb()
