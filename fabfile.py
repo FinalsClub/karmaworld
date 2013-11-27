@@ -13,6 +13,7 @@ env.repo_root = '~/karmaworld'
 env.proj_root = '/var/www/karmaworld'
 env.branch = 'prod'
 env.code_root = '{0}/{1}-code'.format(env.proj_root, env.branch)
+env.supervisor_conf = '{0}/confs/{1}/supervisord-root.conf'.format(env.code_root, env.branch))
 
 ######## Define host(s)
 def here():
@@ -116,7 +117,7 @@ def start_supervisord():
     """
     Starts supervisord
     """
-    virtenv_exec('supervisord -c {0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch))
+    virtenv_exec('supervisord -c {0}'.format(env.supervisor_conf))
 
 
 @task
@@ -124,8 +125,7 @@ def stop_supervisord():
     """
     Restarts supervisord
     """
-    config_file = '/var/www/karmaworld/confs/prod/supervisord.conf'
-    virtenv_exec('supervisorctl -c %s shutdown' % config_file)
+    virtenv_exec('supervisorctl -c {0} shutdown'.format(env.supervisor_conf))
 
 
 @task
@@ -143,8 +143,7 @@ def supervisorctl(action, process):
     defined in supervisord.conf and the action that should
     be performed on it: start|stop|restart.
     """
-    supervisor_conf = '/var/www/karmaworld/confs/prod/supervisord.conf'
-    virtenv_exec('supervisorctl -c %s %s %s' % (supervisor_conf, action, process))
+    virtenv_exec('supervisorctl -c {0} {1} {2}'.format(env.supervisor_conf, action, process))
 
 
 @task
