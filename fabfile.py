@@ -5,7 +5,7 @@
 import os
 import ConfigParser
 
-from fabric.api import cd, env, lcd, prefix, run, task, local, settings
+from fabric.api import cd, env, lcd, prefix, run, sudo, task, local, settings
 from fabric.contrib import files
 
 ######### GLOBAL
@@ -16,7 +16,7 @@ env.repo_root = '~/karmaworld'
 env.proj_root = '/var/www/karmaworld'
 env.branch = 'prod'
 env.code_root = '{0}/{1}-code'.format(env.proj_root, env.branch)
-env.supervisor_conf = '{0}/confs/{1}/supervisord-root.conf'.format(env.code_root, env.branch)
+env.supervisor_conf = '{0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch)
 
 ######## Define host(s)
 def here():
@@ -219,22 +219,45 @@ def file_setup():
     Deploy expected files and directories from non-apt system services.
     """
     ini_parser = ConfigParser.SafeConfigParser()
-    ini_parser.read(env.supervisor_conf)
+    if not ini_parser.read(env.supervisor_conf):
+      raise Exception("Could not parse INI file {0}".format(env.supervisor_conf))
     for section, option in (('supervisord','logfile'),
                             ('supervisord','pidfile'),
                             ('unix_http_server','file'),
                             ('program:celeryd','stdout_logfile')):
       filepath = ini_parser.get(section, option)
       # generate file's directory structure if needed
-      run('mkdir -p {0}'.format(os.path.split(filepath))
+      run('mkdir -p {0}'.format(os.path.split(filepath)[0]))
+      # touch a file and change ownership if needed
+      if 'log' in option and not files.exists(filepath):
+          sudo('touch {0}'.format(filepath))
+          sudo('chown {0}:{1} {2}'.format(env.user, env.group, filepath))
+
+@task
+def check_secrets():
+    """
+    Ensure secret files exist for syncdb to run.
+    """
+
+    secrets_path = env.code_root + '/karmaworld/secret'
+    secrets_files = ('filepicker.py', 'static_s3.py', 'db_settings.py')
+
+    errors = []
+    for sfile in secrets_files:
+        ffile = os.path.sep.join((secrets_path,sfile))
+        if not files.exists(ffile):
+            errors.append('{0} missing. Please add and try again.'.format(ffile))
+    if errors:
+        raise Exception('\n'.join(errors))
 
 @task
 def first_deploy():
     """
     Sets up and deploys the project for the first time.
     """
-    file_setup()
     make_virtualenv()
+    file_setup()
+    check_secrets()
     update_reqs()
     syncdb()
     start_supervisord()
