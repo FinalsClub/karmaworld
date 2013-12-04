@@ -33,7 +33,7 @@ usermod -a -G www-data vagrant
 su vagrant -c "git clone /vagrant karmaworld"
 
 CFILE="karmaworld/karmaworld/secret/db_settings.py"
-echo > $CFILE <<CONFIG
+cat > $CFILE <<CONFIG
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
