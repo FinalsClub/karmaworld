@@ -15,7 +15,8 @@ env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
 env.repo_root = '~/karmaworld'
 env.proj_root = '/var/www/karmaworld'
 env.branch = 'prod'
-env.code_root = '{0}/{1}-code'.format(env.proj_root, env.branch)
+env.code_root = proj_root
+env.env_root = proj_root
 env.supervisor_conf = '{0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch)
 
 ######## Define host(s)
@@ -66,12 +67,19 @@ def beta():
     env.branch = 'beta'
 
 ######## Run Commands in Virutal Environment
+def virtenv_path():
+    """
+    Builds the virtualenv path.
+    """
+    # not much here now, but maybe useful later.
+    return env.env_root
+
 def virtenv_exec(command):
     """
     Execute command in Virtualenv
     """
 
-    path = os.path.sep.join( (env.proj_root, env.branch) )
+    path = virtenv_path()
     with prefix('source {0}/bin/activate'.format(path)):
         run(command)
 
@@ -91,7 +99,7 @@ def collect_static():
 	Collect static files (if AWS config. present, push to S3)
 	"""
 
-	virtenv_exec('%s/manage.py collectstatic --noinput' % env.proj_root )	
+	virtenv_exec('%s/manage.py collectstatic --noinput' % env.code_root )	
 
 ####### Run Dev Server
 @task
@@ -100,20 +108,24 @@ def dev_server():
 	Runs the built-in django webserver
 	"""
 
-	virtenv_exec('%s/manage.py runserver' % env.proj_root)	
+	virtenv_exec('%s/manage.py runserver' % env.code_root)	
 
 ####### Create Virtual Environment
+
+@task
+def link_code():
+    """
+    Link the karmaworld repo into the appropriate production location
+    """
+    if not files.exists(env.code_root):
+        run('ln -s {0} {1}'.format(env.repo_root, env.code_root))
+
 @task
 def make_virtualenv():
-	"""
-	Create our Virtualenv in env.proj_root
-	"""
-
-        path = os.path.sep.join( (env.proj_root, env.branch) )
-        if not files.exists(path):
-            run('virtualenv {0}'.format(path))
-        if not files.exists(env.code_root):
-            run('ln -s {0} {1}'.format(env.repo_root, env.code_root))
+    """
+    Create our Virtualenv
+    """
+    run('virtualenv {0}'.format(virtenv_path())
 
 @task
 def start_supervisord():
@@ -255,6 +267,7 @@ def first_deploy():
     """
     Sets up and deploys the project for the first time.
     """
+    link_code()
     make_virtualenv()
     file_setup()
     check_secrets()
