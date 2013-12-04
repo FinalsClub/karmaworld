@@ -22,7 +22,7 @@ apt-get update
 apt-get upgrade -y
 apt-get install -y python-pip postgresql python-virtualenv virtualenvwrapper \
                    git nginx postgresql-server-dev-9.1 libxslt1-dev \
-                   libxml2-dev libmemcached-dev python-dev
+                   libxml2-dev libmemcached-dev python-dev rabbitmq-server
 
 echo "CREATE USER vagrant WITH CREATEROLE LOGIN; CREATE DATABASE karmaworld OWNER vagrant;" | su postgres -c "psql"
 
