@@ -15,8 +15,8 @@ env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
 env.repo_root = '~/karmaworld'
 env.proj_root = '/var/www/karmaworld'
 env.branch = 'prod'
-env.code_root = proj_root
-env.env_root = proj_root
+env.code_root = env.proj_root
+env.env_root = env.proj_root
 env.supervisor_conf = '{0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch)
 
 ######## Define host(s)
@@ -125,7 +125,7 @@ def make_virtualenv():
     """
     Create our Virtualenv
     """
-    run('virtualenv {0}'.format(virtenv_path())
+    run('virtualenv {0}'.format(virtenv_path()))
 
 @task
 def start_supervisord():
