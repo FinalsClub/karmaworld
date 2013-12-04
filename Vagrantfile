@@ -15,8 +15,8 @@ VAGRANTFILE_API_VERSION = "2"
 # Install fabric so that the KarmaWorld fabfile may be run.
 
 # build a shell script that installs prereqs, configures the database, sets up
-# the user/group associations, pulls in the code from the host machine, and
-# then runs fabric.
+# the user/group associations, pulls in the code from the host machine, sets up
+# some external dependency configs, and then runs fabric.
 shellscript = <<SCRIPT
 apt-get update
 apt-get upgrade -y
@@ -32,7 +32,8 @@ usermod -a -G www-data vagrant
 
 su vagrant -c "git clone /vagrant karmaworld"
 
-CFILE="karmaworld/karmaworld/secret/db_settings.py"
+SECRETPATH="karmaworld/karmaworld/secret"
+CFILE="$SECRETPATH/db_settings.py"
 cat > $CFILE <<CONFIG
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
@@ -44,7 +45,9 @@ PROD_DB_NAME = 'karmaworld'
 PROD_DB_USERNAME = 'vagrant'
 PROD_DB_PASSWORD = ''
 CONFIG
-chown vagrant:vagrant $CFILE
+cp $SECRETPATH/filepicker.py.example $SECRETPATH/filepicker.py
+cp $SECRETPATH/static_s3.py.example $SECRETPATH/static_s3.py
+chown vagrant:vagrant $SECRETPATH/*.py
 
 pip install fabric
 #su vagrant -c "cd karmaworld; fab here first_deploy"
