@@ -49,6 +49,27 @@ cp $SECRETPATH/filepicker.py.example $SECRETPATH/filepicker.py
 cp $SECRETPATH/static_s3.py.example $SECRETPATH/static_s3.py
 chown vagrant:vagrant $SECRETPATH/*.py
 
+cat > /etc/nginx/sites-available/karmaworld <<CONFIG
+server {
+    listen 80;
+    # don't do virtual hosting, handle all requests regardless of header
+    server_name "";
+    client_max_body_size 20M;
+
+    location / {
+        # pass traffic through to gunicorn
+        proxy_pass http://127.0.0.1:8000;
+    }
+}
+CONFIG
+rm /etc/nginx/sites-enabled/default
+ln -s /etc/nginx/sites-available/karmaworld /etc/nginx/sites-enabled/karmaworld
+sudo service nginx restart
+
+cp karmaworld/confs/prod/supervisor /etc/init.d
+chmod 755 /etc/init.d/supervisor
+update-rc.d supervisor defaults
+
 pip install fabric
 #su vagrant -c "cd karmaworld; fab here first_deploy"
 SCRIPT
