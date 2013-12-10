@@ -252,7 +252,7 @@ def check_secrets():
     """
 
     secrets_path = env.code_root + '/karmaworld/secret'
-    secrets_files = ('filepicker.py', 'static_s3.py', 'db_settings.py')
+    secrets_files = ('filepicker.py', 'static_s3.py', 'db_settings.py', 'drive.py', 'client_secrets.json')
 
     errors = []
     for sfile in secrets_files:
