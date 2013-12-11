@@ -1,5 +1,6 @@
 # Project secret files
 karmaworld/secret/*.py
+karmaworld/secret/*.json
 
 # ignore vagrant virtual machines
 .vagrant
