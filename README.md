@@ -47,6 +47,17 @@ This software uses [Filepicker.io](https://www.inkfilepicker.com/) for uploading
 ### Amazon S3
 This software uses [Amazon S3](http://aws.amazon.com/s3/) as a third party file hosting site. The primary use case is a destination for Filepicker files.  A secondary use case is hosting static files.
 
+To obviate the need for hosting static files through S3 (noting it still serves a different purpose), see the workaround noted [in this Github ticket](https://github.com/FinalsClub/karmaworld/issues/192#issuecomment-30193617). For good measure, that workaround is repeated here. Make the following changes to `karmaworld/settings/prod.py`:
+
+1. comment out everything about static_s3 from imports
+2. comment out storages from the `INSTALLED_APPS`
+3. change `STATIC_URL` to `'/assets/'`
+4. comment out the entire storages section (save for part of `INSTALLED_APPS` and `STATIC_URL`)
+5. add this to the nginx config:
+    location /assets/ {
+        root /var/www/karmaworld/karmaworld/;
+    }
+
 ### Google Drive
 This software uses [Google Drive](https://developers.google.com/drive/) to convert documents to and from various file formats. Google credentials will be required as well as a Google Drive account which has been registered with the Google Cloud Console.
 
