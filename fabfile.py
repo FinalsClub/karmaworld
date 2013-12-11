@@ -19,6 +19,8 @@ env.code_root = env.proj_root
 env.env_root = env.proj_root
 env.supervisor_conf = '{0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch)
 
+env.use_ssh_config = True
+
 ######## Define host(s)
 def here():
     """

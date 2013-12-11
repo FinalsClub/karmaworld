@@ -12,12 +12,31 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
-# Install fabric so that the KarmaWorld fabfile may be run.
+# Copy the vagrant SSH key into the VM so vagrant can SSH to localhost within
+# the VM. Continued in the shell script below.
+# http://serverfault.com/questions/491343/how-can-i-move-my-deploy-key-into-vagrant#comment549259_491345
+git_ssh_key = File.read('~/.vagrant.d/insecure_private_key');
 
 # build a shell script that installs prereqs, configures the database, sets up
 # the user/group associations, pulls in the code from the host machine, sets up
 # some external dependency configs, and then runs fabric.
 shellscript = <<SCRIPT
+cat >>/home/vagrant/.ssh/insecure_private_key <<EOF
+#{git_ssh_key}
+EOF
+chown vagrant:vagrant /home/vagrant/.ssh/insecure_private_key
+chmod 600 /home/vagrant/.ssh/insecure_private_key
+cat >>/home/vagrant/.ssh/config <<EOF
+Host localhost
+    User vagrant
+    IdentityFile ~/.ssh/insecure_private_key
+
+Host 127.0.0.1
+    User vagrant
+    IdentityFile ~/.ssh/insecure_private_key
+EOF
+chmod 644 /home/vagrant/.ssh/config
+
 apt-get update
 apt-get upgrade -y
 apt-get install -y python-pip postgresql python-virtualenv virtualenvwrapper \
