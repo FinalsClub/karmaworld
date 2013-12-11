@@ -275,6 +275,7 @@ def first_deploy():
     check_secrets()
     update_reqs()
     syncdb()
+    collect_static()
     start_supervisord()
 
 
