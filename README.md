@@ -37,6 +37,19 @@ directory underneath that (`{project_root}/karmaworld`) alongside files like
 `fabfile.py` (`{project_root}/fabfile.py`) and `README.md`
 (`{project_root}/README.md`).
 
+## External Service Dependencies
+
+Notice: This software makes use of external third party services which require accounts to access the service APIs. Without these third parties available, this software may require considerable overhaul.
+
+### Filepicker
+This software uses [Filepicker.io]{https://www.inkfilepicker.com/} for uploading files. This requires an account with Filepicker and some additional third party file hosting site where Filepicker may send uploaded files.
+
+### Amazon S3
+This software uses [Amazon S3]{http://aws.amazon.com/s3/} as a third party file hosting site. The primary use case is a destination for Filepicker files.  A secondary use case is hosting static files.
+
+### Google Drive
+This software uses [Google Drive]{https://developers.google.com/drive/} to convert documents to and from various file formats. Google credentials will be required as well as a Google Drive account which has been registered with the Google Cloud Console.
+
 # Development Install
 
 If you need to setup the project for development, it is highly recommend that
