@@ -15,7 +15,7 @@ VAGRANTFILE_API_VERSION = "2"
 # Copy the vagrant SSH key into the VM so vagrant can SSH to localhost within
 # the VM. Continued in the shell script below.
 # http://serverfault.com/questions/491343/how-can-i-move-my-deploy-key-into-vagrant#comment549259_491345
-git_ssh_key = File.read('~/.vagrant.d/insecure_private_key');
+git_ssh_key = File.read(ENV['HOME'] + '/.vagrant.d/insecure_private_key');
 
 # build a shell script that installs prereqs, configures the database, sets up
 # the user/group associations, pulls in the code from the host machine, sets up
