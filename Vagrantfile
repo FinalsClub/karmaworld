@@ -91,7 +91,7 @@ chmod 755 /etc/init.d/supervisor
 update-rc.d supervisor defaults
 
 pip install fabric
-#su vagrant -c "cd karmaworld; fab here first_deploy"
+su vagrant -c "cd karmaworld; fab -H 127.0.0.1 first_deploy"
 SCRIPT
 # end of script
 
