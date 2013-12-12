@@ -3,8 +3,10 @@
     Finals Club (c) 2013"""
 
 import os
+import requests
 import ConfigParser
 
+from bs4 import BeautifulSoup as BS
 from fabric.api import cd, env, lcd, prefix, run, sudo, task, local, settings
 from fabric.contrib import files
 
@@ -20,6 +22,8 @@ env.env_root = env.proj_root
 env.supervisor_conf = '{0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch)
 
 env.use_ssh_config = True
+
+USDE_LINK = "http://ope.ed.gov/accreditation/GetDownloadFile.aspx"
 
 ######## Define host(s)
 def here():
@@ -263,6 +267,38 @@ def check_secrets():
             errors.append('{0} missing. Please add and try again.'.format(ffile))
     if errors:
         raise Exception('\n'.join(errors))
+
+@task
+def fetch_accreditation():
+    """
+    Connects to USDE accreditation and drops a CSV into confs.
+    """
+    r = requests.get(USDE_LINK)
+    # Ensure the page was retrieved with 200
+    if not r.ok:
+        r.raise_for_status()
+
+    # Process the HTML with BeautifulSoup
+    soup = BS(r.text)
+    # Extract all the anchor links.
+    a = soup.find_all('a')
+    # TODO maybe hit up itertools for speed? Probably.
+    # Extract the HREFs from anchors.
+    def get_href(anchor):
+        return anchor.get('href')
+    a = map(get_href, a)
+    # Filter out all but the Accreditation links.
+    def contains_accreditation(link):
+        return 'Accreditation' in link and 'zip' in link
+    a = filter(contains_accreditation, a)      
+    # Find the most recent. (Accreditation_YYYY_MM.zip means alphanumeric sort)
+    link = sorted(a)[-1]
+
+    # Download the linked file to the FS and extract the CSV
+    tempfile = '/tmp/accreditation.zip'
+    csvfile = env.proj_root + '/confs/accreditation.csv'
+    run('wget -B {0} -O {1} {2}'.format(USDE_LINK, tempfile, link))
+    run("7z e -i'!*.csv' -so {0} >> {1}".format(tempfile, csvfile))
 
 @task
 def first_deploy():
