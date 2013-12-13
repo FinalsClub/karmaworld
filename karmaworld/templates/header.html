@@ -9,7 +9,20 @@
         </a>
       </div><!--/logo container-->
 
-      <div id="login_container" class="small-2 columns small-offset-4">
+      {% if display_add_course %}
+        <div class="small-2 columns small-offset-3 show-for-medium-up">
+          <a id="add_course_header_button" href="#"><img src="{{ STATIC_URL }}img/global_header_pluscourse.png" /></a>
+        </div>
+      {% endif %}
+
+      {% if display_add_note %}
+        <div class="small-2 columns small-offset-3 show-for-medium-up">
+          <a id="add_note_header_button" href="#" onclick="$('.add-note-btn').click();">
+            <img src="{{ STATIC_URL }}img/global_header_plusnote.png" /></a>
+        </div>
+      {% endif %}
+
+      <div id="login_container" class="small-1 columns">
         <a class=white href="{% url 'about' %}">About</a>
       </div>
 

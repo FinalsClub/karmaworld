@@ -36,6 +36,9 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
             # if there was an error in the form
             context['jump_to_form'] = True
 
+        # Include "Add Course" button in header
+        context['display_add_course'] = True
+
         return context
 
     def get_success_url(self):
@@ -64,6 +67,10 @@ class CourseDetailView(DetailView):
         """ filter the Course.note_set to return no Drafts """
         kwargs = super(CourseDetailView, self).get_context_data()
         kwargs['note_set'] = self.object.note_set.filter(is_hidden=False)
+
+        # Include "Add Note" button in header
+        kwargs['display_add_note'] = True
+
         return kwargs
 
 

@@ -3,7 +3,7 @@
   var json_course_list = "{% url 'json_school_list' %}"
   var csrf_token = "{{ csrf_token }}";
 </script>
-<script src="{{ STATIC_URL }}js/lightbox-add-course.js"></script>
+<script src="{{ STATIC_URL }}js/add-course.js"></script>
 
 <section id="add-course-form">
   <form method="POST" action="{% url 'home' %}">

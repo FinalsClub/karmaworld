@@ -1,12 +1,26 @@
-// setup ajax based autocomplete for the school field in the add course lightbox
+// Setup all the javascript stuff we need for the various
+// incarnations of the Add Course form
 $(function() {
 
-  // Show the add-course-form
+  // Set up the "Add Course" button at bottom
+  // of page
   $('#add-course-btn').click(function() {
     // Show the add a course form
     $('#add-course-form').show();
     // Hide the add a course button
     $('#add-course-btn').hide();
+  });
+
+  // Set up the "Add Course" button in the
+  // page header
+  $('#add_course_header_button').click(function() {
+    // Show the add a course form
+    $('#add-course-form').show();
+    // Hide the add a course button
+    $('#add-course-btn').hide();
+    // Scroll the user's page to here
+    $('#add-course-divider').ScrollTo();
+    $('#str_school').focus();
   });
 
   // Dismiss on exit x click FIXME
