@@ -5,7 +5,10 @@
 
 import json
 
-from django.http import HttpResponse
+from django.core.exceptions import MultipleObjectsReturned
+from django.core.exceptions import ObjectDoesNotExist
+
+from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import DetailView
 from django.views.generic import TemplateView
 from django.views.generic.edit import ProcessFormView
@@ -16,7 +19,6 @@ from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 from karmaworld.apps.notes.models import Note
-
 
 class CourseListView(ListView, ModelFormMixin, ProcessFormView):
     """ Simple ListView for the front page that includes the CourseForm """
@@ -102,3 +104,32 @@ def school_list(request):
     else:
         # else return that the api call failed
         return HttpResponse(json.dumps({'status':'fail'}), mimetype="application/json")
+
+
+def school_course_list(request):
+    """Return JSON describing courses we know of at the given school
+     that match the query """
+    if request.method == 'POST' and request.is_ajax() \
+                        and request.POST.has_key('q')\
+                        and request.POST.has_key('school_id'):
+
+        _query = request.POST['q']
+        try:
+          _school_id = int(request.POST['school_id'])
+        except:
+          return HttpResponseNotFound(json.dumps({'status': 'fail', 'message':'could not convert school id to integer'}), mimetype="application/json")
+
+        # Look up the school
+        try:
+            school = School.objects.get(id__exact=_school_id)
+        except (MultipleObjectsReturned, ObjectDoesNotExist):
+            return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'school id did not match exactly one school'}), mimetype="application/json")
+
+        _courses = Course.objects.filter(school__exact=school.id, name__icontains=_query)
+        courses = [{'name': c.name} for c in _courses]
+
+        # return as json
+        return HttpResponse(json.dumps({'status':'success', 'courses': courses}), mimetype="application/json")
+    else:
+        # else return that the api call failed
+        return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'query parameters missing'}), mimetype="application/json")

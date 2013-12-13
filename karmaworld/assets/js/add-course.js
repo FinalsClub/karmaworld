@@ -9,6 +9,8 @@ $(function() {
     $('#add-course-form').show();
     // Hide the add a course button
     $('#add-course-btn').hide();
+    // Put focus in first input field
+    $('#str_school').focus();
   });
 
   // Set up the "Add Course" button in the
@@ -20,6 +22,7 @@ $(function() {
     $('#add-course-btn').hide();
     // Scroll the user's page to here
     $('#add-course-divider').ScrollTo();
+    // Put focus in first input field
     $('#str_school').focus();
   });
 
@@ -46,7 +49,7 @@ $(function() {
   $("#str_school").autocomplete({
     source: function(request, response){
       $.ajax({
-        url: json_course_list,
+        url: json_school_list,
         data: {q: request.term},
         success: function(data) {
           console.log(data);
@@ -83,4 +86,32 @@ $(function() {
     },
     minLength: 3
   });
+
+  $("#id_name").autocomplete({
+    source: function(request, response){
+      var school_id = $('#id_school').val()
+      $.ajax({
+        url: json_school_course_list,
+        data: {q: request.term, school_id: school_id},
+        success: function(data) {
+          console.log(data);
+          if (data['status'] === 'success') {
+            response($.map(data['courses'], function(item) {
+              return {
+                  value: item.name,
+                  label: item.name,
+              };
+            }));
+          } else {
+            // FIXME: do something?
+          }
+        },
+        dataType: "json",
+        type: 'POST'
+      });
+    },
+    minLength: 3
+  });
+
+
 });

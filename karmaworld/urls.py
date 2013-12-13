@@ -14,6 +14,7 @@ from karmaworld.apps.courses.views import AboutView
 from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_list
+from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.notes.views import NoteView
 from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.notes.views import PDFView
@@ -88,6 +89,8 @@ urlpatterns = patterns('',
     url(r'^ajax-upload$', ajax_uploader, name='ajax_upload'),
     # return json list of schools
     url(r'^school/list/$', school_list, name='json_school_list'),
+    # return json list of courses for a given school
+    url(r'^school/course/list/$', school_course_list, name='json_school_course_list'),
     # ---- end JSON views ----#
 
     url(r'^$', CourseListView.as_view(model=Course), name='home'),

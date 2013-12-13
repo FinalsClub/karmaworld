@@ -1,6 +1,7 @@
 {% load url from future %}
 <script>
-  var json_course_list = "{% url 'json_school_list' %}"
+  var json_school_list = "{% url 'json_school_list' %}"
+  var json_school_course_list = "{% url 'json_school_course_list' %}"
   var csrf_token = "{{ csrf_token }}";
 </script>
 <script src="{{ STATIC_URL }}js/add-course.js"></script>
