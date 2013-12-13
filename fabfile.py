@@ -293,7 +293,7 @@ def first_deploy():
     syncdb()
     collect_static()
     fetch_usde()
-    import_and_clean_usde()
+    import_usde()
     start_supervisord()
 
 
