@@ -17,9 +17,10 @@ VAGRANTFILE_API_VERSION = "2"
 # http://serverfault.com/questions/491343/how-can-i-move-my-deploy-key-into-vagrant#comment549259_491345
 git_ssh_key = File.read(ENV['HOME'] + '/.vagrant.d/insecure_private_key');
 
-# build a shell script that installs prereqs, configures the database, sets up
-# the user/group associations, pulls in the code from the host machine, sets up
-# some external dependency configs, and then runs fabric.
+# build a shell script that installs prereqs, copies over the host secrets,
+# configures the database, sets up the user/group associations, pulls in the
+# code from the host machine, sets up some external dependency configs, and
+# then runs fabric.
 shellscript = <<SCRIPT
 cat >>/home/vagrant/.ssh/insecure_private_key <<EOF
 #{git_ssh_key}
@@ -52,8 +53,11 @@ usermod -a -G www-data vagrant
 
 su vagrant -c "git clone /vagrant karmaworld"
 
-SECRETPATH="karmaworld/karmaworld/secret"
-CFILE="$SECRETPATH/db_settings.py"
+SECRETPATH="karmaworld/secret"
+
+su vagrant -c "cp /vagrant/$SECRETPATH/* karmaworld/$SECRETPATH/"
+
+CFILE="karmaworld/$SECRETPATH/db_settings.py"
 cat > $CFILE <<CONFIG
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
@@ -91,7 +95,7 @@ chmod 755 /etc/init.d/supervisor
 update-rc.d supervisor defaults
 
 pip install fabric
-su vagrant -c "cd karmaworld; fab -H 127.0.0.1 first_deploy"
+#su vagrant -c "cd karmaworld; fab -H 127.0.0.1 first_deploy"
 SCRIPT
 # end of script
 

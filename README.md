@@ -73,6 +73,15 @@ follow:
 
 1. Install [vagrant](http://www.vagrantup.com/) 1.3 or higher
 
+1. Configure external dependencies on the host machine:
+    * Under `{project_root}/karmaworld/secret/`:
+        1. Copy files with the example extension to the corresponding filename
+          without the example extension (e.g.
+          `cp filepicker.py.example filepicker.py`)
+        1. Modify those files, but ignore `db_settings.py` (Vagrant takes care of that one)
+        1. Ensure *.py in `secret/` are never added to the git repo. (.gitignore
+          should help warn against taking this action)
+
 1. Use Vagrant to create the virtual machine.
     * While in `cd {project_root}`, type `vagrant up`
 
