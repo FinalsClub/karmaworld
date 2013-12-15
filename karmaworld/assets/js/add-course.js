@@ -1,6 +1,21 @@
 // Setup all the javascript stuff we need for the various
 // incarnations of the Add Course form
+
 $(function() {
+
+  var schoolSelected = false;
+  var courseNameSelected = false;
+  var instructorSelected = false;
+
+  function fieldEdited() {
+    if (schoolSelected && courseNameSelected && instructorSelected) {
+      $('#save-btn').hide();
+      $('#existing-course-msg').show();
+    } else {
+      $('#save-btn').show();
+      $('#existing-course-msg').hide();
+    }
+  }
 
   // Set up the "Add Course" button at bottom
   // of page
@@ -52,7 +67,6 @@ $(function() {
         url: json_school_list,
         data: {q: request.term},
         success: function(data) {
-          console.log(data);
           if (data['status'] === 'success') {
             response($.map(data['schools'], function(item) {
               return {
@@ -70,31 +84,33 @@ $(function() {
         type: 'POST'
       });
     },
-    select: function(event, ui) { 
-      console.log("select func");
-      console.log("id");
-      console.log(ui.item.value);
-      console.log("name");
-      console.log(ui.item.label);
-      // don't let the user edit the field anymore
-      //$('#str_school').attr('readonly', true);
-
+    select: function(event, ui) {
       // set the school id as the value of the hidden field
       $('#id_school').val(ui.item.real_value);
-      // set the School name as the textbox field
-      //$('#str_school').val(ui.item.label);
+      schoolSelected = true;
+      $('#str_school').removeClass('error');
+      $('#save-btn').removeClass('disabled');
+      fieldEdited();
+    },
+    change: function(event, ui) {
+      if (ui.item == null) {
+        $('#id_school').val('');
+        schoolSelected = false;
+        $('#str_school').addClass('error');
+        $('#save-btn').addClass('disabled');
+        fieldEdited();
+      }
     },
     minLength: 3
   });
 
   $("#id_name").autocomplete({
     source: function(request, response){
-      var school_id = $('#id_school').val()
+      var school_id = $('#id_school').val();
       $.ajax({
         url: json_school_course_list,
         data: {q: request.term, school_id: school_id},
         success: function(data) {
-          console.log(data);
           if (data['status'] === 'success') {
             response($.map(data['courses'], function(item) {
               return {
@@ -102,13 +118,59 @@ $(function() {
                   label: item.name,
               };
             }));
-          } else {
-            // FIXME: do something?
           }
         },
         dataType: "json",
         type: 'POST'
       });
+    },
+    select: function(event, ui) {
+      courseNameSelected = true;
+      fieldEdited();
+    },
+    change: function(event, ui) {
+      if (ui.item == null) {
+        courseNameSelected = false;
+        fieldEdited();
+      }
+    },
+    minLength: 3
+  });
+
+  $("#id_instructor_name").autocomplete({
+    source: function(request, response) {
+      var school_id = $('#id_school').val();
+      var course_name = $('#id_name').val();
+      $.ajax({
+        url: json_school_course_instructor_list,
+        data: {q: request.term, school_id: school_id, course_name: course_name},
+        success: function(data) {
+          if (data['status'] === 'success') {
+            // Fill in the autocomplete entries
+            response($.map(data['instructors'], function(item) {
+              return {
+                  value: item.name,
+                  label: item.name,
+                  url:   item.url
+              };
+            }));
+          }
+        },
+        dataType: "json",
+        type: 'POST'
+      });
+    },
+    select: function(event, ui) {
+      instructorSelected = true;
+      $('#existing-course-btn').attr('href', ui.item.url);
+      fieldEdited();
+    },
+    change: function(event, ui) {
+      if (ui.item == null) {
+        instructorSelected = false;
+        $('#existing-course-btn').attr('href', '');
+        fieldEdited();
+      }
     },
     minLength: 3
   });
