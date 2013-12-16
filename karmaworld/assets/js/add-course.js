@@ -10,9 +10,11 @@ $(function() {
   function fieldEdited() {
     if (schoolSelected && courseNameSelected && instructorSelected) {
       $('#save-btn').hide();
+      $('#save-btn').addClass('disabled');
       $('#existing-course-msg').show();
     } else {
       $('#save-btn').show();
+      $('#save-btn').removeClass('disabled');
       $('#existing-course-msg').hide();
     }
   }
