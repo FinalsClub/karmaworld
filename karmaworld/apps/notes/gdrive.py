@@ -174,6 +174,7 @@ def convert_with_google_drive(note):
     (file_type, encoding) = mimetypes.guess_type(note.note_file.path)
 
 
+    if file_type == 'text/enml': file_type = 'text/xml'
 
     if file_type != None:
         media = MediaFileUpload(note.note_file.path, mimetype=file_type,
