@@ -234,14 +234,17 @@ def convert_raw_document(raw_document):
     #filename, extension = os.path.splitext(raw_document.fp_file.path)
     filename = raw_document.name
     print "this is the mimetype of the document to check:"
-    print raw_document.mimetype
+    mimetype = raw_document.mimetype
+    print mimetype
     print ""
 
-    if raw_document.mimetype == None:
+    if mimetype == 'text/enml': mimetype = 'text/xml'
+
+    if mimetype == None:
         media = MediaInMemoryUpload(fp_file.read(),
                     chunksize=1024*1024, resumable=True)
     else:
-        media = MediaInMemoryUpload(fp_file.read(), mimetype=raw_document.mimetype,
+        media = MediaInMemoryUpload(fp_file.read(), mimetype=mimetype,
                     chunksize=1024*1024, resumable=True)
 
     auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]
@@ -251,8 +254,8 @@ def convert_raw_document(raw_document):
     service, http = build_api_service(creds)
 
     # prepare the upload
-    file_dict = upload_to_gdrive(service, media, filename, mimetype=raw_document.mimetype)
-    content_dict = download_from_gdrive(file_dict, http, mimetype=raw_document.mimetype)
+    file_dict = upload_to_gdrive(service, media, filename, mimetype=mimetype)
+    content_dict = download_from_gdrive(file_dict, http, mimetype=mimetype)
 
     # this should have already happened, lets see why it hasn't
     raw_document.is_processed = True
