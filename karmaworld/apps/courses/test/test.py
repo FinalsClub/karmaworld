@@ -2,7 +2,6 @@ from django.test import TestCase
 from karmaworld.apps.courses.models import *
 from django.test.client import Client
 from django.core.urlresolvers import reverse
-import unittest
 import json
 
 class CoursesTests(TestCase):
@@ -142,7 +141,4 @@ class CoursesTests(TestCase):
         self.assertEqual(responseContent['status'], 'fail')
 
 
-
-if __name__ == "__main__":
-    unittest.main()
 

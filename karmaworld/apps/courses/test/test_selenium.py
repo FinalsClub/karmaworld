@@ -3,18 +3,20 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
+from django.test import LiveServerTestCase
+from karmaworld.apps.courses.models import *
 import uuid
-import unittest
 
 
-class AddCourseTest(unittest.TestCase):
-    """Tests the Add Course form. Requires a copy of KarmaNotes
-    be available at localhost:8000. This will modify your database."""
+class AddCourseTest(LiveServerTestCase):
+    """Tests the Add Course form."""
 
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(3)
         self.wait = WebDriverWait(self.driver, 10)
+        self.harvard = School.objects.create(name="Harvard University")
+        self.northeastern = School.objects.create(name="Northeastern University")
 
     def tearDown(self):
         self.driver.close()
@@ -28,7 +30,7 @@ class AddCourseTest(unittest.TestCase):
         autocompleteMenuItem.click()
 
     def testSchoolName(self):
-        self.driver.get("http://localhost:8000/")
+        self.driver.get(self.live_server_url)
 
         # Click "Add Course"
         addCourseButton = self.driver.find_element_by_id("add-course-btn")
@@ -53,10 +55,10 @@ class AddCourseTest(unittest.TestCase):
         self.assertEqual(schoolInput.get_attribute("value"), "Harvard University")
 
         schoolId = self.driver.find_element_by_id("id_school")
-        self.assertEqual(schoolId.get_attribute("value"), "1817")
+        self.assertEqual(schoolId.get_attribute("value"), self.harvard.id)
 
     def testCreateCourse(self):
-        self.driver.get("http://localhost:8000/")
+        self.driver.get(self.live_server_url)
 
         # Click "Add Course"
         addCourseButton = self.driver.find_element_by_id("add-course-btn")
@@ -92,7 +94,7 @@ class AddCourseTest(unittest.TestCase):
 
 
     def testCreateExistingCourse(self):
-        self.driver.get("http://localhost:8000/")
+        self.driver.get(self.live_server_url)
 
         # Click "Add Course"
         addCourseButton = self.driver.find_element_by_id("add-course-btn")
@@ -127,7 +129,7 @@ class AddCourseTest(unittest.TestCase):
         self.wait.until(EC.title_contains(newCourseName))
 
         # Now go back to the home page
-        self.driver.get("http://localhost:8000/")
+        self.driver.get(self.live_server_url)
 
         # Click "Add Course"
         addCourseButton = self.driver.find_element_by_id("add-course-btn")
@@ -156,6 +158,4 @@ class AddCourseTest(unittest.TestCase):
         # See if we are taken to the new course page
         self.wait.until(EC.title_contains(newCourseName))
 
-if __name__ == "__main__":
-    unittest.main()
 
