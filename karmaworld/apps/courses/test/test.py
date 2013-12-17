@@ -15,8 +15,14 @@ class CoursesTests(TestCase):
     def testCourseUniqueness(self):
         """Make sure we can't create multiple courses with the same
         school + course name + instructor name combination."""
-        #with self.assertRaises(Exception):
-        #    Course.objects.create(name="Underwater Basketweaving", instructor_name="Alice", school=self.harvard)
+        with self.assertRaises(Exception):
+            Course.objects.create(name="Underwater Basketweaving", instructor_name="Alice Janney", school=self.harvard)
+
+    def testSchoolSlug(self):
+        self.assertEqual(self.harvard.slug, defaultfilters.slugify(self.harvard.name))
+
+    def testCourseSlug(self):
+        self.assertEqual(self.course1.slug, defaultfilters.slugify("%s %s" % (self.course1.name, self.course1.id)))
 
     def testSearchForSchool(self):
         """Test searching for a school by partial name"""

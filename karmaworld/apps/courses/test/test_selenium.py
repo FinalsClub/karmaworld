@@ -55,7 +55,7 @@ class AddCourseTest(LiveServerTestCase):
         self.assertEqual(schoolInput.get_attribute("value"), "Harvard University")
 
         schoolId = self.driver.find_element_by_id("id_school")
-        self.assertEqual(schoolId.get_attribute("value"), self.harvard.id)
+        self.assertEqual(schoolId.get_attribute("value"), str(self.harvard.id))
 
     def testCreateCourse(self):
         self.driver.get(self.live_server_url)
