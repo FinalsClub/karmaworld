@@ -12,6 +12,8 @@ import datetime
 
 from django.db import models
 from django.template import defaultfilters
+from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
+
 
 class School(models.Model):
     """ A grouping that contains many courses """
@@ -84,6 +86,9 @@ class Course(models.Model):
 
     class Meta:
         ordering = ['-file_count', 'school', 'name']
+        unique_together = ('school', 'name', 'instructor_name')
+        verbose_name = 'course'
+        verbose_name_plural = 'courses'
 
     def __unicode__(self):
         return u"{0}: {1}".format(self.name, self.school)
@@ -111,3 +116,8 @@ class Course(models.Model):
         """ Update self.file_count by summing the note_set """
         self.file_count = self.note_set.count()
         self.save()
+
+# Enforce unique constraints even when we're using a database like
+# SQLite that doesn't understand them
+auto_add_check_unique_together(Course)
+

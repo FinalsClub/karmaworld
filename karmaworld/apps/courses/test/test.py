@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.test import TestCase
 from karmaworld.apps.courses.models import *
 from django.test.client import Client
@@ -15,8 +16,9 @@ class CoursesTests(TestCase):
     def testCourseUniqueness(self):
         """Make sure we can't create multiple courses with the same
         school + course name + instructor name combination."""
-        with self.assertRaises(Exception):
-            Course.objects.create(name="Underwater Basketweaving", instructor_name="Alice Janney", school=self.harvard)
+        with self.assertRaises(IntegrityError):
+            Course.objects.create(name=self.course1.name, instructor_name=self.course1.instructor_name, school=self.course1.school)
+        self.assertEqual(Course.objects.count(), 1)
 
     def testSchoolSlug(self):
         self.assertEqual(self.harvard.slug, defaultfilters.slugify(self.harvard.name))
