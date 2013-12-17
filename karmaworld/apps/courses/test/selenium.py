@@ -10,7 +10,7 @@ import unittest
 class AddCourseTest(unittest.TestCase):
     """Tests the Add Course form. Requires a copy of KarmaNotes
     be available at localhost:8000. This will modify your database."""
-    
+
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(3)

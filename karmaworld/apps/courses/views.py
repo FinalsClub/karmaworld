@@ -8,7 +8,7 @@ import json
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
 
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import DetailView
 from django.views.generic import TemplateView
 from django.views.generic.edit import ProcessFormView
@@ -103,7 +103,7 @@ def school_list(request):
         return HttpResponse(json.dumps({'status':'success', 'schools': schools}), mimetype="application/json")
     else:
         # else return that the api call failed
-        return HttpResponse(json.dumps({'status':'fail'}), mimetype="application/json")
+        return HttpResponseBadRequest(json.dumps({'status':'fail'}), mimetype="application/json")
 
 
 def school_course_list(request):
@@ -117,7 +117,7 @@ def school_course_list(request):
         try:
           _school_id = int(request.POST['school_id'])
         except:
-          return HttpResponseNotFound(json.dumps({'status': 'fail',
+          return HttpResponseBadRequest(json.dumps({'status': 'fail',
                                                   'message': 'could not convert school id to integer'}),
                                       mimetype="application/json")
 
@@ -125,7 +125,7 @@ def school_course_list(request):
         try:
             school = School.objects.get(id__exact=_school_id)
         except (MultipleObjectsReturned, ObjectDoesNotExist):
-            return HttpResponseNotFound(json.dumps({'status': 'fail',
+            return HttpResponseBadRequest(json.dumps({'status': 'fail',
                                                     'message': 'school id did not match exactly one school'}),
                                         mimetype="application/json")
 
@@ -138,7 +138,7 @@ def school_course_list(request):
                             mimetype="application/json")
     else:
         # else return that the api call failed
-        return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'query parameters missing'}),
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'query parameters missing'}),
                                     mimetype="application/json")
 
 def school_course_instructor_list(request):
@@ -155,7 +155,7 @@ def school_course_instructor_list(request):
         try:
           _school_id = int(request.POST['school_id'])
         except:
-          return HttpResponseNotFound(json.dumps({'status': 'fail',
+          return HttpResponseBadRequest(json.dumps({'status': 'fail',
                                                   'message':'could not convert school id to integer'}),
                                       mimetype="application/json")
 
@@ -163,7 +163,7 @@ def school_course_instructor_list(request):
         try:
             school = School.objects.get(id__exact=_school_id)
         except (MultipleObjectsReturned, ObjectDoesNotExist):
-            return HttpResponseNotFound(json.dumps({'status': 'fail',
+            return HttpResponseBadRequest(json.dumps({'status': 'fail',
                                                     'message': 'school id did not match exactly one school'}),
                                         mimetype="application/json")
 
@@ -178,5 +178,6 @@ def school_course_instructor_list(request):
                             mimetype="application/json")
     else:
         # else return that the api call failed
-        return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'query parameters missing'}),
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'query parameters missing'}),
                                     mimetype="application/json")
+
