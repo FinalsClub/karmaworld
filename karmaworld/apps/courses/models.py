@@ -97,7 +97,7 @@ class Course(models.Model):
         super(Course, self).save(*args, **kwargs) # generate a self.id
         if not self.slug:
             self.slug = defaultfilters.slugify("%s %s" % (self.name, self.id))
-            super(Course, self).save(*args, **kwargs) # Save the slug
+            self.save() # Save the slug
 
     def get_updated_at_string(self):
         """ return the formatted style for datetime strings """

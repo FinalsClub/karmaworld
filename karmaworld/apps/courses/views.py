@@ -5,7 +5,10 @@
 
 import json
 
-from django.http import HttpResponse
+from django.core.exceptions import MultipleObjectsReturned
+from django.core.exceptions import ObjectDoesNotExist
+
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import DetailView
 from django.views.generic import TemplateView
 from django.views.generic.edit import ProcessFormView
@@ -16,7 +19,6 @@ from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 from karmaworld.apps.notes.models import Note
-
 
 class CourseListView(ListView, ModelFormMixin, ProcessFormView):
     """ Simple ListView for the front page that includes the CourseForm """
@@ -35,6 +37,9 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
         if context['course_form'].errors:
             # if there was an error in the form
             context['jump_to_form'] = True
+
+        # Include "Add Course" button in header
+        context['display_add_course'] = True
 
         return context
 
@@ -64,6 +69,10 @@ class CourseDetailView(DetailView):
         """ filter the Course.note_set to return no Drafts """
         kwargs = super(CourseDetailView, self).get_context_data()
         kwargs['note_set'] = self.object.note_set.filter(is_hidden=False)
+
+        # Include "Add Note" button in header
+        kwargs['display_add_note'] = True
+
         return kwargs
 
 
@@ -94,4 +103,81 @@ def school_list(request):
         return HttpResponse(json.dumps({'status':'success', 'schools': schools}), mimetype="application/json")
     else:
         # else return that the api call failed
-        return HttpResponse(json.dumps({'status':'fail'}), mimetype="application/json")
+        return HttpResponseBadRequest(json.dumps({'status':'fail'}), mimetype="application/json")
+
+
+def school_course_list(request):
+    """Return JSON describing courses we know of at the given school
+     that match the query """
+    if request.method == 'POST' and request.is_ajax() \
+                        and request.POST.has_key('q')\
+                        and request.POST.has_key('school_id'):
+
+        _query = request.POST['q']
+        try:
+          _school_id = int(request.POST['school_id'])
+        except:
+          return HttpResponseBadRequest(json.dumps({'status': 'fail',
+                                                  'message': 'could not convert school id to integer'}),
+                                      mimetype="application/json")
+
+        # Look up the school
+        try:
+            school = School.objects.get(id__exact=_school_id)
+        except (MultipleObjectsReturned, ObjectDoesNotExist):
+            return HttpResponseBadRequest(json.dumps({'status': 'fail',
+                                                    'message': 'school id did not match exactly one school'}),
+                                        mimetype="application/json")
+
+        # Look up matching courses
+        _courses = Course.objects.filter(school__exact=school.id, name__icontains=_query)
+        courses = [{'name': c.name} for c in _courses]
+
+        # return as json
+        return HttpResponse(json.dumps({'status':'success', 'courses': courses}),
+                            mimetype="application/json")
+    else:
+        # else return that the api call failed
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'query parameters missing'}),
+                                    mimetype="application/json")
+
+def school_course_instructor_list(request):
+    """Return JSON describing instructors we know of at the given school
+       teaching the given course
+       that match the query """
+    if request.method == 'POST' and request.is_ajax() \
+                        and request.POST.has_key('q')\
+                        and request.POST.has_key('course_name')\
+                        and request.POST.has_key('school_id'):
+
+        _query = request.POST['q']
+        _course_name = request.POST['course_name']
+        try:
+          _school_id = int(request.POST['school_id'])
+        except:
+          return HttpResponseBadRequest(json.dumps({'status': 'fail',
+                                                  'message':'could not convert school id to integer'}),
+                                      mimetype="application/json")
+
+        # Look up the school
+        try:
+            school = School.objects.get(id__exact=_school_id)
+        except (MultipleObjectsReturned, ObjectDoesNotExist):
+            return HttpResponseBadRequest(json.dumps({'status': 'fail',
+                                                    'message': 'school id did not match exactly one school'}),
+                                        mimetype="application/json")
+
+        # Look up matching courses
+        _courses = Course.objects.filter(school__exact=school.id,
+                                         name__exact=_course_name,
+                                         instructor_name__icontains=_query)
+        instructors = [{'name': c.instructor_name, 'url': c.get_absolute_url()} for c in _courses]
+
+        # return as json
+        return HttpResponse(json.dumps({'status':'success', 'instructors': instructors}),
+                            mimetype="application/json")
+    else:
+        # else return that the api call failed
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'query parameters missing'}),
+                                    mimetype="application/json")
+
