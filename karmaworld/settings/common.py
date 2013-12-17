@@ -211,8 +211,7 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     # file handling app
     'karmaworld.apps.notes',
-    'karmaworld.apps.courses',
-    'karmaworld.apps.ajaxuploader',
+    'karmaworld.apps.courses',\
     'karmaworld.apps.document_upload',
 )
 

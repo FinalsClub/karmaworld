@@ -8,7 +8,6 @@ from django.conf import settings
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic.simple import direct_to_template
 
-from karmaworld.apps.ajaxuploader.views import ajax_uploader
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.views import AboutView
 from karmaworld.apps.courses.views import CourseDetailView
@@ -86,8 +85,6 @@ urlpatterns = patterns('',
     #    NoteView.as_view(), name='note_detail'),
 
     # ---- JSON views ----#
-    # uploading files
-    url(r'^ajax-upload$', ajax_uploader, name='ajax_upload'),
     # return json list of schools
     url(r'^school/list/$', school_list, name='json_school_list'),
     # return json list of courses for a given school
