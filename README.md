@@ -54,6 +54,7 @@ To obviate the need for hosting static files through S3 (noting it still serves 
 3. change `STATIC_URL` to `'/assets/'`
 4. comment out the entire storages section (save for part of `INSTALLED_APPS` and `STATIC_URL`)
 5. add this to the nginx config:
+
     location /assets/ {
         root /var/www/karmaworld/karmaworld/;
     }
@@ -84,6 +85,16 @@ follow:
 
 1. Use Vagrant to create the virtual machine.
     * While in `cd {project_root}`, type `vagrant up`
+
+1. Connect to the VM with `vagrant ssh`
+
+1. While connected to the VM with SSH, type `cd karmanotes` and then follow
+    the instructions starting in Production Install about running
+    `fab -H 127.0.0.1 first_deploy`.
+
+1. Once the above instructions are completed, port 80 on the VM will be hosted
+    as port 6659 on the host system. From the host system, fire up your
+    favorite browser and point it at `localhost:6659`.
 
 # Production Install
 
@@ -126,7 +137,12 @@ follow the steps below.
    This will make a virtualenv, install the development dependencies and create
    the database tables.
 
-1. Now you can run ``./manage.py runserver`` and visit the site in the browser.
+   During this process, you will be queried to create a Django site admin.
+   Provide information. You will be asked to remove duplicate schools. Respond
+   with yes.
+
+1. If everything went well, gunicorn should be running the website on port 8000
+    and nginx should be serving gunicorn on port 80.
 
 # Accessing the Vagrant Virtual Machine
 
