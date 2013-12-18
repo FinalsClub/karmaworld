@@ -1,174 +1,141 @@
-"""Management utilities."""
+
+""" Karmaworld Fabric management script
+    Finals Club (c) 2013"""
 
 import os
-from contextlib import contextmanager as _contextmanager
+import ConfigParser
 
-from fabric.api import cd, env, lcd, prefix, run, task, local, settings
+from fabric.api import cd, env, lcd, prefix, run, sudo, task, local, settings
+from fabric.contrib import files
 
-
-########## GLOBALS
+######### GLOBAL
+env.user = 'vagrant'
+env.group = 'vagrant'
 env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
-env.virtualenv = 'venv-kw'
-env.activate = 'workon %s' % env.virtualenv
+env.repo_root = '~/karmaworld'
+env.proj_root = '/var/www/karmaworld'
+env.branch = 'prod'
+env.code_root = env.proj_root
+env.env_root = env.proj_root
+env.supervisor_conf = '{0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch)
+env.usde_csv = '{0}/confs/acceditation.csv'.format(env.code_root)
 
-# Using this env var to be able to specify the function
-# used to run the commands. By default it's `run`, which
-# runs commands remotely, but in the `here` task we set
-# env.run to `local` to run commands locally.
-env.run = run
-env.cd = cd
-########## END GLOBALS
+env.use_ssh_config = True
 
-
-########## HELPERS
-@_contextmanager
-def _virtualenv():
-    """
-    Changes to the proj_dir and activates the virtualenv
-    """
-    with env.cd(env.proj_dir):
-        with prefix(env.activate):
-            yield
-
-########## END HELPERS
-
-########## ENVIRONMENTS
-@task
+######## Define host(s)
 def here():
     """
     Connection information for the local machine
     """
-    # This is required, because local doesn't read the user's
-    # .bashrc file, because it doesn't use an interactive shell
     def _custom_local(command):
         prefixed_command = '/bin/bash -l -i -c "%s"' % command
         return local(prefixed_command)
 
     # This is required for the same reason as above
-    env.activate = '/bin/bash -l -i -c "workon %s"' % env.virtualenv
-    env.proj_dir = os.getcwd()
-    env.proj_root = os.path.dirname(env.proj_dir)
-    env.run = _custom_local
+    env.proj_root = '/var/www/karmaworld'
     env.cd = lcd
     env.reqs = 'reqs/dev.txt'
-    env.confs = 'confs/dev/'
-    env.branch = 'master'
-
-
-@task
-def beta():
-    """
-    Beta connection information
-    """
-    env.user = 'djkarma'
-    env.hosts = ['beta.karmanotes.org']
-    env.proj_root = '/var/www/karmaworld'
-    env.proj_dir = os.path.join(env.proj_root, 'karmaworld')
-    env.reqs = 'reqs/prod.txt'
-    env.confs = 'confs/beta/'
+    env.confs = 'confs/beta'
     env.branch = 'beta'
 
 
+
+####### Define production host
 @task
 def prod():
     """
-    Production connection information
+    Connection Information for production machine
     """
+
     env.user = 'djkarma'
     env.hosts = ['karmanotes.org']
     env.proj_root = '/var/www/karmaworld'
-    env.proj_dir = os.path.join(env.proj_root, 'karmaworld')
     env.reqs = 'reqs/prod.txt'
     env.confs = 'confs/prod/'
-    env.branch = 'master'
-########## END ENVIRONMENTS
+    env.branch = 'beta'
+    env.gunicorn_addr = '127.0.0.1:8000'
 
+####### Define beta host
+@task
+def beta():
+    """
+    Connection Information for beta machine
+    """
 
-########## DATABASE MANAGEMENT
+    env.user = 'djkarma'
+    env.hosts = ['beta.karmanotes.org']
+    env.proj_root = '/var/www/karmaworld'
+    env.reqs = 'reqs/prod.txt'
+    env.confs = 'confs/prod/'
+    env.branch = 'beta'
+
+######## Run Commands in Virutal Environment
+def virtenv_path():
+    """
+    Builds the virtualenv path.
+    """
+    # not much here now, but maybe useful later.
+    return env.env_root
+
+def virtenv_exec(command):
+    """
+    Execute command in Virtualenv
+    """
+
+    path = virtenv_path()
+    with prefix('source {0}/bin/activate'.format(path)):
+        run(command)
+
+######## Sync database
 @task
 def syncdb():
-    """Runs syncdb (along with any pending South migrations)"""
-    env.run('python manage.py syncdb --noinput --migrate')
-########## END DATABASE MANAGEMENT
-
-
-########## FILE MANAGEMENT
-@task
-def manage_static():
     """
-    Collects, compresses and uploads static files.
+    Sync Database
     """
-    collect_static()
-    compress_static()
-    upload_static()
+    virtenv_exec('{0}/manage.py syncdb --migrate'.format(env.code_root))
 
 
+####### Collect Static Files
 @task
 def collect_static():
-    """Collect all static files, and copy them to S3 for production usage."""
-    env.run('python manage.py collectstatic --noinput')
+	"""
+	Collect static files (if AWS config. present, push to S3)
+	"""
 
+	virtenv_exec('%s/manage.py collectstatic --noinput' % env.code_root )	
+
+####### Run Dev Server
+@task
+def dev_server():
+	"""
+	Runs the built-in django webserver
+	"""
+
+	virtenv_exec('%s/manage.py runserver' % env.code_root)	
+
+####### Create Virtual Environment
 
 @task
-def compress_static():
+def link_code():
     """
-    Compresses the static files.
+    Link the karmaworld repo into the appropriate production location
     """
-    pass
+    if not files.exists(env.code_root):
+        run('ln -s {0} {1}'.format(env.repo_root, env.code_root))
 
-
-@task
-def upload_static():
-    """
-    Uploads the static files to the specified host.
-    """
-    pass
-########## END FILE MANAGEMENT
-
-
-########## COMMANDS
 @task
 def make_virtualenv():
     """
-    Creates a virtualenv on the remote host
+    Create our Virtualenv
     """
-    env.run('mkvirtualenv --no-site-packages %s' % env.virtualenv)
-
-
-@task
-def update_reqs():
-    """
-    Makes sure all packages listed in requirements are installed
-    """
-    with _virtualenv():
-        env.run('pip install -r %s' % env.reqs)
-
-
-@task
-def clone():
-    """
-    Clones the project from the central repository
-    """
-    env.run('git clone %s %s' % (env.proj_repo, env.proj_dir))
-
-
-@task
-def update_code():
-    """
-    Pulls changes from the central repo and checks out the right branch
-    """
-    with env.cd(env.proj_dir):
-        env.run('git pull && git checkout %s' % env.branch)
-
+    run('virtualenv {0}'.format(virtenv_path()))
 
 @task
 def start_supervisord():
     """
     Starts supervisord
     """
-    with _virtualenv():
-        config_file = os.path.join(env.confs, 'supervisord.conf')
-        env.run('supervisord -c %s' % config_file)
+    virtenv_exec('supervisord -c {0}'.format(env.supervisor_conf))
 
 
 @task
@@ -176,9 +143,7 @@ def stop_supervisord():
     """
     Restarts supervisord
     """
-    with _virtualenv():
-        config_file = os.path.join(env.confs, 'supervisord.conf')
-        env.run('supervisorctl -c %s shutdown' % config_file)
+    virtenv_exec('supervisorctl -c {0} shutdown'.format(env.supervisor_conf))
 
 
 @task
@@ -196,8 +161,7 @@ def supervisorctl(action, process):
     defined in supervisord.conf and the action that should
     be performed on it: start|stop|restart.
     """
-    supervisor_conf = os.path.join(env.confs, 'supervisord.conf')
-    env.run('supervisorctl -c %s %s %s' % (supervisor_conf, action, process))
+    virtenv_exec('supervisorctl -c {0} {1} {2}'.format(env.supervisor_conf, action, process))
 
 
 @task
@@ -248,31 +212,89 @@ def restart_gunicorn():
     supervisorctl('restart', 'gunicorn')
 
 
+####### Update Requirements
+@task
+def update_reqs():
+    virtenv_exec('pip install -r {0}/reqs/{1}.txt'.format(env.repo_root, env.branch))
+
+####### Pull new code
+@task
+def update_code():
+    virtenv_exec('cd %s; git pull' % env.proj_root )
+
+def backup():
+    """
+    Create backup using bup
+    """
+    pass
+
+@task
+def file_setup():
+    """
+    Deploy expected files and directories from non-apt system services.
+    """
+    ini_parser = ConfigParser.SafeConfigParser()
+    if not ini_parser.read(env.supervisor_conf):
+      raise Exception("Could not parse INI file {0}".format(env.supervisor_conf))
+    for section, option in (('supervisord','logfile'),
+                            ('supervisord','pidfile'),
+                            ('unix_http_server','file'),
+                            ('program:celeryd','stdout_logfile')):
+      filepath = ini_parser.get(section, option)
+      # generate file's directory structure if needed
+      run('mkdir -p {0}'.format(os.path.split(filepath)[0]))
+      # touch a file and change ownership if needed
+      if 'log' in option and not files.exists(filepath):
+          sudo('touch {0}'.format(filepath))
+          sudo('chown {0}:{1} {2}'.format(env.user, env.group, filepath))
+
+@task
+def check_secrets():
+    """
+    Ensure secret files exist for syncdb to run.
+    """
+
+    secrets_path = env.code_root + '/karmaworld/secret'
+    secrets_files = ('filepicker.py', 'static_s3.py', 'db_settings.py', 'drive.py', 'client_secrets.json')
+
+    errors = []
+    for sfile in secrets_files:
+        ffile = os.path.sep.join((secrets_path,sfile))
+        if not files.exists(ffile):
+            errors.append('{0} missing. Please add and try again.'.format(ffile))
+    if errors:
+        raise Exception('\n'.join(errors))
+
+@task
+def fetch_usde():
+    """
+    Download USDE accreditation school CSV.
+    """
+    virtenv_exec('{0}/manage.py fetch_usde_csv {1}'.format(env.code_root, env.usde_csv))
+
+@task
+def import_usde():
+    """
+    Import accreditation school CSV into the database and scrub it.
+    """
+    virtenv_exec('{0}/manage.py import_usde_csv {1}'.format(env.code_root, env.usde_csv))
+    virtenv_exec('{0}/manage.py sanitize_usde_schools'.format(env.code_root))
+
 @task
 def first_deploy():
     """
     Sets up and deploys the project for the first time.
     """
-    # If we're on the local machine, there's no point in cloning
-    # the project, because it's already been cloned. Otherwise
-    # the user couldn't run this file
-    if env.run == run:
-        # We're doing this to filter out the hosts that have
-        # already been setup and deployed to
-        with settings(warn_only=True):
-            if env.run('test -d %s' % env.project).failed:
-                return
-        clone()
-
+    link_code()
     make_virtualenv()
+    file_setup()
+    check_secrets()
     update_reqs()
     syncdb()
-
-    # We don't collect the static files and start supervisor on
-    # development machines
-    if env.run == run:
-        manage_static()
-        start_supervisord()
+    collect_static()
+    fetch_usde()
+    import_usde()
+    start_supervisord()
 
 
 @task
@@ -283,6 +305,6 @@ def deploy():
     update_code()
     update_reqs()
     syncdb()
-    manage_static()
+    collect_static()
     restart_supervisord()
 ########## END COMMANDS

@@ -1,6 +1,4 @@
-==========
-KarmaWorld
-==========
+# KarmaWorld
 __Description__: A django application for sharing and uploading class notes.
 
 __Copyright__: FinalsClub, a 501c3 non-profit organization
@@ -14,48 +12,174 @@ v3.0 of the karmanotes.org website from the FinalsClub Foundation
 
 
 
-Purpose
-=======
+# Purpose
 
 KarmaNotes is an online database of college lecture notes.  KarmaNotes empowers college students to participate in the free exchange of knowledge. 
 
-Docs
-====
+# Pre-Installation
 
-TODO: see `./docs/`
-TODO: Put docs on [RTFD](https://readthedocs.org/)
+Clone the project from the central repo using your github account:
 
+    git clone git@github.com:FinalsClub/karmaworld.git
 
-Install
-=======
-If you're starting to work on this project and you need it setup on your local
-machine, follow the steps below.
+If you aren't using a system setup for github, then grab the project with
+this command instead:
 
-1. Make sure you have installed ``git``, the ``PostgreSQL`` server, client and
-   development files, ``Python`` including the development files, ``Fabric``,
-   ``pip``, ``virtualenv`` and ``virtualenvwrapper``.
+    git clone https://github.com/FinalsClub/karmaworld.git
 
-2. Clone the project from the central repo::
+Generally speaking, this will create a subdirectory called `karmaworld` under
+the directory where the `git` command was run. This git repository directory
+will be referred to herein as `{project_root}`.
 
-        git clone git@github.com:FinalsClub/karmaworld.git
+There might be some confusion as the git repository's directory will likely be
+called `karmaworld` (this is `{project_root}`), but there is also a `karmaworld`
+directory underneath that (`{project_root}/karmaworld`) alongside files like
+`fabfile.py` (`{project_root}/fabfile.py`) and `README.md`
+(`{project_root}/README.md`).
 
-Note that you have to have your SSH keys setup on GitHub to use this URL. If
-you don't, you can use the HTTP URL:
-``https://github.com/FinalsClub/karmaworld.git``.
+## External Service Dependencies
 
-3. Create a database and optionally a username and put them in the
-   ``DATABASES`` setting in a ``local.py`` file that you'll place in
-   ``karmaworld/settings/``.
+Notice: This software makes use of external third party services which require accounts to access the service APIs. Without these third parties available, this software may require considerable overhaul.
 
-4. Make sure that you're in the root of the project that you just cloned and
+### Filepicker
+This software uses [Filepicker.io](https://www.inkfilepicker.com/) for uploading files. This requires an account with Filepicker and some additional third party file hosting site where Filepicker may send uploaded files.
+
+### Amazon S3
+This software uses [Amazon S3](http://aws.amazon.com/s3/) as a third party file hosting site. The primary use case is a destination for Filepicker files.  A secondary use case is hosting static files.
+
+To obviate the need for hosting static files through S3 (noting it still serves a different purpose), see the workaround noted [in this Github ticket](https://github.com/FinalsClub/karmaworld/issues/192#issuecomment-30193617). For good measure, that workaround is repeated here. Make the following changes to `karmaworld/settings/prod.py`:
+
+1. comment out everything about static_s3 from imports
+2. comment out storages from the `INSTALLED_APPS`
+3. change `STATIC_URL` to `'/assets/'`
+4. comment out the entire storages section (save for part of `INSTALLED_APPS` and `STATIC_URL`)
+5. add this to the nginx config:
+
+    location /assets/ {
+        root /var/www/karmaworld/karmaworld/;
+    }
+
+### Google Drive
+This software uses [Google Drive](https://developers.google.com/drive/) to convert documents to and from various file formats. Google credentials will be required as well as a Google Drive account which has been registered with the Google Cloud Console.
+
+# Development Install
+
+If you need to setup the project for development, it is highly recommend that
+you grab an existing development virtual machine or create one yourself. 
+Configure the virtual machine for production with the steps shown in the
+next section (Production Install). Instructions for creating a virtual machine
+follow:
+
+1. Install [VirtualBox](http://www.virtualbox.com/)
+
+1. Install [vagrant](http://www.vagrantup.com/) 1.3 or higher
+
+1. Configure external dependencies on the host machine:
+    * Under `{project_root}/karmaworld/secret/`:
+        1. Copy files with the example extension to the corresponding filename
+          without the example extension (e.g.
+          `cp filepicker.py.example filepicker.py`)
+        1. Modify those files, but ignore `db_settings.py` (Vagrant takes care of that one)
+        1. Ensure *.py in `secret/` are never added to the git repo. (.gitignore
+          should help warn against taking this action)
+
+1. Use Vagrant to create the virtual machine.
+    * While in `cd {project_root}`, type `vagrant up`
+
+1. Connect to the VM with `vagrant ssh`
+
+1. While connected to the VM with SSH, type `cd karmanotes` and then follow
+    the instructions starting in Production Install about running
+    `fab -H 127.0.0.1 first_deploy`.
+
+1. Once the above instructions are completed, port 80 on the VM will be hosted
+    as port 6659 on the host system. From the host system, fire up your
+    favorite browser and point it at `localhost:6659`.
+
+# Production Install
+
+If you're starting to work on this project and you need it setup for production,
+follow the steps below.
+
+1. Ensure the following are installed:
+   * `git`
+   * `PostgreSQL` (server and client)
+   * `nginx`
+   * `Python`
+   * `PIP`
+   * `virtualenv` and `virtualenvwrapper`
+
+1. Generate a PostgreSQL database and a role with read/write permissions.
+   * For Debian, these instructions are helpful: https://wiki.debian.org/PostgreSql
+
+1. Modify configuration files.
+   * There are settings in `{project_root}/karmaworld/settings/dev.py`
+   * There are additional configuration options for external dependencies
+     under `{project_root}/karmaworld/secret/`.
+       * Copy files with the example extension to the corresponding filename
+         without the example extension (e.g.
+         `cp filepicker.py.example filepicker.py`) 
+       * Modify those files.
+           * Ensure `PROD_DB_USERNAME`, `PROD_DB_PASSWORD`, and `PROD_DB_NAME`
+             inside `db_settings.py` match the role, password, and database
+             generated in the previous step.
+       * Ensure *.py in `secret/` are never added to the git repo. (.gitignore
+         should help warn against taking this action)
+
+1. Make sure that /var/www exists, is owned by the www-data group, and that
+   the user is a member of the www-data group.
+
+1. Make sure that you're in the root of the project that you just cloned and
    run
 
-        fab here first_deploy
+        fab -H 127.0.0.1 first_deploy
 
-This will make a virtualenv, install the development dependencies and create
-the database tables.
+   This will make a virtualenv, install the development dependencies and create
+   the database tables.
 
-5. Now you can run ``./manage.py runserver`` and visit the site in the browser.
+   During this process, you will be queried to create a Django site admin.
+   Provide information. You will be asked to remove duplicate schools. Respond
+   with yes.
+
+1. If everything went well, gunicorn should be running the website on port 8000
+    and nginx should be serving gunicorn on port 80.
+
+# Accessing the Vagrant Virtual Machine
+
+## Connecting to the VM via SSH
+If you have installed a virtual machine using `vagrant up`, you can connect
+to it by running `vagrant ssh` from `{project_root}`.
+
+## Connecting to the development website on the VM
+To access the website running on the VM, point your browser at
+http://localhost:6659/ using your host computer.
+
+Port 6659 on your local machine is set to forward to the VM's port 80.
+
+Fun fact: 6659 was chosen because of OM (sanskrit) and KW (KarmaWorld) on a
+phone: 66 59.
+
+## Updating the VM code repository
+Once connected to the virtual machine by SSH, you will see `karmaworld` in
+the home directory. That is the `{project_root}` in the virtual machine.
+
+`cd karmaworld` and then use `git fetch; git merge` and/or `git pull origin` as
+desired.
+
+The virtual machine's code repository is set to use your host machine's
+local repository as the origin. So if you make changes locally and commit them,
+without pushing them anywhere, your VM can pull those changes in for testing.
+
+This may seem like duplication. It is. The duplication allows your host machine
+to maintain git credentials and manage repository access control so that your
+virtual machine doesn't need sensitive information. Your virtual machine simply
+pulls from the local repository on your local file system without needing
+credentials, etc.
+
+## Other Vagrant commands
+Please see [vagrant documentation](http://docs.vagrantup.com/v2/cli/index.html)
+for more information on how to use the vagrant CLI to manage your development
+VM.
 
 Thanks
 ======

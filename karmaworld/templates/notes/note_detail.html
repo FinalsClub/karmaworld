@@ -17,8 +17,8 @@
         <div id="breadcrumbs" class="small-12 hide-for-small columns ">
           <ul class="breadcrumbs">
             <li><a href="/">Home</a></li>
-            <li class="unavailable"><a href="#">{{ note.course.school.name }}</a></li>
-            <li><a href="{{ course.get_absolute_url }}">{{ note.course.name }}</a></li>
+            <li class="unavailable"><a>{{ note.course.school.name }}</a></li>
+            <li><a href="{{ note.course.get_absolute_url }}">{{ note.course.name }}</a></li>
             <li class="current"><a href="{{ note.get_absolute_url }}">{{ note.name }}</a></li>
           </ul>
 

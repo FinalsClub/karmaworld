@@ -1,3 +1,10 @@
+# Project secret files
+karmaworld/secret/*.py
+karmaworld/secret/*.json
+
+# ignore vagrant virtual machines
+.vagrant
+
 # Python bytecode:
 *.py[co]
 
@@ -11,6 +18,7 @@
 
 # project cruft
 .ropeproject*
+.idea
 
 # Sphinx docs:
 build
@@ -31,6 +39,7 @@ log
 # virtual enviroment
 venv
 vkarma
+beta
 
 # ignore south migrations
 migrations
@@ -42,6 +51,8 @@ local_settings.py
 karmaworld/media/
 # collected staticfiles
 karmaworld/static/
+# secret things
+karmaworld/secret/*
 
 ## OS X
 # thumbnail cache

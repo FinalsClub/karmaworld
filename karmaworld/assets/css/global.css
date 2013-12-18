@@ -532,6 +532,7 @@ a.activity_target:hover
 .add-note-btn,
 #add-note-btn,
 #add-course-btn,
+#existing-course-btn,
 #save-btn
 {
   border: none;
@@ -545,10 +546,12 @@ a.activity_target:hover
   /* transition: ease-out ? ? ? */
 }
 
+#existing-course-btn,
 #save-btn {
   margin-top: 13px;
 }
 
+#existing-course-btn.disabled,
 #save-btn.disabled
 {
   color: #afafaf;
@@ -822,6 +825,9 @@ legend
   border: 1px dashed #666;
   border-radius: 6px;
   padding: 20px;
+}
+.dragdrop {
+  text-align: center;
 }
 
 .inline-form {
