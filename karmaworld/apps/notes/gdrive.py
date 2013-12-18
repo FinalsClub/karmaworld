@@ -3,6 +3,7 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import datetime
+from ENML2HTML import ENMLToHTML
 import magic
 import mimetypes
 import os
@@ -161,6 +162,7 @@ def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
 
     return file_dict
 
+
 def convert_with_google_drive(note):
     """ Upload a local note and download HTML
         using Google Drive
@@ -238,13 +240,18 @@ def convert_raw_document(raw_document):
     print mimetype
     print ""
 
-    if mimetype == 'text/enml': mimetype = 'text/xml'
+    document_contents = fp_file.read()
 
-    if mimetype == None:
-        media = MediaInMemoryUpload(fp_file.read(),
+    # Special case for Evernote documents
+    if raw_document.mimetype == 'text/enml':
+        document_contents = ENMLToHTML(document_contents)
+        raw_document.mimetype = 'text/html'
+
+    if raw_document.mimetype == None:
+        media = MediaInMemoryUpload(document_contents,
                     chunksize=1024*1024, resumable=True)
     else:
-        media = MediaInMemoryUpload(fp_file.read(), mimetype=mimetype,
+        media = MediaInMemoryUpload(document_contents, mimetype=raw_document.mimetype,
                     chunksize=1024*1024, resumable=True)
 
     auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]
