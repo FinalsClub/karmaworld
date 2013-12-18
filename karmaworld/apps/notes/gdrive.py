@@ -3,7 +3,6 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import datetime
-from ENML2HTML import ENMLToHTML
 import magic
 import mimetypes
 import os
@@ -163,68 +162,6 @@ def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
     return file_dict
 
 
-def convert_with_google_drive(note):
-    """ Upload a local note and download HTML
-        using Google Drive
-        :note: a File model instance # FIXME
-    """
-    # TODO: set the permission of the file to permissive so we can use the
-    #       gdrive_url to serve files directly to users
-
-    # Get file_type and encoding of uploaded file
-    # i.e: file_type = 'text/plain', encoding = None
-    (file_type, encoding) = mimetypes.guess_type(note.note_file.path)
-
-
-    if file_type == 'text/enml': file_type = 'text/xml'
-
-    if file_type != None:
-        media = MediaFileUpload(note.note_file.path, mimetype=file_type,
-                    chunksize=1024*1024, resumable=True)
-
-    else:
-        media = MediaFileUpload(note.note_file.path,
-                    chunksize=1024*1024, resumable=True)
-
-    auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]
-    creds = auth.transform_to_cred()
-
-
-    creds, auth = check_and_refresh(creds, auth)
-
-    service, http = build_api_service(creds)
-
-    # get the file extension
-    filename, extension = os.path.splitext(note.note_file.path)
-
-    file_dict = upload_to_gdrive(service, media, filename, extension)
-
-    content_dict = download_from_gdrive(file_dict, http, extension)
-
-    # Get a new copy of the file from the database with the new metadata from filemeta
-    new_note = Note.objects.get(id=note.id)
-
-    if extension.lower() == '.pdf':
-        new_note.file_type = 'pdf'
-
-    elif extension.lower() in ['.ppt', '.pptx']:
-        new_note.file_type = 'ppt'
-        new_note.pdf_file.save(filename + '.pdf', ContentFile(content_dict['pdf']))
-
-    else:
-        # PPT files do not have this export ability
-        new_note.gdrive_url = file_dict[u'exportLinks']['application/vnd.oasis.opendocument.text']
-        new_note.html = content_dict['html']
-
-    new_note.text = content_dict['text']
-
-    # before we save new html, sanitize a tags in note.html
-    #new_note.sanitize_html(save=False)
-    #FIXME: ^^^ disabled until we can get html out of an Etree html element
-
-    # Finally, save whatever data we got back from google
-    new_note.save()
-
 def convert_raw_document(raw_document):
     """ Upload a raw document to google drive and get a Note back """
     fp_file = raw_document.get_file()
@@ -240,18 +177,15 @@ def convert_raw_document(raw_document):
     print mimetype
     print ""
 
-    document_contents = fp_file.read()
-
-    # Special case for Evernote documents
+    # A special case for Evernotes
     if raw_document.mimetype == 'text/enml':
-        document_contents = ENMLToHTML(document_contents)
         raw_document.mimetype = 'text/html'
 
     if raw_document.mimetype == None:
-        media = MediaInMemoryUpload(document_contents,
+        media = MediaInMemoryUpload(fp_file.read(),
                     chunksize=1024*1024, resumable=True)
     else:
-        media = MediaInMemoryUpload(document_contents, mimetype=raw_document.mimetype,
+        media = MediaInMemoryUpload(fp_file.read(), mimetype=raw_document.mimetype,
                     chunksize=1024*1024, resumable=True)
 
     auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]

@@ -2,11 +2,9 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2013  FinalsClub Foundation
 
-from celery import Celery
 from celery import task
 from karmaworld.apps.notes.gdrive import convert_raw_document
 
-#@Celery.task()
 @task()
 def process_raw_document(raw_document):
     """ Process a RawDocument instance in to a Note instance """

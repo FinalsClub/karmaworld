@@ -14,5 +14,3 @@ django-filepicker==0.1.5
 filemagic==1.6
 fabric-virtualenv
 requests
-beautifulsoup4
-git+https://github.com/btbonval/ENML_PY.git
