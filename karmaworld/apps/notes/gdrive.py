@@ -119,7 +119,7 @@ def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
     # 2 ** -1 = 0.5, 2 ** 0 = 1, 2 ** 1 = 2, 4, 8, 16, ...
     delay_exp = -1
     # exponentially wait for exportLinks to be returned if missing
-    while u'exportLinks' not in file_dict or
+    while u'exportLinks' not in file_dict or \
           u'text/plain' not in file_dict[u'exportLinks']:
         # wait some seconds
         print "upload_check_sleep({0})".format(2. ** delay_exp)
