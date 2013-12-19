@@ -4,20 +4,18 @@
 
 import datetime
 import magic
-import mimetypes
 import os
 import re
 import time
 
 import httplib2
 from apiclient.discovery import build
-from apiclient.http import MediaFileUpload
 from apiclient.http import MediaInMemoryUpload
 from django.conf import settings
 from django.core.files.base import ContentFile
 from oauth2client.client import flow_from_clientsecrets
 
-from karmaworld.apps.notes.models import DriveAuth, Note
+from karmaworld.apps.notes.models import DriveAuth
 
 CLIENT_SECRET = os.path.join(settings.DJANGO_ROOT, \
                     'secret/client_secrets.json')
@@ -194,8 +192,15 @@ def convert_raw_document(raw_document):
     creds, auth = check_and_refresh(creds, auth)
     service, http = build_api_service(creds)
 
-    # prepare the upload
+    # upload to google drive
     file_dict = upload_to_gdrive(service, media, filename, mimetype=mimetype)
+
+    # check if google drive understood the file
+    if not 'exportLinks' in file_dict or \
+           not 'text/plain' in file_dict[u'exportLinks']:
+        raise ValueError('Google Drive failed to read the document')
+
+    # down from google drive
     content_dict = download_from_gdrive(file_dict, http, mimetype=mimetype)
 
     # this should have already happened, lets see why it hasn't
