@@ -42,4 +42,9 @@ This will save the DriveAuth()
 
 You are now authenticated!
 
+If you want to run the document_upload tests, then you need to save the contents of
+
+     DriveAuth.objects.all()[0].credentials
+     
+to secret/oauth_token.json. Obviously, don't commit this.
 
