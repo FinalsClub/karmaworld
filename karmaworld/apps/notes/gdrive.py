@@ -2,32 +2,22 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 
-import datetime
 import magic
-import os
 import re
+import json
 import time
 
 import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaInMemoryUpload
-from django.conf import settings
 from django.core.files.base import ContentFile
-from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import SignedJwtAssertionCredentials
 
-from karmaworld.apps.notes.models import DriveAuth
+import secrets.drive as drive
 
-CLIENT_SECRET = os.path.join(settings.DJANGO_ROOT, \
-                    'secret/client_secrets.json')
-#from credentials import GOOGLE_USER # FIXME
-try:
-    from secrets.drive import GOOGLE_USER
-except:
-    GOOGLE_USER = 'admin@karmanotes.org' # FIXME
-
-EXT_TO_MIME = {'.docx': 'application/msword'}
 
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
+
 
 def extract_file_details(fileobj):
     details = None
@@ -46,65 +36,40 @@ def extract_file_details(fileobj):
 
     return {'year': year}
 
-def build_flow():
-    """ Create an oauth2 autentication object with our preferred details """
-    scopes = [
-        'https://www.googleapis.com/auth/drive',
-        'https://www.googleapis.com/auth/drive.file',
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile',
-    ]
 
-    flow = flow_from_clientsecrets(CLIENT_SECRET, ' '.join(scopes), \
-            redirect_uri='http://localhost:8000/oauth2callback')
-    flow.params['access_type'] = 'offline'
-    flow.params['approval_prompt'] = 'force'
-    flow.params['user_id'] = GOOGLE_USER
-    return flow
-
-
-def authorize():
-    """ Use an oauth2client flow object to generate the web url to create a new
-        auth that can be then stored """
-    flow = build_flow()
-    print flow.step1_get_authorize_url()
-
-
-def accept_auth(code):
-    """ Callback endpoint for accepting the post `authorize()` google drive
-        response, and generate a credentials object
-        :code:  An authentication token from a WEB oauth dialog
-        returns a oauth2client credentials object """
-    flow = build_flow()
-    creds = flow.step2_exchange(code)
-    return creds
-
-
-def build_api_service(creds):
-    http = httplib2.Http()
-    http = creds.authorize(http)
-    return build('drive', 'v2', http=http), http
-
-
-def check_and_refresh(creds, auth):
-    """ Check a Credentials object's expiration token
-        if it is out of date, refresh the token and save
-        :creds: a Credentials object
-        :auth:  a DriveAuth that backs the cred object
-        :returns: updated creds and auth objects
+def build_api_service():
     """
-    if creds.token_expiry < datetime.datetime.utcnow():
-        # if we are passed the token expiry,
-        # refresh the creds and store them
-        http = httplib2.Http()
-        http = creds.authorize(http)
-        creds.refresh(http)
-        auth.credentials = creds.to_json()
-        auth.save()
-    return creds, auth
+    Build and returns a Drive service object authorized with the service
+    accounts that act on behalf of the given user.
 
-def download_from_gdrive(file_dict, http, extension=None, mimetype=None):
-    """ get urls from file_dict and download contextual files from google """
+    Will target the Google Drive of GOOGLE_USER email address.
+    Returns a Google Drive service object.
+
+    Code herein adapted from:
+    https://developers.google.com/drive/delegation
+    """
+
+    # Extract the service address from the client secret
+    with open(drive.CLIENT_SECRET, 'r') as fp:
+        service_user = json.load(fp)['web']['client_email']
+
+    # Pull in the service's p12 private key.
+    with open(drive.SERVICE_KEY, 'rb') as p12:
+        # Use the private key to auth as the service user for access to the
+        # Google Drive of the GOOGLE_USER
+        credentials = SignedJwtAssertionCredentials(service_user, p12.read(),
+                               scope='https://www.googleapis.com/auth/drive',
+                               sub=drive.GOOGLE_USER)
+
+    return build('drive', 'v2', http=credentials.authorize(httplib2.Http()))
+
+
+def download_from_gdrive(service, file_dict, extension=None, mimetype=None):
+    """ Take in a gdrive service, file_dict from upload, and either an
+        extension or mimetype.
+        You must provide an `extension` or `mimetype`
+        Returns contextual files from google
+    """
     download_urls = {}
     download_urls['text'] = file_dict[u'exportLinks']['text/plain']
 
@@ -117,11 +82,10 @@ def download_from_gdrive(file_dict, http, extension=None, mimetype=None):
     else:
         download_urls['html'] = file_dict[u'exportLinks']['text/html']
 
-
     content_dict = {}
     for download_type, download_url in download_urls.items():
         print "\n%s -- %s" % (download_type, download_urls)
-        resp, content = http.request(download_url, "GET")
+        resp, content = service._http.request(download_url)
 
         if resp.status in [200]:
             print "\t downloaded!"
@@ -131,6 +95,7 @@ def download_from_gdrive(file_dict, http, extension=None, mimetype=None):
             print "\t Download failed: %s" % resp.status
 
     return content_dict
+
 
 def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
     """ take a gdrive service object, and a media wrapper and upload to gdrive
@@ -143,18 +108,29 @@ def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
     if extension:
         extension = extension.lower()
 
-    if extension in ['.pdf', '.jpeg', '.jpg', '.png'] \
-        or mimetype in ['application/pdf']:
-        # include OCR on ocr-able files
-        file_dict = service.files().insert(body=_resource, media_body=media, convert=True, ocr=True).execute()
+    # perform OCR on files that are image intensive
+    ocr = extension in ['.pdf', '.jpeg', '.jpg', '.png'] or \
+          mimetype in ['application/pdf']
 
-    else:
-        file_dict = service.files().insert(body=_resource, media_body=media, convert=True).execute()
+    file_dict = service.files().insert(body=_resource, media_body=media,\
+                                       convert=True, ocr=ocr).execute()
 
-    if u'exportLinks' not in file_dict:
+    # increase exponent of 2 for exponential growth.
+    # 2 ** -1 = 0.5, 2 ** 0 = 1, 2 ** 1 = 2, 4, 8, 16, ...
+    delay_exp = -1
+    # exponentially wait for exportLinks to be returned if missing
+    while u'exportLinks' not in file_dict or
+          u'text/plain' not in file_dict[u'exportLinks']:
         # wait some seconds
-        # get the doc from gdrive
-        time.sleep(30)
+        print "upload_check_sleep({0})".format(2. ** delay_exp)
+        time.sleep(2. ** delay_exp)
+        delay_exp = delay_exp + 1
+
+        # if 31.5 seconds have passed, give up
+        if delay_exp == 5:
+            raise ValueError('Google Drive failed to read the document.')
+
+        # try to get the doc from gdrive
         file_dict = service.files().get(fileId=file_dict[u'id']).execute()
 
     return file_dict
@@ -164,11 +140,7 @@ def convert_raw_document(raw_document):
     """ Upload a raw document to google drive and get a Note back """
     fp_file = raw_document.get_file()
 
-    # download the file to memory
-    # get the file's mimetype
-    #file_type, _ = mimetypes.guess_type(raw_document.fp_file.path)
-    # get the file extension
-    #filename, extension = os.path.splitext(raw_document.fp_file.path)
+    # extract some properties from the document metadata
     filename = raw_document.name
     print "this is the mimetype of the document to check:"
     mimetype = raw_document.mimetype
@@ -179,29 +151,19 @@ def convert_raw_document(raw_document):
     if raw_document.mimetype == 'text/enml':
         raw_document.mimetype = 'text/html'
 
-    if raw_document.mimetype == None:
-        media = MediaInMemoryUpload(fp_file.read(),
-                    chunksize=1024*1024, resumable=True)
-    else:
-        media = MediaInMemoryUpload(fp_file.read(), mimetype=raw_document.mimetype,
-                    chunksize=1024*1024, resumable=True)
+    # Include mimetype parameter if there is one to include
+    extra_flags = {'mimetype': raw_document.mimetype} if raw_document.mimetype \
+                  else {}
+    media = MediaInMemoryUpload(fp_file.read(), chunksize=1024*1024, \
+                                resumable=True, **extra_flags)
 
-    auth = DriveAuth.objects.filter(email=GOOGLE_USER).all()[0]
-    creds = auth.transform_to_cred()
-
-    creds, auth = check_and_refresh(creds, auth)
-    service, http = build_api_service(creds)
+    service = build_api_service()
 
     # upload to google drive
     file_dict = upload_to_gdrive(service, media, filename, mimetype=mimetype)
 
-    # check if google drive understood the file
-    if not 'exportLinks' in file_dict or \
-           not 'text/plain' in file_dict[u'exportLinks']:
-        raise ValueError('Google Drive failed to read the document')
-
-    # down from google drive
-    content_dict = download_from_gdrive(file_dict, http, mimetype=mimetype)
+    # download from google drive
+    content_dict = download_from_gdrive(service, file_dict, mimetype=mimetype)
 
     # this should have already happened, lets see why it hasn't
     raw_document.is_processed = True
@@ -209,10 +171,10 @@ def convert_raw_document(raw_document):
 
     note = raw_document.convert_to_note()
 
-    if raw_document.mimetype == 'application/pdf':
+    if mimetype == 'application/pdf':
         note.file_type = 'pdf'
 
-    elif raw_document.mimetype in PPT_MIMETYPES:
+    elif mimetype in PPT_MIMETYPES:
         note.file_type = 'ppt'
         note.pdf_file.save(filename + '.pdf', ContentFile(content_dict['pdf']))
 
@@ -231,4 +193,3 @@ def convert_raw_document(raw_document):
 
     # Finally, save whatever data we got back from google
     note.save()
-
