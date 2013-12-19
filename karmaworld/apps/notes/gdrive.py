@@ -13,7 +13,7 @@ from apiclient.http import MediaInMemoryUpload
 from django.core.files.base import ContentFile
 from oauth2client.client import SignedJwtAssertionCredentials
 
-import secrets.drive as drive
+import karmaworld.secret.drive as drive
 
 
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
