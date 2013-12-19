@@ -14,3 +14,5 @@ django-filepicker==0.1.5
 filemagic==1.6
 fabric-virtualenv
 requests
+beautifulsoup4
+pyopenssl
