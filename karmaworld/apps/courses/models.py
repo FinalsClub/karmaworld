@@ -48,19 +48,11 @@ class School(models.Model):
         return ("name__icontains",)
 
     def update_note_count(self):
-        """ Update the School.file_count by summing the 
+        """ Update the School.file_count by summing the
             contained course.file_count
         """
         self.file_count = sum([course.file_count for course in self.course_set.all()])
         self.save()
-
-    def update_related_note_count(self):
-        """ Runs the update_note_count function on all related course
-            objects, then generates the self.file_count
-        """
-        for course in self.course_set.all():
-            course.update_note_count()
-        self.update_note_count()
 
 
 class Course(models.Model):
@@ -116,6 +108,7 @@ class Course(models.Model):
         """ Update self.file_count by summing the note_set """
         self.file_count = self.note_set.count()
         self.save()
+
 
 # Enforce unique constraints even when we're using a database like
 # SQLite that doesn't understand them

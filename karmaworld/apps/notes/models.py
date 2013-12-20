@@ -7,6 +7,8 @@
     Contains only the minimum for handling files and their representation
 """
 import datetime
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 import os
 import urllib
 
@@ -216,6 +218,20 @@ class Note(Document):
         if self.uploaded_at and self.uploaded_at > self.course.updated_at:
             self._update_parent_updated_at()
         super(Note, self).save(*args, **kwargs)
+
+
+def update_note_counts(note_instance):
+    note_instance.course.update_note_count()
+    note_instance.course.school.update_note_count()
+
+@receiver(post_save, sender=Note, weak=False)
+def note_receiver(sender, **kwargs):
+    if kwargs['created']:
+        update_note_counts(kwargs['instance'])
+
+@receiver(post_delete, sender=Note, weak=False)
+def note_receiver(sender, **kwargs):
+    update_note_counts(kwargs['instance'])
 
 
 class DriveAuth(models.Model):
