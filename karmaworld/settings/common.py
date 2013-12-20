@@ -211,8 +211,9 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     # file handling app
     'karmaworld.apps.notes',
-    'karmaworld.apps.courses',\
+    'karmaworld.apps.courses',
     'karmaworld.apps.document_upload',
+    'karmaworld.apps.users'
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

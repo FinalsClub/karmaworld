@@ -21,6 +21,7 @@ from oauth2client.client import Credentials
 from taggit.managers import TaggableManager
 
 from karmaworld.apps.courses.models import Course
+from karmaworld.apps.users.models import KarmaUser
 
 try:
     from secrets.drive import GOOGLE_USER
@@ -49,8 +50,9 @@ class Document(models.Model):
     slug            = models.SlugField(max_length=255, null=True)
 
     # metadata relevant to the Upload process
-    ip      = models.IPAddressField(blank=True, null=True,
-                help_text=u"IP address of the uploader")
+    user            = models.ForeignKey('users.KarmaUser', null=True)
+    ip              = models.IPAddressField(blank=True, null=True,
+                        help_text=u"IP address of the uploader")
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
 
 
@@ -60,7 +62,7 @@ class Document(models.Model):
 
     fp_file = django_filepicker.models.FPFileField(
             upload_to=_choose_upload_to,
-            storage=fs,                 \
+            storage=fs,
             null=True, blank=True,
             help_text=u"An uploaded file reference from Filepicker.io")
     mimetype = models.CharField(max_length=255, blank=True, null=True)

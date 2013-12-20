@@ -25,12 +25,12 @@
     <div class="small-10 small-offset-1 columns">
       <div id="forms_container">
       </div>
-      <div id="success" style="display: none;">
-          <p>Thank you for sharing:</p>
-          <ul id="uploaded_files">
-          </ul>
-          <p>Your files are being processed and should be viewable within a few minutes.</p>
-          <p>If you'd like to share again, please <a href="">click here</a>.</p>
+      <div id="success" class="hide">
+        <p>Thank you for sharing:</p>
+        <ul id="uploaded_files">
+        </ul>
+        <p>Your files are being processed and should be viewable within a few minutes.</p>
+        <p>If you'd like to share again, please <a href="">click here</a>.</p>
       </div>
     </div>
 
@@ -63,9 +63,24 @@
       </form>
     </div>
   </div>
-  <div class="small-8 small-offset-3 columns large-2">
-    <div id="save-btn" style="display:none">
-      <i class=icon-save></i> Save
+  <div id="save-btn-wrapper" class="hide row">
+    <div class="small-10 small-offset-1 columns">
+        <div class="row" style="display: inline;">
+          <form class="inline-form" method="POST" action="{% url 'upload_post' %}">
+            <div class="small-11 large-6 columns">
+                <legend>Your Email Address (Optional)</legend>
+                <input type="text" class="intext" id="id_email" name="email"
+                      placeholder="">
+              </div>
+          </form>
+        </div>
+        <div class="row">
+          <div class="small-8 large-6 columns">
+            <div id="save-btn" class="action-btn">
+              <i class=icon-save></i> Save
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 
@@ -102,8 +117,8 @@
             console.log($(this).parent().parent());
             $(this).parent().parent().remove();
         });
-        
-        document.getElementById('save-btn').style.display = 'inline';
+
+        $('#save-btn-wrapper').show();
       }
 
       $('#save-btn').on('click', function(e){
@@ -116,6 +131,7 @@
             tags = $(el).find('.taggit-tags').val();
             course = $(el).find('.course_id').val();
             csrf = $(el).find('.csrf').val();
+            email = $('#id_email').val();
             mimetype = $(el).find('.mimetype').val();
 
             $.post('{% url 'upload_post' %}', {
@@ -124,7 +140,8 @@
               'tags': tags,
               'course': course,
               'csrfmiddlewaretoken': csrf,
-              'mimetype': mimetype
+              'mimetype': mimetype,
+              'email': email
             }, function(data){
               if (data === 'success') {
                 // For multiple uploads, we may end up clearing and re-
@@ -135,7 +152,7 @@
                   $('#uploaded_files').append($('<li>', {text: uploaded_files[i]}));
                 }
                 $('#success').show();
-                document.getElementById('save-btn').style.display = 'none';
+                $('#save-btn-wrapper').show();
                 $('#forms_container .inline-form').remove();
                 _gat._getTracker()._trackEvent('upload', 'upload form submitted');
                 setTimeout(function(){
