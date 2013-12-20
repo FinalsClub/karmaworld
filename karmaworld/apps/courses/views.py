@@ -83,7 +83,7 @@ class AboutView(TemplateView):
     def get_context_data(self, **kwargs):
         """ get the list of schools with the most files for leaderboard """
         context = { 'params': kwargs,
-                    'schools': School.objects.all()[:3] }
+                    'schools': School.objects.filter(file_count__gt=0).order_by('name') }
         return context
 
 
