@@ -7,6 +7,7 @@
     Contains only the minimum for handling files and their representation
 """
 import datetime
+from django.db.models import SET_NULL
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import os
@@ -52,7 +53,7 @@ class Document(models.Model):
     slug            = models.SlugField(max_length=255, null=True)
 
     # metadata relevant to the Upload process
-    user            = models.ForeignKey('users.KarmaUser', null=True)
+    user            = models.ForeignKey('users.KarmaUser', null=True, on_delete=SET_NULL)
     ip              = models.IPAddressField(blank=True, null=True,
                         help_text=u"IP address of the uploader")
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
