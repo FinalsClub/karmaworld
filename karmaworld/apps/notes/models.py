@@ -7,6 +7,9 @@
     Contains only the minimum for handling files and their representation
 """
 import datetime
+from django.db.models import SET_NULL
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 import os
 import urllib
 
@@ -21,6 +24,7 @@ from oauth2client.client import Credentials
 from taggit.managers import TaggableManager
 
 from karmaworld.apps.courses.models import Course
+from karmaworld.apps.users.models import KarmaUser
 
 try:
     from secrets.drive import GOOGLE_USER
@@ -49,8 +53,9 @@ class Document(models.Model):
     slug            = models.SlugField(max_length=255, null=True)
 
     # metadata relevant to the Upload process
-    ip      = models.IPAddressField(blank=True, null=True,
-                help_text=u"IP address of the uploader")
+    user            = models.ForeignKey('users.KarmaUser', null=True, on_delete=SET_NULL)
+    ip              = models.IPAddressField(blank=True, null=True,
+                        help_text=u"IP address of the uploader")
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
 
 
@@ -60,7 +65,7 @@ class Document(models.Model):
 
     fp_file = django_filepicker.models.FPFileField(
             upload_to=_choose_upload_to,
-            storage=fs,                 \
+            storage=fs,
             null=True, blank=True,
             help_text=u"An uploaded file reference from Filepicker.io")
     mimetype = models.CharField(max_length=255, blank=True, null=True)
@@ -199,7 +204,7 @@ class Note(Document):
         if a_tags > 1:
             #apply the add attribute function
             map(add_attribute_target, a_tags)
-            self.html = _html
+            self.html = tostring(_html)
             if save:
                 self.save()
             return True, len(a_tags)
@@ -214,6 +219,20 @@ class Note(Document):
         if self.uploaded_at and self.uploaded_at > self.course.updated_at:
             self._update_parent_updated_at()
         super(Note, self).save(*args, **kwargs)
+
+
+def update_note_counts(note_instance):
+    note_instance.course.update_note_count()
+    note_instance.course.school.update_note_count()
+
+@receiver(post_save, sender=Note, weak=False)
+def note_receiver(sender, **kwargs):
+    if kwargs['created']:
+        update_note_counts(kwargs['instance'])
+
+@receiver(post_delete, sender=Note, weak=False)
+def note_receiver(sender, **kwargs):
+    update_note_counts(kwargs['instance'])
 
 
 class DriveAuth(models.Model):

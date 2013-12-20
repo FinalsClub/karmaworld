@@ -5,12 +5,9 @@
 import datetime
 
 from django.http import HttpResponse
-from django.views.generic import CreateView
-from django.views.generic.edit import ProcessFormView
-from django.views.generic.edit import ModelFormMixin
-
-from karmaworld.apps.document_upload.models import RawDocument
 from karmaworld.apps.document_upload.forms import RawDocumentForm
+from karmaworld.apps.users.models import KarmaUser
+
 
 def save_fp_upload(request):
     """ ajax endpoint for saving a FilePicker uploaded file form
@@ -27,6 +24,8 @@ def save_fp_upload(request):
         delta = time_b - time_a
         raw_document.ip = request.META['REMOTE_ADDR']
         raw_document.uploaded_at = datetime.datetime.utcnow()
+        if request.POST['email'] != '':
+            raw_document.user = KarmaUser.objects.get_or_create(email=request.POST['email'])[0]
         time_c = datetime.datetime.now()
         # note that .save() has the side-effect of kicking of a celery processing task
         raw_document.save()
