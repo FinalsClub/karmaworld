@@ -199,7 +199,7 @@ class Note(Document):
         if a_tags > 1:
             #apply the add attribute function
             map(add_attribute_target, a_tags)
-            self.html = _html
+            self.html = tostring(_html)
             if save:
                 self.save()
             return True, len(a_tags)
