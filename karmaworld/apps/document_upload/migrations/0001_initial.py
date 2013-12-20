@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('courses', '0001_initial'),
+    )
+
     def forwards(self, orm):
         # Adding model 'RawDocument'
         db.create_table('document_upload_rawdocument', (

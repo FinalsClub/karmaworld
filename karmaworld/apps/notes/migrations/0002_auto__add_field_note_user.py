@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('users', '0001_initial'),
+    )
+
     def forwards(self, orm):
         # Adding field 'Note.user'
         db.add_column('notes_note', 'user',
