@@ -152,7 +152,7 @@
                   $('#uploaded_files').append($('<li>', {text: uploaded_files[i]}));
                 }
                 $('#success').show();
-                $('#save-btn-wrapper').show();
+                $('#save-btn-wrapper').hide();
                 $('#forms_container .inline-form').remove();
                 _gat._getTracker()._trackEvent('upload', 'upload form submitted');
                 setTimeout(function(){
