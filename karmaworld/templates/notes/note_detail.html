@@ -44,7 +44,7 @@
         <div class="row">
           <div class="small-12 columns">
             <iframe
-                style="border:none; width:100%; min-height: 700px; margins:auto" 
+                style="border:none; width:100%; min-height: 700px; margins: auto;"
                 id="noteframe"
                 src="/pdfview/{{ note.id }}"
                 onload="autoResize('noteframe')"> </iframe>
@@ -59,10 +59,10 @@
       {% else %} {# if pdf #}
 
       <div class="row">
-        <div class="small-12 small-centered columns medium-12 large-10 body_copy">
+        <div class="small-12 small-centered columns medium-12 large-12 body_copy">
           {% if note.html %}
             <div class="note-text">
-              <iframe style="border:none; width:100%;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')"> </iframe>
+              <iframe style="border:none; width:100%; min-height: 700px;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')"> </iframe>
             </div> <!-- .note-text -->
 
           {% else %} {# note.html #}

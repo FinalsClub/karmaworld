@@ -2,6 +2,11 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 
+import datetime
+import os
+import subprocess
+import tempfile
+import uuid
 import magic
 import re
 import json
@@ -10,12 +15,12 @@ import time
 import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaInMemoryUpload
-from django.core.files.base import ContentFile
 from oauth2client.client import SignedJwtAssertionCredentials
 
 import karmaworld.secret.drive as drive
 
 
+PDF_MIMETYPE = 'application/pdf'
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
 
 
@@ -63,6 +68,33 @@ def build_api_service():
 
     return build('drive', 'v2', http=credentials.authorize(httplib2.Http()))
 
+def pdf2html(content):
+    pdf_file = tempfile.NamedTemporaryFile()
+    pdf_file.write(content)
+    pdf_file.flush()
+    tmp_dir = tempfile.gettempdir()
+    html_file_name = uuid.uuid4().hex
+    html_file_path = tmp_dir + os.sep + html_file_name
+
+    command = ['pdf2htmlEX', pdf_file.name, html_file_name]
+    call = subprocess.Popen(command, shell=False, cwd=tmp_dir)
+    call.wait()
+    if call.returncode != 0:
+        raise ValueError("PDF file could not be processed")
+
+    try:
+        html_file = open(html_file_path, 'r')
+        html = html_file.read()
+        html_file.close()
+        os.remove(html_file_path)
+    except IOError, e:
+        raise ValueError("PDF file could not be processed")
+
+    if len(html) == 0:
+        raise ValueError("PDF file results in empty HTML file")
+
+    return html
+
 
 def download_from_gdrive(service, file_dict, extension=None, mimetype=None):
     """ Take in a gdrive service, file_dict from upload, and either an
@@ -79,12 +111,14 @@ def download_from_gdrive(service, file_dict, extension=None, mimetype=None):
     if extension in ['.ppt', 'pptx'] \
         or mimetype in PPT_MIMETYPES:
         download_urls['pdf'] = file_dict[u'exportLinks']['application/pdf']
+    elif mimetype == PDF_MIMETYPE:
+        pass
     else:
         download_urls['html'] = file_dict[u'exportLinks']['text/html']
 
     content_dict = {}
     for download_type, download_url in download_urls.items():
-        print "\n%s -- %s" % (download_type, download_urls)
+        print "\n%s -- %s" % (download_type, download_url)
         resp, content = service._http.request(download_url)
 
         if resp.status in [200]:
@@ -137,7 +171,7 @@ def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
 
 
 def convert_raw_document(raw_document):
-    """ Upload a raw document to google drive and get a Note back """
+    """ Upload a raw document to google drive and get a Note back"""
     fp_file = raw_document.get_file()
 
     # extract some properties from the document metadata
@@ -151,11 +185,14 @@ def convert_raw_document(raw_document):
     if raw_document.mimetype == 'text/enml':
         raw_document.mimetype = 'text/html'
 
+    original_content = fp_file.read()
+
     # Include mimetype parameter if there is one to include
     extra_flags = {'mimetype': raw_document.mimetype} if raw_document.mimetype \
                   else {}
-    media = MediaInMemoryUpload(fp_file.read(), chunksize=1024*1024, \
+    media = MediaInMemoryUpload(original_content, chunksize=1024*1024, \
                                 resumable=True, **extra_flags)
+
 
     service = build_api_service()
 
@@ -165,18 +202,19 @@ def convert_raw_document(raw_document):
     # download from google drive
     content_dict = download_from_gdrive(service, file_dict, mimetype=mimetype)
 
+
+
     # this should have already happened, lets see why it hasn't
     raw_document.is_processed = True
     raw_document.save()
 
     note = raw_document.convert_to_note()
 
-    if mimetype == 'application/pdf':
-        note.file_type = 'pdf'
+    if raw_document.mimetype == PDF_MIMETYPE:
+        note.html = pdf2html(original_content)
 
-    elif mimetype in PPT_MIMETYPES:
-        note.file_type = 'ppt'
-        note.pdf_file.save(filename + '.pdf', ContentFile(content_dict['pdf']))
+    elif raw_document.mimetype in PPT_MIMETYPES:
+        note.html = pdf2html(content_dict['pdf'])
 
     elif 'html' in content_dict and content_dict['html']:
         note.html = content_dict['html']

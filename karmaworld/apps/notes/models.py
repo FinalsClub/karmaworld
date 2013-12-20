@@ -136,20 +136,20 @@ class Note(Document):
         (UNKNOWN_FILE, 'Unknown file'),
     )
 
-    file_type       = models.CharField(max_length=15,  \
-                            choices=FILE_TYPE_CHOICES, \
-                            default=UNKNOWN_FILE,      \
+    file_type       = models.CharField(max_length=15,
+                            choices=FILE_TYPE_CHOICES,
+                            default=UNKNOWN_FILE,
                             blank=True, null=True)
 
     # Upload files to MEDIA_ROOT/notes/YEAR/MONTH/DAY, 2012/10/30/filename
-    pdf_file       = models.FileField(                  \
-                            storage=fs,                 \
-                            upload_to="notes/%Y/%m/%d/",\
+    pdf_file       = models.FileField(
+                            storage=fs,
+                            upload_to="notes/%Y/%m/%d/",
                             blank=True, null=True)
     # No longer keeping a local copy backed by django
-    note_file       = models.FileField(                 \
-                            storage=fs,                 \
-                            upload_to="notes/%Y/%m/%d/",\
+    note_file       = models.FileField(
+                            storage=fs,
+                            upload_to="notes/%Y/%m/%d/",
                             blank=True, null=True)
 
     # Google Drive URLs
