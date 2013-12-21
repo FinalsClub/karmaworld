@@ -74,13 +74,15 @@ def pdf2html(content):
     pdf_file.flush()
     tmp_dir = tempfile.gettempdir()
     html_file_name = uuid.uuid4().hex
-    html_file_path = tmp_dir + os.sep + html_file_name
+    html_file_path = os.path.join(tmp_dir, html_file_name)
 
     command = ['pdf2htmlEX', pdf_file.name, html_file_name]
     call = subprocess.Popen(command, shell=False, cwd=tmp_dir)
     call.wait()
     if call.returncode != 0:
         raise ValueError("PDF file could not be processed")
+
+    pdf_file.close()
 
     try:
         html_file = open(html_file_path, 'r')
