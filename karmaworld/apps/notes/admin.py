@@ -5,7 +5,6 @@
 
 from django.contrib import admin
 
-from karmaworld.apps.notes.models import DriveAuth
 from karmaworld.apps.notes.models import Note
 
 class NoteAdmin(admin.ModelAdmin):
@@ -16,5 +15,4 @@ class NoteAdmin(admin.ModelAdmin):
         'fk': ['course']
     }
 
-admin.site.register(DriveAuth)
 admin.site.register(Note, NoteAdmin)

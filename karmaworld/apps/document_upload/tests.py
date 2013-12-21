@@ -27,16 +27,6 @@ class ConversionTest(TestCase):
         self.course = Course(name='Intro to Advanced Study', school=self.school)
         self.course.save()
         self.client = Client()
-        self.setUpGDriveAuth()
-
-    def setUpGDriveAuth(self):
-        try:
-            f = open(CREDENTIALS_PATH)
-        except IOError:
-            raise RuntimeError("Could not find {c}, did you create it? See docs/source/gdrive.rst".format(c=CREDENTIALS_PATH))
-        creds_str = f.read()
-        f.close()
-        DriveAuth(credentials=creds_str).save()
 
     def doConversionForPost(self, post):
         self.assertEqual(Note.objects.count(), 0)

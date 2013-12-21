@@ -11,7 +11,6 @@ from nose.tools import ok_
 from nose.tools import assert_is_none
 
 from karmaworld.apps.notes.models import Note
-from karmaworld.apps.notes.models import DriveAuth
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 
@@ -103,48 +102,3 @@ class TestNoteUrl(BaseNote):
         self.note.slug = None
         url = self.expected_url_prefix + str(self.note.id)
         eq_(self.note.get_absolute_url(), url)
-
-
-class BaseDriveAuth(object):
-    google_user = u'foobie@blet.ch'
-    json_str = """
-    {"_module": "oauth2client.client", "_class": "OAuth2Credentials", "access_token": "asdfasdfasdfasdfasdfasdfasdf", "token_uri": "https://accounts.google.com/o/oauth2/token", "invalid": false, "client_id": "9999999999999.apps.googleusercontent.com", "id_token": {"aud": "9999999999999.apps.googleusercontent.com", "cid": "9999999999999.apps.googleusercontent.com", "iss": "accounts.google.com", "email": "foobie@blet.ch", "exp": 1354832924, "iat": 1354829024, "token_hash": "xXxXxXyyYyYyYyYyYy", "id": "444444444444444444444", "hd": "karmanotes.org", "verified_email": "true"}, "client_secret": "7&7&&7&7&7&7&&&&&&&&&&&(", "token_expiry": "2013-02-04T23:46:47Z", "refresh_token": "qweasdzxcrtyfghvbnuiojklm,.", "user_agent": null}
-    """
-
-    def setup(self):
-        self.drive_auth = DriveAuth()
-        self.drive_auth.email = self.google_user
-        self.drive_auth.credentials = self.json_str
-        self.drive_auth.save()
-
-    def teardown(self):
-        self.drive_auth.delete()
-
-
-
-class MockCred(object):
-    id_token = {'email': u'Mock@email.me'}
-
-    def to_json(self):
-        return "Yo, this is the json you wanted, not really"
-
-
-class TestDriveAuth(BaseDriveAuth):
-
-    def test_drive_auth_get(self):
-        """ Test getting via DriveAuth.get() staticmethod """
-        drive_auth = DriveAuth.get(email=self.google_user)
-        eq_(drive_auth, self.drive_auth)
-
-class TestDriveAuthStore(BaseDriveAuth):
-
-    def test_drive_auth_store(self):
-        cred = MockCred() # create a mock credentials object
-        self.drive_auth.store(cred) # use that to override the drive auth object
-        # The drive auth email should have been reset based on the MockCred value
-        ok_(self.drive_auth.email != self.google_user, 
-            "DriveAuth.email should have been reset based on the MockCred \
-            passed to DriveAuth.store()")
-        eq_(self.drive_auth.email, u'Mock@email.me')
-
-

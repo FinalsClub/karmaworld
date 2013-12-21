@@ -233,36 +233,3 @@ def note_receiver(sender, **kwargs):
 @receiver(post_delete, sender=Note, weak=False)
 def note_receiver(sender, **kwargs):
     update_note_counts(kwargs['instance'])
-
-
-class DriveAuth(models.Model):
-    """ stored google drive authentication and refresh token
-        used for interacting with google drive """
-
-    email = models.EmailField(default=GOOGLE_USER)
-    credentials = models.TextField() # JSON of Oauth2Credential object
-    stored_at = models.DateTimeField(auto_now=True)
-
-
-    @staticmethod
-    def get(email=GOOGLE_USER):
-        """ Staticmethod for getting the singleton DriveAuth object """
-        # FIXME: this is untested
-        return DriveAuth.objects.filter(email=email).reverse()[0]
-
-
-    def store(self, creds):
-        """ Transform an existing credentials object to a db serialized """
-        self.email = creds.id_token['email']
-        self.credentials = creds.to_json()
-        self.save()
-
-
-    def transform_to_cred(self):
-        """ take stored credentials and produce a Credentials object """
-        return Credentials.new_from_json(self.credentials)
-
-
-    def __unicode__(self):
-        return u'Gdrive auth for %s created/updated at %s' % \
-                    (self.email, self.stored_at)
