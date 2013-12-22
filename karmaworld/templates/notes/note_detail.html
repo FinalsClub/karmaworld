@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load url from future %}
 
+{% block title %}
+  {{ note.name }}
+{% endblock %}
+
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
 {% endblock %}
@@ -12,28 +16,51 @@
 {% block content %}
   <section id="note_content">
 
-    <div id="course_header"> 
+    <div id="note_header" class="hero_gradient_bar">
       <div class="row">
-        <div id="breadcrumbs" class="small-12 hide-for-small columns ">
-          <ul class="breadcrumbs">
-            <li><a href="/">Home</a></li>
-            <li class="unavailable"><a>{{ note.course.school.name }}</a></li>
-            <li><a href="{{ note.course.get_absolute_url }}">{{ note.course.name }}</a></li>
-            <li class="current"><a href="{{ note.get_absolute_url }}">{{ note.name }}</a></li>
-          </ul>
-
-        </div><!-- /course_subhead -->
+        <div id="note_back_to_course" class="twelve columns">
+          <a href="{{note.course.get_absolute_url}}">
+            <i class="fa fa-arrow-left"></i>&nbsp;back to {{ note.course.name }}
+          </a>
+        </div>
       </div>
 
       <div class="row">
-        <div id="course_name" class="small-12 columns">
+        <div id="note_name" class="twelve columns">
           {{ note.name }}
+          <hr/>
         </div><!-- /note_name -->
       </div>
 
-      <div class="row">
-        <div class="small-10 small-centered columns small-offset-1 center" style="padding-bottom: 20px;">
-          <hr/>
+      <div id="social-buttons" class="row">
+        <div class="small-4 columns small-centered show-for-medium-up">
+          <div class="row">
+            <div class="small-4 columns center">
+              <script type="text/javascript" src="http://www.reddit.com/static/button/button2.js"></script>
+            </div>
+            <div class="small-4 columns center">
+              <div class="g-plusone"
+                   data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}"
+                   data-size="tall"
+                   data-annotation="bubble"
+                   data-width="25"></div>
+              </div>
+              <div class="small-4 columns center">
+                <div class="fb-like"
+                     data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}"
+                     data-width="12"
+                     data-layout="box_count"
+                     data-action="recommend"
+                     data-show-faces="false"
+                     data-share="true"></div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /note_actions -->
+      </div>
+
+      <div class="row zoom-buttons">
+        <div class="small-2 small-centered columns center" style="padding-bottom: 20px;">
           <i id="minus-btn" class="fa fa-search-minus fa-2x" style="margin-right: 10px; cursor: pointer"></i>
           <i id="plus-btn" class="fa fa-search-plus fa-2x" style="cursor: pointer"></i>
         </div>
@@ -64,7 +91,7 @@
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
           {% if note.html %}
             <div class="note-text">
-              <iframe style="border:none; width:100%; min-height: 700px;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')"> </iframe>
+              <iframe style="border:none; width:100%; min-height: 1000px;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')"> </iframe>
             </div> <!-- .note-text -->
 
           {% else %} {# note.html #}
@@ -83,29 +110,6 @@
 
   </section><!--/note_content-->
 
-  <div id="social-buttons" class="show-for-medium-up" style="position: fixed; right: 0px; bottom: 0px;">
-    <div class="social-button">
-      <script type="text/javascript" src="http://www.reddit.com/static/button/button2.js"></script>
-    </div>
-    <div class="social-button">
-      <div class="g-plusone"
-           data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}"
-           data-size="tall"
-           data-annotation="bubble"
-           data-width="25"
-           data-align="left"
-           expandTo="left"></div>
-      </div>
-    <div class="social-button">
-      <div class="fb-like"
-           data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}"
-           data-width="12"
-           data-layout="box_count"
-           data-action="recommend"
-           data-show-faces="false"
-           data-share="true"></div>
-    </div>
-  </div>
 {% endblock %}
 
 

@@ -3,6 +3,12 @@
   padding-top: 46px;
 }
 
+#course_header
+{
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
 #course_subhead
 {
   font-family: "MuseoSans-900";

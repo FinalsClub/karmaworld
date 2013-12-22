@@ -12,6 +12,7 @@
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/course.css">
 {% endblock %}
 
 
@@ -23,20 +24,15 @@
 {% block content %}
   <section id="course_content">
 
-    <div id="course_header">
-
+    <div id="course_header" class="hero_gradient_bar">
       <div class="row">
-        <div id="breadcrumbs" class="small-12 hide-for-small columns">
-          <ul class="breadcrumbs">
-            <li><a href="/">Home</a></li>
-            <li class="unavailable"><a href="#">{{ course.school.name }}</a></li>
-            <li class="current"><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></li>
-          </ul>
+        <div id="course_subhead" class="twelve columns">
+          course
         </div><!-- /course_subhead -->
       </div>
 
       <div class="row">
-        <div id="course_name" class="small-12 columns">
+        <div id="note_name" class="small-12 columns">
           {% if course.url %}
           <a rel="nofollow" href="{{ course.url }}">
             {{ course.name }}
@@ -48,50 +44,51 @@
       </div>
 
       <div class="row">
-        <div id="course_meta" class="small-12 columns">
-          <div class="course_details">
-            {{ course.instructor_name }} | {{ course.school.name }}
+        <div id="course_meta" class="twelve columns">
+          <div class="activity_details_context">
+            {{ course.instructor_name }} // {{ course.school.name }}
           </div><!-- /activity_details_context -->
         </div><!-- /course_meta -->
       </div>
-
-      <div class="row">
-        <div class="small-10 columns small-offset-1"> <hr/> </div>
-      </div>
-
-
-      {% include 'partial/filepicker.html' %}
-
-
-      {% if request.GET.thankyou == '' %}
-      <div id=thankyou-wrapper class="row">
-        <div class="small-8 columns small-offset-2">
-          <div id="thankyou">
-            <p>
-              Thank you for uploading
-              <a href="{{ request.GET.url }}">{{ request.GET.name }}</a>.
-              Share another or take a
-              <a href="https://docs.google.com/a/finalsclub.org/spreadsheet/viewform?usp=sharing&formkey=dFg1WnI2cUVfckZyYnJpZ0ExQmUxSnc6MQ#gid=0" target="_blank">quick survey</a> to help us make KarmaNotes even better.
-            </p>
-            <script>
-            // when showing the thankyou button, flash it orangered first
-            $(function() {
-              $("#thankyou").effect("highlight", {'color': '#f05a28'}, 3000);
-            });
-            </script>
-
-          </div><!-- /thankyou -->
-        </div>
-      </div> <!-- .row -->
-      {% endif %}
-
-
-      <div class="row">
-        <div class="small-10 columns small-offset-1"> <hr/> </div>
-      </div>
-
-
     </div><!-- /course_header -->
+
+
+
+    <div class="row">
+      <div class="small-10 columns small-offset-1"> <hr/> </div>
+    </div>
+
+
+    {% include 'partial/filepicker.html' %}
+
+
+    {% if request.GET.thankyou == '' %}
+    <div id=thankyou-wrapper class="row">
+      <div class="small-8 columns small-offset-2">
+        <div id="thankyou">
+          <p>
+            Thank you for uploading
+            <a href="{{ request.GET.url }}">{{ request.GET.name }}</a>.
+            Share another or take a
+            <a href="https://docs.google.com/a/finalsclub.org/spreadsheet/viewform?usp=sharing&formkey=dFg1WnI2cUVfckZyYnJpZ0ExQmUxSnc6MQ#gid=0" target="_blank">quick survey</a> to help us make KarmaNotes even better.
+          </p>
+          <script>
+          // when showing the thankyou button, flash it orangered first
+          $(function() {
+            $("#thankyou").effect("highlight", {'color': '#f05a28'}, 3000);
+          });
+          </script>
+
+        </div><!-- /thankyou -->
+      </div>
+    </div> <!-- .row -->
+    {% endif %}
+
+
+    <div class="row">
+      <div class="small-10 columns small-offset-1"> <hr/> </div>
+    </div>
+
 
 
     <div id="course_container">
@@ -103,7 +100,6 @@
           {% endfor %}
         </div>
       </div>
-
     </div><!-- /course_container -->
 
     {% comment %}

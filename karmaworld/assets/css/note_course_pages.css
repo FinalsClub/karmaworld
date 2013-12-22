@@ -1,5 +1,10 @@
 /* NOTE PAGE */
 
+#note_header
+{
+  margin-bottom: 20px;
+}
+
 #note_content, #course_content, #school_content
 {
   padding-top: 46px;
@@ -65,6 +70,10 @@
 #note_container
 {
   padding-bottom: 45px;
+}
+
+#social-buttons {
+  padding-bottom: 10px;
 }
 
 /* COURSES */

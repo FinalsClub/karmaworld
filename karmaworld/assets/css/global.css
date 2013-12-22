@@ -450,8 +450,10 @@ a.activity_target:hover
 
 .activity_details_context, .activity_details_context a
 {
-  font-size: 12px;
-  line-height: 1em;
+  font-family: "MuseoSlab-900";
+  font-size: 11px;
+  text-transform: uppercase;
+  line-height: 200%;
 }
 
 .activity_details_callout
@@ -832,10 +834,4 @@ legend
 
 .inline-form {
   border-bottom: 1px dashed #666;
-}
-
-/* Social buttons */
-.social-button {
-  margin: 10px 5px 10px 5px;
-  float: right;
 }
