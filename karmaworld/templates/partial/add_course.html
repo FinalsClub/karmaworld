@@ -24,12 +24,12 @@
           School
          {% if course_form.school.errors %}
           <span style="color:red">
-          * there was an error with this field
+            Please select a school from the drop-down
           </span>
          {% endif %}
         </legend>
         <div>
-          <input id="str_school" class="" type="text" name="str_school"/>
+          <input id="str_school" class="" type="text" name="str_school" placeholder="Select a school"/>
           <input id="id_school" name="school" type='hidden'/>
         </div>
       </div>

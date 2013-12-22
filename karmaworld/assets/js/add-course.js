@@ -19,20 +19,7 @@ $(function() {
     }
   }
 
-  // Set up the "Add Course" button at bottom
-  // of page
-  $('#add-course-btn').click(function() {
-    // Show the add a course form
-    $('#add-course-form').show();
-    // Hide the add a course button
-    $('#add-course-btn').hide();
-    // Put focus in first input field
-    $('#str_school').focus();
-  });
-
-  // Set up the "Add Course" button in the
-  // page header
-  $('#add_course_header_button').click(function() {
+  addCourse = function() {
     // Show the add a course form
     $('#add-course-form').show();
     // Hide the add a course button
@@ -41,7 +28,15 @@ $(function() {
     $('#add-course-divider').ScrollTo();
     // Put focus in first input field
     $('#str_school').focus();
-  });
+  };
+
+  // Set up the "Add Course" button at bottom
+  // of page
+  $('#add-course-btn').click(addCourse);
+
+  // Set up the "Add Course" button in the
+  // page header
+  $('#add_course_header_button').click(addCourse);
 
   // Dismiss on exit x click FIXME
   $(".lightbox_close").click(function() {
