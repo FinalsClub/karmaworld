@@ -9,6 +9,17 @@
   <script src="{{ STATIC_URL }}js/note-iframe.js" ></script>
 {% endblock %}
 
+{% block bodyscripts %}
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=271212543025990";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+{% endblock %}
+
 {% block content %}
   <section id="note_content">
 
@@ -82,4 +93,10 @@
 
 
   </section><!--/note_content-->
+
+    <!--{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}-->
+
+  <div id="facebook" style="position: fixed; right: 10px; bottom: 10px;">
+    <div class="fb-like" data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}" data-width="25" data-layout="box_count" data-action="recommend" data-show-faces="false" data-share="true"></div>
+  </div>
 {% endblock %}
