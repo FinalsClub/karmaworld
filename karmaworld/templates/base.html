@@ -49,11 +49,6 @@
 </head>
 <body>
 
-<!-- block bodyscripts -->
-{% block bodyscripts %}
-{% endblock %}
-<!-- end block bodyscripts -->
-
 <!-- include header -->
 {% include 'header.html' %}
 <!-- end include header -->
@@ -76,6 +71,10 @@
 <!-- Conditionally include opentip -->
 {% endblock opentip %}
 
+<!-- block bodyscripts -->
+{% block bodyscripts %}
+{% endblock %}
+<!-- end block bodyscripts -->
 
 </body>
 </html>

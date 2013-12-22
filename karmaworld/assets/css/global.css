@@ -833,3 +833,9 @@ legend
 .inline-form {
   border-bottom: 1px dashed #666;
 }
+
+/* Social buttons */
+.social-button {
+  margin: 10px 5px 10px 5px;
+  float: right;
+}

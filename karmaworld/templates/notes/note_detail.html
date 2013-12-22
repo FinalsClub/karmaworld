@@ -9,17 +9,6 @@
   <script src="{{ STATIC_URL }}js/note-iframe.js" ></script>
 {% endblock %}
 
-{% block bodyscripts %}
-  <div id="fb-root"></div>
-  <script>(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=271212543025990";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));</script>
-{% endblock %}
-
 {% block content %}
   <section id="note_content">
 
@@ -94,9 +83,49 @@
 
   </section><!--/note_content-->
 
-    <!--{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}-->
-
-  <div id="facebook" style="position: fixed; right: 10px; bottom: 10px;">
-    <div class="fb-like" data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}" data-width="25" data-layout="box_count" data-action="recommend" data-show-faces="false" data-share="true"></div>
+  <div id="social-buttons" class="show-for-medium-up" style="position: fixed; right: 0px; bottom: 0px;">
+    <div class="social-button">
+      <script type="text/javascript" src="http://www.reddit.com/static/button/button2.js"></script>
+    </div>
+    <div class="social-button">
+      <div class="g-plusone"
+           data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}"
+           data-size="tall"
+           data-annotation="bubble"
+           data-width="25"
+           data-align="left"
+           expandTo="left"></div>
+      </div>
+    <div class="social-button">
+      <div class="fb-like"
+           data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}"
+           data-width="12"
+           data-layout="box_count"
+           data-action="recommend"
+           data-show-faces="false"
+           data-share="true"></div>
+    </div>
   </div>
+{% endblock %}
+
+
+{% block bodyscripts %}
+  <!-- for facebook button -->
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=271212543025990";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+
+  <!-- for Google Plus button -->
+  <script type="text/javascript">
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js?onload=onLoadCallback';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 {% endblock %}
