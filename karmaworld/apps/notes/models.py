@@ -169,6 +169,7 @@ class Note(Document):
     is_flagged      = models.BooleanField(default=False)
     is_moderated    = models.BooleanField(default=False)
 
+    tweeted         = models.BooleanField(default=False)
     thanks          = models.PositiveIntegerField(default=0)
 
 
