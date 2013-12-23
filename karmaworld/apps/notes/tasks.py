@@ -43,8 +43,8 @@ def tweet_note():
 
 
 def tweet_string(note):
-    # This url will use 12 or less characters
-    shortener = gdshortener.VGDShortener()
+    # This url will use 13 or less characters
+    shortener = gdshortener.ISGDShortener()
     url = "https://www.karmanotes.org" + \
         note.get_absolute_url()
     short_url = shortener.shorten(url)[0]
@@ -63,7 +63,7 @@ def tweet_string(note):
     # space and colon characters
 
     # 57 characters
-    short_note = note.name[:58]
+    short_note = note.name[:57]
 
     return short_url + " #" + short_school + " " + \
         short_course + ": " + \
