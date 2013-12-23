@@ -40,3 +40,27 @@ function autoResize(id){
     }
   });
 }
+
+$(function() {
+  $("#thank-button").click(function() {
+    event.preventDefault();
+
+    // increment number in page right away
+    var thankNumber = $("#thank-number");
+    thankNumber.text(parseInt(thankNumber.text()) + 1);
+
+    // disable thank button so it can't
+    // be pressed again
+    $(this).hide();
+    $('#thank-button-disabled').show();
+    $(this).unbind('click');
+
+    // tell server that somebody thanked
+    // this note
+    $.ajax({
+      url: note_thank_url,
+      dataType: "json",
+      type: 'POST'
+    });
+  });
+});

@@ -12,7 +12,6 @@
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/course.css">
 {% endblock %}
 
 
@@ -25,12 +24,6 @@
   <section id="course_content">
 
     <div id="course_header" class="hero_gradient_bar">
-      <div class="row">
-        <div id="course_subhead" class="twelve columns">
-          course
-        </div><!-- /course_subhead -->
-      </div>
-
       <div class="row">
         <div id="note_name" class="small-12 columns">
           {% if course.url %}
