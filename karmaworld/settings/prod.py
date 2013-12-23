@@ -102,7 +102,7 @@ CELERY_RESULT_BACKEND = 'amqp'
 CELERYBEAT_SCHEDULE = {
     'tweet-about-notes': {
         'task': 'tweet_note',
-        'schedule': timedelta(minutes-60),
+        'schedule': timedelta(minutes=60),
     },
 }
 
