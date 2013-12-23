@@ -17,4 +17,4 @@ requests
 beautifulsoup4
 pyopenssl
 python-twitter
-pyshorteners
+gdshortener
