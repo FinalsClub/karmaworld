@@ -8,36 +8,36 @@ function autoResize(id){
     newwidth = document.getElementById(id).contentWindow.document .body.scrollWidth;
   }
 
-  document.getElementById(id).height = (newheight+ 10) + "px";
+  document.getElementById(id).height = (newheight + 10) + "px";
   document.getElementById(id).width= (newwidth + 5) + "px";
+}
 
+function setupPdfViewer() {
+  var pdfViewer = document.getElementById("noteframe").contentWindow.pdf2htmlEX.defaultViewer;
 
-  var currFFZoom = 1;
-  var currIEZoom = 100;
-  var frameBody = $('#noteframe').contents().find('body');
-
-  $('#plus-btn').on('click',function(){
-    if ($.browser.mozilla){
-      var step = 0.25;
-      currFFZoom += step;
-      frameBody.css('MozTransform','scale(' + currFFZoom + ')');
-    } else {
-      var step = 25;
-      currIEZoom += step;
-      frameBody.css('zoom', ' ' + currIEZoom + '%');
-    }
+  $('#plus-btn').click(function (){
+    pdfViewer.rescale(1.20, true, [0,0]);
   });
 
-  $('#minus-btn').on('click',function(){
-    if ($.browser.mozilla){
-      var step = 0.25;
-      currFFZoom -= step;
-      frameBody.css('MozTransform','scale(' + currFFZoom + ')');
-    } else {
-      var step = 25;
-      currIEZoom -= step;
-      frameBody.css('zoom', ' ' + currIEZoom + '%');
+  $('#minus-btn').click(function (){
+    pdfViewer.rescale(0.80, true, [0,0]);
+  });
+
+  if ($(pdfViewer.sidebar).hasClass('opened')) {
+    // only show outline on large screens
+    var body = $('body');
+    if (parseInt($(body.width()).toEm({scope: body})) < 64) {
+      $(pdfViewer.sidebar).removeClass('opened');
     }
+  }
+
+  $('#outline-btn').click(function() {
+    $(pdfViewer.sidebar).toggleClass('opened');
+  });
+
+  $('#scroll-to').change(function() {
+    page = parseInt($(this).val());
+    pdfViewer.scroll_to(page, [0,0]);
   });
 }
 

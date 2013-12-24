@@ -16,6 +16,7 @@
   </script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
   <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
+  <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -31,7 +32,7 @@
       </div>
 
       <div class="row">
-        <div id="note_name" class="twelve columns">
+        <div id="note_name" class="small-12 columns">
           {{ note.name }}
         </div><!-- /note_name -->
       </div>
@@ -67,8 +68,15 @@
 
       </div><!-- /course_header -->
 
-      {% if zoom %}
-      <div id="zoom-buttons" class="row">
+      {% if pdf_controls %}
+      <div id="zoom-buttons" class="row show-for-large-up">
+        <div id="outline-btn-wrapper" class="small-1 columns hide show-for-large-up">
+          <i id="outline-btn" class="zoom-button fa fa-bars fa-2x"></i>
+        </div>
+        <div class="small-4 columns">
+          <span>Jump to page:
+          <input id="scroll-to" type="text" style="width: 3em; display: inline" /></span>
+        </div>
         <div class="small-2 small-centered columns center">
           <i id="minus-btn" class="zoom-button fa fa-search-minus fa-2x"></i>
           <i id="plus-btn" class="zoom-button fa fa-search-plus fa-2x"></i>
@@ -101,7 +109,8 @@
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
           {% if note.html %}
             <div class="note-text">
-              <iframe style="border:none; width:100%; min-height: 1000px;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')"> </iframe>
+              <iframe style="border:none; width:100%; min-height: 1000px;" id="noteframe" src="/raw/{{ note.id }}"
+                      onload="autoResize('noteframe'); {% if pdf_controls %} setupPdfViewer(); {% endif %}"> </iframe>
             </div> <!-- .note-text -->
 
           {% else %} {# note.html #}

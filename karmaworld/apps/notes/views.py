@@ -53,9 +53,9 @@ class NoteDetailView(DetailView):
         kwargs['pdf'] = is_pdf(self)
         kwargs['ppt'] = is_ppt(self)
 
-        if self.object.mimetype and \
-            self.object.mimetype in ZOOM_MIMETYPES:
-            kwargs['zoom'] = True
+
+        if self.object.mimetype == 'application/pdf':
+            kwargs['pdf_controls'] = True
 
         return super(NoteDetailView, self).get_context_data(**kwargs)
 
