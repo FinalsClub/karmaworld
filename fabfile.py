@@ -9,12 +9,11 @@ from fabric.api import cd, env, lcd, prefix, run, sudo, task, local, settings
 from fabric.contrib import files
 
 ######### GLOBAL
-env.user = 'vagrant'
-env.group = 'vagrant'
+env.group = 'www-data'
 env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
-env.repo_root = '~/karmaworld'
+env.repo_root = '~/karmaworld' # transient setting for VMs only
 env.proj_root = '/var/www/karmaworld'
-env.branch = 'prod'
+env.branch = 'prod' # only used for supervisor conf two lines below. cleanup?
 env.code_root = env.proj_root
 env.env_root = env.proj_root
 env.supervisor_conf = '{0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch)
@@ -149,10 +148,10 @@ def stop_supervisord():
 @task
 def restart_supervisord():
     """
-    Restarts supervisord
+    Restarts supervisord, also making sure to load in new config data.
     """
-    stop_supervisord()
-    start_supervisord()
+    virtenv_exec('supervisorctl -c {0} update'.format(env.supervisor_conf))
+    virtenv_exec('supervisorctl -c {0} restart all'.format(env.supervisor_conf))
 
 
 def supervisorctl(action, process):
@@ -246,7 +245,7 @@ def file_setup():
       # touch a file and change ownership if needed
       if 'log' in option and not files.exists(filepath):
           sudo('touch {0}'.format(filepath))
-          sudo('chown {0}:{1} {2}'.format(env.user, env.group, filepath))
+          sudo('chown {0}:{1} {2}'.format(env.local_user, env.group, filepath))
 
 @task
 def check_secrets():
