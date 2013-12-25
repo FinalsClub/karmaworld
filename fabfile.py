@@ -21,60 +21,6 @@ env.usde_csv = '{0}/confs/acceditation.csv'.format(env.code_root)
 
 env.use_ssh_config = True
 
-######## Define host(s)
-def here():
-    """
-    Connection information for the local machine
-    """
-    def _custom_local(command):
-        prefixed_command = '/bin/bash -l -i -c "%s"' % command
-        return local(prefixed_command)
-
-    # This is required for the same reason as above
-    env.proj_root = '/var/www/karmaworld'
-    env.cd = lcd
-    env.reqs = 'reqs/dev.txt'
-    env.confs = 'confs/beta'
-    env.branch = 'beta'
-
-
-
-####### Define production host
-@task
-def prod():
-    """
-    Connection Information for production machine
-    """
-
-    env.user = 'djkarma'
-    env.hosts = ['karmanotes.org']
-    env.proj_root = '/var/www/karmaworld'
-    env.reqs = 'reqs/prod.txt'
-    env.confs = 'confs/prod/'
-    env.branch = 'beta'
-    env.gunicorn_addr = '127.0.0.1:8000'
-
-####### Define beta host
-@task
-def beta():
-    """
-    Connection Information for beta machine
-    """
-
-    env.user = 'djkarma'
-    env.hosts = ['beta.karmanotes.org']
-    env.proj_root = '/var/www/karmaworld'
-    env.reqs = 'reqs/prod.txt'
-    env.confs = 'confs/prod/'
-    env.branch = 'beta'
-
-######## Run Commands in Virutal Environment
-def virtenv_path():
-    """
-    Builds the virtualenv path.
-    """
-    # not much here now, but maybe useful later.
-    return env.env_root
 
 def virtenv_exec(command):
     """
