@@ -15,20 +15,45 @@ env.repo_root = '~/karmaworld' # transient setting for VMs only
 env.proj_root = '/var/www/karmaworld'
 env.branch = 'prod' # only used for supervisor conf two lines below. cleanup?
 env.code_root = env.proj_root
-env.env_root = env.proj_root
 env.supervisor_conf = '{0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch)
 env.usde_csv = '{0}/confs/acceditation.csv'.format(env.code_root)
 
 env.use_ssh_config = True
 
+######## Run Commands in Virtual Environment
+def virtenv_path():
+    """
+    Find and memoize the virtualenv for use internally.
+    """
+    default_venv = env.proj_root + '/venv/bin/activate'
+
+    # Return environment root if its been memoized
+    if 'env_root' in env and env['env_root']:
+        return env['env_root']
+
+    # Not memoized. Try to find a single unique virtual environment.
+    outp = run("find -L {0} -path '*/bin/activate' | grep -v '/local/'".format(env.proj_root))
+    if not len(outp) or len(outp.splitlines()) != 1:
+        # Cannot find any virtualenv or found multiple virtualenvs. 
+        if len(outp) and default_venv not in outp:
+            # Multiple venvs and the default is not present.
+            raise Exception('Cannot determine the appropriate virtualenv.')
+        # If there are no virtualenvs, then use the default (this will create
+        # one if being called by make_virtualenv, otherwise it will cause an
+        # error).
+        # If there are multiple virtualenvs and the default is in their midst,
+        # use the default.
+        outp = default_venv
+    # Pop off the /bin/activate from /venv/bin/activate
+    outp = os.path.sep.join(outp.split(os.path.sep)[:-2])
+    env['env_root'] = outp
+    return outp
 
 def virtenv_exec(command):
     """
     Execute command in Virtualenv
     """
-
-    path = virtenv_path()
-    with prefix('source {0}/bin/activate'.format(path)):
+    with prefix('source {0}/bin/activate'.format(virtenv_path())):
         run(command)
 
 ######## Sync database
@@ -160,7 +185,7 @@ def restart_gunicorn():
 ####### Update Requirements
 @task
 def update_reqs():
-    virtenv_exec('pip install -r {0}/reqs/{1}.txt'.format(env.repo_root, env.branch))
+    virtenv_exec('pip install -r {0}/reqs/prod.txt'.format(env.code_root))
 
 ####### Pull new code
 @task
