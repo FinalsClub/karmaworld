@@ -2,6 +2,7 @@
 
 #note_header
 {
+  padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
@@ -72,8 +73,17 @@
   padding-bottom: 45px;
 }
 
-#social-buttons {
+#note-buttons {
   padding-bottom: 10px;
+}
+
+#zoom-buttons {
+  margin-bottom: 20px;
+}
+
+.zoom-button {
+  cursor: pointer;
+  margin-right: 10px;
 }
 
 /* COURSES */
@@ -111,4 +121,10 @@
 #course_container, #school_container
 {
   padding-top: 45px;
+}
+
+#course_header
+{
+  padding-bottom: 20px;
+  margin-bottom: 20px;
 }

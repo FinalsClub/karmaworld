@@ -15,7 +15,7 @@ from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
-from karmaworld.apps.notes.views import NoteView
+from karmaworld.apps.notes.views import NoteView, thank_note
 from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.notes.views import PDFView
 from karmaworld.apps.document_upload.views import save_fp_upload
@@ -71,6 +71,9 @@ urlpatterns = patterns('',
         CourseDetailView.as_view(), name='course_detail'),
 
     ## NOTE MODEL
+    # Ajax endpoint to thank a note
+    url(r'^ajax/note/thank/(?P<pk>[\d]+)/$', thank_note, name='thank_note'),
+
     # Valid url cases to the Note page
     # a: school/course/id
     # b: school/course/id/slug

@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
+import json
+from django.core.exceptions import ObjectDoesNotExist
 
 import os
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import View
@@ -18,6 +20,12 @@ from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.forms import NoteForm
 
 
+ZOOM_MIMETYPES = (
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'image/tiff'
+)
 
 def is_pdf(self):
     if self.object.file_type == 'pdf':
@@ -44,6 +52,10 @@ class NoteDetailView(DetailView):
 
         kwargs['pdf'] = is_pdf(self)
         kwargs['ppt'] = is_ppt(self)
+
+
+        if self.object.mimetype == 'application/pdf':
+            kwargs['pdf_controls'] = True
 
         return super(NoteDetailView, self).get_context_data(**kwargs)
 
@@ -134,3 +146,21 @@ class PDFView(DetailView):
             #    os.path.basename(self.object.note_file.name))
 
         return super(PDFView, self).get_context_data(**kwargs)
+
+def thank_note(request, pk):
+    """Record that somebody has thanked a note."""
+    if not (request.method == 'POST' and request.is_ajax()):
+        # return that the api call failed
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'must be a POST ajax request'}),
+                                    mimetype="application/json")
+
+    try:
+        note = Note.objects.get(pk=pk)
+        note.thanks += 1
+        note.save()
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'note id does not match a note'}),
+                                    mimetype="application/json")
+
+    return HttpResponse(status=204)
+

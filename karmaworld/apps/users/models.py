@@ -11,5 +11,3 @@ class KarmaUser(models.Model):
     def __unicode__(self):
         return u'{e}'.format(e=self.email)
 
-admin.site.register(KarmaUser)
-

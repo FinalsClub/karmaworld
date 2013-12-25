@@ -169,6 +169,9 @@ class Note(Document):
     is_flagged      = models.BooleanField(default=False)
     is_moderated    = models.BooleanField(default=False)
 
+    tweeted         = models.BooleanField(default=False)
+    thanks          = models.PositiveIntegerField(default=0)
+
 
     def __unicode__(self):
         return u"Note: {0} {1} -- {2}".format(self.file_type, self.name, self.uploaded_at)

@@ -33,7 +33,8 @@ class RawDocument(Document):
                 ip=self.ip,
                 uploaded_at=self.uploaded_at,
                 fp_file=self.fp_file,
-                user=self.user)
+                user=self.user,
+                mimetype=self.mimetype)
         note.save()
         for tag in self.tags.all():
             note.tags.add(tag)

@@ -10,7 +10,13 @@
 {% endblock %}
 
 {% block pagescripts %}
-  <script src="{{ STATIC_URL }}js/note-iframe.js" ></script>
+  <script type="text/javascript">
+    var note_thank_url = "{% url 'thank_note' note.id %}"
+    var csrf_token = "{{ csrf_token }}";
+  </script>
+  <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+  <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
+  <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -26,47 +32,59 @@
       </div>
 
       <div class="row">
-        <div id="note_name" class="twelve columns">
+        <div id="note_name" class="small-12 columns">
           {{ note.name }}
-          <hr/>
         </div><!-- /note_name -->
       </div>
 
-      <div id="social-buttons" class="row">
-        <div class="small-4 columns small-centered show-for-medium-up">
+      <div class="row">
+        <div id="note_status" class="twelve columns">
+          <div class="activity_details_status">
+            So far, <span id="thank-number" class="activity_details_status_number">{{ note.thanks }}</span> people have completely fallen in love with with these notes.
+          </div><!-- /activity_details_status -->
+        </div><!-- /note_status -->
+      </div>
+
+      <div class="row">
+        <div id="note_actions" class="small-2 columns small-centered">
           <div class="row">
-            <div class="small-4 columns center">
-              <script type="text/javascript" src="http://www.reddit.com/static/button/button2.js"></script>
+            <!--
+            <div class="small-4 column">
+              <img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" />
             </div>
-            <div class="small-4 columns center">
-              <div class="g-plusone"
-                   data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}"
-                   data-size="tall"
-                   data-annotation="bubble"
-                   data-width="25"></div>
-              </div>
-              <div class="small-4 columns center">
-                <div class="fb-like"
-                     data-href="https://karmanotes.org{% url 'note_detail' note.course.school.slug note.course.slug note.slug %}"
-                     data-width="12"
-                     data-layout="box_count"
-                     data-action="recommend"
-                     data-show-faces="false"
-                     data-share="true"></div>
-              </div>
+            -->
+            <div class="small-6 column">
+              <a href="#" id="thank-button"><img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" /></a>
+              <a href="#" id="thank-button-disabled" class="hide"><img src="{{ STATIC_URL }}img/note_thank_disabled.png" alt="note_thank" /></a>
+            </div>
+            <div class="small-6 column">
+              <a href="{{ note.fp_file }}">
+                <img src="{{ STATIC_URL }}img/note_download.png" alt="note_download" />
+              </a>
             </div>
           </div>
         </div><!-- /note_actions -->
       </div>
 
-      <div class="row zoom-buttons">
-        <div class="small-2 small-centered columns center" style="padding-bottom: 20px;">
-          <i id="minus-btn" class="fa fa-search-minus fa-2x" style="margin-right: 10px; cursor: pointer"></i>
-          <i id="plus-btn" class="fa fa-search-plus fa-2x" style="cursor: pointer"></i>
+      </div><!-- /course_header -->
+
+      {% if pdf_controls %}
+      <div id="zoom-buttons" class="row show-for-large-up">
+        <div id="outline-btn-wrapper" class="small-1 columns hide show-for-large-up">
+          <i id="outline-btn" class="zoom-button fa fa-bars fa-2x"></i>
+        </div>
+        <div class="small-4 columns">
+          <span>Jump to page:
+          <input id="scroll-to" type="text" style="width: 3em; display: inline" /></span>
+        </div>
+        <div class="small-2 small-centered columns center">
+          <i id="minus-btn" class="zoom-button fa fa-search-minus fa-2x"></i>
+          <i id="plus-btn" class="zoom-button fa fa-search-plus fa-2x"></i>
         </div>
       </div>
+      {% endif %}
 
-    </div><!-- /course_header -->
+
     <div id="note_container">
       {% if pdf or ppt %}
         <!-- Add pdf.js -->
@@ -91,7 +109,8 @@
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
           {% if note.html %}
             <div class="note-text">
-              <iframe style="border:none; width:100%; min-height: 1000px;" id="noteframe" src="/raw/{{ note.id }}" onload="autoResize('noteframe')"> </iframe>
+              <iframe style="border:none; width:100%; min-height: 1000px;" id="noteframe" src="/raw/{{ note.id }}"
+                      onload="autoResize('noteframe'); {% if pdf_controls %} setupPdfViewer(); {% endif %}"> </iframe>
             </div> <!-- .note-text -->
 
           {% else %} {# note.html #}
@@ -112,24 +131,3 @@
 
 {% endblock %}
 
-
-{% block bodyscripts %}
-  <!-- for facebook button -->
-  <div id="fb-root"></div>
-  <script>(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=271212543025990";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));</script>
-
-  <!-- for Google Plus button -->
-  <script type="text/javascript">
-    (function() {
-      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js?onload=onLoadCallback';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-    })();
-  </script>
-{% endblock %}
