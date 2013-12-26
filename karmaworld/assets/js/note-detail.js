@@ -12,8 +12,22 @@ function autoResize(id){
   document.getElementById(id).width= (newwidth + 5) + "px";
 }
 
+function rescalePdf(viewer, frameWidth) {
+  var scaleBase = 750;
+  var outlineWidth = 250;
+  var pdfWidth = frameWidth;
+
+  if ($(viewer.sidebar).hasClass('opened')){
+    pdfWidth = pdfWidth - 250;
+  }
+
+  var newPdfScale = pdfWidth / scaleBase;
+  viewer.rescale(newPdfScale);
+}
+
 function setupPdfViewer() {
-  var pdfViewer = document.getElementById("noteframe").contentWindow.pdf2htmlEX.defaultViewer;
+  var noteFrame = document.getElementById("noteframe")
+  var pdfViewer = noteFrame.contentWindow.pdf2htmlEX.defaultViewer;
 
   $('#plus-btn').click(function (){
     pdfViewer.rescale(1.20, true, [0,0]);
@@ -23,9 +37,11 @@ function setupPdfViewer() {
     pdfViewer.rescale(0.80, true, [0,0]);
   });
 
+  // detect if the PDF viewer wants to show an outline
+  // at all
   if ($(pdfViewer.sidebar).hasClass('opened')) {
-    // only show outline on large screens
     var body = $('body');
+    // if the screen is less than 64em wide, hide the outline
     if (parseInt($(body.width()).toEm({scope: body})) < 64) {
       $(pdfViewer.sidebar).removeClass('opened');
     }
@@ -33,12 +49,17 @@ function setupPdfViewer() {
 
   $('#outline-btn').click(function() {
     $(pdfViewer.sidebar).toggleClass('opened');
+    // rescale the PDF to fit the available space
+    rescalePdf(pdfViewer, parseInt(noteFrame.width));
   });
 
   $('#scroll-to').change(function() {
     page = parseInt($(this).val());
     pdfViewer.scroll_to(page, [0,0]);
   });
+
+  // rescale the PDF to fit the available space
+  rescalePdf(pdfViewer, parseInt(noteFrame.width));
 }
 
 $(function() {
