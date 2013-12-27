@@ -69,8 +69,6 @@ PROD_DB_NAME = 'karmaworld'
 PROD_DB_USERNAME = 'vagrant'
 PROD_DB_PASSWORD = ''
 CONFIG
-cp $SECRETPATH/filepicker.py.example $SECRETPATH/filepicker.py
-cp $SECRETPATH/static_s3.py.example $SECRETPATH/static_s3.py
 chown vagrant:vagrant $SECRETPATH/*.py
 
 cat > /etc/nginx/sites-available/karmaworld <<CONFIG
@@ -95,7 +93,6 @@ chmod 755 /etc/init.d/supervisor
 update-rc.d supervisor defaults
 
 pip install fabric
-#su vagrant -c "cd karmaworld; fab -H 127.0.0.1 first_deploy"
 SCRIPT
 # end of script
 
