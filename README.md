@@ -18,6 +18,10 @@ KarmaNotes is an online database of college lecture notes.  KarmaNotes empowers 
 
 # Pre-Installation
 
+## Code
+
+Before doing anything, you'll need the code. Grab it from github.
+
 Clone the project from the central repo using your github account:
 
     git clone git@github.com:FinalsClub/karmaworld.git
@@ -39,15 +43,38 @@ directory underneath that (`{project_root}/karmaworld`) alongside files like
 
 ## External Service Dependencies
 
-Notice: This software makes use of external third party services which require accounts to access the service APIs. Without these third parties available, this software may require considerable overhaul.
+Notice: This software makes use of external third party services which require
+accounts to access the service APIs. Without these third parties available,
+this software may require considerable overhaul.
 
 ### Filepicker
-This software uses [Filepicker.io](https://www.inkfilepicker.com/) for uploading files. This requires an account with Filepicker and some additional third party file hosting site where Filepicker may send uploaded files.
+This software uses [Filepicker.io](https://www.inkfilepicker.com/) for uploading
+files. This requires an account with Filepicker.
+
+Filepicker requires an additional third party file hosting site where it may
+send uploaded files. For this project, we have used Amazon S3.
+
+Filepicker will provide an API key. This is needed by the software.
 
 ### Amazon S3
-This software uses [Amazon S3](http://aws.amazon.com/s3/) as a third party file hosting site. The primary use case is a destination for Filepicker files.  A secondary use case is hosting static files.
 
-To obviate the need for hosting static files through S3 (noting it still serves a different purpose), see the workaround noted [in this Github ticket](https://github.com/FinalsClub/karmaworld/issues/192#issuecomment-30193617). For good measure, that workaround is repeated here. Make the following changes to `karmaworld/settings/prod.py`:
+#### for Filepicker
+This software uses [Amazon S3](http://aws.amazon.com/s3/) as a third party file
+hosting site. The primary use case is a destination for Filepicker files. The
+software won't directly need any S3 information for this use case; it will be
+provided directly to Filepicker.
+
+#### for Static File hosting
+A secondary use case for S3 is hosting static files. The software will need to
+update static files on the S3 bucket. In this case, the software will need the
+S3 bucket name, access key, and secret key.
+
+The code assumes S3 is used for static files in a production environment. To
+obviate the need for hosting static files through S3 (noting that it still might
+be necessary for Filepicker), a workaround was explained [in this Github ticket](https://github.com/FinalsClub/karmaworld/issues/192#issuecomment-30193617).
+
+That workaround is repeated here. Make the following changes to
+`{project_root}/karmaworld/settings/prod.py`:
 
 1. comment out everything about static_s3 from imports
 2. comment out storages from the `INSTALLED_APPS`
@@ -60,89 +87,185 @@ To obviate the need for hosting static files through S3 (noting it still serves 
     }
 
 ### Google Drive
-This software uses [Google Drive](https://developers.google.com/drive/) to convert documents to and from various file formats. Google credentials will be required as well as a Google Drive account which has been registered with the Google Cloud Console.
+This software uses [Google Drive](https://developers.google.com/drive/) to
+convert documents to and from various file formats.
+
+A Google Drive service account with access to the Google Drive is required. Thismay be done with a Google Apps account with administrative privileges, or ask
+your business sysadmin.
+
+These are the instructions to create a Google Drive service account:
+https://developers.google.com/drive/delegation
+
+When completed, you'll have a file called `client_secrets.json` and a p12 file
+which is the key to access the service account. Both are needed by the software.
+
+### Twitter
+
+Twitter is used to post updates about new courses. Access to the Twitter API
+will be required for this task.
+
+If this Twitter feature is desired, the consumer key and secret as well as the
+access token key and secret are needed by the software.
+
+If the required files are not found, then no errors will occur.
 
 # Development Install
 
 If you need to setup the project for development, it is highly recommend that
-you grab an existing development virtual machine or create one yourself. 
-Configure the virtual machine for production with the steps shown in the
-next section (Production Install). Instructions for creating a virtual machine
-follow:
+you grab create a development virtual machine or (if available) grab one that
+has already been created for your site.
+
+The *host machine* is the system which runs e.g. VirtualBox, while the
+*virtual machine* refers to the system running inside e.g. VirtualBox. 
+
+## Creating a Virtual Machine by hand
+
+Create a virtual machine with your favorite VM software. Configure the virtual
+machine for production with the steps shown in the [Production Install](#production-install) section.
+
+## Creating a Virtual Machine with Vagrant
+
+Vagrant supports a variety of virtual machine software and there is additional
+support for Vagrant to deploy to a wider variety. However, for these
+instructions, it is assumed Vagrant will be deployed to VirtualBox.
+
+1. Configure external dependencies on the host machine:
+   * Under `{project_root}/karmaworld/secret/`:
+        1. Copy files with the example extension to the corresponding filename
+          without the example extension (e.g.
+          `cp filepicker.py.example filepicker.py`)
+        1. Modify those files, but ignore `db_settings.py` (Vagrant takes care of that one)
+        1. Copy the Google Drive service account p12 file to `drive.p12`
+           (this filename and location may be changed in `drive.py`)
+        1. Ensure `*.py` in `secret/` are never added to the git repo.
+           (.gitignore should help warn against taking this action)
 
 1. Install [VirtualBox](http://www.virtualbox.com/)
 
 1. Install [vagrant](http://www.vagrantup.com/) 1.3 or higher
 
-1. Configure external dependencies on the host machine:
-    * Under `{project_root}/karmaworld/secret/`:
-        1. Copy files with the example extension to the corresponding filename
-          without the example extension (e.g.
-          `cp filepicker.py.example filepicker.py`)
-        1. Modify those files, but ignore `db_settings.py` (Vagrant takes care of that one)
-        1. Ensure *.py in `secret/` are never added to the git repo. (.gitignore
-          should help warn against taking this action)
-
 1. Use Vagrant to create the virtual machine.
-    * While in `cd {project_root}`, type `vagrant up`
+   * While in `cd {project_root}`, type `vagrant up`
 
-1. Connect to the VM with `vagrant ssh`
+1. Connect to the virtual machine with `vagrant ssh`
 
-1. While connected to the VM with SSH, type `cd karmanotes` and then follow
-    the instructions starting in Production Install about running
-    `fab -H 127.0.0.1 first_deploy`.
+Note:
+Port 80 of the virtual machine will be configured as port 6659 on the host
+system. While on the host system, fire up your favorite browser and point it at
+`http://localhost:6659/`. This connects to your host system on port 6659, which
+forwards to your virtual machine's web site.
 
-1. Once the above instructions are completed, port 80 on the VM will be hosted
-    as port 6659 on the host system. From the host system, fire up your
-    favorite browser and point it at `localhost:6659`.
+## Completing the Virtual Machine with Fabric
 
-# Production Install
+1. On the virtual machine, type `cd karmanotes` to get into the code repository.
 
-If you're starting to work on this project and you need it setup for production,
-follow the steps below.
-
-1. Ensure the following are installed:
-   * `git`
-   * `PostgreSQL` (server and client)
-   * `nginx`
-   * `Python`
-   * `PIP`
-   * `virtualenv` and `virtualenvwrapper`
-
-1. Generate a PostgreSQL database and a role with read/write permissions.
-   * For Debian, these instructions are helpful: https://wiki.debian.org/PostgreSql
-
-1. Modify configuration files.
-   * There are settings in `{project_root}/karmaworld/settings/dev.py`
-   * There are additional configuration options for external dependencies
-     under `{project_root}/karmaworld/secret/`.
-       * Copy files with the example extension to the corresponding filename
-         without the example extension (e.g.
-         `cp filepicker.py.example filepicker.py`) 
-       * Modify those files.
-           * Ensure `PROD_DB_USERNAME`, `PROD_DB_PASSWORD`, and `PROD_DB_NAME`
-             inside `db_settings.py` match the role, password, and database
-             generated in the previous step.
-       * Ensure *.py in `secret/` are never added to the git repo. (.gitignore
-         should help warn against taking this action)
-
-1. Make sure that /var/www exists, is owned by the www-data group, and that
-   the user is a member of the www-data group.
-
-1. Make sure that you're in the root of the project that you just cloned and
-   run
-
-        fab -H 127.0.0.1 first_deploy
-
-   This will make a virtualenv, install the development dependencies and create
-   the database tables.
+1. In the code repo of the VM, type `fab -H 127.0.0.1 first_deploy`
 
    During this process, you will be queried to create a Django site admin.
    Provide information. You will be asked to remove duplicate schools. Respond
    with yes.
 
+# Production Install
+
+These steps are taken care of by automatic utilities. Vagrant performs the
+first subsection of these instructions and Fabric performs the second
+subsection. These instructions are detailed here for good measure, but should
+not generally be needed.
+
+1. Ensure the following are installed:
+   * `git`
+   * `7zip` (for unzipping US Department of Education files)
+   * `PostgreSQL` (server and client)
+   * `nginx`
+   * `libxslt` and `libxml2` (used by some Python libraries)
+   * `RabbitMQ` (server)
+   * `memcached` (might not be used)
+   * `Python`
+   * `PIP`
+   * `virtualenv`
+   * `virtualenvwrapper` (might not be needed anymore)
+
+1. Generate a PostgreSQL database and a role with read/write permissions.
+   * For Debian, these instructions are helpful: https://wiki.debian.org/PostgreSql
+
+1. Modify configuration files.
+   * There are settings in `{project_root}/karmaworld/settings/prod.py`
+       * Most of the setting should work fine by default.
+   * There are additional configuration options for external dependencies
+     under `{project_root}/karmaworld/secret/`.
+        1. Copy files with the example extension to the corresponding filename
+          without the example extension (e.g.
+          `cp filepicker.py.example filepicker.py`)
+        1. Modify those files.
+           * Ensure `PROD_DB_USERNAME`, `PROD_DB_PASSWORD`, and `PROD_DB_NAME`
+             inside `db_settings.py` match the role, password, and database
+             generated in the previous step.
+        1. Copy the Google Drive service account p12 file to `drive.p12`
+           (this filename and location may be changed in `drive.py`)
+        1. Ensure `*.py` in `secret/` are never added to the git repo.
+           (.gitignore should help warn against taking this action)
+
+1. Make sure that /var/www exists, is owned by the www-data group, and that
+   the desired user is a member of the www-data group.
+
+1. Configure nginx with a `proxy_pass` to port 8000 (or whatever port gunicorn
+   will be running the site on) and any virtual hosting that is desired.
+   Here is an example server file to put into `/etc/nginx/sites-available/`
+
+        server {
+            listen 80;
+            # don't do virtual hosting, handle all requests regardless of header
+            server_name "";
+            client_max_body_size 20M;
+        
+            location / {
+                # pass traffic through to gunicorn
+                proxy_pass http://127.0.0.1:8000;
+            }
+        }
+
+1. Configure the system to start supervisor on boot. An init script for
+   supervisor is in the repo at `{project_root}/karmaworld/confs/supervisor`.
+   `update-rc.d supervisor defaults` is the Debian command to load the init
+   script into the correct directories.
+
+1. Make sure `{project_root)/var/log` and `{project_root}/var/run` exist and
+   may be written to, or else put the desired logging and run file paths into
+   `{project_root}/confs/prod/supervisord.conf`
+
+1. Create a virtualenv under `/var/www/karmaworld/venv`
+
+1. Change into the virtualenv with `. /var/www/karmaworld/venv/bin/activate`.
+   Within the virtualenv:
+
+    1. Update the Python depenencies with `pip -i {project_root}/reqs/prod.txt`
+    
+    1. Setup the database with `python {project_root}/manage.py syncdb --migrate`
+
+    1. Collect static resources and put them in the static hosting location with
+       `python {project_root}/manage.py collect_static`
+
+1. The database needs to be populated with schools. A list of accredited schools
+   may be found on the US Department of Education website:
+   http://ope.ed.gov/accreditation/GetDownloadFile.aspx
+
+   Alternatively, use the built-in scripts while in the virtualenv:
+
+   1. Fetch USDE schools with
+      `python {project_root}/manage.py fetch_usde_csv ./schools.csv`
+
+   1. Upload the schools into the database with
+      `python {project_root}/manage.py import_usde _csv ./schools.csv`
+
+   1. Clean up redundant information with
+      `python {project_root}/manage.py sanitize_usde_schools`
+
+1. Startup `supervisor`, which will run `celery` and `gunicorn`. This may be
+   done from within the virtualenv by typing
+   `python {project_root}/manage.py start_supervisord`
+
 1. If everything went well, gunicorn should be running the website on port 8000
-    and nginx should be serving gunicorn on port 80.
+   and nginx should be serving gunicorn on port 80.
 
 # Accessing the Vagrant Virtual Machine
 
