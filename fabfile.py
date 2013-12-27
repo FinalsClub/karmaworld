@@ -121,8 +121,8 @@ def restart_supervisord():
     """
     Restarts supervisord, also making sure to load in new config data.
     """
-    virtenv_exec('supervisorctl -c {0} update'.format(env.supervisor_conf))
-    virtenv_exec('supervisorctl -c {0} restart all'.format(env.supervisor_conf))
+    virtenv_exec('supervisorctl -c {0} update; supervisorctl -c {0} restart all
+'.format(env.supervisor_conf))
 
 
 def supervisorctl(action, process):
