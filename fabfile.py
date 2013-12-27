@@ -72,7 +72,7 @@ def collect_static():
 	Collect static files (if AWS config. present, push to S3)
 	"""
 
-	virtenv_exec('%s/manage.py collectstatic --noinput' % env.code_root )	
+	virtenv_exec('{0}/manage.py collectstatic --noinput'.format(env.code_root))
 
 ####### Run Dev Server
 @task
@@ -81,7 +81,7 @@ def dev_server():
 	Runs the built-in django webserver
 	"""
 
-	virtenv_exec('%s/manage.py runserver' % env.code_root)	
+	virtenv_exec('{0}/manage.py runserver'.format(env.code_root))
 
 ####### Create Virtual Environment
 
@@ -121,8 +121,7 @@ def restart_supervisord():
     """
     Restarts supervisord, also making sure to load in new config data.
     """
-    virtenv_exec('supervisorctl -c {0} update; supervisorctl -c {0} restart all
-'.format(env.supervisor_conf))
+    virtenv_exec('supervisorctl -c {0} update; supervisorctl -c {0} restart all'.format(env.supervisor_conf))
 
 
 def supervisorctl(action, process):
@@ -190,7 +189,7 @@ def update_reqs():
 ####### Pull new code
 @task
 def update_code():
-    virtenv_exec('cd %s; git pull' % env.proj_root )
+    virtenv_exec('cd {0}; git pull'.format(env.code_root))
 
 def backup():
     """
