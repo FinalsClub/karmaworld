@@ -1,5 +1,0 @@
-Deployment
-==========
-
-Required packages:
-memcached

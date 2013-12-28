@@ -179,11 +179,18 @@ not generally be needed.
    * `nginx`
    * `libxslt` and `libxml2` (used by some Python libraries)
    * `RabbitMQ` (server)
-   * `memcached` (might not be used)
+   * `memcached`
    * `Python`
    * `PIP`
    * `virtualenv`
    * `virtualenvwrapper` (might not be needed anymore)
+
+   On a Debian system supporting Apt, this can be done with:
+
+       sudo apt-get install python-pip postgresql python-virtualenv \
+                            virtualenvwrapper git nginx p7zip-full \
+                            postgresql-server-dev-9.1 libxslt1-dev libxml2-dev \
+                            libmemcached-dev python-dev rabbitmq-server
 
 1. Generate a PostgreSQL database and a role with read/write permissions.
    * For Debian, these instructions are helpful: https://wiki.debian.org/PostgreSql
@@ -304,8 +311,37 @@ Please see [vagrant documentation](http://docs.vagrantup.com/v2/cli/index.html)
 for more information on how to use the vagrant CLI to manage your development
 VM.
 
-Thanks
-======
+# Django Database management
+
+## South
+
+We have setup Django to use
+[south](http://south.aeracode.org/wiki/QuickStartGuide) for migrations. When
+changing models, it is important to run
+`python {project_root}/manage.py schemamigration` which will create a migration
+ to reflect the model changes into the database. These changes can be pulled
+into the database with `python {project_root}/manage.py migrate`.
+
+Sometimes the database already has a migration performed on it, but that
+information wasn't told to south. There are subtleties to the process which
+require looking at the south docs. As a tip, start by looking at the `--fake`
+flag.
+
+# Assets from Third Parties
+
+A number of assets have been added to the repository which come from external
+sources. It would be difficult to keep a complete list in this README and keep
+it up to date. Software which originally came from outside parties can
+generally be found in `{project_root}/karmaworld/assets`.
+
+Additionally, all third party Python projects (downloaded and installed with
+pip) are listed in these files:
+
+* `{project_root}/reqs/common.txt`
+* `{project_root}/reqs/dev.txt`
+* `{project_root}/reqs/prod.txt`
+
+# Thanks
 
 * KarmaNotes.org is a project of the FinalsClub Foundation with generous funding from the William and Flora Hewlett Foundation
 
