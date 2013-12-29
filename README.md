@@ -307,6 +307,15 @@ virtual machine doesn't need sensitive information. Your virtual machine simply
 pulls from the local repository on your local file system without needing
 credentials, etc.
 
+## Deleting the Virtual Machine
+If you want to start a fresh virtual machine or simply remove the virtual
+machine from your hard drive, Vagrant has a command for that. While in 
+`{project_root}` of the host system, type `vagrant destroy` and confirm with
+`y`. This will remove the VM from your hard drive.
+
+If you wanted a fresh VM, the next step is to run `vagrant up`, which will
+start a brand new VM (since the old one is gone).
+
 ## Other Vagrant commands
 Please see [vagrant documentation](http://docs.vagrantup.com/v2/cli/index.html)
 for more information on how to use the vagrant CLI to manage your development
