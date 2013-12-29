@@ -135,7 +135,7 @@ def supervisorctl(action, process):
 
 
 @task
-def start_celeryd():
+def start_celery():
     """
     Starts the celeryd process
     """
@@ -143,7 +143,7 @@ def start_celeryd():
 
 
 @task
-def stop_celeryd():
+def stop_celery():
     """
     Stops the celeryd process
     """
