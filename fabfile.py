@@ -250,38 +250,6 @@ def import_usde():
     virtenv_exec('{0}/manage.py sanitize_usde_schools'.format(env.code_root))
 
 @task
-def install_pdf2htmlEX():
-    """
-    # Some things we need:
-    sudo apt-get install cmake libpng-dev libjpeg-dev libgtk2.0-dev pkg-config libfontconfig1-dev autoconf libtool
-
-    # Ubuntu 12.04 comes with a version of poppler that is too
-    # old, so compile our own
-    wget http://poppler.freedesktop.org/poppler-0.24.4.tar.xz
-    tar xf poppler-0.24.4.tar.gz
-    ./configure --prefix=/usr --enable-xpdf-headers
-    make
-    sudo make install
-
-    # Ubuntu 12.04 comes with a version of fontforge that is too
-    # old, so compile our own
-    git clone https://github.com/fontforge/fontforge.git
-    ./autogen.sh
-    ./configure --prefix=/usr
-    make
-    sudo make install
-
-    # Compile pdf2htmlEX
-    wget https://github.com/coolwanglu/pdf2htmlEX/archive/v0.10.tar.gz
-    tar xf x0.10.tar.gz
-    cd pdf2htmlEX
-    cmake .
-    make
-    sudo make install
-    """
-    print "not implemented yet!"
-
-@task
 def first_deploy():
     """
     Sets up and deploys the project for the first time.

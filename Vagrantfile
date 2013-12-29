@@ -38,12 +38,14 @@ Host 127.0.0.1
 EOF
 chmod 644 /home/vagrant/.ssh/config
 
+add-apt-repository ppa:coolwanglu/pdf2htmlex # fontforge poppler pdf2htmlex
+
 apt-get update
 apt-get upgrade -y
 apt-get install -y python-pip postgresql python-virtualenv virtualenvwrapper \
                    git nginx postgresql-server-dev-9.1 libxslt1-dev \
                    libxml2-dev libmemcached-dev python-dev rabbitmq-server \
-                   p7zip-full
+                   p7zip-full fontforge poppler pdf2htmlex
 
 echo "CREATE USER vagrant WITH CREATEROLE LOGIN; CREATE DATABASE karmaworld OWNER vagrant;" | su postgres -c "psql"
 

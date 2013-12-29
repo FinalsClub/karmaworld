@@ -181,13 +181,17 @@ not generally be needed.
    * `PIP`
    * `virtualenv`
    * `virtualenvwrapper` (might not be needed anymore)
+   * `pdf2htmlEX`
 
    On a Debian system supporting Apt, this can be done with:
 
-       sudo apt-get install python-pip postgresql python-virtualenv \
-                            virtualenvwrapper git nginx p7zip-full \
-                            postgresql-server-dev-9.1 libxslt1-dev libxml2-dev \
-                            libmemcached-dev python-dev rabbitmq-server
+        sudo apt-get install python-pip postgresql python-virtualenv nginx \
+                             virtualenvwrapper git libxml2-dev p7zip-full \
+                             postgresql-server-dev-9.1 libxslt1-dev \
+                             libmemcached-dev python-dev rabbitmq-server
+
+        sudo add-apt-repository ppa:coolwanglu/pdf2htmlex
+        sudo apt-get install fontforge poppler pdf2htmlex
 
 1. Generate a PostgreSQL database and a role with read/write permissions.
    * For Debian, these instructions are helpful: https://wiki.debian.org/PostgreSql
