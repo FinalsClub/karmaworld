@@ -32,7 +32,8 @@ def virtenv_path():
         return env['env_root']
 
     # Not memoized. Try to find a single unique virtual environment.
-    outp = run("find -L {0} -path '*/bin/activate' | grep -v '/local/'".format(env.proj_root))
+    with settings(warn_only=True):
+        outp = run("find -L {0} -path '*/bin/activate' | grep -v '/local/'".format(env.proj_root))
     if not len(outp) or len(outp.splitlines()) != 1:
         # Cannot find any virtualenv or found multiple virtualenvs. 
         if len(outp) and default_venv not in outp:
