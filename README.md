@@ -191,7 +191,7 @@ not generally be needed.
                              libmemcached-dev python-dev rabbitmq-server
 
         sudo add-apt-repository ppa:coolwanglu/pdf2htmlex
-        sudo apt-get install fontforge poppler pdf2htmlex
+        sudo apt-get install pdf2htmlex
 
 1. Generate a PostgreSQL database and a role with read/write permissions.
    * For Debian, these instructions are helpful: https://wiki.debian.org/PostgreSql
