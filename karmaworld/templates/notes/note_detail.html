@@ -46,20 +46,20 @@
       </div>
 
       <div class="row">
-        <div id="note_actions" class="small-2 columns small-centered">
+        <div id="note_actions" class="large-2 medium-4 small-6 columns small-centered">
           <div class="row">
             <!--
             <div class="small-4 column">
-              <img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" />
+              <img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35"/>
             </div>
             -->
             <div class="small-6 column">
-              <a href="#" id="thank-button"><img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" /></a>
-              <a href="#" id="thank-button-disabled" class="hide"><img src="{{ STATIC_URL }}img/note_thank_disabled.png" alt="note_thank" /></a>
+              <a href="#" id="thank-button"><img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" width="34" height="34"/></a>
+              <a href="#" id="thank-button-disabled" class="hide"><img src="{{ STATIC_URL }}img/note_thank_disabled.png" alt="note_thank" width="34" height="34"/></a>
             </div>
             <div class="small-6 column">
               <a href="{{ note.fp_file }}">
-                <img src="{{ STATIC_URL }}img/note_download.png" alt="note_download" />
+                <img src="{{ STATIC_URL }}img/note_download.png" alt="note_download" width="51" height="36" />
               </a>
             </div>
           </div>
@@ -69,8 +69,8 @@
       </div><!-- /course_header -->
 
       {% if pdf_controls %}
-      <div id="zoom-buttons" class="row show-for-large-up">
-        <div id="outline-btn-wrapper" class="small-1 columns hide show-for-large-up">
+      <div id="zoom-buttons" class="row show-for-medium-up">
+        <div id="outline-btn-wrapper" class="small-1 columns hide show-for-medium-up">
           <i id="outline-btn" class="zoom-button fa fa-bars fa-2x"></i>
         </div>
         <div class="small-4 columns">
