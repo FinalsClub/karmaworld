@@ -18,3 +18,4 @@ beautifulsoup4
 pyopenssl
 python-twitter
 gdshortener
+git+https://github.com/flaptor/indextank-py.git

@@ -304,6 +304,12 @@ input[type="text"]:focus, textarea:focus
   padding-bottom: 3px;
 }
 
+#note_content, #course_content, #school_content, #results_content
+{
+  padding-top: 46px;
+}
+
+
 /* INTERFACE ELEMENTS */
 
 .hero_gradient_bar
@@ -657,6 +663,16 @@ ul#course_menu li a
   height: 42px;
 }
 
+.header_subhead
+{
+  font-family: "MuseoSans-900";
+  font-size: 10px;
+  text-align: center;
+  text-transform: uppercase;
+  padding-top: 20px;
+  padding-bottom: 1px;
+}
+
 #course_list_filter {
   margin: 0;
 }
@@ -759,13 +775,14 @@ p.text a
   background-color: white;
 }
 
-#note_name, #course_name, #school_name
+.header_title
 {
   margin-top: 1em;
   text-align: center;
-  font-family: "MuseoSlab-300";
-  font-size: 22px;
+  font-family: "MuseoSlab-500";
+  font-size: 24px;
 }
+
 
 #course_name a {
   color: black;

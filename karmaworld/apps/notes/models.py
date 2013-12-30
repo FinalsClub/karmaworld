@@ -20,14 +20,13 @@ from django.db import models
 from django.template import defaultfilters
 import django_filepicker
 from lxml.html import fromstring, tostring
-from oauth2client.client import Credentials
 from taggit.managers import TaggableManager
 
 from karmaworld.apps.courses.models import Course
-from karmaworld.apps.users.models import KarmaUser
+import karmaworld.apps.notes.search as search
 
 try:
-    from secrets.drive import GOOGLE_USER
+    from karmaworld.secrets.drive import GOOGLE_USER
 except:
     GOOGLE_USER = u'admin@karmanotes.org'
 
@@ -230,10 +229,29 @@ def update_note_counts(note_instance):
     note_instance.course.school.update_note_count()
 
 @receiver(post_save, sender=Note, weak=False)
-def note_receiver(sender, **kwargs):
+def note_save_receiver(sender, **kwargs):
+    if not 'instance' in kwargs:
+        return
+    note = kwargs['instance']
+
+    # Update course and school counts of how
+    # many notes they have
     if kwargs['created']:
-        update_note_counts(kwargs['instance'])
+        update_note_counts(note)
+
+    # Add or update document in search index
+    search.add_document(note)
+
 
 @receiver(post_delete, sender=Note, weak=False)
-def note_receiver(sender, **kwargs):
+def note_delete_receiver(sender, **kwargs):
+    if not 'instance' in kwargs:
+        return
+    note = kwargs['instance']
+
+    # Update course and school counts of how
+    # many notes they have
     update_note_counts(kwargs['instance'])
+
+    # Remove document from search index
+    search.remove_document(note)

@@ -15,7 +15,8 @@ from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
-from karmaworld.apps.notes.views import NoteView, thank_note
+from karmaworld.apps.notes.models import Note
+from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView
 from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.notes.views import PDFView
 from karmaworld.apps.moderation import moderator
@@ -99,6 +100,8 @@ urlpatterns = patterns('',
     # return json list of instructors for a given school and course
     url(r'^school/course/instructors/list/$', school_course_instructor_list, name='json_school_course_instructor_list'),
     # ---- end JSON views ----#
+
+    url(r'^search/$', NoteSearchView.as_view(), name='note_search'),
 
     url(r'^$', CourseListView.as_view(model=Course), name='home'),
 )

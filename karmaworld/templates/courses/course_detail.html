@@ -19,13 +19,12 @@
   Share Notes for {{ course.name }} | {{ course.school.name }}
 {% endblock %}
 
-
 {% block content %}
   <section id="course_content">
 
     <div id="course_header" class="hero_gradient_bar">
       <div class="row">
-        <div id="note_name" class="small-12 columns">
+        <div class="small-12 columns header_title">
           {% if course.url %}
           <a rel="nofollow" href="{{ course.url }}">
             {{ course.name }}

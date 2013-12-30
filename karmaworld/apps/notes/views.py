@@ -3,18 +3,20 @@
 # Copyright (C) 2012  FinalsClub Foundation
 import json
 from django.core.exceptions import ObjectDoesNotExist
+from karmaworld.apps.courses.models import Course
+from karmaworld.apps.notes import search
 
 import os
 
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from django.views.generic import FormView
 from django.views.generic import View
 from django.views.generic import TemplateView
 from django.views.generic.detail import SingleObjectMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render_to_response
 
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.forms import NoteForm
@@ -146,6 +148,32 @@ class PDFView(DetailView):
             #    os.path.basename(self.object.note_file.name))
 
         return super(PDFView, self).get_context_data(**kwargs)
+
+
+class NoteSearchView(ListView):
+    template_name = 'notes/search_results.html'
+
+    def get_queryset(self):
+        if not 'query' in self.request.GET:
+            return Note.objects.none()
+
+        if 'course_id' in self.request.GET:
+            matching_note_ids = search.search(self.request.GET['query'],
+                                              self.request.GET['course_id'])
+        else:
+            matching_note_ids = search.search(self.request.GET['query'])
+
+        return Note.objects.filter(id__in=matching_note_ids)
+
+    def get_context_data(self, **kwargs):
+        if 'query' in self.request.GET:
+            kwargs['query'] = self.request.GET['query']
+
+        if 'course_id' in self.request.GET:
+            kwargs['course'] = Course.objects.get(id=self.request.GET['course_id'])
+
+        return super(NoteSearchView, self).get_context_data(**kwargs)
+
 
 def thank_note(request, pk):
     """Record that somebody has thanked a note."""

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block title %}
+  Search Results
+{% endblock %}
+
+{% block pagestyle %}
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/search.css">
+{% endblock %}
+
+{% block content %}
+<section id="results_content">
+
+  <div id="results_header" class="hero_gradient_bar">
+    <div class="row">
+      <div class="small-12 columns header_subhead">
+        YOU SEARCHED FOR
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="twelve columns header_title">
+        {{ query }}
+      </div>
+    </div>
+
+    {% if course %}
+      <div class="row">
+        <div class="small-12 columns header_subhead">
+          IN COURSE
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="twelve columns header_title">
+          {{ course.name }}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div id="results_container">
+    <div class="row">
+      <div class="small-12 columns large-10 large-offset-1">
+        {% for note in object_list %}
+          {% include 'notes/note_list_entry.html' with note=note %}
+        {% endfor %}
+      </div>
+    </div>
+  </div><!-- /course_container -->
+
+</section>
+
+{% endblock %}
