@@ -16,6 +16,9 @@ class Command(BaseCommand):
         notes = Note.objects.all()
 
         for note in notes:
-            print "Indexing {n}".format(n=note)
-            add_document(note)
+            try:
+                print "Indexing {n}".format(n=note)
+                add_document(note)
+            except:
+                continue
 
