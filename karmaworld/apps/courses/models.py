@@ -75,6 +75,9 @@ class Course(models.Model):
 
     created_at      = models.DateTimeField(auto_now_add=True)
 
+    # Number of times this course has been flagged as abusive/spam.
+    flags           = models.IntegerField(default=0,null=False)
+
 
     class Meta:
         ordering = ['-file_count', 'school', 'name']

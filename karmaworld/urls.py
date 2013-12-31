@@ -18,6 +18,7 @@ from karmaworld.apps.courses.views import school_course_instructor_list
 from karmaworld.apps.notes.views import NoteView, thank_note
 from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.notes.views import PDFView
+from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
@@ -50,6 +51,9 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     # Grappelli django-admin improvment suite
     url(r'^grappelli/', include('grappelli.urls')),
+    # Moderator panel and documentation:
+    url(r'^moderator/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^moderator/', include(moderator.site.urls)),
 
     ## Single-serving page URLpatterns
     url(r'^terms/$', direct_to_template, { 'template': 'terms.html' }, name='terms'),

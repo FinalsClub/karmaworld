@@ -213,7 +213,8 @@ LOCAL_APPS = (
     'karmaworld.apps.notes',
     'karmaworld.apps.courses',
     'karmaworld.apps.document_upload',
-    'karmaworld.apps.users'
+    'karmaworld.apps.users',
+    'karmaworld.apps.moderation',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

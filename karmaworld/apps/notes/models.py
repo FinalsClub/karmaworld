@@ -166,9 +166,10 @@ class Note(Document):
                         default=datetime.datetime.utcnow().year)
     desc            = models.TextField(max_length=511, blank=True, null=True)
 
-    is_flagged      = models.BooleanField(default=False)
-    is_moderated    = models.BooleanField(default=False)
+    # Number of times this note has been flagged as abusive/spam.
+    flags           = models.IntegerField(default=0,null=False)
 
+    # Social media tracking
     tweeted         = models.BooleanField(default=False)
     thanks          = models.PositiveIntegerField(default=0)
 
