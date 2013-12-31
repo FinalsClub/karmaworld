@@ -3,20 +3,26 @@
 # Copyright (C) 2012  FinalsClub Foundation
 """
 """
+import karmaworld.secret.indexden as secret
+import uuid
+
+# This needs to happen before other things
+# are imported to avoid putting test data
+# in our production search index
+secret.INDEX = uuid.uuid4().hex
 
 import datetime
-
-from nose.tools import eq_
-from nose.tools import ok_
-from nose.tools import assert_is_none
+from django.test import TestCase
+from karmaworld.apps.notes import search
 
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
+import indextank.client as itc
 
+class TestNoes(TestCase):
 
-class BaseNote(object):
-    def setup(self):
+    def setUp(self):
         # create base values to test db representations
         self.now = datetime.datetime.utcnow()
 
@@ -41,41 +47,40 @@ class BaseNote(object):
         #self.note.slug := do not set for test_remake_slug() behavior
         self.note.file_type = 'doc'
         self.note.uploaded_at = self.now
+        self.note.text = "This is the plaintext version of a note. It's pretty cool. Alpaca."
         self.note.save()
 
-    def teardown(self):
-        """ erase anything we created """
-        print "generating a note teardown"
-        self.note.delete()
-
-
-class TestNoteWithRelation(BaseNote):
-    """ Test the Note model with fkey to courses.models.Course """
+    @classmethod
+    def tearDownClass(cls):
+        """Delete the test index that was automatically
+        created by notes/search.py"""
+        api = itc.ApiClient(secret.PRIVATE_URL)
+        api.delete_index(secret.INDEX)
 
     def test_unicode(self):
         """ Ensure that the unicode repl for a Note is as expected """
-        expected = u"doc: Lecture notes concerning the use of therefore ∴ -- {0}"\
+        expected = u"Note: doc Lecture notes concerning the use of therefore ∴ -- {0}"\
                 .format(self.now)
-        eq_(self.note.__unicode__(), expected)
+        self.assertEqual(self.note.__unicode__(), expected)
 
     def test_course_fkey(self):
-        eq_(self.course, self.note.course)
-
-
-class TestNoteSlug(BaseNote):
-    """ Test the conditional generation of the Note.slug field """
-
-    expected = u'lecture-notes-concerning-the-use-of-therefore'
+        self.assertEqual(self.course, self.note.course)
 
     def test_slug_natural(self):
         """ Test that the slug field is slugifying unicode Note.names """
-        eq_(self.note.slug, self.expected)
+        expected = u"lecture-notes-concerning-the-use-of-therefore"
+        self.assertEqual(self.note.slug, expected)
 
     def test_remake_slug(self):
-        """ Test the generation of a Note.slug field based on Note.name """
+        """ Test the generation of a Note.slug field based on Note.
+        Name collision is expected, so see if slug handles this."""
+        expected = u"lecture-notes-concerning-the-use-of-therefore-{0}-{1}-{2}".format(
+                    self.note.uploaded_at.month,
+                    self.note.uploaded_at.day, self.note.uploaded_at.microsecond)
+
         self.note.slug = None
         self.note.save()
-        eq_(self.note.slug, self.expected)
+        self.assertEqual(self.note.slug, expected)
 
     def test_save_no_slug(self):
         """ Test that Note.save() doesn't make a slug
@@ -85,10 +90,8 @@ class TestNoteSlug(BaseNote):
         self.note.slug = None
         self.note.save() # re-save the note
         # check that slug has note been generated
-        assert_is_none(self.note.slug)
+        self.assertIsNone(self.note.slug)
 
-
-class TestNoteUrl(BaseNote):
     expected_url_prefix = u'/marshall-college/archaeology-101/'
     expected_slug = u'lecture-notes-concerning-the-use-of-therefore'
     expected = expected_url_prefix + expected_slug
@@ -96,9 +99,22 @@ class TestNoteUrl(BaseNote):
     def test_note_get_absolute_url_slug(self):
         """ Given a note with a slug, test that an expected url is generated """
         # check that Note.get_absolute_url() is generating the right url
-        eq_(self.note.get_absolute_url(), self.expected)
+        self.assertEqual(self.note.get_absolute_url(), self.expected)
 
     def test_note_get_absolute_url_id(self):
         self.note.slug = None
         url = self.expected_url_prefix + str(self.note.id)
-        eq_(self.note.get_absolute_url(), url)
+        self.assertEqual(self.note.get_absolute_url(), url)
+
+    def test_search_index(self):
+        """Search for a note within IndexDen"""
+
+        # Search for it
+        results = search.search('alpaca')
+        self.assertIn(str(self.note.id), results)
+
+        # Search for it, filtering by course
+        results = search.search('alpaca', self.note.course.id)
+        self.assertIn(str(self.note.id), results)
+
+

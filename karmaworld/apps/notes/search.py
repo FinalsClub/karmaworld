@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2013  FinalsClub Foundation
+import time
 
 import indextank.client as itc
 import karmaworld.secret.indexden as secret
 
 api_client = itc.ApiClient(secret.PRIVATE_URL)
-index = api_client.get_index('karmanotes')
+if not api_client.get_index(secret.INDEX).exists():
+    api_client.create_index(secret.INDEX, {'public_search': False})
 
+index = api_client.get_index(secret.INDEX)
+
+while not index.has_started():
+    time.sleep(0.5)
 
 def note_to_dict(note):
     d = {

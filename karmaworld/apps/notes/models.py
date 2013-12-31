@@ -26,8 +26,8 @@ from karmaworld.apps.courses.models import Course
 import karmaworld.apps.notes.search as search
 
 try:
-    from karmaworld.secrets.drive import GOOGLE_USER
-except:
+    from karmaworld.secret.drive import GOOGLE_USER
+except ImportError:
     GOOGLE_USER = u'admin@karmanotes.org'
 
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
@@ -171,7 +171,6 @@ class Note(Document):
     # Social media tracking
     tweeted         = models.BooleanField(default=False)
     thanks          = models.PositiveIntegerField(default=0)
-
 
     def __unicode__(self):
         return u"Note: {0} {1} -- {2}".format(self.file_type, self.name, self.uploaded_at)

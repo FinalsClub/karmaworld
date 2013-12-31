@@ -11,15 +11,8 @@ from karmaworld.apps.document_upload.forms import RawDocumentForm
 from karmaworld.apps.notes.gdrive import *
 from karmaworld.apps.notes.models import Note
 
-CREDENTIALS_PATH = os.path.join(settings.DJANGO_ROOT,
-                    'secret/oauth_token.json')
-
-# NOTE: these tests require that you have the file
-# secret/oauth_token.json. See docs/source/gdrive.rst
-# for how to set this up.
 
 class ConversionTest(TestCase):
-
 
     def setUp(self):
         self.school = School(name='Northeastern University')
