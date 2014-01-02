@@ -47,8 +47,8 @@ class Document(models.Model):
     slug            = models.SlugField(max_length=255, null=True)
 
     # metadata relevant to the Upload process
-    user            = models.ForeignKey('users.KarmaUser', null=True, on_delete=SET_NULL)
-    ip              = models.IPAddressField(blank=True, null=True,
+    user            = models.ForeignKey('users.KarmaUser', blank=True, null=True, on_delete=SET_NULL)
+    ip              = models.GenericIPAddressField(blank=True, null=True,
                         help_text=u"IP address of the uploader")
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
 

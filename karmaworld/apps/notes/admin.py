@@ -10,9 +10,9 @@ from karmaworld.apps.notes.models import Note
 class NoteAdmin(admin.ModelAdmin):
     """ an Admin handler for the Note model that handles autocomplete to Course 
     """
-    raw_id_fields = ('course',)
+    raw_id_fields = ('course','user')
     autocomplete_lookup_fields = {
-        'fk': ['course']
+        'fk': ('course', 'user'),
     }
 
 admin.site.register(Note, NoteAdmin)
