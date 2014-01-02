@@ -25,13 +25,7 @@
     <div id="course_header" class="hero_gradient_bar">
       <div class="row">
         <div class="small-12 columns header_title">
-          {% if course.url %}
-          <a rel="nofollow" href="{{ course.url }}">
-            {{ course.name }}
-          </a>
-          {% else %}
           {{ course.name }}
-          {% endif %}
         </div><!-- /note_name -->
       </div>
 
@@ -42,6 +36,19 @@
           </div><!-- /activity_details_context -->
         </div><!-- /course_meta -->
       </div>
+
+      {% if course.url %}
+        <div class="row">
+          <div id="course_link" class="twelve columns">
+            <div class="activity_details_context">
+              <a rel="nofollow" target="_blank" href="{{ course.url }}">
+                {{ course.url|slice:":50" }}
+                <i class="fa fa-external-link-square"></i>
+              </a>
+            </div><!-- /activity_details_context -->
+          </div><!-- /course_meta -->
+        </div>
+      {% endif %}
     </div><!-- /course_header -->
 
 
