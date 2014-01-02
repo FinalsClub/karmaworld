@@ -29,6 +29,8 @@ def save_fp_upload(request):
         time_c = datetime.datetime.now()
         # note that .save() has the side-effect of kicking of a celery processing task
         raw_document.save()
+        # save the tags to the database, too. don't forget those guys.
+        r_d_f.save_m2m()
         time_d = datetime.datetime.now()
         delta = time_d - time_c
         print "d\t%s" % delta
