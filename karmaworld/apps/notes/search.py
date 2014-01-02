@@ -6,6 +6,10 @@ import time
 import indextank.client as itc
 import karmaworld.secret.indexden as secret
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 api_client = itc.ApiClient(secret.PRIVATE_URL)
 if not api_client.get_index(secret.INDEX).exists():
     api_client.create_index(secret.INDEX, {'public_search': False})
@@ -18,13 +22,11 @@ while not index.has_started():
 def note_to_dict(note):
     d = {
         'name': note.name,
+        'text': note.text
     }
 
-    if note.text:
-        d['text'] = note.text
-
     if note.tags.exists():
-        d['tags'] = [str(tag) for tag in note.tags.all()]
+        d['tags'] = ' '.join([str(tag) for tag in note.tags.all()])
 
     if note.course:
         d['course_id'] = note.course.id
@@ -32,7 +34,10 @@ def note_to_dict(note):
     return d
 
 def add_document(note):
-    index.add_document(note.id, note_to_dict(note))
+    if note.text:
+        index.add_document(note.id, note_to_dict(note))
+    else:
+        logger.warn("Note {n} has no text, will not add to IndexDen".format(n=note))
 
 def remove_document(note):
     index.delete_document(note.id)
