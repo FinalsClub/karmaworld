@@ -2,6 +2,7 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2013  FinalsClub Foundation
 
+import traceback
 from django.core.management.base import BaseCommand
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.search import *
@@ -19,6 +20,7 @@ class Command(BaseCommand):
             try:
                 print "Indexing {n}".format(n=note)
                 add_document(note)
-            except:
+            except Exception, e:
+                traceback.print_exc()
                 continue
 

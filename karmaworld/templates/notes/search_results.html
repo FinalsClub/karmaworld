@@ -13,6 +13,15 @@
 <section id="results_content">
 
   <div id="results_header" class="hero_gradient_bar">
+
+    <div class="row">
+      <div class="twelve columns header_subhead">
+        <a href="{{ course.get_absolute_url}}">
+          <i class="fa fa-arrow-left"></i>&nbsp;back to {{ course.name }}
+        </a>
+      </div>
+    </div>
+
     <div class="row">
       <div class="small-12 columns header_subhead">
         YOU SEARCHED FOR
@@ -42,11 +51,17 @@
 
   <div id="results_container">
     <div class="row">
-      <div class="small-12 columns large-10 large-offset-1">
-        {% for note in object_list %}
-          {% include 'notes/note_list_entry.html' with note=note %}
-        {% endfor %}
-      </div>
+      {% if object_list %}
+        <div class="small-12 columns large-10 large-offset-1">
+          {% for tuple in object_list %}
+            {% include 'notes/note_list_entry.html' with note=tuple.0 note_preview=tuple.1 %}
+          {% endfor %}
+        </div>
+        {% else %}
+          <div id="no_results" class="small-12 columns center column">
+            <h4>Sorry! No results were found.</h4>
+          </div>
+        {% endif %}
     </div>
   </div><!-- /course_container -->
 

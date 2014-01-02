@@ -2,22 +2,25 @@
 
 <header id="global_header">
   <div class="row">
-    <div id="logo_container" class="small-6 large-3 columns">
-      <a href="/">
-        <img src="{{ STATIC_URL }}img/global_header_logo.png" alt="global_header_logo" width="144" height="17" />
-      </a>
-    </div><!--/logo container-->
-
-    <div class="small-4 columns show-for-medium-up">
-      {% if course.id %}
-        <div id="search_container">
-          <form action="{% url 'note_search' %}" method="GET">
-            <input type="text" id="search_txt" name="query" placeholder="Search in this course">
-            <input type="hidden" name="course_id" value="{{ course.id }}">
-          </form>
+    <div id="logo_container" class="small-5 columns">
+      <div class="row">
+        <div class="small-5 columns">
+          <a href="/">
+            <img src="{{ STATIC_URL }}img/global_header_logo.png" alt="global_header_logo" width="144" height="17" />
+          </a>
         </div>
-      {% endif %}
-    </div>
+        <div class="small-7 columns">
+          {% if course.id %}
+            <div id="search_container">
+              <form action="{% url 'note_search' %}" method="GET">
+                <input type="text" id="search_txt" name="query" placeholder="Search in this course">
+                <input type="hidden" name="course_id" value="{{ course.id }}">
+              </form>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div><!--/logo container-->
 
     {% if display_add_course %}
       <div class="small-2 columns small-offset-3 show-for-medium-up">
@@ -31,6 +34,10 @@
           <img src="{{ STATIC_URL }}img/global_header_plusnote.png" /></a>
       </div>
     {% endif %}
+
+    <div id="login_container" class="small-1 columns">
+      <a class=white href="{% url 'about' %}">About</a>
+    </div>
 
   </div>
 </header><!--/global header-->
