@@ -215,7 +215,7 @@ def update_note_counts(note_instance):
     try:
         # test if the course still exists, or if this is a cascade delete.
         note_instance.course
-    except Couse.DoesNotExist:
+    except Course.DoesNotExist:
         # this is a cascade delete. there is no course to update
         pass
     else:
