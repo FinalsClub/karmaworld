@@ -180,8 +180,8 @@ class NoteSearchView(ListView):
         return super(NoteSearchView, self).get_context_data(**kwargs)
 
 
-def thank_note(request, pk):
-    """Record that somebody has thanked a note."""
+def ajaxIncrementBase(request, pk, field):
+    """Increment a note's field by one."""
     if not (request.method == 'POST' and request.is_ajax()):
         # return that the api call failed
         return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'must be a POST ajax request'}),
@@ -189,11 +189,20 @@ def thank_note(request, pk):
 
     try:
         note = Note.objects.get(pk=pk)
-        note.thanks += 1
+        note.__dict__[field] += 1
         note.save()
     except ObjectDoesNotExist:
         return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'note id does not match a note'}),
                                     mimetype="application/json")
 
     return HttpResponse(status=204)
+
+def thank_note(request, pk):
+    """Record that somebody has thanked a note."""
+    return ajaxIncrementBase(request, pk, 'thanks')
+
+def flag_note(request, pk):
+    """Record that somebody has flagged a note."""
+    return ajaxIncrementBase(request, pk, 'flags')
+
 

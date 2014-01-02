@@ -84,4 +84,22 @@ $(function() {
       type: 'POST'
     });
   });
+
+  $("#flag-button").click(function() {
+    event.preventDefault();
+
+    // disable thank button so it can't
+    // be pressed again
+    $(this).hide();
+    $('#flag-button-disabled').show();
+    $(this).unbind('click');
+
+    // tell server that somebody thanked
+    // this note
+    $.ajax({
+      url: note_flag_url,
+      dataType: "json",
+      type: 'POST'
+    });
+  });
 });

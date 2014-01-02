@@ -64,6 +64,12 @@
   margin-right: 10px;
 }
 
+#thank-button-disabled,
+#flag-button-disabled
+{
+  cursor: default;
+}
+
 /* COURSES */
 
 #course_meta, #school_meta

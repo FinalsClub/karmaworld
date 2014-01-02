@@ -12,6 +12,7 @@
 {% block pagescripts %}
   <script type="text/javascript">
     var note_thank_url = "{% url 'thank_note' note.id %}"
+    var note_flag_url = "{% url 'flag_note' note.id %}"
     var csrf_token = "{{ csrf_token }}";
   </script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
@@ -46,18 +47,17 @@
       </div>
 
       <div class="row">
-        <div id="note_actions" class="large-2 medium-4 small-6 columns small-centered">
+        <div id="note_actions" class="large-3 medium-6 small-12 columns small-centered">
           <div class="row">
-            <!--
             <div class="small-4 column">
-              <img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35"/>
+              <a href="#" id="flag-button"><img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35"/></a>
+              <a href="#" id="flag-button-disabled" class="hide"><img src="{{ STATIC_URL }}img/note_flag_disabled.png" alt="note_flag" width="25" height="35"/></a>
             </div>
-            -->
-            <div class="small-6 column">
+            <div class="small-4 column">
               <a href="#" id="thank-button"><img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" width="34" height="34"/></a>
               <a href="#" id="thank-button-disabled" class="hide"><img src="{{ STATIC_URL }}img/note_thank_disabled.png" alt="note_thank" width="34" height="34"/></a>
             </div>
-            <div class="small-6 column">
+            <div class="small-4 column">
               <a href="{{ note.fp_file }}">
                 <img src="{{ STATIC_URL }}img/note_download.png" alt="note_download" width="51" height="36" />
               </a>

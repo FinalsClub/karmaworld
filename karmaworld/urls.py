@@ -16,7 +16,7 @@ from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
 from karmaworld.apps.notes.models import Note
-from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView
+from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note
 from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.notes.views import PDFView
 from karmaworld.apps.moderation import moderator
@@ -78,6 +78,8 @@ urlpatterns = patterns('',
     ## NOTE MODEL
     # Ajax endpoint to thank a note
     url(r'^ajax/note/thank/(?P<pk>[\d]+)/$', thank_note, name='thank_note'),
+    # Ajax endpoint to flag a note
+    url(r'^ajax/note/flag/(?P<pk>[\d]+)/$', flag_note, name='flag_note'),
 
     # Valid url cases to the Note page
     # a: school/course/id
