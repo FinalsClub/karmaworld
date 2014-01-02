@@ -9,7 +9,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.views.generic.simple import direct_to_template
 
 from karmaworld.apps.courses.models import Course
-from karmaworld.apps.courses.views import AboutView
+from karmaworld.apps.courses.views import AboutView, flag_course
 from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_list
@@ -80,6 +80,8 @@ urlpatterns = patterns('',
     url(r'^ajax/note/thank/(?P<pk>[\d]+)/$', thank_note, name='thank_note'),
     # Ajax endpoint to flag a note
     url(r'^ajax/note/flag/(?P<pk>[\d]+)/$', flag_note, name='flag_note'),
+    # Ajax endpoint to flag a course
+    url(r'^ajax/course/flag/(?P<pk>[\d]+)/$', flag_course, name='flag_course'),
 
     # Valid url cases to the Note page
     # a: school/course/id

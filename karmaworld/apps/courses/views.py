@@ -8,7 +8,7 @@ import json
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
 
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views.generic import DetailView
 from django.views.generic import TemplateView
 from django.views.generic.edit import ProcessFormView
@@ -179,4 +179,25 @@ def school_course_instructor_list(request):
     # return as json
     return HttpResponse(json.dumps({'status':'success', 'instructors': instructors}),
                         mimetype="application/json")
+
+def ajaxIncrementBase(request, pk, field):
+    """Increment a note's field by one."""
+    if not (request.method == 'POST' and request.is_ajax()):
+        # return that the api call failed
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'must be a POST ajax request'}),
+                                    mimetype="application/json")
+
+    try:
+        note = Course.objects.get(pk=pk)
+        note.__dict__[field] += 1
+        note.save()
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'note id does not match a note'}),
+                                    mimetype="application/json")
+
+    return HttpResponse(status=204)
+
+def flag_course(request, pk):
+    """Record that somebody has flagged a note."""
+    return ajaxIncrementBase(request, pk, 'flags')
 
