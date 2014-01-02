@@ -63,7 +63,7 @@ function setupPdfViewer() {
 }
 
 $(function() {
-  $("#thank-button").click(function() {
+  $("#thank-button").click(function(event) {
     event.preventDefault();
 
     // increment number in page right away
@@ -85,21 +85,23 @@ $(function() {
     });
   });
 
-  $("#flag-button").click(function() {
+  $("#flag-button").click(function(event) {
     event.preventDefault();
 
-    // disable thank button so it can't
-    // be pressed again
-    $(this).hide();
-    $('#flag-button-disabled').show();
-    $(this).unbind('click');
+    if (confirm('Do you wish to flag this note for deletion?')) {
+      // disable thank button so it can't
+      // be pressed again
+      $(this).hide();
+      $('#flag-button-disabled').show();
+      $(this).unbind('click');
 
-    // tell server that somebody thanked
-    // this note
-    $.ajax({
-      url: note_flag_url,
-      dataType: "json",
-      type: 'POST'
-    });
+      // tell server that somebody thanked
+      // this note
+      $.ajax({
+        url: note_flag_url,
+        dataType: "json",
+        type: 'POST'
+      });
+    }
   });
 });
