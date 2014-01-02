@@ -2,7 +2,7 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 
-from lxml.html import fromstring
+import html2text
 
 from django.core.management.base import BaseCommand
 from apps.notes.models import Note
@@ -19,7 +19,7 @@ class Command(BaseCommand):
         cleaned_notes = 0
         for note in notes:
             #TODO: find style tags and drop them and their contents first
-            note.text = fromstring(note.html).text_content()
+            note.text = html2text.html2text(note.html)
             note.save()
             cleaned_notes += 1
         self.stdout.write('Processed %s notes' % cleaned_notes)
