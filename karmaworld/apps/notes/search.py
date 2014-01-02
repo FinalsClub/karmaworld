@@ -26,9 +26,6 @@ def note_to_dict(note):
     if note.tags.exists():
         d['tags'] = [str(tag) for tag in note.tags.all()]
 
-    if note.desc:
-        d['desc'] = note.desc
-
     if note.course:
         d['course_id'] = note.course.id
 
