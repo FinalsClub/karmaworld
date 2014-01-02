@@ -3,7 +3,6 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import html2text
-
 from django.core.management.base import BaseCommand
 from apps.notes.models import Note
 
@@ -18,9 +17,16 @@ class Command(BaseCommand):
         notes = Note.objects.filter(html__isnull=False).filter(text__isnull=True)
         cleaned_notes = 0
         for note in notes:
-            #TODO: find style tags and drop them and their contents first
-            note.text = html2text.html2text(note.html)
-            note.save()
-            cleaned_notes += 1
-        self.stdout.write('Processed %s notes' % cleaned_notes)
+            try:
+                h = html2text.HTML2Text()
+                h.ignore_links = True
+                h.ignore_images = True
+                note.text = h.handle(note.html)
+                note.save()
+                cleaned_notes += 1
+            except Exception, e:
+                print note
+                print e
+                continue
+        print 'Processed %s notes' % cleaned_notes
 
