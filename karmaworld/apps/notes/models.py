@@ -219,8 +219,16 @@ class Note(Document):
 
 
 def update_note_counts(note_instance):
-    note_instance.course.update_note_count()
-    note_instance.course.school.update_note_count()
+    try:
+        # test if the course still exists, or if this is a cascade delete.
+        note_instance.course
+    except Couse.DoesNotExist:
+        # this is a cascade delete. there is no course to update
+        pass
+    else:
+        # course exists
+        note_instance.course.update_note_count()
+        note_instance.course.school.update_note_count()
 
 @receiver(post_save, sender=Note, weak=False)
 def note_save_receiver(sender, **kwargs):
