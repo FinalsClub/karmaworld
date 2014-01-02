@@ -25,11 +25,6 @@ from taggit.managers import TaggableManager
 from karmaworld.apps.courses.models import Course
 import karmaworld.apps.notes.search as search
 
-try:
-    from karmaworld.secret.drive import GOOGLE_USER
-except ImportError:
-    GOOGLE_USER = u'admin@karmanotes.org'
-
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
 
 def _choose_upload_to(instance, filename):
