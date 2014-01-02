@@ -158,12 +158,17 @@ class NoteSearchView(ListView):
             return Note.objects.none()
 
         if 'course_id' in self.request.GET:
-            matching_note_ids = search.search(self.request.GET['query'],
+            matching_notes = search.search(self.request.GET['query'],
                                               self.request.GET['course_id'])
         else:
-            matching_note_ids = search.search(self.request.GET['query'])
+            matching_notes = search.search(self.request.GET['query'])
 
-        return Note.objects.filter(id__in=matching_note_ids)
+        instances = Note.objects.filter(id__in=matching_notes.viewkeys())
+        results = []
+        for i in instances:
+            results.append((i, matching_notes[str(i.id)]))
+
+        return results
 
     def get_context_data(self, **kwargs):
         if 'query' in self.request.GET:

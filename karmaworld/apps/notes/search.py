@@ -41,10 +41,12 @@ def search(query, course_id=None):
     """Returns note IDs matching the given query,
     filtered by course ID if given"""
     if course_id:
-        results = index.search('(text:"%s" OR name:"%s") AND course_id:%s' % (query, query, course_id))
+        real_query = '("%s" OR name:"%s") AND course_id:%s' % (query, query, course_id)
     else:
-        results = index.search('text:"%s" OR name:"%s"' % (query, query))
+        real_query = '"%s" OR name:"%s"' % (query, query)
 
-    matching_note_ids = [r['docid'] for r in results['results']]
+    raw_results = index.search(real_query, snippet_fields=['text'])
 
-    return matching_note_ids
+    results = {r['docid']: r['snippet_text'] for r in raw_results['results']}
+
+    return results
