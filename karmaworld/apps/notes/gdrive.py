@@ -204,13 +204,14 @@ def convert_raw_document(raw_document):
     # download from google drive
     content_dict = download_from_gdrive(service, file_dict, mimetype=mimetype)
 
-
-
     # this should have already happened, lets see why it hasn't
     raw_document.is_processed = True
     raw_document.save()
 
     note = raw_document.convert_to_note()
+
+    # Cache the uploaded file's URL
+    note.gdrive_url = file_dict['alternateLink']
 
     if raw_document.mimetype == PDF_MIMETYPE:
         note.html = pdf2html(original_content)
