@@ -8,8 +8,8 @@ import twitter
 import logging
 import gdshortener
 
+logging.basicConfig()
 logger = logging.getLogger(__name__)
-logger.basicConfig()
 
 @task(name="tweet_note")
 def tweet_note():
