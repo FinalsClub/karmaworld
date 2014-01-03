@@ -23,6 +23,7 @@ from lxml.html import fromstring, tostring
 from taggit.managers import TaggableManager
 
 from karmaworld.apps.courses.models import Course
+from karmaworld.apps.licenses.models import License
 import karmaworld.apps.notes.search as search
 
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
@@ -39,12 +40,17 @@ def _choose_upload_to(instance, filename):
 class Document(models.Model):
     """ An Abstract Base Class representing a document
         intended to be subclassed
-
     """
     course          = models.ForeignKey(Course)
     tags            = TaggableManager(blank=True)
     name            = models.CharField(max_length=255, blank=True, null=True)
     slug            = models.SlugField(max_length=255, null=True)
+
+    # license if different from default
+    license         = models.ForeignKey(License, blank=True, null=True)
+
+    # provide an upstream file link
+    upstream_link   = models.URLField(max_length=1024, blank=True, null=True)
 
     # metadata relevant to the Upload process
     user            = models.ForeignKey('users.KarmaUser', blank=True, null=True, on_delete=SET_NULL)

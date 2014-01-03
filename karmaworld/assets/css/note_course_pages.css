@@ -12,7 +12,7 @@
   margin-right: 3px;
 }
 
-#note_status
+#note_status, #note_pedigree
 {
   text-align: center;
   padding-top: 10px;

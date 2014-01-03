@@ -66,6 +66,14 @@
         </div><!-- /note_actions -->
       </div>
 
+      {% if note.license %}
+      <div class="row">
+        <div id="note_pedigree" class="twelve columns activity_details_status">
+          {{ note.license.html|safe }} {% if note.upstream_link %}<a href="{{note.upstream_link}}" target="_blank">{{ note.upstream_link }}</a>{% endif %}
+        </div><!-- /note_pedigree -->
+      </div>
+      {% endif %}
+
       </div><!-- /course_header -->
 
       {% if pdf_controls %}
