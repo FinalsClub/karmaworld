@@ -118,6 +118,19 @@ access token key and secret are needed by the software.
 
 If the required files are not found, then no errors will occur.
 
+To set this up, create a new Twitter application at https://dev.twitter.com/apps/new.
+Make sure this application has read/write access. Generate an access token. Go to your
+OAuth settings, and grab the "Consumer key", "Consumer secret", "Access token", and
+"Access token secret".
+
+Create a file at karmaworld/secret/twitter.py, and enter these tokens. For example,
+```
+CONSUMER_KEY = '???'
+CONSUMER_SECRET = '???'
+ACCESS_TOKEN_KEY = '???'
+ACCESS_TOKEN_SECRET = '???'
+```
+
 # Development Install
 
 If you need to setup the project for development, it is highly recommend that
