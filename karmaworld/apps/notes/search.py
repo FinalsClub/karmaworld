@@ -8,6 +8,7 @@ import karmaworld.secret.indexden as secret
 
 import logging
 
+logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 api_client = itc.ApiClient(secret.PRIVATE_URL)

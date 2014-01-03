@@ -22,7 +22,7 @@
 
     <div class="note_preview">
       {% if note_preview %}
-        {{ note_preview|safe }} &hellip;
+        {{ note_preview|safe }}
       {% else %}
         {{ note.text|slice:":500" }} &hellip;
       {% endif %}
