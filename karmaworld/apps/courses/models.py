@@ -28,6 +28,7 @@ class School(models.Model):
     file_count  = models.IntegerField(default=0)
     priority    = models.BooleanField(default=0)
     alias       = models.CharField(max_length=255, null=True, blank=True)
+    hashtag     = models.CharField(max_length=16, null=True, blank=True, help_text='School abbreviation without #')
 
     class Meta:
         """ Sort School by file_count descending, name abc=> """

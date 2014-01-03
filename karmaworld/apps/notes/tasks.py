@@ -26,7 +26,7 @@ def tweet_note():
                       access_token_key=secrets.ACCESS_TOKEN_KEY,
                       access_token_secret=secrets.ACCESS_TOKEN_SECRET)
 
-    newest_notes = Note.objects.all()[:100]
+    newest_notes = Note.objects.all().order_by('-uploaded_at')[:100]
     for n in newest_notes:
         if not n.tweeted:
             update = tweet_string(n)
@@ -45,26 +45,21 @@ def tweet_note():
 def tweet_string(note):
     # This url will use 13 or less characters
     shortener = gdshortener.ISGDShortener()
-    url = "https://www.karmanotes.org" + \
+    url = "http://www.karmanotes.org" + \
         note.get_absolute_url()
     short_url = shortener.shorten(url)[0]
-
-    # space character
-
-    # 16 characters
-    school = note.course.school.slug
-    short_school = school[:school.find('-')][:16]
-
-    # space character
 
     # 50 characters
     short_course = note.course.name[:50]
 
-    # space and colon characters
-
     # 57 characters
     short_note = note.name[:57]
 
-    return short_url + " #" + short_school + " " + \
+    if note.course.school.hashtag:
+        return short_url + " #" + note.course.school.hashtag + " " + \
         short_course + ": " + \
         short_note
+    else:
+        return short_url + " " + \
+            short_course + ": " + \
+            short_note
