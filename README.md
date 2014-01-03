@@ -82,6 +82,18 @@ That workaround is repeated here. Make the following changes to
     location /assets/ {
         root /var/www/karmaworld/karmaworld/;
     }
+    
+### IndexDen
+KarmaNotes uses IndexDen to create a searchable index of all the notes
+in the system. Create an free IndexDen account at [their homepage](http://indexden.com/).
+You will be given a private URL that accesses your IndexDen account.
+Create a file at karmaworld/secret/indexden.py, and enter your private URL, and the name
+of the index you want KarmaNotes to use. The index will be created automatically when
+KarmaNotes is run if it doesn't already exist. For example,
+```
+PRIVATE_URL = 'http://:secretsecret@secret.api.indexden.com'
+INDEX = 'karmanotes_something_something'
+```
 
 ### Google Drive
 This software uses [Google Drive](https://developers.google.com/drive/) to
