@@ -154,6 +154,9 @@ forwards to your virtual machine's web site.
 
 ## Completing the Virtual Machine with Fabric
 
+*Notice* Fabric might not run properly if you presently in a virtualenv.
+`deactivate` prior to running fab commands.
+
 1. On the virtual machine, type `cd karmanotes` to get into the code repository.
 
 1. In the code repo of the VM, type `fab -H 127.0.0.1 first_deploy`
