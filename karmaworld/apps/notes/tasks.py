@@ -9,7 +9,7 @@ import logging
 import gdshortener
 
 logger = logging.getLogger(__name__)
-
+logger.basicConfig()
 
 @task(name="tweet_note")
 def tweet_note():
