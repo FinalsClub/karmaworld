@@ -14,13 +14,15 @@
 
   <div id="results_header" class="hero_gradient_bar">
 
-    <div class="row">
-      <div class="twelve columns header_subhead">
-        <a href="{{ course.get_absolute_url}}">
-          <i class="fa fa-arrow-left"></i>&nbsp;back to {{ course.name }}
-        </a>
+    {% if course %}
+      <div class="row">
+        <div class="twelve columns header_subhead">
+          <a href="{{ course.get_absolute_url}}">
+            <i class="fa fa-arrow-left"></i>&nbsp;back to {{ course.name }}
+          </a>
+        </div>
       </div>
-    </div>
+    {% endif %}
 
     <div class="row">
       <div class="small-12 columns header_subhead">
@@ -62,6 +64,19 @@
             <h4>Sorry! No results were found.</h4>
           </div>
         {% endif %}
+    </div>
+
+    <div id="search_nav_buttons" class="row">
+      <div class="small-12 columns center">
+        {% if has_prev %}
+          <a href="{% url 'note_search' %}?query={{ query|urlencode }}&course_id={{ course.id }}&page={{ prev_page }}">
+            <i class="fa fa-caret-left"></i>&nbsp;Previous</a>
+        {% endif %}
+        {% if has_next %}
+          <a href="{% url 'note_search' %}?query={{ query|urlencode }}&course_id={{ course.id }}&page={{ next_page }}">
+            Next&nbsp;<i class="fa fa-caret-right"></i></a>
+        {% endif %}
+      </div>
     </div>
   </div><!-- /course_container -->
 

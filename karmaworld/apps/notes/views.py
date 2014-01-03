@@ -157,16 +157,25 @@ class NoteSearchView(ListView):
         if not 'query' in self.request.GET:
             return Note.objects.none()
 
-        if 'course_id' in self.request.GET:
-            matching_notes = search.search(self.request.GET['query'],
-                                              self.request.GET['course_id'])
+        if 'page' in self.request.GET:
+            page = int(self.request.GET['page'])
         else:
-            matching_notes = search.search(self.request.GET['query'])
+            page = 0
 
-        instances = Note.objects.filter(id__in=matching_notes.viewkeys())
+        if 'course_id' in self.request.GET:
+            raw_results = search.search(self.request.GET['query'],
+                                              self.request.GET['course_id'],
+                                              page=page)
+        else:
+            raw_results = search.search(self.request.GET['query'],
+                                        page=page)
+
+        instances = Note.objects.in_bulk(raw_results.ordered_ids)
         results = []
-        for i in instances:
-            results.append((i, matching_notes[str(i.id)]))
+        for id in raw_results.ordered_ids:
+            if id in instances:
+                results.append((instances[id], raw_results.snippet_dict[id]))
+        self.has_more = raw_results.has_more
 
         return results
 
@@ -176,6 +185,22 @@ class NoteSearchView(ListView):
 
         if 'course_id' in self.request.GET:
             kwargs['course'] = Course.objects.get(id=self.request.GET['course_id'])
+
+        # If query returned more search results than could
+        # fit on one page, show "Next" button
+        if self.has_more:
+            kwargs['has_next'] = True
+            if 'page' in self.request.GET:
+                kwargs['next_page'] = int(self.request.GET['page']) + 1
+            else:
+                kwargs['next_page'] = 1
+
+        # If the user is looking at a search result page
+        # that isn't the first one, show "Prev" button
+        if 'page' in self.request.GET and \
+            int(self.request.GET['page']) > 0:
+            kwargs['has_prev'] = True
+            kwargs['prev_page'] = int(self.request.GET['page']) - 1
 
         return super(NoteSearchView, self).get_context_data(**kwargs)
 
