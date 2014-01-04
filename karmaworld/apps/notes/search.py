@@ -55,6 +55,7 @@ def note_to_dict(note):
 
 def add_document(note):
     if note.text:
+        logger.info("Indexing {n}".format(n=note))
         index.add_document(note.id, note_to_dict(note), variables={0: note.thanks})
     else:
         logger.warn("Note {n} has no text, will not add to IndexDen".format(n=note))

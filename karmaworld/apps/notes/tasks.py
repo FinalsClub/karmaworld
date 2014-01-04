@@ -2,14 +2,14 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2013  FinalsClub Foundation
 
+import traceback
 from celery import task
+from celery.utils.log import get_task_logger
 from karmaworld.apps.notes.models import Note
 import twitter
-import logging
 import gdshortener
 
-logging.basicConfig()
-logger = logging.getLogger(__name__)
+logger = get_task_logger(__name__)
 
 @task(name="tweet_note")
 def tweet_note():
@@ -21,25 +21,28 @@ def tweet_note():
         logger.warn("No twitter secrets found, not running tweet_note")
         return
 
-    api = twitter.Api(consumer_key=secrets.CONSUMER_KEY,
-                      consumer_secret=secrets.CONSUMER_SECRET,
-                      access_token_key=secrets.ACCESS_TOKEN_KEY,
-                      access_token_secret=secrets.ACCESS_TOKEN_SECRET)
+    try:
+        api = twitter.Api(consumer_key=secrets.CONSUMER_KEY,
+                          consumer_secret=secrets.CONSUMER_SECRET,
+                          access_token_key=secrets.ACCESS_TOKEN_KEY,
+                          access_token_secret=secrets.ACCESS_TOKEN_SECRET)
 
-    newest_notes = Note.objects.all().order_by('-uploaded_at')[:100]
-    for n in newest_notes:
-        if not n.tweeted:
-            update = tweet_string(n)
-            logger.info("Tweeting: " + update)
+        newest_notes = Note.objects.all().order_by('-uploaded_at')[:100]
+        for n in newest_notes:
+            if not n.tweeted:
+                update = tweet_string(n)
+                logger.info("Tweeting: " + update)
 
-            # Mark this tweeted before we actually tweet it
-            # to be extra safe against double tweets
-            n.tweeted = True
-            n.save()
+                # Mark this tweeted before we actually tweet it
+                # to be extra safe against double tweets
+                n.tweeted = True
+                n.save()
 
-            api.PostUpdate(tweet_string(n))
+                api.PostUpdate(tweet_string(n))
 
-            break
+                break
+    except:
+        logger.error(traceback.format_exc())
 
 
 def tweet_string(note):

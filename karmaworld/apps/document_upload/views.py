@@ -16,7 +16,6 @@ def save_fp_upload(request):
     if r_d_f.is_valid():
         raw_document = r_d_f.save(commit=False)
 
-        print request.POST.keys()
         time_a = datetime.datetime.now()
         raw_document.fp_file = request.POST['fp_file']
 
