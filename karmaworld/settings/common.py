@@ -283,6 +283,12 @@ COMPRESS_JS_FILTERS = [
 ]
 ########## END COMPRESSION CONFIGURATION
 
+########## SESSION CONFIGURATION
+
+SESSION_COOKIE_AGE = 63072000    # 2 years in seconds
+
+########## END SESSION CONFIGURATION
+
 ########## TAGGIT CONFIGURATION
 # From https://github.com/yedpodtrzitko/django-taggit
 

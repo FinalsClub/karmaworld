@@ -39,6 +39,11 @@ def is_ppt(self):
         return True
     return False
 
+def format_session_increment_field(id, field):
+    return field + '-' + str(id)
+
+THANKS_FIELD = 'thanks'
+FLAG_FIELD = 'flags'
 
 class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
@@ -58,6 +63,12 @@ class NoteDetailView(DetailView):
 
         if self.object.mimetype == 'application/pdf':
             kwargs['pdf_controls'] = True
+
+        if self.request.session.get(format_session_increment_field(self.object.id, THANKS_FIELD), False):
+            kwargs['already_thanked'] = True
+
+        if self.request.session.get(format_session_increment_field(self.object.id, FLAG_FIELD), False):
+            kwargs['already_flagged'] = True
 
         return super(NoteDetailView, self).get_context_data(**kwargs)
 
@@ -213,9 +224,14 @@ def ajaxIncrementBase(request, pk, field):
                                     mimetype="application/json")
 
     try:
+        # Increment counter
         note = Note.objects.get(pk=pk)
         note.__dict__[field] += 1
         note.save()
+
+        # Record that user has performed this, to prevent
+        # them from doing it again
+        request.session[format_session_increment_field(pk, field)] = True
     except ObjectDoesNotExist:
         return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'note id does not match a note'}),
                                     mimetype="application/json")
@@ -224,10 +240,10 @@ def ajaxIncrementBase(request, pk, field):
 
 def thank_note(request, pk):
     """Record that somebody has thanked a note."""
-    return ajaxIncrementBase(request, pk, 'thanks')
+    return ajaxIncrementBase(request, pk, THANKS_FIELD)
 
 def flag_note(request, pk):
     """Record that somebody has flagged a note."""
-    return ajaxIncrementBase(request, pk, 'flags')
+    return ajaxIncrementBase(request, pk, FLAG_FIELD)
 
 
