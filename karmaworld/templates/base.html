@@ -31,18 +31,32 @@
   <!-- end block pagescripts -->
 
   <script type="text/javascript">
+    if (document.location.host === 'www.karmanotes.org' ||
+        document.location.host === 'karmanotes.org') {
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-36897868-1']);
+      _gaq.push(['_setDomainName', 'karmanotes.org']);
+      _gaq.push(['_trackPageview']);
 
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-36897868-1']);
-    _gaq.push(['_setDomainName', 'karmanotes.org']);
-    _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+      }
+  </script>
 
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+  <script type='text/javascript'>
+    if (document.location.host === 'www.karmanotes.org' ||
+        document.location.host === 'karmanotes.org') {
+      window.__wtw_lucky_site_id = 17613;
 
+      (function() {
+        var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
+        wa.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://ca17613') + '.luckyorange.com/w.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
+        })();
+      }
   </script>
 
 	
