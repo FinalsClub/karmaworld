@@ -8,7 +8,7 @@
 """
 import datetime
 from django.db.models import SET_NULL
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 import os
 import urllib
@@ -24,7 +24,7 @@ from taggit.managers import TaggableManager
 
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.licenses.models import License
-import karmaworld.apps.notes.search as search
+from karmaworld.apps.notes.search import SearchIndex
 
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
 
@@ -229,19 +229,28 @@ def update_note_counts(note_instance):
         note_instance.course.update_note_count()
         note_instance.course.school.update_note_count()
 
+@receiver(pre_save, sender=Note, weak=False)
+def note_pre_save_receiver(sender, **kwargs):
+    """Stick an instance of the pre-save value of
+    the given Note instance in the instances itself.
+    This will be looked at in post_save."""
+    if not 'instance' in kwargs:
+        return
+
+    kwargs['instance'].old_instance = Note.objects.get(id=kwargs['instance'].id)
+
 @receiver(post_save, sender=Note, weak=False)
 def note_save_receiver(sender, **kwargs):
     if not 'instance' in kwargs:
         return
     note = kwargs['instance']
 
-    # Update course and school counts of how
-    # many notes they have
+    index = SearchIndex()
     if kwargs['created']:
         update_note_counts(note)
-
-    # Add or update document in search index
-    search.add_document(note)
+        index.add_note(note)
+    else:
+        index.update_note(note, note.old_instance)
 
 
 @receiver(post_delete, sender=Note, weak=False)
@@ -255,4 +264,5 @@ def note_delete_receiver(sender, **kwargs):
     update_note_counts(kwargs['instance'])
 
     # Remove document from search index
-    search.remove_document(note)
+    index = SearchIndex()
+    index.remove_note(note)

@@ -1,22 +1,20 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
+
 import json
 from django.core.exceptions import ObjectDoesNotExist
 from karmaworld.apps.courses.models import Course
-from karmaworld.apps.notes import search
+from karmaworld.apps.notes.search import SearchIndex
 
 import os
 
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views.generic import DetailView, ListView
 from django.views.generic import FormView
 from django.views.generic import View
-from django.views.generic import TemplateView
 from django.views.generic.detail import SingleObjectMixin
-from django.shortcuts import get_object_or_404, render_to_response
 
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.forms import NoteForm
@@ -173,12 +171,14 @@ class NoteSearchView(ListView):
         else:
             page = 0
 
+        index = SearchIndex()
+
         if 'course_id' in self.request.GET:
-            raw_results = search.search(self.request.GET['query'],
+            raw_results = index.search(self.request.GET['query'],
                                               self.request.GET['course_id'],
                                               page=page)
         else:
-            raw_results = search.search(self.request.GET['query'],
+            raw_results = index.search(self.request.GET['query'],
                                         page=page)
 
         instances = Note.objects.in_bulk(raw_results.ordered_ids)
