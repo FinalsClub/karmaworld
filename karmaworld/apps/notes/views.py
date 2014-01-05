@@ -20,11 +20,10 @@ from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.forms import NoteForm
 
 
-ZOOM_MIMETYPES = (
+PDF_MIMETYPES = (
     'application/pdf',
-    'image/jpeg',
-    'image/png',
-    'image/tiff'
+    'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation'
 )
 
 def is_pdf(self):
@@ -58,8 +57,7 @@ class NoteDetailView(DetailView):
         kwargs['pdf'] = is_pdf(self)
         kwargs['ppt'] = is_ppt(self)
 
-
-        if self.object.mimetype == 'application/pdf':
+        if self.object.mimetype in PDF_MIMETYPES:
             kwargs['pdf_controls'] = True
 
         if self.request.session.get(format_session_increment_field(self.object.id, THANKS_FIELD), False):
