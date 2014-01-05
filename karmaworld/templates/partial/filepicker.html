@@ -109,8 +109,11 @@
         $(_form.children[0].children[3].children[1]).val(upFile.mimetype);
 
         document.getElementById('forms_container').appendChild(_form);
-        
-        _gat._getTracker()._trackEvent('upload', 'filepicker file drop');
+
+        if (document.location.host === 'www.karmanotes.org' ||
+          document.location.host === 'karmanotes.org') {
+          _gat._getTracker()._trackEvent('upload', 'filepicker file drop');
+        }
 
         $('.remove').on('click', function(e){
             e.stopPropagation();
@@ -154,7 +157,10 @@
                 $('#success').show();
                 $('#save-btn-wrapper').hide();
                 $('#forms_container .inline-form').remove();
-                _gat._getTracker()._trackEvent('upload', 'upload form submitted');
+                if (document.location.host === 'www.karmanotes.org' ||
+                  document.location.host === 'karmanotes.org') {
+                  _gat._getTracker()._trackEvent('upload', 'upload form submitted');
+                }
                 setTimeout(function(){
                   location.reload(true);
                 }, 15000);

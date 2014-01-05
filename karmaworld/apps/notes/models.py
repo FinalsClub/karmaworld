@@ -7,6 +7,7 @@
     Contains only the minimum for handling files and their representation
 """
 import datetime
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import SET_NULL
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
@@ -237,7 +238,10 @@ def note_pre_save_receiver(sender, **kwargs):
     if not 'instance' in kwargs:
         return
 
-    kwargs['instance'].old_instance = Note.objects.get(id=kwargs['instance'].id)
+    try:
+        kwargs['instance'].old_instance = Note.objects.get(id=kwargs['instance'].id)
+    except ObjectDoesNotExist:
+        pass
 
 @receiver(post_save, sender=Note, weak=False)
 def note_save_receiver(sender, **kwargs):

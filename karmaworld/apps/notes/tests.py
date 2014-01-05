@@ -13,7 +13,7 @@ secret.INDEX = uuid.uuid4().hex
 
 import datetime
 from django.test import TestCase
-from karmaworld.apps.notes import search
+from karmaworld.apps.notes.search import SearchIndex
 
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.courses.models import Course
@@ -109,12 +109,14 @@ class TestNoes(TestCase):
     def test_search_index(self):
         """Search for a note within IndexDen"""
 
+        index = SearchIndex()
+
         # Search for it
-        results = search.search('alpaca')
-        self.assertIn(str(self.note.id), results)
+        results = index.search('alpaca')
+        self.assertIn(self.note.id, results.ordered_ids)
 
         # Search for it, filtering by course
-        results = search.search('alpaca', self.note.course.id)
-        self.assertIn(str(self.note.id), results)
+        results = index.search('alpaca', self.note.course.id)
+        self.assertIn(self.note.id, results.ordered_ids)
 
 
