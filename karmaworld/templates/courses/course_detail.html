@@ -35,7 +35,15 @@
       <div class="row">
         <div id="course_meta" class="twelve columns">
           <div class="activity_details_context">
-            {{ course.instructor_name }} // {{ course.school.name }}
+            {{ course.instructor_name }} {% if course.department %}// {{ course.department.name }}{% endif %}
+          </div><!-- /activity_details_context -->
+        </div><!-- /course_meta -->
+      </div>
+
+      <div class="row">
+        <div id="course_meta" class="twelve columns">
+          <div class="activity_details_context">
+            {{ course.school.name }}
           </div><!-- /activity_details_context -->
         </div><!-- /course_meta -->
       </div>

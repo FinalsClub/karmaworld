@@ -10,6 +10,7 @@ from apps.notes.models import Note
 from apps.notes.gdrive import convert_raw_document
 from apps.courses.models import Course
 from apps.courses.models import School
+from apps.courses.models import Department
 from apps.licenses.models import License
 from apps.document_upload.models import RawDocument
 from django.core.management.base import BaseCommand
@@ -63,21 +64,32 @@ class Command(BaseCommand):
             with open(filename, 'r') as jsondata:
                 # parse JSON into python
                 parsed = json.load(jsondata)
+
+                # find the department or create one.
+                dept_info = {
+                    'name': parsed['subject'],
+                    'school': dbschool,
+                    'url': parsed['departmentLink'],
+                }
+                dbdept = Department.objects.get_or_create(**dept_info)[0]
+
                 # process courses
                 for course in parsed['courses']:
-
                     # Extract the course info
                     course_info = {
                       'name': course['courseTitle'],
                       'instructor_name': course['professor'],
                       'school': dbschool,
-                      # courseLink is "course-number-name-semester-year"
-                      'academic_year': \
-                        int(course['courseLink'].split('-')[-1])
                     }
                     # Create or Find the Course object.
                     dbcourse = Course.objects.get_or_create(**course_info)[0]
+                    dbcourse.department = dbdept;
+                    dbcourse.save()
                     print "Course is in the database: {0}".format(dbcourse.name)
+
+                    if 'noteLinks' not in course:
+                        print "No Notes in course."
+                        continue
 
                     # process notes for each course
                     for note in course['noteLinks']:

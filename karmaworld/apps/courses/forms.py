@@ -9,6 +9,6 @@ from karmaworld.apps.courses.models import Course
 class CourseForm(ModelForm):
     class Meta:
         model = Course
-        fields = ('name', 'school', 'desc', 'url', 'instructor_name', \
-                'instructor_email')
+        fields = ('name', 'school', 'url', 'instructor_name', \
+                  'instructor_email')
 

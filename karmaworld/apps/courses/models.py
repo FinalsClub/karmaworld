@@ -56,18 +56,37 @@ class School(models.Model):
         self.save()
 
 
+class Department(models.Model):
+    """ Department within a School. """
+    name        = models.CharField(max_length=255)
+    school      = models.ForeignKey(School) # Should this be optional ever?
+    slug        = models.SlugField(max_length=150, null=True)
+    url         = models.URLField(max_length=511, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        """ Save department and generate a slug if one doesn't exist """
+        if not self.slug:
+            self.slug = defaultfilters.slugify(self.name)
+        super(Department, self).save(*args, **kwargs)
+
+
 class Course(models.Model):
     """ First class object that contains many notes.Note objects """
     # Core metadata
     name        = models.CharField(max_length=255)
     slug        = models.SlugField(max_length=150, null=True)
-    school      = models.ForeignKey(School) # Should this be optional ever?
+    # department should remove nullable when school gets yoinked
+    department  = models.ForeignKey(Department, blank=True, null=True)
+    # school is an appendix: the kind that gets swollen and should be removed
+    # (vistigial)
+    school      = models.ForeignKey(School) 
     file_count  = models.IntegerField(default=0)
 
     desc        = models.TextField(max_length=511, blank=True, null=True)
     url         = models.URLField(max_length=511, blank=True, null=True)
-    academic_year   = models.IntegerField(blank=True, null=True, 
-                        default=datetime.datetime.now().year)
 
     instructor_name     = models.CharField(max_length=255, blank=True, null=True)
     instructor_email    = models.EmailField(blank=True, null=True)

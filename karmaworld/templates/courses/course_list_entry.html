@@ -4,7 +4,7 @@
   <td class="note-count small-4 columns large-2 large-offset-2 slim">{{ course.file_count }}</td>
 
   <td class="course-name small-12 large-5 columns">
-    <a class="" href="{{ course.get_absolute_url }}">{{ course.name }}</a> 
+    <a class="" href="{{ course.get_absolute_url }}">{% if course.department %}{{course.department.name}}: {% endif %}{{ course.name }}</a> 
   </td>
   <td class="upload hide-for-small large-1 column">
     <div class="upload">
