@@ -81,39 +81,40 @@ class Command(BaseCommand):
 
                     # process notes for each course
                     for note in course['noteLinks']:
-                        # Check to see if the Note is already there.
-                        if len(RawDocument.objects.filter(upstream_link=note['link'])):
+                        # Check to see if the Note is already uploaded.
+                        if len(Note.objects.filter(upstream_link=note['link'])):
                             print "Already there, moving on: {0}".format(note['link'])
                             continue
 
-                        # Download the note into memory.
-                        print "Downloading {0}".format(note['link'])
-                        dlresp = requests.get(note['link'])
-                        # Check there weren't any problems
-                        dlresp.raise_for_status()
+                        # Upload URL of note to Filepicker if it is not already
+                        # in RawDocument.
+                        rd_test = RawDocument.objects.filter(upstream_link=note['link'])
+                        if not len(rd_test):
+                            # https://developers.inkfilepicker.com/docs/web/#inkblob-store
+                            print "Uploading link {0} to FP.".format(note['link'])
+                            ulresp = requests.post(fpurl, data={
+                              'url': note['link'],
+                            })
+                            ulresp.raise_for_status()
+                            # Filepicker returns JSON, so use that
+                            uljson = ulresp.json()
 
-                        # Upload raw contents of note to Filepicker
-                        # https://developers.inkfilepicker.com/docs/web/#inkblob-store
-                        print "Uploading to FP."
-                        ulresp = requests.post(fpurl, files={
-                          #'fileUpload': (note['fileName'], dlresp.raw)
-                          'fileUpload': dlresp.raw,
-                        })
-                        ulresp.raise_for_status()
-                        # Filepicker returns JSON, so use that
-                        uljson = ulresp.json()
-
-                        print "Saving raw document to database."
-                        # Extract the note info
-                        dbnote = RawDocument()
-                        dbnote.course = dbcourse
-                        dbnote.name = note['fileName']
-                        dbnote.license = dblicense
-                        dbnote.upstream_link = note['link']
-                        dbnote.fp_file = uljson['url']
-                        dbnote.mimetype = uljson['type']
-                        # Create the RawDocument object.
-                        dbnote.save()
+                            print "Saving raw document to database."
+                            # Extract the note info
+                            dbnote = RawDocument()
+                            dbnote.course = dbcourse
+                            dbnote.name = note['fileName']
+                            dbnote.license = dblicense
+                            dbnote.upstream_link = note['link']
+                            dbnote.fp_file = uljson['url']
+                            dbnote.mimetype = uljson['type']
+                            dbnote.is_processed = True # hack to bypass celery
+                            # Create the RawDocument object.
+                            dbnote.save()
+                        else:
+                            # Find the right RawDocument
+                            print "Already uploaded link {0} to FP.".format(note['link'])
+                            dbnote = rd_test[0]
 
                         # Do tags separately
                         dbnote.tags.add('mit-ocw','karma')

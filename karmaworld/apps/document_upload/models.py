@@ -25,15 +25,20 @@ class RawDocument(Document):
 
     def convert_to_note(self):
         """ polymorph this object into a note.models.Note object  """
-        note = Note(
-                course=self.course,
-                name=self.name,
-                slug=self.slug,
-                ip=self.ip,
-                uploaded_at=self.uploaded_at,
-                fp_file=self.fp_file,
-                user=self.user,
-                mimetype=self.mimetype)
+        # TODO move this to Note. superclasses should not care about subclasses,
+        # but subclasses should care about parents.
+
+        # Note inherits all fields of Document as does RawDocument.
+        # Dynamically refer to all fields of RawDocument found within Document
+        # and also Note.
+        initdict = {}
+        for field in Document._meta.get_all_field_names():
+            if field in ('tags',):
+                # TaggableManager does not play well with init()
+                continue
+            initdict[field] = getattr(self,field)
+        # Create a new Note using all fields from the Document
+        note = Note(**initdict)
         note.save()
         for tag in self.tags.all():
             note.tags.add(tag)
