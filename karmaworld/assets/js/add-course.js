@@ -38,11 +38,6 @@ $(function() {
   // page header
   $('#add_course_header_button').click(addCourse);
 
-  // Dismiss on exit x click FIXME
-  $(".lightbox_close").click(function() {
-    $(".modal_content").hide();
-  });
-
   $("#str_school").autocomplete({
     source: function(request, response){
       $.ajax({
