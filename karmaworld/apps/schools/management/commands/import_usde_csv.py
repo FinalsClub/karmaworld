@@ -2,7 +2,7 @@ import csv
 from itertools import izip
 
 from django.core.management.base import BaseCommand
-from karmaworld.apps.courses.models import School
+from karmaworld.apps.schools.models import School
 
 
 class Command(BaseCommand):

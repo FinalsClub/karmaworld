@@ -17,7 +17,7 @@ from karmaworld.apps.notes.search import SearchIndex
 
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.courses.models import Course
-from karmaworld.apps.courses.models import School
+from karmaworld.apps.schools.models import School
 import indextank.client as itc
 
 class TestNoes(TestCase):

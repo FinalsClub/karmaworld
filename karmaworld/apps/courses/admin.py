@@ -5,7 +5,6 @@
 
 from django.contrib import admin
 
-from karmaworld.apps.courses.models import School
 from karmaworld.apps.courses.models import Course
 
 class CourseAdmin(admin.ModelAdmin):
@@ -15,5 +14,4 @@ class CourseAdmin(admin.ModelAdmin):
         'fk': ['school']
     }
 
-admin.site.register(School)
 admin.site.register(Course, CourseAdmin)

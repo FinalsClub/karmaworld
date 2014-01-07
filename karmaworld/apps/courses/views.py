@@ -17,7 +17,7 @@ from django.views.generic.list import ListView
 
 from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.courses.models import Course
-from karmaworld.apps.courses.models import School
+from karmaworld.apps.schools.models import School
 from karmaworld.apps.notes.models import Note
 
 

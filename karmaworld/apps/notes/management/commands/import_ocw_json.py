@@ -9,8 +9,8 @@ import requests
 from apps.notes.models import Note
 from apps.notes.gdrive import convert_raw_document
 from apps.courses.models import Course
-from apps.courses.models import School
-from apps.courses.models import Department
+from apps.schools.models import School
+from apps.schools.models import Department
 from apps.licenses.models import License
 from apps.document_upload.models import RawDocument
 from django.core.management.base import BaseCommand

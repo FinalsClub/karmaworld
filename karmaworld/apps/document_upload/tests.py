@@ -6,7 +6,8 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase, Client
-from karmaworld.apps.courses.models import School, Course
+from karmaworld.apps.courses.models import Course
+from karmaworld.apps.schools.models import School
 from karmaworld.apps.document_upload.forms import RawDocumentForm
 from karmaworld.apps.notes.gdrive import *
 from karmaworld.apps.notes.models import Note
