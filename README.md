@@ -305,6 +305,27 @@ not generally be needed.
 
 # Accessing the Vagrant Virtual Machine
 
+## Accessing the VM via Fabric
+If you have Fabric on the host machine, you can configure your host machine
+to run Fabric against the virtual machine.
+
+You will need to setup the host machine with the proper SSH credentials to
+access the virtual machine. This is done by running `vagrant ssh-config` from
+`{project_root}`.
+
+The VM will, by default, route its SSH connection through localhost port 2222
+on the host machine and the base user with be vagrant. Point Fabric there when
+running fab commands from `{project_root}`. So the command will look like this:
+
+        fab -H 127.0.0.1 --port=2222 -u vagrant <commands>
+
+In unix, it might be convenient to create and use an alias like so:
+
+        alias vmfab='fab -H 127.0.0.1 --port=2222 -u vagrant'
+        vmfab <commands>
+
+Removing a unix alias is done with `unalias`.
+
 ## Connecting to the VM via SSH
 If you have installed a virtual machine using `vagrant up`, you can connect
 to it by running `vagrant ssh` from `{project_root}`.
