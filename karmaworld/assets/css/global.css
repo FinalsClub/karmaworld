@@ -526,7 +526,7 @@ a.activity_target:hover
 }
 
 .add-note-btn:before {
-  content="<i class='icon-upload'></i>";
+  content="<i class='fa fa-arrow-circle-o-up'></i>";
 }
 .add-note-btn:hover {
   background-color: white;

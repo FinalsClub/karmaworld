@@ -1,5 +1,4 @@
 {% load url from future %}
-{% include 'partial/opentip.html' %}
 <section id=filepicker-form class="extend-form">
 <!-- Javascript -->
 <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
@@ -11,7 +10,7 @@
           data-fp-multiple="true"
           data-fp-folders="true"
           data-fp-button-class="add-note-btn small-10 columns large-4"
-          data-fp-button-text="<i class=icon-upload></i> add notes"
+          data-fp-button-text="<i class='fa fa-arrow-circle-o-up'></i> add notes"
           data-fp-drag-text="Drop Some Knowledge"
           data-fp-drag-class="dragdrop show-for-medium-up large-7 columns"
           data-fp-mimetypes="*/*"
@@ -47,7 +46,7 @@
                 placeholder="shakespeare, econ, physics">
         </div>
         <div class="show-for-small columns small-1 end">
-          <i class="icon-remove-sign awesome-action remove"></i>
+          <i class="fa fa-times-circle awesome-action remove"></i>
         </div>
         <div class="hidden-fields" style="display:none;">
           <input type="text" id="id_fpfile" name="fpfile" class="fpurl">
@@ -58,7 +57,7 @@
           <input type="text" class="csrf" value='{{ csrf_token }}'>
         </div>
         <div class="show-for-medium-up columns large-1 end">
-          <i class="icon-remove-sign awesome-action remove" id="icon-remove-sign"></i>
+          <i class="fa fa-times-circle awesome-action remove" id="icon-remove-sign"></i>
         </div>
       </form>
     </div>
@@ -77,7 +76,7 @@
         <div class="row">
           <div class="small-8 large-6 columns">
             <div id="save-btn" class="action-btn">
-              <i class=icon-save></i> Save
+              <i class="fa fa-save"></i> Save
             </div>
           </div>
         </div>
