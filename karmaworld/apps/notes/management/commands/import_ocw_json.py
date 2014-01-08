@@ -107,25 +107,39 @@ class Command(BaseCommand):
                         professor=dbprof,
                         course=dbcourse)
 
-                    if 'noteLinks' not in course:
+                    if 'noteLinks' not in course or not course['noteLinks']:
                         print "No Notes in course."
                         continue
 
                     # process notes for each course
                     for note in course['noteLinks']:
                         # Check to see if the Note is already uploaded.
-                        if len(Note.objects.filter(upstream_link=note['link'])):
-                            print "Already there, moving on: {0}".format(note['link'])
+                        url = note['link']
+                        dbnote = Note.objects.filter(upstream_link=url)
+                        if len(dbnote) > 2:
+                            print "WARNING Skipping Note: Too many notes for {0}".format(url)
                             continue
+                        if len(dbnote) == 1:
+                            dbnote = dbnote[0]
+                            if dbnote.text and len(dbnote.text) or \
+                               dbnote.html and len(dbnote.html):
+                                print "Already there, moving on: {0}".format(url)
+                                continue
+                            else:
+                                # Partially completed note. Remove it and try
+                                # again.
+                                dbnote.tags.set() # clear tags
+                                dbnote.delete() # delete note
+                                print "Found and removed incomplete note {0}.".format(url)
 
                         # Upload URL of note to Filepicker if it is not already
                         # in RawDocument.
-                        rd_test = RawDocument.objects.filter(upstream_link=note['link'])
+                        rd_test = RawDocument.objects.filter(upstream_link=url)
                         if not len(rd_test):
                             # https://developers.inkfilepicker.com/docs/web/#inkblob-store
-                            print "Uploading link {0} to FP.".format(note['link'])
+                            print "Uploading link {0} to FP.".format(url)
                             ulresp = requests.post(fpurl, data={
-                              'url': note['link'],
+                              'url': url,
                             })
                             ulresp.raise_for_status()
                             # Filepicker returns JSON, so use that
@@ -137,7 +151,7 @@ class Command(BaseCommand):
                             dbnote.course = dbcourse
                             dbnote.name = note['fileName']
                             dbnote.license = dblicense
-                            dbnote.upstream_link = note['link']
+                            dbnote.upstream_link = url
                             dbnote.fp_file = uljson['url']
                             dbnote.mimetype = uljson['type']
                             dbnote.is_processed = True # hack to bypass celery
@@ -145,15 +159,28 @@ class Command(BaseCommand):
                             dbnote.save()
                         else:
                             # Find the right RawDocument
-                            print "Already uploaded link {0} to FP.".format(note['link'])
+                            print "Already uploaded link {0} to FP.".format(url)
                             dbnote = rd_test[0]
 
                         # Do tags separately
                         dbnote.tags.add('mit-ocw','karma')
 
                         print "Sending to GDrive and saving note to database."
-                        convert_raw_document(dbnote)
-                        print "This note is done."
-
+                        try:
+                            convert_raw_document(dbnote)
+                        except ValueError, e:
+                            # only catch one specific error
+                            if not str(e).startswith('PDF file could not be'):
+                                raise e
+                            # write the link to file.
+                            with open('pdferrors.log', 'a') as pdferrs:
+                                pdferrs.write(url + '\n')
+                            # delete the partial Note created in convert_raw_doc
+                            dbnote = Note.objects.filter(upstream_link=url)[0]
+                            dbnote.tags.set()
+                            dbnote.delete()
+                            print "This note errored, so it is removed :("
+                        else:
+                            print "This note is done."
 
                     print "Notes for {0} are done.".format(dbcourse.name)
