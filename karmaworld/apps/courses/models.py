@@ -19,6 +19,33 @@ from karmaworld.apps.schools.models import Department
 from karmaworld.apps.professors.models import Professor
 
 
+class Professor(models.Model):
+    """
+    Track professors for courses.
+    """
+    name = models.CharField(max_length=255)
+    email = models.EmailField(blank=True, null=True)
+
+    def __unicode__(self):
+        return u'Professor: {0}'.format(self.name)
+
+
+class ProfessorAffiliation(models.Model):
+    """
+    Track professors for departments. (many-to-many)
+    """
+    professor = models.ForeignKey(Professor)
+    department = models.ForeignKey(Department)
+
+    def __unicode__(self):
+        return u'Professor {0} working for {1}'.format(self.professor.name, self.department.name)
+
+    class Meta:
+        # many-to-many across both fields,
+        # but (prof, dept) as a tuple should only appear once.
+        unique_together = ('professor', 'department',)
+
+
 class Course(models.Model):
     """ First class object that contains many notes.Note objects """
     # Core metadata
@@ -34,6 +61,7 @@ class Course(models.Model):
     desc        = models.TextField(max_length=511, blank=True, null=True)
     url         = models.URLField(max_length=511, blank=True, null=True)
 
+    # instructor_* is vestigial, replaced by Professor+ProfessorTaught models.
     instructor_name     = models.CharField(max_length=255, blank=True, null=True)
     instructor_email    = models.EmailField(blank=True, null=True)
 
@@ -79,7 +107,24 @@ class Course(models.Model):
         self.save()
 
 
+class ProfessorTaught(models.Model):
+    """
+    Track professors teaching courses. (many-to-many)
+    """
+    professor = models.ForeignKey(Professor)
+    course = models.ForeignKey(Course)
+
+    def __unicode__(self):
+        return u'Professor {0} taught {1}'.format(self.professor.name, self.course.name)
+
+    class Meta:
+        # many-to-many across both fields,
+        # but (prof, course) as a tuple should only appear once.
+        unique_together = ('professor', 'course',)
+
+
 # Enforce unique constraints even when we're using a database like
 # SQLite that doesn't understand them
 auto_add_check_unique_together(Course)
-
+auto_add_check_unique_together(ProfessorAffiliation)
+auto_add_check_unique_together(ProfessorTaught)

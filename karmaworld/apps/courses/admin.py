@@ -5,7 +5,10 @@
 
 from django.contrib import admin
 
+from karmaworld.apps.courses.models import School
 from karmaworld.apps.courses.models import Course
+from karmaworld.apps.courses.models import Professor
+from karmaworld.apps.courses.models import ProfessorAffiliation
 
 class CourseAdmin(admin.ModelAdmin):
     """ an Admin handler for the Course model that handles fk search """
@@ -14,4 +17,7 @@ class CourseAdmin(admin.ModelAdmin):
         'fk': ['school']
     }
 
+admin.site.register(School)
+admin.site.register(Professor)
 admin.site.register(Course, CourseAdmin)
+admin.site.register(ProfessorAffiliation)

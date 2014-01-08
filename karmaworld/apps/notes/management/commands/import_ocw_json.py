@@ -9,8 +9,11 @@ import requests
 from apps.notes.models import Note
 from apps.notes.gdrive import convert_raw_document
 from apps.courses.models import Course
-from apps.schools.models import School
-from apps.schools.models import Department
+from apps.courses.models import School
+from apps.courses.models import Professor
+from apps.courses.models import Department
+from apps.courses.models import ProfessorTaught
+from apps.courses.models import ProfessorAffiliation
 from apps.licenses.models import License
 from apps.document_upload.models import RawDocument
 from django.core.management.base import BaseCommand
@@ -44,7 +47,10 @@ class Command(BaseCommand):
 
         # for now, assume license is the default OCW license: CC-BY-NC 3
         # TODO for later, do something more clever.
-        dblicense = License.objects.filter(name='cc-by-nc-3.0')[0]
+        dblicense = License.objects.get_or_create(
+          name='cc-by-nc-3.0',
+          html='<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>'
+        )[0]
 
         # build Filepicker upload URL
         # http://stackoverflow.com/questions/14115280/store-files-to-filepicker-io-from-the-command-line
@@ -75,6 +81,16 @@ class Command(BaseCommand):
 
                 # process courses
                 for course in parsed['courses']:
+                    # Assume first hit is always right. Solving the identity
+                    # problem by name alone will always be a fool's errand.
+                    dbprof = Professor.objects.get_or_create(name=course['professor'])[0]
+
+                    # Associate the professor with the department.
+                    # (no need to track the result)
+                    ProfessorAffiliation.objects.get_or_create(
+                        professor=dbprof,
+                        department=dbdept)
+
                     # Extract the course info
                     course_info = {
                       'name': course['courseTitle'],
@@ -83,9 +99,13 @@ class Command(BaseCommand):
                     }
                     # Create or Find the Course object.
                     dbcourse = Course.objects.get_or_create(**course_info)[0]
-                    dbcourse.department = dbdept;
+                    dbcourse.professor = dbprof
                     dbcourse.save()
                     print "Course is in the database: {0}".format(dbcourse.name)
+
+                    ProfessorTaught.objects.get_or_create(
+                        professor=dbprof,
+                        course=dbcourse)
 
                     if 'noteLinks' not in course:
                         print "No Notes in course."
