@@ -1,12 +1,60 @@
 import json
+import math
+import inspect
 import os.path
 import datetime
 
+from taggit.managers import TaggableManager
+from django.db import models
+from django.core import serializers
 from django.core.management.base import BaseCommand
 
-from karmaworld.apps.notes.models import *
-# a little messy to import courses in a notes command?
-from karmaworld.apps.courses.models import *
+import karmaworld.apps
+
+def introspect_models(app_base):
+    # Given a base app module (e.g. karmaworld.apps), introspect for models and
+    # return a list of them.
+    model_list = set()
+    for _, app in inspect.getmembers(app_base, inspect.ismodule):
+        # check for models modules
+        if not hasattr(app, 'models'):
+            continue
+        print "Found app models module in {0}".format(app.__name__)
+        # parse attributes
+        for _, attr in inspect.getmembers(app.models, inspect.isclass):
+            # look for Django Models
+            if issubclass(attr, models.Model):
+                if attr._meta.abstract:
+                    print "Skipping abstract class {0}.".format(attr.__name__)
+                    continue
+                if attr not in model_list:
+                    print "Found DB model {0}".format(attr.__name__)
+                    model_list.add(attr)
+                else:
+                    print "Found DB model {0} again".format(attr.__name__)
+    return model_list
+    
+
+def model_to_dict(model):
+    # Use model introspection to extract data fields into a dictionary.
+    modeldict = {}
+    for field in model._meta.get_all_field_names():
+        dbfield = model._meta.get_field(field)
+        if type(dbfield) == models.fields.AutoField:
+            # Skip auto-incrementing id data
+            continue
+        elif type(dbfield) == models.fields.related.ForeignKey:
+            # Dump foreign key values, not Django FK objects.
+            fk = getattr(model, field)
+            # Find the foreign key's primary key column.
+            fkpk = fk._meta.pk.name
+            # get_attname() returns the DB column name.
+            # extract primary key value from the related foreign key.
+            modeldict[dbfield.get_attname()] = getattr(fk, fkpk)
+        else:
+            modeldict[field] = getattr(model,field)
+    return modeldict
+
 
 def school_to_dict(school):
 	d = {
@@ -90,6 +138,25 @@ class Command(BaseCommand):
 	date = '%02d-%02d-%04d' % (month, day, year)
 
 	def handle(self, *args, **kwargs):
+
+                json_eng = serializers.get_serializer('json')()
+                with open('testout.json', 'w') as outfile:
+                    outfile.write('')
+                for model in introspect_models(karmaworld.apps):
+                    print "Processing objects in {0}".format(model.__name__)
+                    # parse through pages of about 50 models at a time
+                    #tot = model.objects.count()
+                    #pagesize = 50
+                    #for i in range(0,tot,pagesize):
+                    #    objs = model.objects.filter()[i:(i+pagesize)]
+                    #    for obj in objs:
+                    #print str(model_to_dict(model.objects.filter()[0]))
+                    import sys
+                    with open('testout.json', 'a') as outfile:
+                        json_eng.serialize(model.objects.filter()[0:1], stream=outfile, use_natural_keys=True)
+                        outfile.write('\n\n');
+                    
+                return
 
 		# Schools
 		schools = [school_to_dict(school) for school in School.objects.all()]
