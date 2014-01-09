@@ -26,8 +26,11 @@ from taggit.managers import TaggableManager
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.licenses.models import License
 from karmaworld.apps.notes.search import SearchIndex
+from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
+
 
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+
 
 def _choose_upload_to(instance, filename):
     # /school/course/year/month/day
@@ -38,9 +41,10 @@ def _choose_upload_to(instance, filename):
         month=instance.uploaded_at.month,
         day=instance.uploaded_at.day)
 
+
 class Document(models.Model):
-    """ An Abstract Base Class representing a document
-        intended to be subclassed
+    """
+    An Abstract Base Class representing a document intended to be subclassed.
     """
     course          = models.ForeignKey(Course)
     tags            = TaggableManager(blank=True)
@@ -51,7 +55,7 @@ class Document(models.Model):
     license         = models.ForeignKey(License, blank=True, null=True)
 
     # provide an upstream file link
-    upstream_link   = models.URLField(max_length=1024, blank=True, null=True)
+    upstream_link   = models.URLField(max_length=1024, blank=True, null=True, unique=True)
 
     # metadata relevant to the Upload process
     user            = models.ForeignKey('users.KarmaUser', blank=True, null=True, on_delete=SET_NULL)
@@ -74,9 +78,6 @@ class Document(models.Model):
     class Meta:
         abstract = True
         ordering = ['-uploaded_at']
-
-    def __unicode__(self):
-        return u"Document: {1} -- {2}".format(self.name, self.uploaded_at)
 
     def _generate_unique_slug(self):
         """ generate a unique slug based on name and uploaded_at  """
@@ -123,9 +124,22 @@ class Document(models.Model):
             self._generate_unique_slug()
         super(Document, self).save(*args, **kwargs)
 
+
+class NoteManager(models.Manager):
+    """ Handle restoring data. """
+    def get_by_natural_key(self, fp_file, upstream_link):
+        """
+        Return a Note defined by its Filepicker and upstream URLs.
+        """
+        return self.get(fp_file=fp_file,upstream_link=upstream_link)
+
+
 class Note(Document):
-    """ A django model representing an uploaded file and associated metadata.
+    """ 
+    A django model representing an uploaded file and associated metadata.
     """
+    objects = NoteManager()
+
     # FIXME: refactor file choices after FP.io integration
     UNKNOWN_FILE = '???'
     FILE_TYPE_CHOICES = (
@@ -143,7 +157,7 @@ class Note(Document):
                             blank=True, null=True)
 
     # Cache the Google drive file link
-    gdrive_url      = models.URLField(max_length=1024, blank=True, null=True)
+    gdrive_url      = models.URLField(max_length=1024, blank=True, null=True, unique=True)
 
     # Upload files to MEDIA_ROOT/notes/YEAR/MONTH/DAY, 2012/10/30/filename
     pdf_file       = models.FileField(
@@ -167,9 +181,21 @@ class Note(Document):
     tweeted         = models.BooleanField(default=False)
     thanks          = models.PositiveIntegerField(default=0)
 
-    def __unicode__(self):
-        return u"Note: {0} {1} -- {2}".format(self.file_type, self.name, self.uploaded_at)
+    class Meta:
+        unique_together = ('fp_file', 'upstream_link')
 
+    def __unicode__(self):
+        return u"Note at {0} (from {1})".format(self.fp_file, self.upstream_link)
+
+    def natural_key(self):
+        """
+        A Note is uniquely defined by both the Filepicker link and the upstream
+        link. The Filepicker link should be unique by itself, but it may be
+        null in the database, so the upstream link component should resolve
+        those cases.
+        """
+        # gdrive_url might also fit the bill?
+        return (self.fp_file, self.upstream_link)
 
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug
@@ -216,6 +242,9 @@ class Note(Document):
         if self.uploaded_at and self.uploaded_at > self.course.updated_at:
             self._update_parent_updated_at()
         super(Note, self).save(*args, **kwargs)
+
+
+auto_add_check_unique_together(Note)
 
 
 def update_note_counts(note_instance):
