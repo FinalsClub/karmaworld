@@ -106,9 +106,11 @@ input[type="text"]:focus, textarea:focus
   cursor: pointer;
   padding-bottom: 16px;
 }
+
 #login_container a
 {
   float: right;
+  padding-left: 15px;
 }
 
 #login_container.clicked
@@ -851,4 +853,11 @@ legend
 
 .inline-form {
   border-bottom: 1px dashed #666;
+}
+
+/* Social account integration */
+
+.facebook-login-btn
+{
+  content: url(../img/facebook.png);
 }

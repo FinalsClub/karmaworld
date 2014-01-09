@@ -19,7 +19,7 @@ reset_flags.short_description = "Reset flags to 0"
 class CourseModerator(CourseAdmin):
     date_heirarchy = 'updated_at'
     # Identify fields to display on the Change page
-    list_display = ('name', 'flags', 'school', 'academic_year', 'created_at', 'updated_at', 'instructor_name')
+    list_display = ('name', 'flags', 'school', 'created_at', 'updated_at', 'instructor_name')
     # Sort by highest number of flags first, and then by date for ties.
     ordering = ('-flags', '-updated_at')
     # Enable resetting flags

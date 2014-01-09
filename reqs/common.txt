@@ -20,3 +20,4 @@ python-twitter
 gdshortener
 git+https://github.com/flaptor/indextank-py.git
 html2text
+django-allauth

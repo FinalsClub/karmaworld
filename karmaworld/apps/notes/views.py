@@ -3,6 +3,8 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import json
+import traceback
+import logging
 from django.core.exceptions import ObjectDoesNotExist
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
@@ -19,6 +21,7 @@ from django.views.generic.detail import SingleObjectMixin
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.forms import NoteForm
 
+logger = logging.getLogger(__name__)
 
 PDF_MIMETYPES = (
     'application/pdf',
@@ -169,15 +172,23 @@ class NoteSearchView(ListView):
         else:
             page = 0
 
-        index = SearchIndex()
+        try:
+            index = SearchIndex()
 
-        if 'course_id' in self.request.GET:
-            raw_results = index.search(self.request.GET['query'],
-                                              self.request.GET['course_id'],
-                                              page=page)
+            if 'course_id' in self.request.GET:
+                raw_results = index.search(self.request.GET['query'],
+                                                  self.request.GET['course_id'],
+                                                  page=page)
+            else:
+                raw_results = index.search(self.request.GET['query'],
+                                            page=page)
+
+        except Exception:
+            logger.error("Error with IndexDen:\n" + traceback.format_exc())
+            self.error = True
+            return Note.objects.none()
         else:
-            raw_results = index.search(self.request.GET['query'],
-                                        page=page)
+            self.error = False
 
         instances = Note.objects.in_bulk(raw_results.ordered_ids)
         results = []
@@ -194,6 +205,10 @@ class NoteSearchView(ListView):
 
         if 'course_id' in self.request.GET:
             kwargs['course'] = Course.objects.get(id=self.request.GET['course_id'])
+
+        if self.error:
+            kwargs['error'] = True
+            return super(NoteSearchView, self).get_context_data(**kwargs)
 
         # If query returned more search results than could
         # fit on one page, show "Next" button

@@ -3,6 +3,9 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import datetime
+from django.contrib.auth.models import User
+from django.contrib.sessions.backends.db import SessionStore
+from django.core.exceptions import ObjectDoesNotExist
 import os
 import subprocess
 import tempfile
@@ -23,6 +26,7 @@ import karmaworld.secret.drive as drive
 PDF_MIMETYPE = 'application/pdf'
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
 
+UPLOADED_NOTES_SESSION_KEY = 'uploaded_notes'
 
 def extract_file_details(fileobj):
     details = None
@@ -172,7 +176,7 @@ def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
     return file_dict
 
 
-def convert_raw_document(raw_document):
+def convert_raw_document(raw_document, user=None, session_key=None):
     """ Upload a raw document to google drive and get a Note back"""
     fp_file = raw_document.get_file()
 
@@ -230,6 +234,33 @@ def convert_raw_document(raw_document):
     if 'year' in note_details and note_details['year']:
         note.year = note_details['year']
 
+    # If we know the user who uploaded this,
+    # associate them with the note
+    if user:
+        note.user = user
 
     # Finally, save whatever data we got back from google
     note.save()
+
+    if session_key and not user:
+        s = SessionStore(session_key=session_key)
+        # If the person who uploaded this made an
+        # account or signed in while convert_raw_document
+        # was running, associate their account with this note
+        try:
+            uid = s['_auth_user_id']
+            user = User.objects.get(pk=uid)
+            note.user = user
+            note.save()
+        # If we don't know the user who uploaded
+        # this, then we should have a session key
+        # instead. Associate this note with the session
+        # so if the uploader later creates an account,
+        # we can find notes they uploaded
+        except (KeyError, ObjectDoesNotExist):
+            uploaded_notes = s.get(UPLOADED_NOTES_SESSION_KEY, [])
+            uploaded_notes.append(note.id)
+            s[UPLOADED_NOTES_SESSION_KEY] = uploaded_notes
+            s.save()
+
+

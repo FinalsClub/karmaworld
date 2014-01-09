@@ -15,14 +15,16 @@ from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
-from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note
 from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.notes.views import PDFView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
+from karmaworld.apps.users.views import ProfileView
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
+
+
 admin.autodiscover()
 
 # reused named regex capture groups
@@ -59,6 +61,10 @@ urlpatterns = patterns('',
     ## Single-serving page URLpatterns
     url(r'^terms/$', direct_to_template, { 'template': 'terms.html' }, name='terms'),
     url(r'^about/$', AboutView.as_view(), name='about'),
+
+    # All Auth
+    url(r'^accounts/', include('allauth.urls')),
+    url(r'^accounts/profile/', ProfileView.as_view(), name='accounts_profile'),
 
     # VIEW for viewing a Note's gdrive generated html, used as iframe
     url(r'^raw/(?P<pk>\d+)$', RawNoteDetailView.as_view(), name='note_raw'),

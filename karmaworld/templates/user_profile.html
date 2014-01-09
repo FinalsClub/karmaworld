@@ -1,0 +1,26 @@
+{% extends "account/base.html" %}
+{% load url from future %}
+{% load account %}
+
+{% block head_title %}
+  Your KarmaNotes Profile
+{% endblock %}
+
+{% block content %}
+  <section id="account_content">
+
+    <div class="row">
+      <div class="small-12 columns">
+        <h1>Hello there, {% user_display user %}.</h1>
+        <p>Here are the notes that you've uploaded:</p>
+        <ul>
+          {% for note in user.note_set.all %}
+            <li><a href="{{ note.get_absolute_url }}">{{ note.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+
+  </section><!--/about_content-->
+{% endblock %}

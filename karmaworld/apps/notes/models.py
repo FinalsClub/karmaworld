@@ -7,10 +7,15 @@
     Contains only the minimum for handling files and their representation
 """
 import datetime
+import traceback
+import logging
+from allauth.account.signals import user_logged_in
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import SET_NULL
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
+from karmaworld.apps.notes.gdrive import UPLOADED_NOTES_SESSION_KEY
 import os
 import urllib
 
@@ -29,6 +34,7 @@ from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
 
 
+logger = logging.getLogger(__name__)
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
 
 
@@ -58,7 +64,7 @@ class Document(models.Model):
     upstream_link   = models.URLField(max_length=1024, blank=True, null=True, unique=True)
 
     # metadata relevant to the Upload process
-    user            = models.ForeignKey('users.KarmaUser', blank=True, null=True, on_delete=SET_NULL)
+    user            = models.ForeignKey(User, blank=True, null=True, on_delete=SET_NULL)
     ip              = models.GenericIPAddressField(blank=True, null=True,
                         help_text=u"IP address of the uploader")
     uploaded_at     = models.DateTimeField(null=True, default=datetime.datetime.utcnow)
@@ -278,12 +284,15 @@ def note_save_receiver(sender, **kwargs):
         return
     note = kwargs['instance']
 
-    index = SearchIndex()
-    if kwargs['created']:
-        update_note_counts(note)
-        index.add_note(note)
-    else:
-        index.update_note(note, note.old_instance)
+    try:
+        index = SearchIndex()
+        if kwargs['created']:
+            update_note_counts(note)
+            index.add_note(note)
+        else:
+            index.update_note(note, note.old_instance)
+    except Exception:
+        logger.error("Error with IndexDen:\n" + traceback.format_exc())
 
 
 @receiver(post_delete, sender=Note, weak=False)
@@ -299,3 +308,13 @@ def note_delete_receiver(sender, **kwargs):
     # Remove document from search index
     index = SearchIndex()
     index.remove_note(note)
+
+@receiver(user_logged_in, weak=True)
+def find_orphan_notes(sender, **kwargs):
+    user = kwargs['user']
+    s = kwargs['request'].session
+    uploaded_note_ids = s.get(UPLOADED_NOTES_SESSION_KEY, [])
+    notes = Note.objects.filter(id__in=uploaded_note_ids)
+    for note in notes:
+        note.user = user
+        note.save()

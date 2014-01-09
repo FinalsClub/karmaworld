@@ -1,4 +1,5 @@
 {% load url from future %}
+{% load socialaccount_tags %}
 <section id=filepicker-form class="extend-form">
 <!-- Javascript -->
 <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
@@ -28,8 +29,13 @@
         <p>Thank you for sharing:</p>
         <ul id="uploaded_files">
         </ul>
-        <p>Your files are being processed and should be viewable within a few minutes.</p>
-        <p>If you'd like to share again, please <a href="">click here</a>.</p>
+        {% if not request.user.is_authenticated %}
+          <p>We'd love to have you sign up so you can claim the notes you just uploaded, and
+          build a reputation for uploading great notes.</p>
+          <p><a href='{% provider_login_url "facebook" %}'>
+            <span class="facebook-login-btn"></span>
+            </a></p>
+        {% endif %}
       </div>
     </div>
 
@@ -62,24 +68,9 @@
       </form>
     </div>
   </div>
-  <div id="save-btn-wrapper" class="hide row">
-    <div class="small-10 small-offset-1 columns">
-        <div class="row" style="display: inline;">
-          <form class="inline-form" method="POST" action="{% url 'upload_post' %}">
-            <div class="small-11 large-6 columns">
-                <legend>Your Email Address (Optional)</legend>
-                <input type="text" class="intext" id="id_email" name="email"
-                      placeholder="">
-              </div>
-          </form>
-        </div>
-        <div class="row">
-          <div class="small-8 large-6 columns">
-            <div id="save-btn" class="action-btn">
-              <i class="fa fa-save"></i> Save
-            </div>
-          </div>
-        </div>
+  <div class="small-8 small-offset-3 columns large-2">
+    <div id="save-btn" class="hide">
+      <i class="fa fa-save"></i> Save
     </div>
   </div>
 
@@ -120,7 +111,7 @@
             $(this).parent().parent().remove();
         });
 
-        $('#save-btn-wrapper').show();
+        $('#save-btn').show();
       }
 
       $('#save-btn').on('click', function(e){
@@ -154,15 +145,12 @@
                   $('#uploaded_files').append($('<li>', {text: uploaded_files[i]}));
                 }
                 $('#success').show();
-                $('#save-btn-wrapper').hide();
+                $('#save-btn').hide();
                 $('#forms_container .inline-form').remove();
                 if (document.location.host === 'www.karmanotes.org' ||
                   document.location.host === 'karmanotes.org') {
                   _gat._getTracker()._trackEvent('upload', 'upload form submitted');
                 }
-                setTimeout(function(){
-                  location.reload(true);
-                }, 15000);
               }
             });
             // Add the name we've just uploaded to the list

@@ -1,30 +1,27 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2013  FinalsClub Foundation
-from django.contrib import admin
-
+from allauth.account.signals import user_logged_in
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.db import models
+from karmaworld.apps.courses.models import School
 
 
-class KarmaUserManager(models.Manager):
-    """ Handle restoring data. """
-    def get_by_natural_key(self, email):
-        """
-        Return a KarmaUser defined by his/her email address.
-        """
-        return self.get(email=email)
+class UserProfile(models.Model):
+    user      = models.OneToOneField(User)
 
+    school    = models.ForeignKey(School, blank=True, null=True)
 
-class KarmaUser(models.Model):
-    objects = KarmaUserManager()
-
-    email   = models.EmailField(blank=False, null=False, unique=True)
+    karma     = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return u'KarmaUser: {0}'.format(self.email)
+        return self.user.__unicode__()
 
-    def natural_key(self):
-        """
-        A KarmaUser is uniquely defined by his/her email address.
-        """
-        return (self.email,)
+
+@receiver(post_save, sender=User, weak=True)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+

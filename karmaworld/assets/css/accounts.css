@@ -1,0 +1,39 @@
+#account_content
+{
+  padding-top: 46px;
+}
+
+h1
+{
+  margin-top: 1em;
+  text-align: center;
+  font-family: "MuseoSlab-500";
+  font-size: 36px;
+}
+
+h2
+{
+  margin-top: 1em;
+  text-align: center;
+  font-family: "MuseoSlab-500";
+  font-size: 24px;
+}
+
+ul
+{
+  list-style-type: none;
+}
+
+button,
+button:hover
+{
+  border: none;
+  background-color: white;
+  color: #f05a28;
+  cursor: pointer;
+  font: 30px/1.2em "MuseoSlab-300", serif;
+  margin: 1px;
+  text-align: center;
+  text-transform: uppercase;
+}
+

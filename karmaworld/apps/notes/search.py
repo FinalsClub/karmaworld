@@ -94,7 +94,7 @@ class SearchIndex(object):
         already in the index, it will be overwritten."""
         if note.text:
             logger.info("Indexing {n}".format(n=note))
-            self.index.add_document(note.id, SearchIndex._note_to_dict(note), variables={0: note.thanks})
+            #self.index.add_document(note.id, SearchIndex._note_to_dict(note), variables={0: note.thanks})
         else:
             logger.info("Note {n} has no text, will not add to IndexDen".format(n=note))
 
@@ -114,7 +114,7 @@ class SearchIndex(object):
             new_note.course != old_note.course or \
             new_note.uploaded_at != old_note.uploaded_at:
             logger.info("Indexing {n}".format(n=new_note))
-            self.index.add_document(new_note.id, SearchIndex._note_to_dict(new_note), variables={0: new_note.thanks})
+            #self.index.add_document(new_note.id, SearchIndex._note_to_dict(new_note), variables={0: new_note.thanks})
 
         # If only the thanks count has changed, we can
         # just send that
