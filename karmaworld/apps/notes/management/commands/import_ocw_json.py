@@ -94,12 +94,13 @@ class Command(BaseCommand):
                     # Extract the course info
                     course_info = {
                       'name': course['courseTitle'],
-                      'instructor_name': course['professor'],
-                      'school': dbschool,
+                      'department': dbdept,
                     }
                     # Create or Find the Course object.
                     dbcourse = Course.objects.get_or_create(**course_info)[0]
                     dbcourse.professor = dbprof
+                    dbcourse.instructor_name = course['professor']
+                    dbcourse.school = dbschool
                     dbcourse.save()
                     print "Course is in the database: {0}".format(dbcourse.name)
 
@@ -165,7 +166,7 @@ class Command(BaseCommand):
                         # Do tags separately
                         dbnote.tags.add('mit-ocw','karma')
 
-                        print "Sending to GDrive and saving note to database."
+                        print "Converting document and saving note to database."
                         try:
                             convert_raw_document(dbnote)
                         except ValueError, e:
