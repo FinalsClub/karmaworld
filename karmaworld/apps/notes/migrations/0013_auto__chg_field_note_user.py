@@ -3,7 +3,6 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-from karmaworld.apps.notes.models import Note
 
 
 class Migration(SchemaMigration):
@@ -15,23 +14,23 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
 
         # Dealing with previous FK problem.
-        # Remove all previous foreign keys which will shortly point at the
-        # wrong thing. Unrecoverable change.
-        Note.objects.update(user=None)
-        # Renaming column for 'Note.user' to match new field type.
-        db.rename_column('notes_note', 'user', 'user_id')
-
+        # Instead of alter_column, drop and readd the column to remove
+        # leftover foreign key values.
+        db.delete_column('notes_note', 'user')
         # Changing field 'Note.user'
-        db.alter_column('notes_note', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, on_delete=models.SET_NULL))
+        db.add_column('notes_note', 'user',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, on_delete=models.SET_NULL, blank=True),
+                      keep_default=False)
 
     def backwards(self, orm):
 
         # Changing field 'Note.user'
-        db.alter_column('notes_note', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.KarmaUser'], null=True, on_delete=models.SET_NULL))
-
         # Dealing with previous FK problem.
+        db.delete_column('notes_note', 'user_id')
         # Renaming column for 'Note.user' to match new field type.
-        db.rename_column('notes_note', 'user_id', 'user')
+        db.add_column('notes_note', 'user',
+                      self.gf('django.db.models.fields.IntegerField')(null=True, blank=True),
+                      keep_default=False)
 
     models = {
         'auth.group': {
