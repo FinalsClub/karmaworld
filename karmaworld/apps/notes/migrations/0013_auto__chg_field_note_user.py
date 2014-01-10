@@ -13,6 +13,10 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
 
+        # Dealing with previous FK problem.
+        # Renaming column for 'Note.user' to match new field type.
+        db.rename_column('notes_note', 'user', 'user_id')
+
         # Changing field 'Note.user'
         db.alter_column('notes_note', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, on_delete=models.SET_NULL))
 
@@ -20,6 +24,10 @@ class Migration(SchemaMigration):
 
         # Changing field 'Note.user'
         db.alter_column('notes_note', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.KarmaUser'], null=True, on_delete=models.SET_NULL))
+
+        # Dealing with previous FK problem.
+        # Renaming column for 'Note.user' to match new field type.
+        db.rename_column('notes_note', 'user_id', 'user')
 
     models = {
         'auth.group': {
