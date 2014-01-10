@@ -3,11 +3,15 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from karmaworld.apps.notes.models import Note
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Removing all possible FK dependencies on KarmaUser from Note
+        Note.objects.update(user=None)
+
         # Deleting model 'KarmaUser'
         db.delete_table('users_karmauser')
 

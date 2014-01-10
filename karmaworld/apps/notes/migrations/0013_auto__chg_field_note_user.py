@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('karmauser', '0002_auto__del_karmauser__add_userprofile'),
+    )
+
     def forwards(self, orm):
 
         # Changing field 'Note.user'
