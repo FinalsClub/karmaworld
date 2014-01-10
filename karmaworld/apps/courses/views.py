@@ -25,7 +25,7 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
     """ Simple ListView for the front page that includes the CourseForm """
     model = Course
     form_class = CourseForm
-    object = Course()
+    object = None
 
     def get_context_data(self, **kwargs):
         """ Add the CourseForm to ListView context """
@@ -57,7 +57,6 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
         self.object_list = self.get_queryset()
         kwargs['object_list'] = self.object_list
         return self.render_to_response(self.get_context_data(**kwargs))
-
 
 
 class CourseDetailView(DetailView):
