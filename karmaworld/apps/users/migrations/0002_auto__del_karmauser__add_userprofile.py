@@ -9,8 +9,15 @@ from karmaworld.apps.notes.models import Note
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Removing all possible FK dependencies on KarmaUser from Note
-        Note.objects.update(user=None)
+        # This should not be done here, but there is already a migration in
+        # Notes which relies on this migration. So this must be done here.
+        # Used VM to generate a migration to convert FK into Int.
+        # Renaming column for 'Note.user' to match new field type.
+        db.rename_column('notes_note', 'user_id', 'user')
+        # Changing field 'Note.user'
+        db.alter_column('notes_note', 'user', self.gf('django.db.models.fields.IntegerField')(null=True))
+        # Removing index on 'Note', fields ['user']
+        db.delete_index('notes_note', ['user_id'])
 
         # Deleting model 'KarmaUser'
         db.delete_table('users_karmauser')
@@ -38,6 +45,13 @@ class Migration(SchemaMigration):
         # Deleting model 'UserProfile'
         db.delete_table('users_userprofile')
 
+        # This should not be done here, but there is already a migration in
+        # Notes which relies on this migration. So this must be done here.
+        # Used VM to generate a migration to convert FK into Int.
+        # Renaming column for 'Note.user' to match new field type.
+        db.rename_column('notes_note', 'user', 'user_id')
+        # Changing field 'Note.user'
+        db.alter_column('notes_note', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.KarmaUser'], null=True, on_delete=models.SET_NULL))
 
     models = {
         'auth.group': {
