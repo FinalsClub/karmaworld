@@ -3,6 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from karmaworld.apps.notes.models import Note
 
 
 class Migration(SchemaMigration):
@@ -14,6 +15,9 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
 
         # Dealing with previous FK problem.
+        # Remove all previous foreign keys which will shortly point at the
+        # wrong thing. Unrecoverable change.
+        Note.objects.update(user=None)
         # Renaming column for 'Note.user' to match new field type.
         db.rename_column('notes_note', 'user', 'user_id')
 
