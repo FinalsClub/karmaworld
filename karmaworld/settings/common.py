@@ -217,7 +217,6 @@ THIRD_PARTY_APPS = (
     # ... include the providers you want to enable:
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.openid',
     'allauth.socialaccount.providers.twitter',
 )
 
@@ -255,13 +254,9 @@ ACCOUNT_USER_MODEL_EMAIL_FIELD = "email"
 ACCOUNT_USERNAME_REQUIRED = False
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_USER_DISPLAY = 'karmaworld.apps.users.models.user_display_name'
 
-# You can't log in with a username,
-# you must use an authenitcation provider
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USER_MODEL_EMAIL_FIELD = None
-
-AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+AUTH_PROFILE_MODULE = 'users.UserProfile'
 
 ######### END AUTHENTICATION
 

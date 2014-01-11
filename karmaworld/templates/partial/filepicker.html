@@ -3,7 +3,7 @@
 <section id=filepicker-form class="extend-form">
 <!-- Javascript -->
 <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
-  <div class="row" id="">
+  <div class="row" id="filepicker_row">
     <div class="small-8 small-offset-1 columns large-10">
         <input id="filepicker-file-upload"
           type="filepicker-dragdrop"
@@ -32,9 +32,12 @@
         {% if not request.user.is_authenticated %}
           <p>We'd love to have you sign up so you can claim the notes you just uploaded, and
           build a reputation for uploading great notes.</p>
-          <p><a href='{% provider_login_url "facebook" %}'>
-            <span class="facebook-login-btn"></span>
-            </a></p>
+          <div class="socialaccount_ballot">
+            <ul class="socialaccount_providers">
+              {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+            </ul>
+            <a href="{{ signup_url }}">Sign up for a traditional account</a>
+          </div>
         {% endif %}
       </div>
     </div>
@@ -146,6 +149,7 @@
                 }
                 $('#success').show();
                 $('#save-btn').hide();
+                $('#filepicker_row').hide();
                 $('#forms_container .inline-form').remove();
                 if (document.location.host === 'www.karmanotes.org' ||
                   document.location.host === 'karmanotes.org') {

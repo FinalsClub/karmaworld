@@ -189,6 +189,7 @@ class Note(Document):
 
     class Meta:
         unique_together = ('fp_file', 'upstream_link')
+        ordering = ['-uploaded_at']
 
     def __unicode__(self):
         return u"Note at {0} (from {1})".format(self.fp_file, self.upstream_link)

@@ -24,16 +24,6 @@ ul
   list-style-type: none;
 }
 
-button,
-button:hover
-{
-  border: none;
-  background-color: white;
-  color: #f05a28;
-  cursor: pointer;
-  font: 30px/1.2em "MuseoSlab-300", serif;
-  margin: 1px;
-  text-align: center;
-  text-transform: uppercase;
+.errorlist {
+  color: #c60f13
 }
-

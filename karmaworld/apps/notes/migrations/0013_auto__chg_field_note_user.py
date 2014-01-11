@@ -114,12 +114,12 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80'})
         },
         'notes.note': {
-            'Meta': {'ordering': "['-uploaded_at']", 'object_name': 'Note'},
+            'Meta': {'ordering': "['-uploaded_at']", 'unique_together': "(('fp_file', 'upstream_link'),)", 'object_name': 'Note'},
             'course': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['courses.Course']"}),
             'file_type': ('django.db.models.fields.CharField', [], {'default': "'???'", 'max_length': '15', 'null': 'True', 'blank': 'True'}),
             'flags': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'fp_file': ('django_filepicker.models.FPFileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'gdrive_url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'gdrive_url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'html': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ip': ('django.db.models.fields.GenericIPAddressField', [], {'max_length': '39', 'null': 'True', 'blank': 'True'}),
@@ -133,7 +133,7 @@ class Migration(SchemaMigration):
             'thanks': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'tweeted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'uploaded_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow', 'null': 'True'}),
-            'upstream_link': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'upstream_link': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'year': ('django.db.models.fields.IntegerField', [], {'default': '2014', 'null': 'True', 'blank': 'True'})
         },

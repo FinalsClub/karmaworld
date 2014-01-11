@@ -857,7 +857,9 @@ legend
 
 /* Social account integration */
 
-.facebook-login-btn
-{
-  content: url(../img/facebook.png);
+ul.socialaccount_providers li {
+  list-style: none;
+  margin: 10px 0 5px 0;
 }
+
+
