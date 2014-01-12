@@ -6,6 +6,11 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('notes', '0012_auto__add_unique_note_upstream_link__add_unique_note_gdrive_url__add_u'),
+        ('document_upload', '0002_auto__add_field_rawdocument_user'),
+    )
+
     def forwards(self, orm):
         # This should not be done here, but there is already a migration in
         # Notes which relies on this migration. So this must be done here.
