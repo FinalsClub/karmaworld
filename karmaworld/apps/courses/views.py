@@ -81,9 +81,9 @@ class AboutView(TemplateView):
 
     def get_context_data(self, **kwargs):
         """ get the list of schools with the most files for leaderboard """
-        context = { 'params': kwargs,
-                    'schools': School.objects.filter(file_count__gt=0).order_by('-file_count')[:20] }
-        return context
+        if 'schools' not in kwargs:
+            kwargs['schools'] = School.objects.filter(file_count__gt=0).order_by('-file_count')[:20]
+        return kwargs
 
 
 def school_list(request):
