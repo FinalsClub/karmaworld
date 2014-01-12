@@ -23,7 +23,7 @@ from django.conf import settings
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.db import models
-from django.template import defaultfilters
+from django.utils.text import slugify
 import django_filepicker
 from lxml.html import fromstring, tostring
 from taggit.managers import TaggableManager
@@ -87,7 +87,7 @@ class Document(models.Model):
 
     def _generate_unique_slug(self):
         """ generate a unique slug based on name and uploaded_at  """
-        _slug = defaultfilters.slugify(self.name)
+        _slug = slugify(self.name)
         klass = self.__class__
         collision = klass.objects.filter(slug=_slug)
         if collision:

@@ -11,7 +11,7 @@
 import datetime
 
 from django.db import models
-from django.template import defaultfilters
+from django.utils.text import slugify
 from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
 
 
@@ -59,7 +59,7 @@ class School(models.Model):
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
         if not self.slug:
-            self.slug = defaultfilters.slugify(self.name)
+            self.slug = slugify(self.name)
         super(School, self).save(*args, **kwargs)
 
     @staticmethod
@@ -113,7 +113,7 @@ class Department(models.Model):
     def save(self, *args, **kwargs):
         """ Save department and generate a slug if one doesn't exist """
         if not self.slug:
-            self.slug = defaultfilters.slugify(self.name)
+            self.slug = slugify(self.name)
         super(Department, self).save(*args, **kwargs)
 
 
@@ -252,7 +252,7 @@ class Course(models.Model):
         """ Save school and generate a slug if one doesn't exist """
         super(Course, self).save(*args, **kwargs) # generate a self.id
         if not self.slug:
-            self.slug = defaultfilters.slugify("%s %s" % (self.name, self.id))
+            self.slug = slugify("%s %s" % (self.name, self.id))
             self.save() # Save the slug
 
     def get_updated_at_string(self):

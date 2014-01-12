@@ -3,6 +3,7 @@ from django.test import TestCase
 from karmaworld.apps.courses.models import *
 from django.test.client import Client
 from django.core.urlresolvers import reverse
+from django.utils.text import slugify
 import json
 
 class CoursesTests(TestCase):
@@ -21,10 +22,10 @@ class CoursesTests(TestCase):
         self.assertEqual(Course.objects.count(), 1)
 
     def testSchoolSlug(self):
-        self.assertEqual(self.harvard.slug, defaultfilters.slugify(self.harvard.name))
+        self.assertEqual(self.harvard.slug, slugify(self.harvard.name))
 
     def testCourseSlug(self):
-        self.assertEqual(self.course1.slug, defaultfilters.slugify("%s %s" % (self.course1.name, self.course1.id)))
+        self.assertEqual(self.course1.slug, slugify("%s %s" % (self.course1.name, self.course1.id)))
 
     def testSearchForSchool(self):
         """Test searching for a school by partial name"""
