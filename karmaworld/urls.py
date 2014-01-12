@@ -6,7 +6,7 @@
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.defaults import patterns, include, url
-from django.views.generic.simple import direct_to_template
+from django.views.generic.base import TemplateView
 
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.views import AboutView, flag_course
@@ -59,7 +59,7 @@ urlpatterns = patterns('',
     url(r'^moderator/', include(moderator.site.urls)),
 
     ## Single-serving page URLpatterns
-    url(r'^terms/$', direct_to_template, { 'template': 'terms.html' }, name='terms'),
+    url(r'^terms/$', TemplateView.as_view(template_name='terms.html'), name='terms'),
     url(r'^about/$', AboutView.as_view(), name='about'),
 
     # All Auth
