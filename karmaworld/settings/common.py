@@ -15,6 +15,18 @@ from karmaworld.secret.filepicker import FILEPICKER_API_KEY as fp_api
 FILEPICKER_API_KEY = fp_api
 
 
+########## REQUIRED SECURITY CONFIGURATION
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-ALLOWED_HOSTS
+# The hosts that this server runs from.
+ALLOWED_HOSTS = [
+    '127.0.0.1', # for dev systems / VMs, but should be safe enough
+    'localhost', # for dev systems / VMs, but should be safe enough
+    'beta.karmanotes.org.',
+    'www.karmanotes.org.',
+    'karmanotes.org',
+]
+########## END SECURITY CONFIGURATION
+
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
