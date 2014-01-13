@@ -23,7 +23,7 @@ DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 SITE_ROOT = dirname(DJANGO_ROOT)
 
 # Site name:
-SITE_NAME = basename(DJANGO_ROOT)
+SITE_NAME = 'KarmaNotes'
 
 # Add our project to our pythonpath, this way we don't need to type our project
 # name in our dotted import paths:
