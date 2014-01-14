@@ -94,7 +94,7 @@ class SearchIndex(object):
         already in the index, it will be overwritten."""
         if note.text:
             logger.info("Indexing {n}".format(n=note))
-            #self.index.add_document(note.id, SearchIndex._note_to_dict(note), variables={0: note.thanks})
+            self.index.add_document(note.id, SearchIndex._note_to_dict(note), variables={0: note.thanks})
         else:
             logger.info("Note {n} has no text, will not add to IndexDen".format(n=note))
 

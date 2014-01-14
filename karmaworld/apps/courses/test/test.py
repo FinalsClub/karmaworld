@@ -11,21 +11,25 @@ class CoursesTests(TestCase):
     def setUp(self):
         self.harvard = School.objects.create(name="Harvard University")
         self.harvard.save()
-        self.course1 = Course.objects.create(name="Underwater Basketweaving", instructor_name="Alice Janney", school=self.harvard)
+        self.department = Department.objects.create(name="School of Study", school=self.harvard)
+        self.department.save()
+        self.course1 = Course.objects.create(name="Underwater Basketweaving", instructor_name="Alice Janney",
+                                             school=self.harvard, department=self.department)
         self.client = Client()
 
     def testCourseUniqueness(self):
         """Make sure we can't create multiple courses with the same
-        school + course name + instructor name combination."""
+        name + department name combination."""
         with self.assertRaises(IntegrityError):
-            Course.objects.create(name=self.course1.name, instructor_name=self.course1.instructor_name, school=self.course1.school)
+            Course.objects.create(name=self.course1.name, instructor_name=self.course1.instructor_name,
+                                  school=self.course1.school, department=self.department)
         self.assertEqual(Course.objects.count(), 1)
 
     def testSchoolSlug(self):
-        self.assertEqual(self.harvard.slug, slugify(self.harvard.name))
+        self.assertEqual(self.harvard.slug, slugify(unicode(self.harvard.name)))
 
     def testCourseSlug(self):
-        self.assertEqual(self.course1.slug, slugify("%s %s" % (self.course1.name, self.course1.id)))
+        self.assertEqual(self.course1.slug, slugify(u"%s %s" % (self.course1.name, self.course1.id)))
 
     def testSearchForSchool(self):
         """Test searching for a school by partial name"""

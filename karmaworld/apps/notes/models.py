@@ -87,7 +87,7 @@ class Document(models.Model):
 
     def _generate_unique_slug(self):
         """ generate a unique slug based on name and uploaded_at  """
-        _slug = slugify(self.name)
+        _slug = slugify(unicode(self.name))
         klass = self.__class__
         collision = klass.objects.filter(slug=_slug)
         if collision:
