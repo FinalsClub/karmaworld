@@ -107,7 +107,8 @@ input[type="text"]:focus, textarea:focus
   padding-bottom: 16px;
 }
 
-#login_container a
+#login_container > a,
+#login_container > i
 {
   float: right;
   padding-left: 15px;
@@ -117,6 +118,42 @@ input[type="text"]:focus, textarea:focus
 {
   background-color: black;
   color: #f05a28;
+}
+
+#user_dropdown_container
+{
+  position: relative;
+  top: 4px;
+  display: none;
+  z-index: 5;
+}
+
+#user_dropdown
+{
+  list-style: none;
+  background-color: #424446;
+  padding: 10px;
+  margin: 10px;
+}
+
+#user_dropdown li
+{
+  text-align: right;
+  font-size: 17px;
+  font-family: "MuseoSlab-500";
+}
+
+#user_dropdown li:hover
+{
+  text-align: right;
+  font-size: 17px;
+  font-family: "MuseoSlab-500";
+  background-color: #909499;
+}
+
+#user_dropdown li a
+{
+  color: inherit;
 }
 
 #login_box
@@ -416,7 +453,6 @@ a.course_link, a.course_link:hover, a.school_link, a.school_link:hover, a.prof_l
 .row_alt_on
 {
   background: url(../img/dashboard_activity_alt_on_bg.gif);
-  padding: 5px 0;
 }
 
 .activity_details_action, .activity_details_action a
@@ -424,6 +460,7 @@ a.course_link, a.course_link:hover, a.school_link, a.school_link:hover, a.prof_l
   font-family: "MuseoSlab-300";
   font-size: 22px;
   line-height: 1.4em;
+  padding: 5px 0;
 }
 
 .note_name, .note_name a
@@ -462,6 +499,7 @@ a.activity_target:hover
   font-size: 11px;
   text-transform: uppercase;
   line-height: 200%;
+  padding: 5px 0;
 }
 
 .activity_details_callout
