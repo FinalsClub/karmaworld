@@ -10,13 +10,7 @@ from S3 import CallingFormat
 
 from common import *
 
-
-from karmaworld.secret.static_s3 import DEFAULT_FILE_STORAGE
-from karmaworld.secret.static_s3 import AWS_ACCESS_KEY_ID
-from karmaworld.secret.static_s3 import AWS_SECRET_ACCESS_KEY
-from karmaworld.secret.static_s3 import AWS_STORAGE_BUCKET_NAME
-from karmaworld.secret.static_s3 import S3_URL
-from karmaworld.secret.static_s3 import STATIC_URL
+from karmaworld.secret.static_s3 import *
 
 from karmaworld.secret.db_settings import PROD_DB_NAME
 from karmaworld.secret.db_settings import PROD_DB_USERNAME
@@ -131,11 +125,11 @@ INSTALLED_APPS += (
 )
 
 # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
-STATICFILES_STORAGE = DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# DEFAULT_FILE_STORAGE comes from karmaworld.secret.static_s3
+STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
 
 # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
 AWS_CALLING_FORMAT = CallingFormat.SUBDOMAIN
-
 
 # AWS cache settings, don't change unless you know what you're doing:
 AWS_EXPIREY = 60 * 60 * 24 * 7
@@ -145,7 +139,8 @@ AWS_HEADERS = {
 }
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
+# S3_URL comes from karmaworld.secret.static_s3
+STATIC_URL = S3_URL
 ########## END STORAGE CONFIGURATION
 
 

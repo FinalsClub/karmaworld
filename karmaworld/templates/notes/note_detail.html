@@ -115,17 +115,19 @@
 
       <div class="row">
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
-          {% if note.html %}
+          {% if note.static_html %}
             <div class="note-text">
-              <iframe style="border:none; width:100%; min-height: 1000px;" id="noteframe" src="/raw/{{ note.id }}"
+              <!-- Give crawlers a link to the iframe contents-->
+              <a href="{{ STATIC_URL }}{{ note.get_relative_s3_path }}" target="_blank">Open note in a new window or tab</a>.
+              <iframe style="border:none; width:100%; min-height: 1000px;" id="noteframe" src="{{ STATIC_URL }}{{ note.get_relative_s3_path }}"
                       onload="autoResize('noteframe'); {% if pdf_controls %} setupPdfViewer(); {% endif %}"> </iframe>
             </div> <!-- .note-text -->
 
-          {% else %} {# note.html #}
+          {% else %} {# note.static_html #}
             <div class="note-error">
               This document's content is currently unavailable. Please try again later.
             </div>
-          {% endif %} {# note.html #}
+          {% endif %} {# note.static_html #}
 
       {% endif %} {# note.filetype == 'pdf' #}
 

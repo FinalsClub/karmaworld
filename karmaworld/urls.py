@@ -66,8 +66,6 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/', ProfileView.as_view(), name='accounts_profile'),
 
-    # VIEW for viewing a Note's gdrive generated html, used as iframe
-    url(r'^raw/(?P<pk>\d+)$', RawNoteDetailView.as_view(), name='note_raw'),
     #url(r'^pdfview$', PDFView.as_view(), name='pdf'),
     url(r'^pdfview/(?P<pk>\d+)$', PDFView.as_view(), name='pdf'),
 
