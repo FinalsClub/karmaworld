@@ -246,7 +246,7 @@ class Note(Document):
             soup = soupfilter(soup)
         # Return BeautifulSoup cleaned up HTML in UTF-8
         # http://www.crummy.com/software/BeautifulSoup/bs4/doc/#output-encoding
-        return soup.prettify()
+        return soup.prettify("utf-8")
 
     def sanitize_anchor_html(self, soup):
         """
