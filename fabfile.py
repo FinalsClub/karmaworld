@@ -185,7 +185,7 @@ def restart_gunicorn():
 ####### Update Requirements
 @task
 def update_reqs():
-    virtenv_exec('pip install -r {0}/reqs/prod.txt'.format(env.code_root))
+    virtenv_exec('pip install --upgrade -r {0}/reqs/prod.txt'.format(env.code_root))
 
 ####### Pull new code
 @task
