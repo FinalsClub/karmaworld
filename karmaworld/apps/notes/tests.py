@@ -57,12 +57,6 @@ class TestNoes(TestCase):
         api = itc.ApiClient(secret.PRIVATE_URL)
         api.delete_index(secret.INDEX)
 
-    def test_unicode(self):
-        """ Ensure that the unicode repl for a Note is as expected """
-        expected = u"Note: doc Lecture notes concerning the use of therefore ∴ -- {0}"\
-                .format(self.now)
-        self.assertEqual(self.note.__unicode__(), expected)
-
     def test_course_fkey(self):
         self.assertEqual(self.course, self.note.course)
 
