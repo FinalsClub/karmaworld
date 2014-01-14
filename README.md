@@ -212,14 +212,32 @@ not generally be needed.
    * `pdf2htmlEX`
 
    On a Debian system supporting Apt, this can be done with:
+```
+    sudo apt-get install python-pip postgresql python-virtualenv nginx \
+    virtualenvwrapper git libxml2-dev p7zip-full \
+    postgresql-server-dev-9.1 libxslt1-dev \
+    libmemcached-dev python-dev rabbitmq-server \
+    cmake libpng-dev libjpeg-dev libgtk2.0-dev \
+    pkg-config libfontconfig1-dev autoconf libtool
 
-        sudo apt-get install python-pip postgresql python-virtualenv nginx \
-                             virtualenvwrapper git libxml2-dev p7zip-full \
-                             postgresql-server-dev-9.1 libxslt1-dev \
-                             libmemcached-dev python-dev rabbitmq-server
+    wget http://poppler.freedesktop.org/poppler-0.24.4.tar.xz
+    tar xf poppler-0.24.4.tar.gz
+    ./configure --prefix=/usr --enable-xpdf-headers
+    make
+    sudo make install
 
-        sudo add-apt-repository ppa:coolwanglu/pdf2htmlex
-        sudo apt-get install pdf2htmlex
+    git clone https://github.com/fontforge/fontforge.git
+    ./autogen.sh
+    ./configure --prefix=/usr
+    make
+    sudo make install
+
+    git clone https://github.com/charlesconnell/pdf2htmlEX.git
+    cd pdf2htmlEX
+    cmake .
+    make
+    sudo make install
+```
 
 1. Generate a PostgreSQL database and a role with read/write permissions.
    * For Debian, these instructions are helpful: https://wiki.debian.org/PostgreSql
