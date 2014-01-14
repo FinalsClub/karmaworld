@@ -14,7 +14,7 @@ class Command(BaseCommand):
            "in the index that are not overwritten will still be around."
 
     def handle(self, *args, **kwargs):
-        for note in Note.object.iterator():
+        for note in Note.objects.iterator():
             try:
                 print "Indexing {n}".format(n=note)
                 add_document(note)

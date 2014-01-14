@@ -19,7 +19,7 @@ class Command(BaseCommand):
            """
 
     def handle(self, *args, **kwargs):
-        for note in Note.object.iterator():
+        for note in Note.objects.iterator():
             if note.static_html:
                 # don't reprocess notes that are already on S3.
                 continue
