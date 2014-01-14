@@ -63,7 +63,7 @@ def syncdb():
     """
     Sync Database
     """
-    virtenv_exec('{0}/manage.py syncdb --migrate'.format(env.code_root))
+    virtenv_exec('{0}/manage.py syncdb --migrate --noinput'.format(env.code_root))
 
 
 ####### Collect Static Files
@@ -265,6 +265,7 @@ def first_deploy():
     fetch_usde()
     import_usde()
     start_supervisord()
+    print "You should run `manage.py createsuperuser` in the virtual environment"
 
 
 @task
