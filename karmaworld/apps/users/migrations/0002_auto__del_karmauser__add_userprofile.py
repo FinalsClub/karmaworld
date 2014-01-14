@@ -20,7 +20,8 @@ class Migration(SchemaMigration):
         # Changing field 'Note.user'
         db.alter_column('notes_note', 'user', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'Note', fields ['user']
-        db.delete_index('notes_note', ['user_id'])
+        # This is commented out because apparently the index doesn't really exist?!
+        #db.delete_index('notes_note', ['user_id'])
 
         # Deleting model 'KarmaUser'
         db.delete_table('users_karmauser')
