@@ -1,4 +1,9 @@
-{% load account %}{% user_display user as user_display %}{% load i18n %}{% autoescape off %}{% blocktrans with current_site.name as site_name %}User {{ user_display }} at {{ site_name }} has given this as an email address.
+{% load account %}
+{% user_display user as user_display %}
+{% autoescape off %}
+Hey {{ user_display }},
 
-To confirm this is correct, go to {{ activate_url }}
-{% endblocktrans %}{% endautoescape %}
+Welcome to KarmaNotes! Please confirm your email with the link below:
+
+{{ activate_url }}
+{% endautoescape %}
