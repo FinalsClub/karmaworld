@@ -49,6 +49,11 @@ apt-get install -y python-pip postgresql python-virtualenv virtualenvwrapper \
                    libxml2-dev libmemcached-dev python-dev rabbitmq-server \
                    p7zip-full pdf2htmlex
 
+cat >> `dpkg -L pdf2htmlex | grep pdf2htmlEX.js` <<PDF2HTMLEXHACK
+Viewer.prototype['rescale'] = Viewer.prototype.rescale;
+Viewer.prototype['scroll_to'] = Viewer.prototype.scroll_to;
+PDF2HTMLEXHACK
+
 echo "CREATE USER vagrant WITH CREATEROLE LOGIN; CREATE DATABASE karmaworld OWNER vagrant;" | su postgres -c "psql"
 
 mkdir -m 775 -p /var/www
