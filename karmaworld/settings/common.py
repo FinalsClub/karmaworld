@@ -15,6 +15,9 @@ from karmaworld.secret.filepicker import FILEPICKER_API_KEY as fp_api
 FILEPICKER_API_KEY = fp_api
 
 
+SERIALIZATION_MODULES = {'json-pretty': 'karmaworld.apps.serializers.json_pretty'}
+
+
 ########## REQUIRED SECURITY CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-ALLOWED_HOSTS
 # The hosts that this server runs from.
