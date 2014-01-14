@@ -293,6 +293,8 @@ not generally be needed.
    Within the virtualenv:
 
     1. Update the Python depenencies with `pip -i {project_root}/reqs/prod.txt`
+        * If you want debugging on a production-like system, run
+          `pip -i {project_root}/reqs/vmdev.txt`
     
     1. Setup the database with `python {project_root}/manage.py syncdb --migrate`
 
@@ -417,6 +419,7 @@ pip) are listed in these files:
 * `{project_root}/reqs/common.txt`
 * `{project_root}/reqs/dev.txt`
 * `{project_root}/reqs/prod.txt`
+* `{project_root}/reqs/vmdev.txt` (just a combo of dev.txt and prod.txt)
 
 # Thanks
 
