@@ -3,6 +3,7 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import html2text
+from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand
 from karmaworld.apps.notes.models import Note
 
@@ -17,6 +18,9 @@ class Command(BaseCommand):
         notes = Note.objects.filter(html__isnull=False).filter(text__isnull=True)
         cleaned_notes = 0
         for note in notes:
+            if not note.static_html:
+                # no HTML to fetch
+                continue
             try:
                 h = html2text.HTML2Text()
                 h.escape_snob = True
@@ -24,7 +28,10 @@ class Command(BaseCommand):
                 h.ignore_links = True
                 h.ignore_images = True
                 h.ignore_emphasis = True
-                note.text = h.handle(note.html)
+                # fetch data
+                with default_storage.open(note.get_relative_s3_path(),'r') as \
+                  html:
+                    note.text = h.handle(html.read())
                 note.save()
                 cleaned_notes += 1
                 print 'Processed {n}'.format(n=note)
