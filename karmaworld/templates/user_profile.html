@@ -1,17 +1,86 @@
-{% extends "account/base.html" %}
+{% extends "base.html" %}
 {% load url from future %}
 {% load account %}
 
-{% block head_title %}
+{% block pagescripts %}
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/dashboard.css">
+{% endblock %}
+
+{% block title %}
   Your KarmaNotes Profile
 {% endblock %}
 
 {% block content %}
-  <h1>Hello there,<br/>{% user_display user %}.</h1>
-  <p>Here are the notes that you've uploaded:</p>
-  <ul>
-    {% for note in user.note_set.all %}
-      <li><a href="{{ note.get_absolute_url }}">{{ note.name }}</a></li>
-    {% endfor %}
-  </ul>
+  <section id="dashboard_content">
+    <div id="stats_container" class="hero_gradient_bar">
+      <div class="row">
+        <div class="small-10 columns small-centered center header_title">
+          {% user_display user %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-10 columns small-centered center stat_lead_in">
+          you've uploaded
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-10 columns small-centered center stat_number stat_uploaded">
+          {{ user.note_set.count }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-10 columns small-centered center stat_object stat_uploaded">
+          notes
+        </div>
+      </div>
+    </div>
+
+    <div id="activity_container">
+
+      <div class="row">
+        <div class="small-10 columns small-centered column_header">
+            latest activity
+        </div>
+      </div>
+
+      {% if not user.note_set.all %}
+        <div class="row">
+          <div id="no_activity" class="small-10 columns small-centered center">
+            <h4>Nothing to show here yet.</h4>
+          </div>
+        </div>
+      {% endif %}
+
+      {% for note in user.note_set.all %}
+
+        <div class="row">
+          <div class="small-10 columns small-centered {% cycle '' 'row_alt_on'%}">
+
+            <div class="activity_item">
+
+              <div class="row">
+                <div class="small-12 columns activity_timestamp">
+                  <span class="activity_date">{{ note.uploaded_at|date:"D b j Y" }}</span>
+                </div>
+                <div class="small-12 columns activity_details_action">
+                  You uploaded <a href="{{ note.get_absolute_url }}" class="activity_target">{{ note.name }}</a>
+                </div>
+                <div class="small-12 columns activity_details_context">
+                  <a href="{{ note.course.get_absolute_url }}" class="course_link">{{ note.course.name }} // {{ note.course.school.name }}</a>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      {% endfor %}
+
+    </div>
+
+
+
+  </section>
+
 {% endblock %}

@@ -37,7 +37,18 @@
 
     <div id="login_container" class="small-2 columns">
       {% if request.user.is_authenticated %}
-        <a class="white" href="{% url 'account_logout' %}">Log Out</a>
+        <i id="user_settings" class="fa fa-cog fa-lg"></i>
+        <div id="user_dropdown_container">
+          <ul id="user_dropdown">
+            <li><a href="{% url 'accounts_profile' %}">Dashboard</a></li>
+            <li><a href="{% url 'account_logout' %}">Log Out</a></li>
+          </ul>
+        </div>
+        <script>
+         $('#user_settings').click(function() {
+           $('#user_dropdown_container').toggle();
+         });
+        </script>
       {% else %}
         <a class="white" href="{% url 'account_login' %}">Log In</a>
       {% endif %}
