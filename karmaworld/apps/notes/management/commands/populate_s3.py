@@ -39,7 +39,7 @@ class Command(BaseCommand):
             # and some decent default settings chosen by django-storages.
     
             print "Processing {0}".format(filepath)
-            html = note.filter_html(html)
+            html = note.filter_html(note.html)
             # S3 upload wants a file-like object.
             htmlflo = StringIO(html)
             # Create the new key (key == filename in S3 bucket)
