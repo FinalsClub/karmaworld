@@ -293,8 +293,12 @@ not generally be needed.
    Within the virtualenv:
 
     1. Update the Python depenencies with `pip -i {project_root}/reqs/prod.txt`
-        * If you want debugging on a production-like system, run
-          `pip -i {project_root}/reqs/vmdev.txt`
+        * If you want debugging on a production-like system:
+            1. run `pip -i {project_root}/reqs/vmdev.txt`
+            1. change `{project_root}/manage.py` to point at `vmdev.py`
+               instead of `prod.py`
+            1. ensure firefox is installed on the system (such as by
+               `sudo apt-get install firefox`)
     
     1. Setup the database with `python {project_root}/manage.py syncdb --migrate`
 

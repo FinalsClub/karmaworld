@@ -54,7 +54,7 @@ Viewer.prototype['rescale'] = Viewer.prototype.rescale;
 Viewer.prototype['scroll_to'] = Viewer.prototype.scroll_to;
 PDF2HTMLEXHACK
 
-echo "CREATE USER vagrant WITH CREATEROLE LOGIN; CREATE DATABASE karmaworld OWNER vagrant;" | su postgres -c "psql"
+echo "CREATE USER vagrant WITH CREATEROLE CREATEDB LOGIN; CREATE DATABASE karmaworld OWNER vagrant;" | su postgres -c "psql"
 
 mkdir -m 775 -p /var/www
 chown -R :www-data /var/www
