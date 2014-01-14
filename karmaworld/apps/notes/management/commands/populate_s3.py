@@ -22,6 +22,7 @@ class Command(BaseCommand):
         for note in Note.objects.iterator():
             if note.static_html:
                 # don't reprocess notes that are already on S3.
+                print "Skipping {0}".format(str(note))
                 continue
 
             filepath = note.get_relative_s3_path()
@@ -29,6 +30,7 @@ class Command(BaseCommand):
                 # HTML file is already uploaded if its slug is already there.
                 note.static_html = True
                 note.save()
+                print "Marking {0} as uploaded.".format(filepath)
                 continue
      
             # Copy pasta!
@@ -37,7 +39,7 @@ class Command(BaseCommand):
             # and some decent default settings chosen by django-storages.
     
             # S3 upload wants a file-like object.
-            htmlflo = StringIO(html)
+            htmlflo = StringIO(note.html)
             # Create the new key (key == filename in S3 bucket)
             newkey = default_storage.bucket.new(filepath)
             # Upload data!
