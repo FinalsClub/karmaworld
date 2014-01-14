@@ -239,7 +239,7 @@ def convert_raw_document(raw_document, user=None, session_key=None):
         # S3 upload wants a file-like object.
         htmlflo = StringIO(html)
         # Create the new key (key == filename in S3 bucket)
-        newkey = default_storage.bucket.new(filepath)
+        newkey = default_storage.bucket.new_key(filepath)
         # Upload data!
         newkey.send_file(htmlflo)
         if not newkey.exists():
