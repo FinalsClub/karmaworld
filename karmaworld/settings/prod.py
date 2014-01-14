@@ -47,6 +47,8 @@ EMAIL_SUBJECT_PREFIX = 'KarmaNotes '
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-use-tls
 EMAIL_USE_TLS = True
 
+DEFAULT_FROM_EMAIL = 'info@karmanotes.org'
+
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = EMAIL_HOST_USER
 ########## END EMAIL CONFIGURATION
