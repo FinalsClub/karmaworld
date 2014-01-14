@@ -38,8 +38,10 @@ class Command(BaseCommand):
             # This is a pretty ugly hackified answer to some s3boto shortcomings
             # and some decent default settings chosen by django-storages.
     
+            print "Processing {0}".format(filepath)
+            html = note.filter_html(html)
             # S3 upload wants a file-like object.
-            htmlflo = StringIO(note.html)
+            htmlflo = StringIO(html)
             # Create the new key (key == filename in S3 bucket)
             newkey = default_storage.bucket.new(filepath)
             # Upload data!
