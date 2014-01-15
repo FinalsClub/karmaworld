@@ -162,7 +162,7 @@ instructions, it is assumed Vagrant will be deployed to VirtualBox.
         1. Ensure `*.py` in `secret/` are never added to the git repo.
            (.gitignore should help warn against taking this action)
 
-1. Install [VirtualBox](http://www.virtualbox.com/)
+1. Install [VirtualBox](http://www.virtualbox.org/)
 
 1. Install [vagrant](http://www.vagrantup.com/) 1.3 or higher
 
