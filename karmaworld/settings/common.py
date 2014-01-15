@@ -24,8 +24,8 @@ SERIALIZATION_MODULES = {'json-pretty': 'karmaworld.apps.serializers.json_pretty
 ALLOWED_HOSTS = [
     '127.0.0.1', # for dev systems / VMs, but should be safe enough
     'localhost', # for dev systems / VMs, but should be safe enough
-    'beta.karmanotes.org.',
-    'www.karmanotes.org.',
+    'beta.karmanotes.org',
+    'www.karmanotes.org',
     'karmanotes.org',
 ]
 ########## END SECURITY CONFIGURATION
