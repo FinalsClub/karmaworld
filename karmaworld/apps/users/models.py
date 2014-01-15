@@ -2,14 +2,17 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2013  FinalsClub Foundation
 import random
+import logging
 from allauth.account.signals import user_logged_in
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.db import models
+from django.db import models, DatabaseError
+from django.middleware.transaction import transaction
 from karmaworld.apps.courses.models import School
 
+logger = logging.getLogger(__name__)
 
 class UserProfile(models.Model):
     user      = models.OneToOneField(User)
@@ -50,5 +53,9 @@ def assign_username(sender, instance, **kwargs):
 @receiver(post_save, sender=User, weak=True)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        with transaction.commit_on_success():
+            try:
+                UserProfile.objects.create(user=instance)
+            except DatabaseError:
+                logger.warn("Could not create UserProfile for user {u}. This is okay if running syncdb.".format(u=instance))
 
