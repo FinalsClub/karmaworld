@@ -11,8 +11,8 @@ class ProfileView(TemplateView, SingleObjectMixin):
     model = User
     context_object_name = 'user' # name passed to template
     template_name = 'user_profile.html'
+    object = None
 
     def get_object(self, queryset=None):
-        u = self.request.user
         return self.request.user
 
