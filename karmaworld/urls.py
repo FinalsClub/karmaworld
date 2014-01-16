@@ -78,7 +78,7 @@ urlpatterns = patterns('',
     # Filepicker upload
     url(r'^api/upload$', save_fp_upload, name='upload_post'),
     # VIEW for displaying a single Course
-    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '$',
+    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '/$',
         CourseDetailView.as_view(), name='course_detail'),
 
     ## NOTE MODEL
