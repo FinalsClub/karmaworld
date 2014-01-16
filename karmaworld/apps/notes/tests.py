@@ -76,16 +76,6 @@ class TestNoes(TestCase):
         self.note.save()
         self.assertEqual(self.note.slug, expected)
 
-    def test_save_no_slug(self):
-        """ Test that Note.save() doesn't make a slug
-            if Note.name hasn't been set
-        """
-        self.note.name = None
-        self.note.slug = None
-        self.note.save() # re-save the note
-        # check that slug has note been generated
-        self.assertIsNone(self.note.slug)
-
     expected_url_prefix = u'/marshall-college/archaeology-101/'
     expected_slug = u'lecture-notes-concerning-the-use-of-therefore'
     expected = expected_url_prefix + expected_slug
