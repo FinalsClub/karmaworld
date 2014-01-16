@@ -228,7 +228,7 @@ class Note(Document):
         # Maybe run checksums if possible to confirm its really done?
         # (but then you gotta wonder was the original correct or is the new
         # one correct)
-        if note.static_html:
+        if self.static_html:
             return
         # upload the HTML file to static host if it is not already there
         filepath = self.get_relative_s3_path()
@@ -247,9 +247,9 @@ class Note(Document):
         # or
         # file was just uploaded successfully to filepath
         # Regardless, set note as uploaded.
-        note.static_html = True
+        self.static_html = True
         if do_save:
-            note.save()
+            self.save()
 
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug
