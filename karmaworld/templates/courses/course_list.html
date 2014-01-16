@@ -14,8 +14,8 @@
 {% endblock %}
 
 {% block pagescripts %}
-<script src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
-<script src="{{ STATIC_URL }}js/opentip-jquery-excanvas.min.js"></script>
+<script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
+
 <script>
 $(document).ready(function() {
   // If there were form errors, open the form and jump to it
@@ -155,3 +155,7 @@ $(document).ready(function() {
 </section> <!-- #results_content -->
 
 {% endblock %}
+
+{% block bodyscripts %}
+  <script src="{{ STATIC_URL }}js/opentip-jquery-excanvas.min.js"></script>
+{% endblock bodyscripts %}
