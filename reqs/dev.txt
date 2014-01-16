@@ -1,6 +1,6 @@
 -r common.txt
 django-kombu==0.9.4
-django-debug-toolbar==0.9.4
+django-debug-toolbar
 ipython==0.13.1
 ipdb==0.7
 django-extensions==1.0.3 # some extra debugging tools for manage.py
