@@ -12,6 +12,7 @@ import logging
 from allauth.account.signals import user_logged_in
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import default_storage
 from django.db.models import SET_NULL
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
@@ -214,6 +215,41 @@ class Note(Document):
         # upon save() inside RawDocument.convert_to_note(). It makes for a good
         # filename and its pretty well guaranteed to be there.
         return 'html/{0}.html'.format(self.slug)
+
+    def send_to_s3(self, html, do_save=True):
+        """
+        Push the given HTML up to S3 for this Note.
+        Set do_save to False if the note will be saved outside this call.
+        """
+        # do nothing if HTML is empty.
+        if not html or not len(html):
+            return
+        # do nothing if already uploaded.
+        # Maybe run checksums if possible to confirm its really done?
+        # (but then you gotta wonder was the original correct or is the new
+        # one correct)
+        if note.static_html:
+            return
+        # upload the HTML file to static host if it is not already there
+        filepath = self.get_relative_s3_path()
+        if not default_storage.exists(filepath):
+            # This is a pretty ugly hackified answer to some s3boto shortcomings
+            # and some decent default settings chosen by django-storages.
+
+            # Create the new key (key == filename in S3 bucket)
+            newkey = default_storage.bucket.new_key(filepath)
+            # Upload data!
+            newkey.set_contents_from_string(html)
+            if not newkey.exists():
+                raise LookupError('Unable to find uploaded S3 document {0}'.format(str(newkey)))
+        # If the code reaches here, either:
+        # filepath exists on S3 but static_html is not marked.
+        # or
+        # file was just uploaded successfully to filepath
+        # Regardless, set note as uploaded.
+        note.static_html = True
+        if do_save:
+            note.save()
 
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug

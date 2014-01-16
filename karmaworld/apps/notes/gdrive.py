@@ -6,7 +6,6 @@ import datetime
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.db import SessionStore
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.storage import default_storage
 import os
 import subprocess
 import tempfile
@@ -15,7 +14,6 @@ import magic
 import re
 import json
 import time
-from cStringIO import StringIO
 
 import httplib2
 from apiclient.discovery import build
@@ -231,22 +229,7 @@ def convert_raw_document(raw_document, user=None, session_key=None):
     html = note.filter_html(html)
 
     # upload the HTML file to static host if it is not already there
-    filepath = note.get_relative_s3_path()
-    if not default_storage.exists(filepath):
-        # This is a pretty ugly hackified answer to some s3boto shortcomings
-        # and some decent default settings chosen by django-storages.
-
-        # S3 upload wants a file-like object.
-        htmlflo = StringIO(html)
-        # Create the new key (key == filename in S3 bucket)
-        newkey = default_storage.bucket.new_key(filepath)
-        # Upload data!
-        newkey.send_file(htmlflo)
-        if not newkey.exists():
-            raise LookupError('Unable to find uploaded S3 document {0}'.format(str(newkey)))
-        else:
-            # Mark this note as available from the static host
-            note.static_html = True
+    note.send_to_s3(html, do_save=False)
 
     note.text = content_dict['text']
 

@@ -22,52 +22,10 @@ class Command(BaseCommand):
         for note in Note.objects.iterator():
             if note.static_html:
                 # don't reprocess notes that are already on S3.
-                print "Skipping {0}".format(str(note))
+                print "Skipping pre-uploaded {0}".format(str(note))
                 continue
 
-            filepath = note.get_relative_s3_path()
-            if default_storage.exists(filepath):
-                # HTML file is already uploaded if its slug is already there.
-                note.static_html = True
-                note.save()
-                print "Marking {0} as uploaded.".format(filepath)
-                continue
-     
-            # Copy pasta!
-
-            # This is a pretty ugly hackified answer to some s3boto shortcomings
-            # and some decent default settings chosen by django-storages.
-    
-            print "Processing {0}".format(filepath)
+            # grab the html from inside the note and process it
             html = note.filter_html(note.html)
-            # S3 upload wants a file-like object.
-            htmlflo = StringIO(html)
-            # Create the new key (key == filename in S3 bucket)
-            newkey = default_storage.bucket.new_key(filepath)
-            # Upload data!
-            newkey.send_file(htmlflo)
-
-            # Make sure the upload went through
-            if not newkey.exists():
-                # oh well. log it and continue on.
-                print 'Unable to find {0}'.format(str(newkey))
-                continue
-
-            # Local HTML checksum
-            htmlflo.seek(0)
-            htmlflo_check = hashlib.sha1(htmlflo.read()).hexdigest()
-
-            # Remote HTML checksum
-            with default_storage.open(filepath, 'r') as s3file:
-                s3_check = hashlib.sha1(s3file.read()).hexdigest()
-
-            if htmlflo_check == s3_check:
-                # Mark this note as available from the static host
-                note.static_html = True
-                # Scrub its HTML to clean up the database.
-                note.html = ''
-                note.save()
-                print "Completed upload of {0}".format(filepath)
-            else:
-                print "Checksum mismatch for {0}:\n{1}\n{2}\n".format(filepath,
-                  htmlflo_check, s3_check)
+            # push clean HTML to S3
+            note.send_to_s3(html)
