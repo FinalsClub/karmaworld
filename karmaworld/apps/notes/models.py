@@ -20,6 +20,8 @@ from karmaworld.apps.notes.gdrive import UPLOADED_NOTES_SESSION_KEY
 import os
 import urllib
 
+from boto.s3.acl import Grant
+
 from django.conf import settings
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
@@ -242,6 +244,12 @@ class Note(Document):
             newkey.set_contents_from_string(html)
             if not newkey.exists():
                 raise LookupError('Unable to find uploaded S3 document {0}'.format(str(newkey)))
+
+            # set the permissions for everyone to read.
+            all_read = Grant(permission=u'READ', type=u'GROUP',
+                         uri=u'http://acs.amazonaws.com/groups/global/AllUsers')
+            policy = newkey.get_acl().acl.add_grant(all_read)
+
         # If the code reaches here, either:
         # filepath exists on S3 but static_html is not marked.
         # or
