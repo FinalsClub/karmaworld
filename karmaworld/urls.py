@@ -75,8 +75,20 @@ urlpatterns = patterns('',
 
     # Filepicker upload
     url(r'^api/upload$', save_fp_upload, name='upload_post'),
+
+    # ---- JSON views ----#
+    # return json list of schools
+    url(r'^school/list/$', school_list, name='json_school_list'),
+    # return json list of courses for a given school
+    url(r'^school/course/list/$', school_course_list, name='json_school_course_list'),
+    # return json list of instructors for a given school and course
+    url(r'^school/course/instructors/list/$', school_course_instructor_list, name='json_school_course_instructor_list'),
+    # ---- end JSON views ----#
+
+    url(r'^search/$', NoteSearchView.as_view(), name='note_search'),
+
     # VIEW for displaying a single Course
-    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '$',
+    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '/$',
         CourseDetailView.as_view(), name='course_detail'),
 
     ## NOTE MODEL
@@ -99,17 +111,6 @@ urlpatterns = patterns('',
         NoteView.as_view(), name='note_detail'),
     #url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', \
     #    NoteView.as_view(), name='note_detail'),
-
-    # ---- JSON views ----#
-    # return json list of schools
-    url(r'^school/list/$', school_list, name='json_school_list'),
-    # return json list of courses for a given school
-    url(r'^school/course/list/$', school_course_list, name='json_school_course_list'),
-    # return json list of instructors for a given school and course
-    url(r'^school/course/instructors/list/$', school_course_instructor_list, name='json_school_course_instructor_list'),
-    # ---- end JSON views ----#
-
-    url(r'^search/$', NoteSearchView.as_view(), name='note_search'),
 
     url(r'^$', CourseListView.as_view(model=Course), name='home'),
 )
