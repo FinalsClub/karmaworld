@@ -225,8 +225,8 @@ def convert_raw_document(raw_document, user=None, session_key=None):
         html = pdf2html(content_dict['pdf'])
     elif 'html' in content_dict and content_dict['html']:
         html = content_dict['html']
-    # cleanup the HTML
-    html = note.filter_html(html)
+        # cleanup the HTML
+        html = note.filter_html(html)
 
     # upload the HTML file to static host if it is not already there
     note.send_to_s3(html, do_save=False)
