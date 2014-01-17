@@ -20,8 +20,6 @@ from karmaworld.apps.notes.gdrive import UPLOADED_NOTES_SESSION_KEY
 import os
 import urllib
 
-from boto.s3.acl import Grant
-
 from django.conf import settings
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage

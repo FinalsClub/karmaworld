@@ -10,8 +10,6 @@ from S3 import CallingFormat
 
 from common import *
 
-from karmaworld.secret.static_s3 import *
-
 from karmaworld.secret.db_settings import PROD_DB_NAME
 from karmaworld.secret.db_settings import PROD_DB_USERNAME
 from karmaworld.secret.db_settings import PROD_DB_PASSWORD

@@ -14,6 +14,7 @@ from karmaworld.secret.filepicker import FILEPICKER_API_KEY as fp_api
 
 FILEPICKER_API_KEY = fp_api
 
+from karmaworld.secret.static_s3 import *
 
 SERIALIZATION_MODULES = {'json-pretty': 'karmaworld.apps.serializers.json_pretty'}
 

@@ -5,7 +5,7 @@
 import traceback
 from django.core.management.base import BaseCommand
 from karmaworld.apps.notes.models import Note
-from karmaworld.apps.notes.search import *
+from karmaworld.apps.notes.search import SearchIndex
 
 class Command(BaseCommand):
     args = 'none'
@@ -14,10 +14,11 @@ class Command(BaseCommand):
            "in the index that are not overwritten will still be around."
 
     def handle(self, *args, **kwargs):
+        index = SearchIndex()
         for note in Note.objects.iterator():
             try:
                 print "Indexing {n}".format(n=note)
-                add_document(note)
+                index.add_note(note)
             except Exception, e:
                 traceback.print_exc()
                 continue

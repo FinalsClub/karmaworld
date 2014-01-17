@@ -1,8 +1,6 @@
 -r common.txt
-boto==2.6.0
 cssmin==0.1.4
 pylibmc==1.2.3
-django-storages==1.1.4
 gunicorn==0.14.3
 jsmin==2.0.2
 psycopg2==2.4.5
