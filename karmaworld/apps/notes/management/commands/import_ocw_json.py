@@ -166,7 +166,7 @@ class Command(BaseCommand):
                         # Do tags separately
                         dbnote.tags.add('mit-ocw','karma')
 
-                        print "Converting document and saving note to database."
+                        print "Converting document and saving note to S3."
                         try:
                             convert_raw_document(dbnote)
                         except ValueError, e:
