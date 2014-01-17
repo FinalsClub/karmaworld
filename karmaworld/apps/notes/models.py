@@ -40,6 +40,15 @@ from karmaworld.settings.manual_unique_together import auto_add_check_unique_tog
 logger = logging.getLogger(__name__)
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
 
+# Dictionary for S3 upload headers
+s3_upload_headers = {
+    'Content-Type': 'text/html',
+}
+
+# This is a bit hacky, but nothing else works. Grabbed this from a proper
+# file configured via S3 management console.
+# https://github.com/FinalsClub/karmaworld/issues/273#issuecomment-32572169
+all_read_xml_acl = '<?xml version="1.0" encoding="UTF-8"?>\n<AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Owner><AccessControlList><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Grantee><Permission>READ</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Grantee><Permission>WRITE</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Grantee><Permission>READ_ACP</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Grantee><Permission>WRITE_ACP</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant></AccessControlList></AccessControlPolicy>'
 
 def _choose_upload_to(instance, filename):
     # /school/course/year/month/day
@@ -241,14 +250,12 @@ class Note(Document):
             # Create the new key (key == filename in S3 bucket)
             newkey = default_storage.bucket.new_key(filepath)
             # Upload data!
-            newkey.set_contents_from_string(html)
+            newkey.set_contents_from_string(html, headers=s3_upload_headers)
             if not newkey.exists():
                 raise LookupError('Unable to find uploaded S3 document {0}'.format(str(newkey)))
 
             # set the permissions for everyone to read.
-            all_read = Grant(permission=u'READ', type=u'GROUP',
-                         uri=u'http://acs.amazonaws.com/groups/global/AllUsers')
-            policy = newkey.get_acl().acl.add_grant(all_read)
+            newkey.set_xml_acl(all_read_xml_acl)
 
         # If the code reaches here, either:
         # filepath exists on S3 but static_html is not marked.
