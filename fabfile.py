@@ -184,7 +184,15 @@ def restart_gunicorn():
 
 ####### Update Requirements
 @task
+def install_reqs():
+    # first install must be done without --upgrade for a few packages that break
+    # due to a pip problem.
+    virtenv_exec('pip install -r {0}/reqs/prod.txt'.format(env.code_root))
+
+@task
 def update_reqs():
+    # this should generally work to install reqs too, save for a pip problem
+    # with a few packages.
     virtenv_exec('pip install --upgrade -r {0}/reqs/prod.txt'.format(env.code_root))
 
 ####### Pull new code
@@ -259,7 +267,7 @@ def first_deploy():
     make_virtualenv()
     file_setup()
     check_secrets()
-    update_reqs()
+    install_reqs()
     syncdb()
     collect_static()
     fetch_usde()

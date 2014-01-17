@@ -327,6 +327,34 @@ not generally be needed.
 1. If everything went well, gunicorn should be running the website on port 8000
    and nginx should be serving gunicorn on port 80.
 
+# Update a deployed system
+
+Once code has been updated, the running web service will need to be updated
+to stay in sync with the code.
+
+## Fabric
+
+Run the `deploy` fab command. For example:
+`fab -H 127.0.0.1 deploy`
+
+## By Hand
+
+1. pull code in from the repo with `git pull`
+1. If any Python requirements have changed, install/upgrade them:
+    `pip install -r --upgrade reqs/prod.txt`
+1. If the database has changed, update the database with:
+    `python manage.py syncdb --migrate`
+1. If any static files have changed, synchornize them with;
+    `python manage.py collectstatic`
+1. Django will probably need a restart.
+    * For a dev system, ctrl-c the running process and restart it.
+    * For a production system, there are two options.
+        * `python manage.py restart_supervisord` if far reaching changes
+          have been made (that might effect celery, beat, etc)
+        * `python manage.py restart_gunicorn` if only minor Django changes
+          have been made
+        * If you are uncertain, best bet is to restart supervisord.
+
 # Accessing the Vagrant Virtual Machine
 
 ## Accessing the VM via Fabric
