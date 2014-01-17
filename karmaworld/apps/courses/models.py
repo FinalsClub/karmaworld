@@ -210,7 +210,7 @@ class Course(models.Model):
     department  = models.ForeignKey(Department, blank=True, null=True)
     # school is an appendix: the kind that gets swollen and should be removed
     # (vistigial)
-    school      = models.ForeignKey(School) 
+    school      = models.ForeignKey(School, null=True, blank=True)
     file_count  = models.IntegerField(default=0)
 
     desc        = models.TextField(max_length=511, blank=True, null=True)
