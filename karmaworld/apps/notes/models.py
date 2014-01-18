@@ -285,17 +285,13 @@ class Note(Document):
             # if there was no HTML, return an empty string
             return ''
 
-        # TODO adding from_encoding (if known) will speed up the process
-        # http://www.crummy.com/software/BeautifulSoup/bs4/doc/#encodings
         soup = BS(html)
         # Iterate through filters, applying all to the soup object.
         for soupfilter in (
           self.sanitize_anchor_html,
         ):
             soup = soupfilter(soup)
-        # Return BeautifulSoup cleaned up HTML in UTF-8
-        # http://www.crummy.com/software/BeautifulSoup/bs4/doc/#output-encoding
-        return soup.prettify("utf-8")
+        return str(soup)
 
     def sanitize_anchor_html(self, soup):
         """
