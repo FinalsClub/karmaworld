@@ -239,7 +239,8 @@ def ajaxIncrementBase(request, pk, field):
     try:
         # Increment counter
         note = Note.objects.get(pk=pk)
-        note.__dict__[field] += 1
+        count = getattr(note, field)
+        setattr(note, field,  count+1)
         note.save()
 
         # Record that user has performed this, to prevent
