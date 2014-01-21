@@ -18,6 +18,41 @@
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
   <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
   <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
+
+  <script>
+
+    function writeNoteFrame(contents) {
+      var dstFrame = document.getElementById('noteframe');
+      var dstDoc = dstFrame.contentDocument || dstFrame.contentWindow.document;
+      dstDoc.write(contents);
+      dstDoc.close();
+    }
+
+    $(function() {
+      $.ajax('{{ STATIC_URL }}{{ note.get_relative_s3_path }}',
+        {
+          type: 'GET',
+          xhrFields: {
+            onprogress: function (progress) {
+              var percentage = Math.floor((progress.loaded / progress.totalSize) * 100);
+              writeNoteFrame("<h3 style='text-align: center'>" + percentage + "%</h3>");
+            }
+          },
+          success: function(data, textStatus, jqXHR) {
+            writeNoteFrame(data);
+            autoResize('noteframe');
+            {% if pdf_controls %}
+              setupPdfViewer();
+            {% endif %}
+          },
+          error: function(data, textStatus, jqXHR) {
+            writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
+          }
+        });
+    });
+
+  </script>
+
 {% endblock %}
 
 {% block content %}
@@ -106,12 +141,7 @@
           </div>
         </div> <!-- .row -->
 
-        {% comment %}
-        # TODO: embed and pass the url with this included when we fix the css integration issues
-        {% include 'partial/pdfembed.html' %}
-        {% endcomment %}
-
-      {% else %} {# if pdf #}
+      {% else %}
 
       <div class="row">
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
@@ -119,8 +149,8 @@
             <div class="note-text">
               <!-- Give crawlers a link to the iframe contents-->
               <a href="{{ STATIC_URL }}{{ note.get_relative_s3_path }}" target="_blank">Open note in a new window or tab</a>.
-              <iframe style="border:none; width:100%; min-height: 1000px;" id="noteframe" src="{{ STATIC_URL }}{{ note.get_relative_s3_path }}"
-                      onload="autoResize('noteframe'); {% if pdf_controls %} setupPdfViewer(); {% endif %}"> </iframe>
+              <iframe style="border:none; width:100%; min-height: 1000px;"
+                      id="noteframe"> </iframe>
             </div> <!-- .note-text -->
 
           {% else %} {# note.static_html #}
@@ -129,7 +159,7 @@
             </div>
           {% endif %} {# note.static_html #}
 
-      {% endif %} {# note.filetype == 'pdf' #}
+      {% endif %}
 
         </div><!-- /body_copy -->
       </div>
