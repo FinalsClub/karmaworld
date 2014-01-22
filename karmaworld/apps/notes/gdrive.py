@@ -14,6 +14,7 @@ import magic
 import re
 import json
 import time
+from django.contrib.auth import SESSION_KEY
 
 import httplib2
 from apiclient.discovery import build
@@ -27,6 +28,7 @@ PDF_MIMETYPE = 'application/pdf'
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
 
 UPLOADED_NOTES_SESSION_KEY = 'uploaded_notes'
+
 
 def extract_file_details(fileobj):
     details = None
@@ -176,7 +178,7 @@ def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
     return file_dict
 
 
-def convert_raw_document(raw_document, user=None, session_key=None):
+def convert_raw_document(raw_document, user=None, session=None):
     """ Upload a raw document to google drive and get a Note back"""
     fp_file = raw_document.get_file()
 
@@ -245,13 +247,12 @@ def convert_raw_document(raw_document, user=None, session_key=None):
     # Finally, save whatever data we got back from google
     note.save()
 
-    if session_key and not user:
-        s = SessionStore(session_key=session_key)
+    if session and not user:
         # If the person who uploaded this made an
         # account or signed in while convert_raw_document
         # was running, associate their account with this note
         try:
-            uid = s['_auth_user_id']
+            uid = session[SESSION_KEY]
             user = User.objects.get(pk=uid)
             note.user = user
             note.save()
@@ -261,9 +262,10 @@ def convert_raw_document(raw_document, user=None, session_key=None):
         # so if the uploader later creates an account,
         # we can find notes they uploaded
         except (KeyError, ObjectDoesNotExist):
-            uploaded_notes = s.get(UPLOADED_NOTES_SESSION_KEY, [])
+            uploaded_notes = session.get(UPLOADED_NOTES_SESSION_KEY, [])
             uploaded_notes.append(note.id)
-            s[UPLOADED_NOTES_SESSION_KEY] = uploaded_notes
-            s.save()
+            session[UPLOADED_NOTES_SESSION_KEY] = uploaded_notes
+            session.modified = True
+            session.save()
 
 

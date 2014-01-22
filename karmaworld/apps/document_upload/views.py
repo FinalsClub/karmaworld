@@ -24,7 +24,11 @@ def save_fp_upload(request):
         if request.user.is_authenticated():
             raw_document.save(user=request.user)
         else:
-            raw_document.save(session_key=request.session.session_key)
+            # Generate session key if it doesn't exist
+            if not request.session.get('has_session'):
+                request.session['has_session'] = True
+                request.session.save()
+            raw_document.save(session=request.session)
         # save the tags to the database, too. don't forget those guys.
         r_d_f.save_m2m()
 

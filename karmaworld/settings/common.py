@@ -346,6 +346,7 @@ COMPRESS_JS_FILTERS = [
 
 ########## SESSION CONFIGURATION
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 63072000    # 2 years in seconds
 
 ########## END SESSION CONFIGURATION

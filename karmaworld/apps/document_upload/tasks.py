@@ -10,10 +10,10 @@ from karmaworld.apps.notes.gdrive import convert_raw_document
 logger = get_task_logger(__name__)
 
 @task()
-def process_raw_document(raw_document, user, session_key):
+def process_raw_document(raw_document, user, session):
     """ Process a RawDocument instance in to a Note instance """
     try:
-        convert_raw_document(raw_document, user=user, session_key=session_key)
+        convert_raw_document(raw_document, user=user, session=session)
     except:
         logger.error(traceback.format_exc())
 

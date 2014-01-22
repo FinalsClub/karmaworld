@@ -27,13 +27,13 @@ class ConversionTest(TestCase):
         self.course.save()
         self.client = Client()
 
-    def doConversionForPost(self, post, user=None, session_key=None):
+    def doConversionForPost(self, post, user=None, session=None):
         self.assertEqual(Note.objects.count(), 0)
         r_d_f = RawDocumentForm(post)
         self.assertTrue(r_d_f.is_valid())
         raw_document = r_d_f.save(commit=False)
         raw_document.fp_file = post['fp_file']
-        convert_raw_document(raw_document, user=user, session_key=session_key)
+        convert_raw_document(raw_document, user=user, session_key=session)
         self.assertEqual(Note.objects.count(), 1)
 
     def testPlaintextConversion(self):
@@ -97,7 +97,7 @@ class ConversionTest(TestCase):
                                  'name': 'graph3.txt',
                                  'tags': '',
                                  'mimetype': 'text/plain'},
-                                 session_key=s.session_key)
+                                 session=s)
         note = Note.objects.all()[0]
         self.assertEqual(note.user, user)
 
@@ -114,7 +114,7 @@ class ConversionTest(TestCase):
                                  'name': 'graph3.txt',
                                  'tags': '',
                                  'mimetype': 'text/plain'},
-                                 session_key=s.session_key)
+                                 session=s)
         user = User(username=TEST_USERNAME)
         user.save()
 

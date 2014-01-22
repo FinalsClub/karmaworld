@@ -65,9 +65,9 @@ class RawDocument(Document):
             note.tags.add(tag)
         return note
 
-    def save(self, user=None, session_key=None, *args, **kwargs):
+    def save(self, user=None, session=None, *args, **kwargs):
         super(RawDocument, self).save(*args, **kwargs)
         if not self.is_processed:
-            tasks.process_raw_document.delay(self, user, session_key)
+            tasks.process_raw_document.delay(self, user, session)
 
 auto_add_check_unique_together(RawDocument)
