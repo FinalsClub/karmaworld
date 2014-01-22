@@ -61,3 +61,6 @@ karmaworld/secret/*
 
 ## ctags
 .tags
+
+## USDE accreditation school CSV
+confs/accreditation.csv
