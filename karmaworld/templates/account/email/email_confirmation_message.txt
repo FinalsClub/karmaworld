@@ -3,7 +3,7 @@
 {% autoescape off %}
 Hey {{ user_display }},
 
-Welcome to KarmaNotes! Please confirm your email with the link below:
+Welcome to KarmaNotes! Please confirm your email with the link below. You'll get 5 karma points when you do.
 
 {{ activate_url }}
 {% endautoescape %}
