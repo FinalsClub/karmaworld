@@ -50,5 +50,7 @@ class ProfileView(TemplateView, MultipleObjectMixin):
 
         kwargs['object_list'] = result_list
 
+        kwargs['badge'] = self.request.user.get_profile().get_badge()
+
         return super(ProfileView, self).get_context_data(**kwargs)
 

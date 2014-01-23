@@ -16,8 +16,11 @@
       <div class="row">
         <div class="small-10 columns small-centered center header_title">
           {% user_display user %}
-        </div>
+          {% if badge %}
+            <span class="badge">{{ badge }}</span>
+          {% endif %}
       </div>
+        </div>
       <div class="row">
         <div class="small-12 medium-8 large-4 columns small-centered">
           <div class="row">

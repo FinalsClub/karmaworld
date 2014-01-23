@@ -559,6 +559,21 @@ a.activity_target:hover
   font-family: "MuseoSlab-900";
 }
 
+.badge
+{
+  background: none repeat scroll 0 0 #FFFFCD;
+  border-top-color: rgb(238, 238, 238);
+  border-right-color: rgb(204, 204, 204);
+  border-bottom-color: rgb(204, 204, 204);
+  border-left-color: rgb(238, 238, 238);
+  border-style: solid;
+  border-width: 1px;
+  font-size: 14px;
+  padding: 4px 6px 4px 6px;
+  font-weight: bold;
+  line-height: 250%;
+}
+
 .course_meta_action
 {
   height: 36px;

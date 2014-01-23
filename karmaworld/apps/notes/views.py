@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.apps.users.models import NoteKarmaEvent
+from karmaworld.utils.ajax_increment import *
 
 import os
 
@@ -21,6 +22,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.forms import NoteForm
+
 
 logger = logging.getLogger(__name__)
 
@@ -39,9 +41,6 @@ def is_ppt(self):
     if self.object.file_type == 'ppt':
         return True
     return False
-
-def format_session_increment_field(id, field):
-    return field + '-' + str(id)
 
 THANKS_FIELD = 'thanks'
 FLAG_FIELD = 'flags'
@@ -64,10 +63,10 @@ class NoteDetailView(DetailView):
         if self.object.mimetype in PDF_MIMETYPES:
             kwargs['pdf_controls'] = True
 
-        if self.request.session.get(format_session_increment_field(self.object.id, THANKS_FIELD), False):
+        if self.request.session.get(format_session_increment_field(Note, self.object.id, THANKS_FIELD), False):
             kwargs['already_thanked'] = True
 
-        if self.request.session.get(format_session_increment_field(self.object.id, FLAG_FIELD), False):
+        if self.request.session.get(format_session_increment_field(Note, self.object.id, FLAG_FIELD), False):
             kwargs['already_flagged'] = True
 
         return super(NoteDetailView, self).get_context_data(**kwargs)
@@ -230,32 +229,6 @@ class NoteSearchView(ListView):
         return super(NoteSearchView, self).get_context_data(**kwargs)
 
 
-def ajaxIncrementBase(request, pk, field, event_processor=None):
-    """Increment a note's field by one."""
-    if not (request.method == 'POST' and request.is_ajax()):
-        # return that the api call failed
-        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'must be a POST ajax request'}),
-                                    mimetype="application/json")
-
-    try:
-        # Increment counter
-        note = Note.objects.get(pk=pk)
-        count = getattr(note, field)
-        setattr(note, field,  count+1)
-        note.save()
-
-        event_processor(request.user, note)
-
-        # Record that user has performed this, to prevent
-        # them from doing it again
-        request.session[format_session_increment_field(pk, field)] = True
-    except ObjectDoesNotExist:
-        return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'note id does not match a note'}),
-                                    mimetype="application/json")
-
-    return HttpResponse(status=204)
-
-
 def process_note_thank_events(request_user, note):
     # Give points to the person who uploaded this note
     if note.user != request_user:
@@ -264,7 +237,7 @@ def process_note_thank_events(request_user, note):
 
 def thank_note(request, pk):
     """Record that somebody has thanked a note."""
-    return ajaxIncrementBase(request, pk, THANKS_FIELD, process_note_thank_events)
+    return ajax_increment(Note, request, pk, THANKS_FIELD, process_note_thank_events)
 
 
 def process_note_flag_events(request_user, note):
@@ -279,6 +252,6 @@ def process_note_flag_events(request_user, note):
 
 def flag_note(request, pk):
     """Record that somebody has flagged a note."""
-    return ajaxIncrementBase(request, pk, FLAG_FIELD, process_note_flag_events)
+    return ajax_increment(Note, request, pk, FLAG_FIELD, process_note_flag_events)
 
 

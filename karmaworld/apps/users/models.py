@@ -65,7 +65,11 @@ class UserProfile(models.Model):
         for badge in self.BADGES:
             if points >= self.BADGE_THRESHOLDS[badge]:
                 highest_badge = badge
-        return highest_badge
+
+        if highest_badge is not self.NO_BADGE:
+            return self.BADGE_NAMES[highest_badge]
+        else:
+            return None
 
     def __unicode__(self):
         return self.user.__unicode__()
