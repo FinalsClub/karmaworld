@@ -138,17 +138,14 @@ class NoteKarmaEvent(BaseKarmaEvent):
 
 class CourseKarmaEvent(BaseKarmaEvent):
     GIVE_FLAG    = 'give_flag'
-    GET_FLAGGED  = 'get_flagged'
     EVENT_TYPE_CHOICES = (
         (GIVE_FLAG,    "You flagged a course"),
-        (GET_FLAGGED,  "Your course was flagged as spam"),
     )
     course = models.ForeignKey('courses.Course')
     event_type = models.CharField(max_length=15, choices=EVENT_TYPE_CHOICES)
 
     POINTS = {
         GIVE_FLAG: -1,
-        GET_FLAGGED: -100
     }
 
     def get_message(self):

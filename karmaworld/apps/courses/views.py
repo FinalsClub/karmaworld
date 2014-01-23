@@ -213,10 +213,6 @@ def process_course_flag_events(request_user, course):
     # Take a point away from person flagging this course
     if request_user.is_authenticated():
         CourseKarmaEvent.create_event(request_user, course, CourseKarmaEvent.GIVE_FLAG)
-    # If this is the 6th time this course has been flagged,
-    # punish the uploader
-    if course.flags == 6:
-        CourseKarmaEvent.create_event(course.user, course, CourseKarmaEvent.GET_FLAGGED)
 
 
 def flag_course(request, pk):
