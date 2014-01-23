@@ -78,7 +78,7 @@ class UserProfile(models.Model):
 
 @receiver(email_confirmed, weak=True)
 def give_email_confirm_karma(sender, **kwargs):
-    GenericKarmaEvent.create_event(kwargs['email_address'].user, "You confirmed your email address", 5)
+    GenericKarmaEvent.create_event(kwargs['email_address'].user, kwargs['email_address'].email, GenericKarmaEvent.EMAIL_CONFIRMED)
 
 
 class BaseKarmaEvent(models.Model):
@@ -94,17 +94,40 @@ class BaseKarmaEvent(models.Model):
 
 
 class GenericKarmaEvent(BaseKarmaEvent):
+    NONE = 'none'
+    NOTE_DELETED       = 'upload'
+    EMAIL_CONFIRMED    = 'thanks'
+
+    EVENT_TYPE_CHOICES = (
+        (NONE,               'This should not happen'),
+        (NOTE_DELETED,       'Your note "{m}" was deleted'),
+        (EMAIL_CONFIRMED,    'You confirmed your email address {m}'),
+    )
+
+    POINTS = {
+        NOTE_DELETED: -5,
+        EMAIL_CONFIRMED: 5,
+    }
+
+    event_type = models.CharField(max_length=15, choices=EVENT_TYPE_CHOICES, default=NONE)
     message = models.CharField(max_length=255)
 
     @staticmethod
-    def create_event(user, message, points):
+    def create_event(user, message, type):
         event = GenericKarmaEvent.objects.create(user=user,
-                                                 points=points,
+                                                 points=GenericKarmaEvent.POINTS[type],
+                                                 event_type=type,
                                                  message=message)
         event.save()
 
     def get_message(self):
-        return self.message
+        if self.event_type == self.NONE:
+            return self.message
+        else:
+            return self.get_event_type_display().format(m=self.message)
+
+    def __unicode__(self):
+        return unicode(self.user) + ' -- ' + self.get_message()
 
 
 class NoteKarmaEvent(BaseKarmaEvent):
