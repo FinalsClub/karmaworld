@@ -27,6 +27,7 @@ def save_fp_upload(request):
         else:
             anonymous_upload_urls = request.session.get(ANONYMOUS_UPLOAD_URLS, [])
             anonymous_upload_urls.append(request.POST['fp_file'])
+            request.session[ANONYMOUS_UPLOAD_URLS] = anonymous_upload_urls
             request.session.modified = True
             request.session.save()
             raw_document.save()
