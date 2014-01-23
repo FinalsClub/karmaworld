@@ -231,7 +231,7 @@ class NoteSearchView(ListView):
 
 def process_note_thank_events(request_user, note):
     # Give points to the person who uploaded this note
-    if note.user != request_user:
+    if note.user != request_user and note.user:
         NoteKarmaEvent.create_event(note.user, note, NoteKarmaEvent.THANKS)
 
 
@@ -246,7 +246,7 @@ def process_note_flag_events(request_user, note):
         NoteKarmaEvent.create_event(request_user, note, NoteKarmaEvent.GIVE_FLAG)
     # If this is the 6th time this note has been flagged,
     # punish the uploader
-    if note.flags == 6:
+    if note.flags == 6 and note.user:
         NoteKarmaEvent.create_event(note.user, note, NoteKarmaEvent.GET_FLAGGED)
 
 

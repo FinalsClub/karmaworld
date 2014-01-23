@@ -3,6 +3,7 @@
 # Copyright (C) 2013  FinalsClub Foundation
 import logging
 import datetime
+from allauth.account.signals import email_confirmed, email_added
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.signals import post_save
@@ -73,6 +74,11 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.user.__unicode__()
+
+
+@receiver(email_confirmed, weak=True)
+def give_email_confirm_karma(sender, **kwargs):
+    GenericKarmaEvent.create_event(kwargs['email_address'].user, "You confirmed your email address", 5)
 
 
 class BaseKarmaEvent(models.Model):

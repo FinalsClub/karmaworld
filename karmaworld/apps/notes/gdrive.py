@@ -4,7 +4,6 @@
 
 import datetime
 from django.contrib.auth.models import User
-from django.contrib.sessions.backends.db import SessionStore
 from django.core.exceptions import ObjectDoesNotExist
 from karmaworld.apps.users.models import NoteKarmaEvent
 import os
