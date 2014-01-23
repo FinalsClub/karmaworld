@@ -8,6 +8,7 @@ import logging
 from django.core.exceptions import ObjectDoesNotExist
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
+from karmaworld.apps.users.models import NoteKarmaEvent
 
 import os
 
@@ -229,7 +230,7 @@ class NoteSearchView(ListView):
         return super(NoteSearchView, self).get_context_data(**kwargs)
 
 
-def ajaxIncrementBase(request, pk, field):
+def ajaxIncrementBase(request, pk, field, event_processor=None):
     """Increment a note's field by one."""
     if not (request.method == 'POST' and request.is_ajax()):
         # return that the api call failed
@@ -243,6 +244,8 @@ def ajaxIncrementBase(request, pk, field):
         setattr(note, field,  count+1)
         note.save()
 
+        event_processor(request.user, note)
+
         # Record that user has performed this, to prevent
         # them from doing it again
         request.session[format_session_increment_field(pk, field)] = True
@@ -252,12 +255,30 @@ def ajaxIncrementBase(request, pk, field):
 
     return HttpResponse(status=204)
 
+
+def process_note_thank_events(request_user, note):
+    # Give points to the person who uploaded this note
+    if note.user != request_user:
+        NoteKarmaEvent.create_event(note.user, note, NoteKarmaEvent.THANKS)
+
+
 def thank_note(request, pk):
     """Record that somebody has thanked a note."""
-    return ajaxIncrementBase(request, pk, THANKS_FIELD)
+    return ajaxIncrementBase(request, pk, THANKS_FIELD, process_note_thank_events)
+
+
+def process_note_flag_events(request_user, note):
+    # Take a point away from person flagging this note
+    if request_user.is_authenticated():
+        NoteKarmaEvent.create_event(request_user, note, NoteKarmaEvent.GIVE_FLAG)
+    # If this is the 6th time this note has been flagged,
+    # punish the uploader
+    if note.flags == 6:
+        NoteKarmaEvent.create_event(note.user, note, NoteKarmaEvent.GET_FLAGGED)
+
 
 def flag_note(request, pk):
     """Record that somebody has flagged a note."""
-    return ajaxIncrementBase(request, pk, FLAG_FIELD)
+    return ajaxIncrementBase(request, pk, FLAG_FIELD, process_note_flag_events)
 
 

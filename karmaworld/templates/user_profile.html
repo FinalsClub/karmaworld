@@ -19,20 +19,34 @@
         </div>
       </div>
       <div class="row">
-        <div class="small-10 columns small-centered center stat_lead_in">
-          you've uploaded
+        <div class="small-12 medium-8 large-4 columns small-centered">
+          <div class="row">
+            <div class="small-6 columns center  stat_lead_in">
+              you've earned
+            </div>
+            <div class="small-6 columns center  stat_lead_in">
+              you've uploaded
+            </div>
+          </div>
+          <div class="row">
+            <div class="small-6 columns center  stat_number stat_earned">
+             {{ user.get_profile.get_points }}
+            </div>
+            <div class="small-6 columns  center stat_number stat_uploaded">
+              {{ user.note_set.count }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="small-6 columns center  stat_object stat_earned">
+              karma points
+            </div>
+            <div class="small-6 columns center  stat_object stat_uploaded">
+              notes
+            </div>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="small-10 columns small-centered center stat_number stat_uploaded">
-          {{ user.note_set.count }}
-        </div>
-      </div>
-      <div class="row">
-        <div class="small-10 columns small-centered center stat_object stat_uploaded">
-          notes
-        </div>
-      </div>
+
     </div>
 
     <div id="activity_container">
@@ -51,24 +65,64 @@
         </div>
       {% endif %}
 
-      {% for note in user.note_set.all %}
+      {% for item in object_list %}
 
         <div class="row">
           <div class="small-10 columns small-centered {% cycle '' 'row_alt_on'%}">
 
             <div class="activity_item">
+              {% if item.0 == 'note' %}
+                {% with note=item.1 %}
+                  <div class="row">
+                    <div class="small-12 columns activity_timestamp">
+                      <span class="activity_date">{{ note.uploaded_at|date:"D b j Y" }}</span>
+                    </div>
+                    <div class="small-12 columns activity_details_action">
+                      You uploaded <a href="{{ note.get_absolute_url }}" class="activity_target">{{ note.name }}</a>
+                    </div>
+                    <div class="small-12 columns activity_details_context">
+                      <a href="{{ note.course.get_absolute_url }}" class="course_link">{{ note.course.name }} // {{ note.course.school.name }}</a>
+                    </div>
+                  </div>
+                {% endwith %}
+              {% endif %}
 
-              <div class="row">
-                <div class="small-12 columns activity_timestamp">
-                  <span class="activity_date">{{ note.uploaded_at|date:"D b j Y" }}</span>
-                </div>
-                <div class="small-12 columns activity_details_action">
-                  You uploaded <a href="{{ note.get_absolute_url }}" class="activity_target">{{ note.name }}</a>
-                </div>
-                <div class="small-12 columns activity_details_context">
-                  <a href="{{ note.course.get_absolute_url }}" class="course_link">{{ note.course.name }} // {{ note.course.school.name }}</a>
-                </div>
-              </div>
+              {% if 'karma_event' in item.0 %}
+                {% with event=item.1 %}
+                  <div class="row">
+                    <div class="small-12 columns activity_timestamp">
+                      <span class="activity_date">{{ event.timestamp|date:"D b j Y" }}</span>
+                    </div>
+                    <div class="small-12 columns activity_details_action">
+                      {% if event.points > 0 %}
+                      <span class="activity_details_points_positive">+{{ event.points }}</span>
+                      {% else %}
+                      <span class="activity_details_points_negative">{{ event.points }}</span>
+                      {% endif %}
+                      {{ event.get_message }}
+                    </div>
+                    {% if item.0 == 'note_karma_event' %}
+                      <div class="small-12 columns activity_details_action">
+                        <a href="{{ event.note.get_absolute_url }}" class="activity_target">{{ event.note.name }}</a>
+                      </div>
+                      <div class="small-12 columns activity_details_context">
+                        <a href="{{ event.note.course.get_absolute_url }}" class="course_link">{{ event.note.course.name }} // {{ event.note.course.school.name }}</a>
+                      </div>
+                    {% endif %}
+                    {% if item.0 == 'course_karma_event' %}
+                      <div class="small-12 columns activity_details_action">
+                        <a href="{{ event.course.get_absolute_url }}" class="activity_target">{{ event.course.name }}</a>
+                      </div>
+                      <div class="small-12 columns activity_details_context">
+                        {{ event.course.school.name }}
+                      </div>
+                    {% endif %}
+
+                  </div>
+                {% endwith %}
+
+              {% endif %}
+
 
             </div>
 

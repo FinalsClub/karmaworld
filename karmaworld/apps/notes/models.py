@@ -17,6 +17,7 @@ from django.db.models import SET_NULL
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from karmaworld.apps.notes.gdrive import UPLOADED_NOTES_SESSION_KEY
+from karmaworld.apps.users.models import NoteKarmaEvent, GenericKarmaEvent
 import os
 import urllib
 
@@ -385,6 +386,9 @@ def note_delete_receiver(sender, **kwargs):
     # Remove document from search index
     index = SearchIndex()
     index.remove_note(note)
+
+    delete_message = 'Your note "{n}" was deleted'.format(n=note.name)
+    GenericKarmaEvent.create_event(note.user, delete_message, -5)
 
 @receiver(user_logged_in, weak=True)
 def find_orphan_notes(sender, **kwargs):

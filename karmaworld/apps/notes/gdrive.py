@@ -6,6 +6,7 @@ import datetime
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.db import SessionStore
 from django.core.exceptions import ObjectDoesNotExist
+from karmaworld.apps.users.models import NoteKarmaEvent
 import os
 import subprocess
 import tempfile
@@ -243,6 +244,7 @@ def convert_raw_document(raw_document, user=None, session=None):
     # associate them with the note
     if user:
         note.user = user
+        NoteKarmaEvent.create_event(user, note, NoteKarmaEvent.UPLOAD)
 
     # Finally, save whatever data we got back from google
     note.save()
@@ -255,6 +257,7 @@ def convert_raw_document(raw_document, user=None, session=None):
             uid = session[SESSION_KEY]
             user = User.objects.get(pk=uid)
             note.user = user
+            NoteKarmaEvent.create_event(user, note, NoteKarmaEvent.UPLOAD)
             note.save()
         # If we don't know the user who uploaded
         # this, then we should have a session key

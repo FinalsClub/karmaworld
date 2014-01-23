@@ -19,6 +19,7 @@ from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 from karmaworld.apps.notes.models import Note
+from karmaworld.apps.users.models import CourseKarmaEvent
 
 
 class CourseListView(ListView, ModelFormMixin, ProcessFormView):
@@ -179,24 +180,46 @@ def school_course_instructor_list(request):
     return HttpResponse(json.dumps({'status':'success', 'instructors': instructors}),
                         mimetype="application/json")
 
-def ajaxIncrementBase(request, pk, field):
-    """Increment a note's field by one."""
+
+def format_session_increment_field(id, field):
+    return field + '-' + str(id)
+
+
+def ajaxIncrementBase(request, pk, field, event_processor=None):
+    """Increment a course's field by one."""
     if not (request.method == 'POST' and request.is_ajax()):
         # return that the api call failed
         return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'must be a POST ajax request'}),
-                                    mimetype="application/json")
+                                      mimetype="application/json")
 
     try:
-        note = Course.objects.get(pk=pk)
-        note.__dict__[field] += 1
-        note.save()
+        course = Course.objects.get(pk=pk)
+        count = getattr(course, field)
+        setattr(course, field,  count+1)
+        course.save()
+
+        event_processor(request.user, course)
+
+        # Record that user has performed this, to prevent
+        # them from doing it again
+        request.session[format_session_increment_field(pk, field)] = True
     except ObjectDoesNotExist:
-        return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'note id does not match a note'}),
+        return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': 'course id does not match a course'}),
                                     mimetype="application/json")
 
     return HttpResponse(status=204)
 
+def process_course_flag_events(request_user, course):
+    # Take a point away from person flagging this course
+    if request_user.is_authenticated():
+        CourseKarmaEvent.create_event(request_user, course, CourseKarmaEvent.GIVE_FLAG)
+    # If this is the 6th time this course has been flagged,
+    # punish the uploader
+    if course.flags == 6:
+        CourseKarmaEvent.create_event(course.user, course, CourseKarmaEvent.GET_FLAGGED)
+
+
 def flag_course(request, pk):
     """Record that somebody has flagged a note."""
-    return ajaxIncrementBase(request, pk, 'flags')
+    return ajaxIncrementBase(request, pk, 'flags', process_course_flag_events)
 

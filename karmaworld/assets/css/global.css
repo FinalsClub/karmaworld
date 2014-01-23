@@ -463,6 +463,24 @@ a.course_link, a.course_link:hover, a.school_link, a.school_link:hover, a.prof_l
   padding: 5px 0;
 }
 
+.activity_details_points, .activity_details_points a
+{
+  font-family: "MuseoSlab-300";
+  font-size: 25px;
+  line-height: 1.4em;
+  padding: 5px 0;
+}
+
+.activity_details_points_positive
+{
+  color: green;
+}
+
+.activity_details_points_negative
+{
+  color: red;
+}
+
 .note_name, .note_name a
 {
   font-family: "MuseoSlab-300";
