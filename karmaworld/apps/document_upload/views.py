@@ -6,6 +6,7 @@ import datetime
 
 from django.http import HttpResponse
 from karmaworld.apps.document_upload.forms import RawDocumentForm
+from karmaworld.apps.notes.models import ANONYMOUS_UPLOAD_URLS
 
 
 def save_fp_upload(request):
@@ -24,11 +25,11 @@ def save_fp_upload(request):
         if request.user.is_authenticated():
             raw_document.save(user=request.user)
         else:
-            # Generate session key if it doesn't exist
-            if not request.session.get('has_session'):
-                request.session['has_session'] = True
-                request.session.save()
-            raw_document.save(session=request.session)
+            anonymous_upload_urls = request.session.get(ANONYMOUS_UPLOAD_URLS, [])
+            anonymous_upload_urls.append(request.POST['fp_file'])
+            request.session.modified = True
+            request.session.save()
+            raw_document.save()
         # save the tags to the database, too. don't forget those guys.
         r_d_f.save_m2m()
 

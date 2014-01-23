@@ -11,12 +11,11 @@ import traceback
 import logging
 from allauth.account.signals import user_logged_in
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.files.storage import default_storage
 from django.db.models import SET_NULL
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
-from karmaworld.apps.notes.gdrive import UPLOADED_NOTES_SESSION_KEY
 from karmaworld.apps.users.models import NoteKarmaEvent, GenericKarmaEvent
 import os
 import urllib
@@ -35,6 +34,7 @@ from karmaworld.apps.licenses.models import License
 from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
 
+ANONYMOUS_UPLOAD_URLS = 'anonymous_upload_urls'
 
 logger = logging.getLogger(__name__)
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
@@ -387,15 +387,29 @@ def note_delete_receiver(sender, **kwargs):
     index = SearchIndex()
     index.remove_note(note)
 
-    delete_message = 'Your note "{n}" was deleted'.format(n=note.name)
-    GenericKarmaEvent.create_event(note.user, delete_message, -5)
+    GenericKarmaEvent.create_event(note.user, note.name, GenericKarmaEvent.NOTE_DELETED)
+
+
+class UserUploadMapping(models.Model):
+    user = models.ForeignKey(User)
+    fp_file = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ('user', 'fp_file')
+
 
 @receiver(user_logged_in, weak=True)
 def find_orphan_notes(sender, **kwargs):
     user = kwargs['user']
     s = kwargs['request'].session
-    uploaded_note_ids = s.get(UPLOADED_NOTES_SESSION_KEY, [])
-    notes = Note.objects.filter(id__in=uploaded_note_ids)
-    for note in notes:
-        note.user = user
-        note.save()
+    uploaded_note_urls = s.get(ANONYMOUS_UPLOAD_URLS, [])
+    for uploaded_note_url in uploaded_note_urls:
+        try:
+            note = Note.objects.get(fp_file=uploaded_note_url)
+            note.user = user
+            note.save()
+            NoteKarmaEvent.create_event(user, note, NoteKarmaEvent.UPLOAD)
+        except (ObjectDoesNotExist, MultipleObjectsReturned):
+            mapping = UserUploadMapping.objects.create(fp_file=uploaded_note_url, user=user)
+            mapping.save()
+

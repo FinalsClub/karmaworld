@@ -3,8 +3,10 @@
 # Copyright (C) 2012  FinalsClub Foundation
 
 import datetime
+import logging
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from karmaworld.apps.notes.models import UserUploadMapping
 from karmaworld.apps.users.models import NoteKarmaEvent
 import os
 import subprocess
@@ -14,7 +16,6 @@ import magic
 import re
 import json
 import time
-from django.contrib.auth import SESSION_KEY
 
 import httplib2
 from apiclient.discovery import build
@@ -23,11 +24,10 @@ from oauth2client.client import SignedJwtAssertionCredentials
 
 import karmaworld.secret.drive as drive
 
+logger = logging.getLogger(__name__)
 
 PDF_MIMETYPE = 'application/pdf'
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
-
-UPLOADED_NOTES_SESSION_KEY = 'uploaded_notes'
 
 
 def extract_file_details(fileobj):
@@ -178,7 +178,7 @@ def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
     return file_dict
 
 
-def convert_raw_document(raw_document, user=None, session=None):
+def convert_raw_document(raw_document, user=None):
     """ Upload a raw document to google drive and get a Note back"""
     fp_file = raw_document.get_file()
 
@@ -244,30 +244,19 @@ def convert_raw_document(raw_document, user=None, session=None):
     if user:
         note.user = user
         NoteKarmaEvent.create_event(user, note, NoteKarmaEvent.UPLOAD)
+    else:
+        try:
+            mapping = UserUploadMapping.objects.get(fp_file=raw_document.fp_file)
+            note.user = mapping.user
+            note.save()
+            NoteKarmaEvent.create_event(mapping.user, note, NoteKarmaEvent.UPLOAD)
+        except (ObjectDoesNotExist, MultipleObjectsReturned):
+            logger.info("Zero or multiple mappings found with fp_file " + raw_document.fp_file.url)
 
     # Finally, save whatever data we got back from google
     note.save()
 
-    if session and not user:
-        # If the person who uploaded this made an
-        # account or signed in while convert_raw_document
-        # was running, associate their account with this note
-        try:
-            uid = session[SESSION_KEY]
-            user = User.objects.get(pk=uid)
-            note.user = user
-            NoteKarmaEvent.create_event(user, note, NoteKarmaEvent.UPLOAD)
-            note.save()
-        # If we don't know the user who uploaded
-        # this, then we should have a session key
-        # instead. Associate this note with the session
-        # so if the uploader later creates an account,
-        # we can find notes they uploaded
-        except (KeyError, ObjectDoesNotExist):
-            uploaded_notes = session.get(UPLOADED_NOTES_SESSION_KEY, [])
-            uploaded_notes.append(note.id)
-            session[UPLOADED_NOTES_SESSION_KEY] = uploaded_notes
-            session.modified = True
-            session.save()
+
+
 
 

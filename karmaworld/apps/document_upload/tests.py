@@ -4,13 +4,15 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
+from django.contrib.sessions.backends.db import SessionStore
 
 from django.test import TestCase, Client
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 from karmaworld.apps.document_upload.forms import RawDocumentForm
 from karmaworld.apps.notes.gdrive import *
-from karmaworld.apps.notes.models import Note, find_orphan_notes
+from karmaworld.apps.notes.models import Note, ANONYMOUS_UPLOAD_URLS
+from karmaworld.apps.notes.models import find_orphan_notes
 
 TEST_USERNAME = 'alice'
 
@@ -33,7 +35,7 @@ class ConversionTest(TestCase):
         self.assertTrue(r_d_f.is_valid())
         raw_document = r_d_f.save(commit=False)
         raw_document.fp_file = post['fp_file']
-        convert_raw_document(raw_document, user=user, session_key=session)
+        convert_raw_document(raw_document, user=user)
         self.assertEqual(Note.objects.count(), 1)
 
     def testPlaintextConversion(self):
@@ -70,8 +72,8 @@ class ConversionTest(TestCase):
                                      'mimetype': 'application/octet-stream'})
 
     def testSessionUserAssociation1(self):
-        """Test setting the user of an uploaded document to a known
-        user in our database"""
+        """If the user is already logged in when they
+        upload a note, it should set note.user correctly."""
         user = User(username=TEST_USERNAME)
         user.save()
         self.doConversionForPost({'fp_file': 'https://www.filepicker.io/api/file/S2lhT3INSFCVFURR2RV7',
@@ -82,51 +84,44 @@ class ConversionTest(TestCase):
                                  user=user)
         note = Note.objects.all()[0]
         self.assertEqual(note.user, user)
+        karma_event = NoteKarmaEvent.objects.all()[0]
+        self.assertEqual(karma_event.user, user)
 
     def testSessionUserAssociation2(self):
-        """Test setting the user of an uploaded document
-        to an existing user in the database, finding them
-        through a session key."""
-        user = User(username=TEST_USERNAME)
-        user.save()
+        """If a user logs in after convert_raw_document has finished,
+        we should associate them with the note they uploaded anonymously"""
         s = SessionStore()
-        s['_auth_user_id'] = user.pk
+        s[ANONYMOUS_UPLOAD_URLS] = ['https://www.filepicker.io/api/file/S2lhT3INSFCVFURR2RV7']
         s.save()
         self.doConversionForPost({'fp_file': 'https://www.filepicker.io/api/file/S2lhT3INSFCVFURR2RV7',
                                  'course': str(self.course.id),
                                  'name': 'graph3.txt',
                                  'tags': '',
-                                 'mimetype': 'text/plain'},
-                                 session=s)
+                                 'mimetype': 'text/plain'})
+        user = User(username=TEST_USERNAME)
+        user.save()
+        find_orphan_notes(None, user=user, request=_FakeRequest(s))
         note = Note.objects.all()[0]
         self.assertEqual(note.user, user)
-
-
+        karma_event = NoteKarmaEvent.objects.all()[0]
+        self.assertEqual(karma_event.user, user)
 
     def testSessionUserAssociation3(self):
-        """Test setting the user of an uploaded document
-        to an existing user in the database, finding them
-        through a session key."""
+        """If a user logs in WHILE convert_raw_document is running,
+        make sure they are associated with that note by the time it finishes."""
         s = SessionStore()
+        s[ANONYMOUS_UPLOAD_URLS] = ['https://www.filepicker.io/api/file/S2lhT3INSFCVFURR2RV7']
         s.save()
+        user = User(username=TEST_USERNAME)
+        user.save()
+        find_orphan_notes(None, user=user, request=_FakeRequest(s))
         self.doConversionForPost({'fp_file': 'https://www.filepicker.io/api/file/S2lhT3INSFCVFURR2RV7',
                                  'course': str(self.course.id),
                                  'name': 'graph3.txt',
                                  'tags': '',
                                  'mimetype': 'text/plain'},
                                  session=s)
-        user = User(username=TEST_USERNAME)
-        user.save()
-
-        # Normally this next bit is called automatically, but
-        # in testing we need to call it manually
-        note = Note.objects.all()[0]
-        s = SessionStore(session_key=s.session_key)
-        find_orphan_notes(note, user=user, request=_FakeRequest(s))
-
         note = Note.objects.all()[0]
         self.assertEqual(note.user, user)
-
-
-
-
+        karma_event = NoteKarmaEvent.objects.all()[0]
+        self.assertEqual(karma_event.user, user)

@@ -3,7 +3,7 @@
 # Copyright (C) 2013  FinalsClub Foundation
 import logging
 import datetime
-from allauth.account.signals import email_confirmed, email_added
+from allauth.account.signals import email_confirmed
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.signals import post_save
