@@ -87,7 +87,7 @@
                 {% endwith %}
               {% endif %}
 
-              {% if 'karma_event' in item.0 %}
+              {% if 'KarmaEvent' in item.0 %}
                 {% with event=item.1 %}
                   <div class="row">
                     <div class="small-12 columns activity_timestamp">
@@ -101,7 +101,7 @@
                       {% endif %}
                       {{ event.get_message }}
                     </div>
-                    {% if item.0 == 'note_karma_event' %}
+                    {% if item.0 == 'NoteKarmaEvent' %}
                       <div class="small-12 columns activity_details_action">
                         <a href="{{ event.note.get_absolute_url }}" class="activity_target">{{ event.note.name }}</a>
                       </div>
@@ -109,7 +109,7 @@
                         <a href="{{ event.note.course.get_absolute_url }}" class="course_link">{{ event.note.course.name }} // {{ event.note.course.school.name }}</a>
                       </div>
                     {% endif %}
-                    {% if item.0 == 'course_karma_event' %}
+                    {% if item.0 == 'CourseKarmaEvent' %}
                       <div class="small-12 columns activity_details_action">
                         <a href="{{ event.course.get_absolute_url }}" class="activity_target">{{ event.course.name }}</a>
                       </div>

@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.views.generic import TemplateView
 from django.views.generic.list import MultipleObjectMixin
 from karmaworld.apps.notes.models import Note
-from karmaworld.apps.users.models import NoteKarmaEvent, CourseKarmaEvent, GenericKarmaEvent
+from karmaworld.apps.users.models import ALL_KARMA_EVENT_CLASSES
 
 
 class ProfileView(TemplateView, MultipleObjectMixin):
@@ -36,11 +36,14 @@ class ProfileView(TemplateView, MultipleObjectMixin):
 
     def get_context_data(self, **kwargs):
         notes = [('note', o) for o in Note.objects.filter(user=self.request.user)]
-        generic_karma_events = [('generic_karma_events', o) for o in GenericKarmaEvent.objects.filter(user=self.request.user)]
-        note_karma_events = [('note_karma_event', o) for o in NoteKarmaEvent.objects.filter(user=self.request.user)]
-        course_karma_events = [('course_karma_event', o) for o in CourseKarmaEvent.objects.filter(user=self.request.user)]
+        all_events = []
+        for cls in ALL_KARMA_EVENT_CLASSES:
+            all_events.append(
+                [(cls.__name__, o) for o in cls.objects.filter(user=self.request.user)]
+            )
+        all_events = chain.from_iterable(all_events)
 
-        result_list = sorted(chain(notes, generic_karma_events, note_karma_events, course_karma_events),
+        result_list = sorted(chain(notes, all_events),
                              cmp=ProfileView.compareProfileItems,
                              key=lambda o: o[1],
                              reverse=True)
