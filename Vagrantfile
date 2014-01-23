@@ -44,7 +44,7 @@ add-apt-repository -y ppa:coolwanglu/pdf2htmlex # pdf2htmlex
 
 apt-get update
 apt-get upgrade -y
-apt-get install -y python-pip postgresql python-virtualenv virtualenvwrapper \
+apt-get install -y python-pip postgresql python-virtualenv \
                    git nginx postgresql-server-dev-9.1 libxslt1-dev \
                    libxml2-dev libmemcached-dev python-dev rabbitmq-server \
                    p7zip-full pdf2htmlex
@@ -78,7 +78,7 @@ PROD_DB_NAME = 'karmaworld'
 PROD_DB_USERNAME = 'vagrant'
 PROD_DB_PASSWORD = ''
 CONFIG
-chown vagrant:vagrant $SECRETPATH/*.py
+chown vagrant:vagrant karmaworld/$SECRETPATH/*.py
 
 cat > /etc/nginx/sites-available/karmaworld <<CONFIG
 server {
