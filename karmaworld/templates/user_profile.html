@@ -74,22 +74,6 @@
           <div class="small-10 columns small-centered {% cycle '' 'row_alt_on'%}">
 
             <div class="activity_item">
-              {% if item.0 == 'note' %}
-                {% with note=item.1 %}
-                  <div class="row">
-                    <div class="small-12 columns activity_timestamp">
-                      <span class="activity_date">{{ note.uploaded_at|date:"D b j Y" }}</span>
-                    </div>
-                    <div class="small-12 columns activity_details_action">
-                      You uploaded <a href="{{ note.get_absolute_url }}" class="activity_target">{{ note.name }}</a>
-                    </div>
-                    <div class="small-12 columns activity_details_context">
-                      <a href="{{ note.course.get_absolute_url }}" class="course_link">{{ note.course.name }} // {{ note.course.school.name }}</a>
-                    </div>
-                  </div>
-                {% endwith %}
-              {% endif %}
-
               {% if 'KarmaEvent' in item.0 %}
                 {% with event=item.1 %}
                   <div class="row">
