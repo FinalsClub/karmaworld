@@ -17,7 +17,7 @@
         <div class="small-10 columns small-centered center header_title">
           {% user_display user %}
           {% if badge %}
-            <span class="badge">{{ badge }}</span>
+            <br/><span class="badge">{{ badge }}</span>
           {% endif %}
       </div>
         </div>
@@ -60,7 +60,7 @@
         </div>
       </div>
 
-      {% if not user.note_set.all %}
+      {% if not object_list %}
         <div class="row">
           <div id="no_activity" class="small-10 columns small-centered center">
             <h4>Nothing to show here yet.</h4>
