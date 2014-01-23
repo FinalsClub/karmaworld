@@ -64,23 +64,17 @@ class Command(BaseCommand):
             self.stdout.write('There are no schools worth sanitizing.\n')
             return False
 
-        self.stdout.write(u"\n\nWARNING: Are you sure you want to delete these schools:\n")
-        for s in schools:
-            self.stdout.write('%s: %s' % (s.id, s.__unicode__()))
-            self.stdout.write('\n')
-
-        if self.get_input("Do you want to delete these schools? [y/n]  "):
+        self.stdout.write("...")
+        try:
+            schools.delete()
+        except:
+            self.stdout.write("that is too many to delete at once\n")
+            self.stdout.write("you are probabily using sqlite , doing them in batches\n")
+            for _i, a_school in enumerate(schools):
+                self.stdout.write("deleting %s of %s..." % (_i, self._schools_count))
+                a_school.delete()
+                self.stdout.write("done\n")
             self.stdout.write("...")
-            try:
-                schools.delete()
-            except:
-                self.stdout.write("that is too many to delete at once\n")
-                self.stdout.write("you are probabily using sqlite , doing them in batches\n")
-                for _i, a_school in enumerate(schools):
-                    self.stdout.write("deleting %s of %s..." % (_i, self._schools_count))
-                    a_school.delete()
-                    self.stdout.write("done\n")
-                self.stdout.write("...")
 
-            self.stdout.write("all done!\n")
-            self.stdout.write("Deleted %s schools" % (self._schools_count))
+        self.stdout.write("all done!\n")
+        self.stdout.write("Deleted %s schools" % (self._schools_count))
