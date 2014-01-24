@@ -106,16 +106,18 @@ $(function() {
   });
 
   $("#note-download-button").click(function(event) {
-    // disable handler so it won't be run again
-    $(this).unbind('click');
+    if (confirm('It costs 2 karma points to download a note. Are you sure?')) {
+      // disable handler so it won't be run again
+      $(this).unbind('click');
 
-    // tell server that somebody downloaded
-    // this note
-    $.ajax({
-      url: note_downloaded_url,
-      dataType: "json",
-      type: 'POST',
-      async: false
-    });
+      // tell server that somebody downloaded
+      // this note
+      $.ajax({
+        url: note_downloaded_url,
+        dataType: "json",
+        type: 'POST',
+        async: false
+      })
+    };
   });
 });
