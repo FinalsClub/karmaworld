@@ -259,6 +259,7 @@ def process_downloaded_note(request_user, note):
     """Record that somebody has downloaded a note"""
     if request_user.is_authenticated() and request_user != note.user:
         NoteKarmaEvent.create_event(request_user, note, NoteKarmaEvent.DOWNLOADED_NOTE)
+    if request_user.is_authenticated() and note.user:
         NoteKarmaEvent.create_event(note.user, note, NoteKarmaEvent.HAD_NOTE_DOWNLOADED)
 
 
