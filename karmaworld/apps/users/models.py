@@ -136,12 +136,17 @@ class NoteKarmaEvent(BaseKarmaEvent):
     NOTE_DELETED = 'deleted'
     GIVE_FLAG    = 'give_flag'
     GET_FLAGGED  = 'get_flagged'
+    DOWNLOADED_NOTE = 'downloaded'
+    HAD_NOTE_DOWNLOADED = 'was_downloaded'
+
     EVENT_TYPE_CHOICES = (
         (UPLOAD,       "You uploaded a note"),
         (THANKS,       "You received a thanks for your note"),
         (NOTE_DELETED, "Your note was deleted"),
         (GIVE_FLAG,    "You flagged a note"),
         (GET_FLAGGED,  "Your note was flagged as spam"),
+        (DOWNLOADED_NOTE,  "You downloaded a note"),
+        (HAD_NOTE_DOWNLOADED,  "Your note was downloaded"),
     )
     note = models.ForeignKey('notes.Note')
     event_type = models.CharField(max_length=15, choices=EVENT_TYPE_CHOICES)
@@ -151,7 +156,9 @@ class NoteKarmaEvent(BaseKarmaEvent):
         THANKS: 1,
         NOTE_DELETED: -5,
         GIVE_FLAG: -1,
-        GET_FLAGGED: -100
+        GET_FLAGGED: -100,
+        DOWNLOADED_NOTE: -2,
+        HAD_NOTE_DOWNLOADED: 2,
     }
 
     def get_message(self):

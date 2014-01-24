@@ -255,3 +255,15 @@ def flag_note(request, pk):
     return ajax_increment(Note, request, pk, FLAG_FIELD, process_note_flag_events)
 
 
+def process_downloaded_note(request_user, note):
+    """Record that somebody has downloaded a note"""
+    if request_user.is_authenticated() and request_user != note.user:
+        NoteKarmaEvent.create_event(request_user, note, NoteKarmaEvent.DOWNLOADED_NOTE)
+        NoteKarmaEvent.create_event(note.user, note, NoteKarmaEvent.HAD_NOTE_DOWNLOADED)
+
+
+def downloaded_note(request, pk):
+    """Record that somebody has flagged a note."""
+    return ajax_base(Note, request, pk, process_downloaded_note)
+
+

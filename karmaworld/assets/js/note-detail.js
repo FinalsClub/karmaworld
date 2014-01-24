@@ -104,4 +104,18 @@ $(function() {
       });
     }
   });
+
+  $("#note-download-button").click(function(event) {
+    // disable handler so it won't be run again
+    $(this).unbind('click');
+
+    // tell server that somebody downloaded
+    // this note
+    $.ajax({
+      url: note_downloaded_url,
+      dataType: "json",
+      type: 'POST',
+      async: false
+    });
+  });
 });

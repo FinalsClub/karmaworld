@@ -13,6 +13,7 @@
   <script type="text/javascript">
     var note_thank_url = "{% url 'thank_note' note.id %}"
     var note_flag_url = "{% url 'flag_note' note.id %}"
+    var note_downloaded_url = "{% url 'downloaded_note' note.id %}"
     var csrf_token = "{{ csrf_token }}";
   </script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
@@ -93,9 +94,30 @@
               <a href="#" id="thank-button-disabled" {% if not already_thanked %} class="hide" {% endif %}><img src="{{ STATIC_URL }}img/note_thank_disabled.png" alt="note_thank" width="34" height="34"/></a>
             </div>
             <div class="small-4 column">
-              <a href="{{ note.fp_file }}">
-                <img src="{{ STATIC_URL }}img/note_download.png" alt="note_download" width="51" height="36" />
-              </a>
+              {% if user.is_authenticated %}
+                <a id="note-download-button" href="{{ note.fp_file }}">
+                  <img
+                    src="{{ STATIC_URL }}img/note_download.png"
+                    alt="note_download"
+                    width="51" height="36"
+                    data-ot="It costs 2 karma points to download a note"
+                    data-ot-target="true"
+                    data-ot-tip-joint="top center"
+                    data-ot-target-joint="bottom center"
+                    data-ot-background="white"
+                    data-ot-border-color="black"
+                    class="opentip" />
+                </a>
+              {% else %}
+                <img src="{{ STATIC_URL }}img/note_download_disabled.png" alt="note_download" width="51" height="36"
+                    data-ot="You need to log in to download a note"
+                    data-ot-target="true"
+                    data-ot-tip-joint="top center"
+                    data-ot-target-joint="bottom center"
+                    data-ot-background="white"
+                    data-ot-border-color="black"
+                    class="opentip" />
+              {% endif %}
             </div>
           </div>
         </div><!-- /note_actions -->
@@ -170,4 +192,5 @@
   </section><!--/note_content-->
 
 {% endblock %}
+
 
