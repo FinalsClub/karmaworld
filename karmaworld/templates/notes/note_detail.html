@@ -169,8 +169,6 @@
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
           {% if note.static_html %}
             <div class="note-text">
-              <!-- Give crawlers a link to the iframe contents-->
-              <a href="{{ STATIC_URL }}{{ note.get_relative_s3_path }}" target="_blank">Open note in a new window or tab</a>.
               <iframe style="border:none; width:100%; min-height: 1000px;"
                       id="noteframe"> </iframe>
             </div> <!-- .note-text -->
