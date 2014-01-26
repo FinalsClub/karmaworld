@@ -387,7 +387,8 @@ def note_delete_receiver(sender, **kwargs):
     index = SearchIndex()
     index.remove_note(note)
 
-    GenericKarmaEvent.create_event(note.user, note.name, GenericKarmaEvent.NOTE_DELETED)
+    if note.user:
+        GenericKarmaEvent.create_event(note.user, note.name, GenericKarmaEvent.NOTE_DELETED)
 
 
 class UserUploadMapping(models.Model):

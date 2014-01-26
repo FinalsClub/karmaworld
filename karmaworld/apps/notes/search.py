@@ -4,6 +4,7 @@
 
 import calendar
 import time
+import uuid
 
 import indextank.client as itc
 import karmaworld.secret.indexden as secret
@@ -51,12 +52,21 @@ class SearchIndex(object):
 
     __metaclass__ = Singleton
 
-    def __init__(self):
-        api_client = itc.ApiClient(secret.PRIVATE_URL)
-        if not api_client.get_index(secret.INDEX).exists():
-            api_client.create_index(secret.INDEX, {'public_search': False})
+    def __init__(self, testing=False):
+        if not testing:
+            self.setup()
 
-        self.index = api_client.get_index(secret.INDEX)
+    def setup(self, testing=False):
+        if testing:
+            self.index_name = uuid.uuid4().hex
+        else:
+            self.index_name = secret.INDEX
+
+        self.api_client = itc.ApiClient(secret.PRIVATE_URL)
+        if not self.api_client.get_index(self.index_name).exists():
+            self.api_client.create_index(self.index_name, {'public_search': False})
+
+        self.index = self.api_client.get_index(self.index_name)
 
         while not self.index.has_started():
             time.sleep(0.5)
@@ -66,6 +76,11 @@ class SearchIndex(object):
         # and number of thanks they have received.
         # "Relevance" is a black box provided by IndexDen.
         self.index.add_function(0, 'relevance * log(doc.var[0])')
+
+    def delete_index(self):
+        """This is meant for test cases that want to clean up
+        after themselves."""
+        self.api_client.delete_index(self.index_name)
 
     @staticmethod
     def _tags_to_str(tags):

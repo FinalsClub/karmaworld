@@ -4,12 +4,6 @@
 """
 """
 import karmaworld.secret.indexden as secret
-import uuid
-
-# This needs to happen before other things
-# are imported to avoid putting test data
-# in our production search index
-secret.INDEX = uuid.uuid4().hex
 
 import datetime
 from django.test import TestCase
@@ -18,9 +12,13 @@ from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
-import indextank.client as itc
 
-class TestNoes(TestCase):
+# Tell SearchIndex to put its entries
+# in a separate index
+secret.testing = True
+
+
+class TestNotes(TestCase):
 
     def setUp(self):
         # create base values to test db representations
@@ -51,11 +49,16 @@ class TestNoes(TestCase):
         self.note.save()
 
     @classmethod
+    def setUpClass(cls):
+        index = SearchIndex(testing=True)
+        index.setup(testing=True)
+
+    @classmethod
     def tearDownClass(cls):
         """Delete the test index that was automatically
         created by notes/search.py"""
-        api = itc.ApiClient(secret.PRIVATE_URL)
-        api.delete_index(secret.INDEX)
+        index = SearchIndex()
+        index.delete_index()
 
     def test_course_fkey(self):
         self.assertEqual(self.course, self.note.course)
@@ -103,4 +106,8 @@ class TestNoes(TestCase):
         results = index.search('alpaca', self.note.course.id)
         self.assertIn(self.note.id, results.ordered_ids)
 
+        # Delete the note, see if it's removed from the index
+        self.note.delete()
+        results = index.search('alpaca')
+        self.assertNotIn(self.note.id, results.ordered_ids)
 

@@ -5,6 +5,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 from django.contrib.sessions.backends.db import SessionStore
+from django.http import HttpRequest
 
 from django.test import TestCase, Client
 from karmaworld.apps.courses.models import Course
@@ -16,9 +17,6 @@ from karmaworld.apps.notes.models import find_orphan_notes
 
 TEST_USERNAME = 'alice'
 
-class _FakeRequest:
-    def __init__(self, session):
-        self.session = session
 
 class ConversionTest(TestCase):
 
@@ -84,8 +82,10 @@ class ConversionTest(TestCase):
                                  user=user)
         note = Note.objects.all()[0]
         self.assertEqual(note.user, user)
-        karma_event = NoteKarmaEvent.objects.all()[0]
-        self.assertEqual(karma_event.user, user)
+        try:
+            NoteKarmaEvent.objects.get(note=note, event_type=NoteKarmaEvent.UPLOAD)
+        except ObjectDoesNotExist:
+            self.fail("Karma event not created")
 
     def testSessionUserAssociation2(self):
         """If a user logs in after convert_raw_document has finished,
@@ -100,11 +100,15 @@ class ConversionTest(TestCase):
                                  'mimetype': 'text/plain'})
         user = User(username=TEST_USERNAME)
         user.save()
-        find_orphan_notes(None, user=user, request=_FakeRequest(s))
+        request = HttpRequest()
+        request.session = s
+        find_orphan_notes(None, user=user, request=request)
         note = Note.objects.all()[0]
         self.assertEqual(note.user, user)
-        karma_event = NoteKarmaEvent.objects.all()[0]
-        self.assertEqual(karma_event.user, user)
+        try:
+            NoteKarmaEvent.objects.get(note=note, event_type=NoteKarmaEvent.UPLOAD)
+        except ObjectDoesNotExist:
+            self.fail("Karma event not created")
 
     def testSessionUserAssociation3(self):
         """If a user logs in WHILE convert_raw_document is running,
@@ -114,7 +118,9 @@ class ConversionTest(TestCase):
         s.save()
         user = User(username=TEST_USERNAME)
         user.save()
-        find_orphan_notes(None, user=user, request=_FakeRequest(s))
+        request = HttpRequest()
+        request.session = s
+        find_orphan_notes(None, user=user, request=request)
         self.doConversionForPost({'fp_file': 'https://www.filepicker.io/api/file/S2lhT3INSFCVFURR2RV7',
                                  'course': str(self.course.id),
                                  'name': 'graph3.txt',
@@ -123,5 +129,7 @@ class ConversionTest(TestCase):
                                  session=s)
         note = Note.objects.all()[0]
         self.assertEqual(note.user, user)
-        karma_event = NoteKarmaEvent.objects.all()[0]
-        self.assertEqual(karma_event.user, user)
+        try:
+            NoteKarmaEvent.objects.get(note=note, event_type=NoteKarmaEvent.UPLOAD)
+        except ObjectDoesNotExist:
+            self.fail("Karma event not created")
