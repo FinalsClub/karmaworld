@@ -30,7 +30,7 @@
         <ul id="uploaded_files">
         </ul>
         {% if not request.user.is_authenticated %}
-          <p>It will take a minute for your notes to appear.
+          <p>It will take a minute for your notes to appear here.
             We'd love to have you sign up so you can <strong>claim the <span id="thank-points"></span> karma points
             you just got.</strong> With a KarmaNotes account,
             you can build a reputation by continuing to upload great notes.
@@ -42,7 +42,8 @@
             <a href="{{ signup_url }}">Sign up for a traditional account</a>
           </div>
         {% else %}
-          <p>It will take a minute for your notes to appear.
+          <p>It will take a minute for your notes to appear. This page will refresh soon so you
+            can see your new notes.
             You'll be awarded <strong><span id="thank-points"></span> karma points.</strong>
             <a href="">Want to share again?</a></p>
         {% endif %}
@@ -168,6 +169,11 @@
                   document.location.host === 'karmanotes.org') {
                   _gat._getTracker()._trackEvent('upload', 'upload form submitted');
                 }
+                {% if user.is_authenticated %}
+                  setTimeout(function(){
+                    location.reload(true);
+                  }, 20000);
+                {% endif %}
               }
             });
             // Add the name we've just uploaded to the list
