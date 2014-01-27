@@ -2,7 +2,7 @@ Django>=1.5.0,<1.6.0
 django-celery==3.0.21
 django-compressor==1.2
 Fabric==1.5.3
-South==0.7.6
+South==0.8.4
 supervisor==3.0b1
 oauth2client==1.0
 urllib3==1.5
