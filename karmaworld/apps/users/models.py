@@ -15,10 +15,19 @@ from karmaworld.apps.courses.models import School
 logger = logging.getLogger(__name__)
 
 
+class UserProfileManager(models.Manager):
+    """ Handle restoring data. """
+    def get_by_natural_key(self, user):
+        return self.get(user=user)
+
+
 class UserProfile(models.Model):
     user      = models.OneToOneField(User)
 
     school    = models.ForeignKey(School, blank=True, null=True)
+
+    def natural_key(self):
+        return (self.user)
 
     def get_points(self):
         sum = 0
@@ -81,6 +90,12 @@ def give_email_confirm_karma(sender, **kwargs):
     GenericKarmaEvent.create_event(kwargs['email_address'].user, kwargs['email_address'].email, GenericKarmaEvent.EMAIL_CONFIRMED)
 
 
+class BaseKarmaEventManager(models.Manager):
+    """ Handle restoring data. """
+    def get_by_natural_key(self, points, user, timestamp):
+        return self.get(points=points, user=user, timestamp=timestamp)
+
+
 class BaseKarmaEvent(models.Model):
     points    = models.IntegerField()
     user      = models.ForeignKey(User)
@@ -88,6 +103,10 @@ class BaseKarmaEvent(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = ('points', 'user', 'timestamp')
+
+    def natural_key(self):
+        return (self.points, self.user, self.timestamp)
 
     def get_message(self):
         raise NotImplemented()
