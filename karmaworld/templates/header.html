@@ -35,7 +35,7 @@
       </div>
     {% endif %}
 
-    <div id="login_container" class="small-2 columns">
+    <div id="login_container" class="small-4 medium-2 large-2 columns">
       {% if request.user.is_authenticated %}
         <i id="user_settings" class="fa fa-cog fa-lg"></i>
         <div id="user_dropdown_container">
@@ -52,7 +52,7 @@
       {% else %}
         <a class="white" href="{% url 'account_login' %}">Log In</a>
       {% endif %}
-      <a class="white" href="{% url 'about' %}">About</a>
+      <a class="white show-for-large-up" href="{% url 'about' %}">About</a>
     </div>
 
   </div>
