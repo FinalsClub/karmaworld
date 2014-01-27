@@ -362,10 +362,12 @@ def note_save_receiver(sender, **kwargs):
         return
     note = kwargs['instance']
 
+    if kwargs['created']:
+        update_note_counts(note)
+
     try:
         index = SearchIndex()
         if kwargs['created']:
-            update_note_counts(note)
             index.add_note(note)
         else:
             index.update_note(note, note.old_instance)
@@ -384,8 +386,11 @@ def note_delete_receiver(sender, **kwargs):
     update_note_counts(kwargs['instance'])
 
     # Remove document from search index
-    index = SearchIndex()
-    index.remove_note(note)
+    try:
+        index = SearchIndex()
+        index.remove_note(note)
+    except Exception:
+        logger.error("Error with IndexDen:\n" + traceback.format_exc())
 
     if note.user:
         GenericKarmaEvent.create_event(note.user, note.name, GenericKarmaEvent.NOTE_DELETED)

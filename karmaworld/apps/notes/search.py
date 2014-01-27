@@ -64,6 +64,7 @@ class SearchIndex(object):
 
         self.api_client = itc.ApiClient(secret.PRIVATE_URL)
         if not self.api_client.get_index(self.index_name).exists():
+            time.sleep(5)
             self.api_client.create_index(self.index_name, {'public_search': False})
 
         self.index = self.api_client.get_index(self.index_name)
