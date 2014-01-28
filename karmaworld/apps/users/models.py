@@ -27,7 +27,7 @@ class UserProfile(models.Model):
     school    = models.ForeignKey(School, blank=True, null=True)
 
     def natural_key(self):
-        return (self.user)
+        return (self.user,)
 
     def get_points(self):
         sum = 0
@@ -93,7 +93,7 @@ def give_email_confirm_karma(sender, **kwargs):
 class BaseKarmaEventManager(models.Manager):
     """ Handle restoring data. """
     def get_by_natural_key(self, points, user, timestamp):
-        return self.get(points=points, user=user, timestamp=timestamp)
+        return self.get(user=user, timestamp=timestamp)
 
 
 class BaseKarmaEvent(models.Model):
@@ -106,7 +106,7 @@ class BaseKarmaEvent(models.Model):
         unique_together = ('points', 'user', 'timestamp')
 
     def natural_key(self):
-        return (self.points, self.user, self.timestamp)
+        return (self.user, self.timestamp)
 
     def get_message(self):
         raise NotImplemented()
