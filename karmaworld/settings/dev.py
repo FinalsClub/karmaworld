@@ -51,6 +51,31 @@ STATIC_ROOT = normpath(join(DJANGO_ROOT, 'static'))
 CELERY_ALWAYS_EAGER = True
 ########## END CELERY CONFIGURATION
 
+########## STORAGE CONFIGURATION
+# See: http://django-storages.readthedocs.org/en/latest/index.html
+INSTALLED_APPS += (
+    'storages',
+)
+
+# See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
+# DEFAULT_FILE_STORAGE comes from karmaworld.secret.static_s3
+STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
+
+# See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
+AWS_CALLING_FORMAT = CallingFormat.SUBDOMAIN
+
+# AWS cache settings, don't change unless you know what you're doing:
+AWS_EXPIREY = 60 * 60 * 24 * 7
+AWS_HEADERS = {
+    'Cache-Control': 'max-age=%d, s-maxage=%d, must-revalidate' % (AWS_EXPIREY,
+        AWS_EXPIREY)
+}
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
+# S3_URL comes from karmaworld.secret.static_s3
+STATIC_URL = S3_URL
+########## END STORAGE CONFIGURATION
+
 
 ########## TOOLBAR CONFIGURATION
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
