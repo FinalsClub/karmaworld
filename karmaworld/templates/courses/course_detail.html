@@ -5,13 +5,16 @@
 {% block pagescripts %}
   <script src="{{ STATIC_URL }}js/bootstrap-modal.js" ></script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+  <script src="{{ STATIC_URL }}js/course.js"></script>
   <script src="{{ STATIC_URL }}js/course-detail.js" ></script>
   <script>
+    var json_school_course_list = "{% url 'json_school_course_list' %}";
+    var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}";
     var csrf_token = "{{ csrf_token }}";
-    var course_flag_url = "{% url 'flag_course' course.id %}"
+    var course_flag_url = "{% url 'flag_course' course.id %}";
+    var course_edit_url = "{% url 'edit_course' course.id %}";
   </script>
 {% endblock %}
-
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
@@ -27,15 +30,16 @@
 
     <div id="course_header" class="hero_gradient_bar">
       <div class="row">
-        <div class="small-12 columns header_title">
+        <div id="course_name" class="small-12 columns header_title">
           {{ course.name }}
-        </div><!-- /note_name -->
+        </div><!-- /course_name -->
       </div>
 
       <div class="row">
         <div id="course_meta" class="twelve columns">
           <div class="activity_details_context">
-            {{ course.instructor_name }} {% if course.department %}// {{ course.department.name }}{% endif %}
+            <span id="course_instructor_name">{{ course.instructor_name }}</span>
+            <span id="course_department">{% if course.department %}// {{ course.department.name }}{% endif %}</span>
           </div><!-- /activity_details_context -->
         </div><!-- /course_meta -->
       </div>
@@ -48,32 +52,82 @@
         </div><!-- /course_meta -->
       </div>
 
-      {% if course.url %}
-        <div class="row">
-          <div id="course_link" class="twelve columns">
-            <div class="activity_details_context">
-              <a rel="nofollow" target="_blank" href="{{ course.url }}">
-                {{ course.url|slice:":50" }}
-                <i class="fa fa-external-link-square"></i>
-              </a>
-            </div><!-- /activity_details_context -->
-          </div><!-- /course_meta -->
-        </div>
-      {% endif %}
+      <div class="row{% if not course.url %} hidden{% endif %}">
+        <div id="course_link" class="twelve columns">
+          <div class="activity_details_context">
+            <a id="course_url" rel="nofollow" target="_blank" href="{{ course.url }}">
+              {{ course.url|slice:":50" }}
+              <i class="fa fa-external-link-square"></i>
+            </a>
+          </div><!-- /activity_details_context -->
+        </div><!-- /course_meta -->
+      </div>
 
-        <div class="row">
+      <div class="row">
         <div id="course_actions" class="large-3 medium-6 small-12 columns small-centered">
           <div class="row">
             <div class="small-12 column center">
+              <a href="#" id="edit-button"><img src="{{ STATIC_URL }}img/note_thank.png" alt="edit_flag" width="25" height="35"/></a>
               <a href="#" id="flag-button" {% if already_flagged %} class="hide" {% endif %}><img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35"/></a>
               <a href="#" id="flag-button-disabled" {% if not already_flagged %} class="hide" {% endif %}><img src="{{ STATIC_URL }}img/note_flag_disabled.png" alt="note_flag" width="25" height="35"/></a>
             </div>
           </div>
-        </div><!-- /note_actions -->
+        </div><!-- /course_actions -->
       </div>
     </div><!-- /course_header -->
 
+    <section id="edit-course-form">
+      <form>
+        {% csrf_token %}
 
+        <div class="row">
+          <div id="course_form_errors" class="small-12 columns">
+            {{ course_form.non_field_errors }}
+          </div>
+        </div>
+
+        <div class="row hidden">
+          <div class="small-12 columns">
+            <legend>School</legend>
+            <div>
+              <input id="id_school" value="{{ course.school.id }}" name="school" type='hidden'/>
+            </div>
+          </div>
+        </div> <!-- .row -->
+
+        <div class="row">
+          <div class="small-12 columns">
+            <legend>Course Name:</legend>
+            <input id="id_name" class="" type="text" name="name" maxlength="255" value="{{ course.name }}"/>
+          </div>
+        </div> <!-- .row -->
+
+        <div class="row">
+          <div class="small-12 columns large-6">
+            <legend>Instructor Name:</legend>
+            <input id="id_instructor_name" class="" type="text" name="instructor_name" maxlength="75" value="{{ course.instructor_name }}"/>
+          </div>
+
+          <div class="small-12 columns large-6">
+            <legend>Instructor Email:</legend>
+            <input id="id_instructor_email" class="" type="text" name="instructor_email" maxlength="75" value="{{ course.instructor_email }}"/>
+          </div>
+        </div> <!-- .row -->
+
+        <div class="row">
+          <div class="small-12 columns">
+            <legend>Course url:</legend>
+            <input id="id_url" class="" type="text" name="url" maxlength="255" value="{{ course.url }}"/>
+          </div>
+        </div> <!-- .row -->
+
+        <div class="row">
+          <div class="small-4 large-8 columns small-centered text-center">
+            <button id="edit-save-btn" type=button><i class="fa fa-save"></i> Save</button>
+          </div>
+        </div>
+      </form>
+    </section>
 
     <div class="row">
       <div class="small-10 columns small-offset-1"> <hr/> </div>
@@ -120,5 +174,6 @@
       </div>
     </div>
     {% endcomment %}
-  </section><!--/note_content-->
+  </section><!--/course_content-->
+
 {% endblock %}

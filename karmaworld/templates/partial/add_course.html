@@ -5,7 +5,8 @@
   var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}"
   var csrf_token = "{{ csrf_token }}";
 </script>
-  <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+<script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+<script src="{{ STATIC_URL }}js/course.js"></script>
 <script src="{{ STATIC_URL }}js/add-course.js"></script>
 
 <section id="add-course-form">
@@ -38,7 +39,7 @@
 
     <div class="row">
       <div class="small-12 columns">
-        <legend>Course Name: 
+        <legend>Course Name:
           {% if course_form.name.errors %}
             <span style="color:red">
             * there was an error with this field

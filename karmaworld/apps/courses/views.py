@@ -5,6 +5,7 @@
 
 import json
 
+from django.core import serializers
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -20,7 +21,7 @@ from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.users.models import CourseKarmaEvent
-from karmaworld.utils import ajax_increment, format_session_increment_field
+from karmaworld.utils.ajax_increment import *
 
 FLAG_FIELD = 'flags'
 
@@ -80,7 +81,6 @@ class CourseDetailView(DetailView):
             kwargs['already_flagged'] = True
 
         return kwargs
-
 
 class AboutView(TemplateView):
     """ Display the About page with the Schools leaderboard """
@@ -197,3 +197,29 @@ def flag_course(request, pk):
     """Record that somebody has flagged a note."""
     return ajax_increment(Course, request, pk, FLAG_FIELD, process_course_flag_events)
 
+def edit_course(request, pk):
+    """
+    Saves the edited course content
+    """
+    course = Course.objects.get(pk=pk)
+    course_form = CourseForm(request.POST or None, instance=course)
+
+    if request.method == "POST" and request.is_ajax():
+        if course_form.is_valid():
+
+            # This will fail if name and school match one that already exists
+            # Same happens for add, should add specialized validation?
+            course_form.save()
+
+            # Make a helper for this? Kinda Ugly...
+            course_json = serializers.serialize('json', [course,])
+            return HttpResponse(json.dumps(json.loads(course_json)[0]),
+                                mimetype="application/json")
+        else:
+            print course_form.errors
+            return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Validation error',
+                                          'errors': course_form.errors}),
+                                          mimetype="application/json")
+    else:
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Invalid request'}),
+                                      mimetype="application/json")

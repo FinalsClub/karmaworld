@@ -39,4 +39,3 @@ def ajax_increment(cls, request, pk, field, event_processor=None):
         request.session[format_session_increment_field(cls, pk, field)] = True
 
     return ajax_base(cls, request, pk, ajax_increment_work)
-
