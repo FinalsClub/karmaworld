@@ -5,6 +5,7 @@
 
 
 from os.path import join, normpath
+from S3 import CallingFormat
 
 from common import *
 
