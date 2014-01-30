@@ -182,7 +182,32 @@ forwards to your virtual machine's web site.
 *Notice* Fabric might not run properly if you presently in a virtualenv.
 `deactivate` prior to running fab commands.
 
-1. On the virtual machine, type `cd karmanotes` to get into the code repository.
+### From the Host Machine
+
+If Fabric is available on the host machine, you should be able to run Fabric
+commands directly on the host machine, pointed at the virtual machine. If
+Fabric is not available on the Host Machine, see the next section.
+
+To setup the host machine properly, see the section about
+[accessing the VM via fabric](#accessing-the-vm-via-fabric) and then return to
+this section.
+
+Assuming those steps were followed with the alias, the following instructions
+should complete the virtual machine setup:
+
+1. `cd {project_root}` on the host machine.
+
+1. type `vmfab first_deploy`.
+
+### From within the Virtual Machine
+
+If Fabric is not available on the host machine, or just for funsies, you may
+run the Fabric commands within the virtual machine.
+
+1. Connect to the virtual machine with `vagrant ssh`.
+
+1. On the virtual machine, type `cd karmanotes` to get into the code
+   repository.
 
 1. In the code repo of the VM, type `fab -H 127.0.0.1 first_deploy`
 
@@ -363,7 +388,8 @@ to run Fabric against the virtual machine.
 
 You will need to setup the host machine with the proper SSH credentials to
 access the virtual machine. This is done by running `vagrant ssh-config` from
-`{project_root}`.
+`{project_root}` and copying the results into your SSH configuration file
+(usually found at `~/.ssh/config`).
 
 The VM will, by default, route its SSH connection through localhost port 2222
 on the host machine and the base user with be vagrant. Point Fabric there when
