@@ -11,13 +11,17 @@ import traceback
 import logging
 from allauth.account.signals import user_logged_in
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.files.storage import default_storage
 from django.db.models import SET_NULL
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from karmaworld.apps.users.models import NoteKarmaEvent, GenericKarmaEvent
+from karmaworld.secret.filepicker import FILEPICKER_API_KEY
+from karmaworld.utils.filepicker import encode_fp_policy, sign_fp_policy
 import os
+import time
 import urllib
 
 from django.conf import settings
@@ -49,15 +53,6 @@ s3_upload_headers = {
 # https://github.com/FinalsClub/karmaworld/issues/273#issuecomment-32572169
 all_read_xml_acl = '<?xml version="1.0" encoding="UTF-8"?>\n<AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Owner><AccessControlList><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Grantee><Permission>READ</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Grantee><Permission>WRITE</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Grantee><Permission>READ_ACP</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>710efc05767903a0eae5064bbc541f1c8e68f8f344fa809dc92682146b401d9c</ID><DisplayName>Andrew</DisplayName></Grantee><Permission>WRITE_ACP</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant></AccessControlList></AccessControlPolicy>'
 
-def _choose_upload_to(instance, filename):
-    # /school/course/year/month/day
-    return u"{school}/{course}/{year}/{month}/{day}".format(
-        school=instance.course.school.slug,
-        course=instance.course.slug,
-        year=instance.uploaded_at.year,
-        month=instance.uploaded_at.month,
-        day=instance.uploaded_at.day)
-
 
 class Document(models.Model):
     """
@@ -85,11 +80,51 @@ class Document(models.Model):
     # WARNING: This may throw an error on migration
     is_hidden       = models.BooleanField(default=False)
 
+    ###
+    # Everything Filepicker, now in one small area
+
+    # Allow pick (choose files), store (upload to S3), read (from FP repo),
+    # stat (status of FP repo files) for 1 year (current time + 365 * 24 * 3600
+    # seconds). Generated one time, at class definition upon import. So the
+    # server will need to be rebooted at least one time each year or this will
+    # go stale.
+    fp_policy_json = '{{"expiry": {0}, "call": ["pick","store","read","stat"]}}'
+    fp_policy_json = fp_policy_json.format(int(time.time() + 31536000))
+    fp_policy      = encode_fp_policy(fp_policy_json)
+    fp_signature   = sign_fp_policy(fp_policy)
+
+    # Hack because mimetypes conflict with extensions, but there is no way to
+    # disable mimetypes.
+    # https://github.com/Ink/django-filepicker/issues/22
+    django_filepicker.forms.FPFieldMixin.default_mimetypes = ''
+    # Now let django-filepicker do the heavy lifting. Sort of. Look at all those
+    # parameters!
     fp_file = django_filepicker.models.FPFileField(
-            upload_to=_choose_upload_to,
-            storage=fs,
-            null=True, blank=True,
-            help_text=u"An uploaded file reference from Filepicker.io")
+                # FPFileField settings
+                apikey=FILEPICKER_API_KEY,
+                services='COMPUTER,DROPBOX,URL,GOOGLE_DRIVE,EVERNOTE,GMAIL,BOX,FACEBOOK,FLICKR,PICASA,IMAGE_SEARCH,WEBCAM,FTP',
+                additional_params={
+                    'data-fp-multiple': 'true', 
+                    'data-fp-folders': 'true',
+                    'data-fp-button-class':
+                      'add-note-btn small-10 columns large-4',
+                    'data-fp-button-text':
+                      mark_safe("<i class='fa fa-arrow-circle-o-up'></i> add notes"),
+                    'data-fp-drag-class':
+                      'dragdrop show-for-medium-up large-7 columns',
+                    'data-fp-drag-text': 'Drop Some Knowledge',
+                    'data-fp-extensions':
+                      '.pdf,.doc,.docx,.txt,.html,.rtf,.odt,.png,.jpg,.jpeg,.ppt,.pptx',
+                    'data-fp-store-location': 'S3',
+                    'data-fp-policy': fp_policy,
+                    'data-fp-signature': fp_signature,
+                    'onchange': "got_file(event)",
+                },
+                # FileField settings
+                null=True, blank=True,
+                upload_to='nil', # field ignored because S3, but required.
+                verbose_name='', # prevent a label from showing up
+                )
     mimetype = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
@@ -110,31 +145,24 @@ class Document(models.Model):
     def get_file(self):
         """ Downloads the file from filepicker.io and returns a
         Django File wrapper object """
-        # clean up any old downloads that are still hanging around
-        if hasattr(self, 'tempfile'):
-            self.tempfile.close()
-            delattr(self, 'tempfile')
-
-        if hasattr(self, 'filename'):
-            # the file might have been moved in the meantime so
-            # check first
-            if os.path.exists(self.filename):
-                os.remove(self.filename)
-            delattr(self, 'filename')
-
-        # The temporary file will be created in a directory set by the
-        # environment (TEMP_DIR, TEMP or TMP)
-        self.filename, header = urllib.urlretrieve(self.fp_file.name)
-        name = os.path.basename(self.filename)
-        disposition = header.get('Content-Disposition')
-        if disposition:
-            name = disposition.rpartition("filename=")[2].strip('" ')
-        filename = header.get('X-File-Name')
-        if filename:
-            name = filename
-
-        self.tempfile = open(self.filename, 'r')
-        return File(self.tempfile, name=name)
+        fpf = django_filepicker.utils.FilepickerFile(self.fp_file.name)
+        fd = fpf.get_file(self.fp_file.field.additional_params)
+        # temporary workaround. FilepickerFile closes/deletes the fd when
+        # garbage collected, so write it to another fd.
+        # https://github.com/Ink/django-filepicker/issues/25
+        newfd = os.tmpfile()
+        buff_size = 1048576 # read 1 MiB at a time
+        buff = fd.read(buff_size)
+        while buff != '':
+            # write until EOF
+            newfd.write(buff)
+            buff = fd.read(buff_size)
+        # replace the Django File's python file with the reset temp file.
+        newfd.seek(0)
+        fd.file = newfd
+        # force FilepickerFile to be garbage collected now, why not
+        del fpf
+        return fd
 
     def save(self, *args, **kwargs):
         if self.name and not self.slug:
