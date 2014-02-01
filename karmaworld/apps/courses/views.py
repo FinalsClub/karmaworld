@@ -20,6 +20,7 @@ from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.users.models import CourseKarmaEvent
+from karmaworld.apps.notes.forms import FileUploadForm
 from karmaworld.utils import ajax_increment, format_session_increment_field
 
 FLAG_FIELD = 'flags'
@@ -75,6 +76,9 @@ class CourseDetailView(DetailView):
 
         # Include "Add Note" button in header
         kwargs['display_add_note'] = True
+
+        # For the Filepicker Partial template
+        kwargs['file_upload_form'] = FileUploadForm()
 
         if self.request.session.get(format_session_increment_field(Course, self.object.id, FLAG_FIELD), False):
             kwargs['already_flagged'] = True

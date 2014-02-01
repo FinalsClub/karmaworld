@@ -5,6 +5,9 @@
 from django.forms import ModelForm
 from django.forms import TextInput
 
+from django_filepicker.forms import FPFileField
+from django_filepicker.widgets import FPFileWidget
+
 from karmaworld.apps.notes.models import Note
 
 class NoteForm(ModelForm):
@@ -13,4 +16,15 @@ class NoteForm(ModelForm):
         fields = ('name', 'tags', 'year',)
         widgets = {
           'name': TextInput()
+        }
+
+class FileUploadForm(ModelForm):
+    auto_id = False
+    class Meta:
+        model = Note
+        fields = ('fp_file',)
+        widgets = {
+          'fp_file': FPFileWidget(attrs={
+                       'id': 'filepicker-file-upload',
+                     }),
         }

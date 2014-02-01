@@ -251,7 +251,7 @@ def convert_raw_document(raw_document, user=None):
             note.save()
             NoteKarmaEvent.create_event(mapping.user, note, NoteKarmaEvent.UPLOAD)
         except (ObjectDoesNotExist, MultipleObjectsReturned):
-            logger.info("Zero or multiple mappings found with fp_file " + raw_document.fp_file.url)
+            logger.info("Zero or multiple mappings found with fp_file " + raw_document.fp_file.name)
 
     # Finally, save whatever data we got back from google
     note.save()
