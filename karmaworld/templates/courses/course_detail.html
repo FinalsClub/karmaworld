@@ -67,9 +67,31 @@
         <div id="course_actions" class="large-3 medium-6 small-12 columns small-centered">
           <div class="row">
             <div class="small-12 column center">
-              <a href="#" id="edit-button"><img src="{{ STATIC_URL }}img/edit.png" alt="edit_flag" width="25" height="35"/></a>
-              <a href="#" id="flag-button" {% if already_flagged %} class="hide" {% endif %}><img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35"/></a>
-              <a href="#" id="flag-button-disabled" {% if not already_flagged %} class="hide" {% endif %}><img src="{{ STATIC_URL }}img/note_flag_disabled.png" alt="note_flag" width="25" height="35"/></a>
+              {% if user.is_authenticated %}
+                <a href="#" id="edit-button"><img src="{{ STATIC_URL }}img/edit.png" alt="edit_flag" width="25" height="35"/></a>
+                {% if already_flagged %}
+                  <img src="{{ STATIC_URL }}img/note_flag_disabled.png"
+                       alt="course_flag"
+                       width="25" height="35"
+                       data-ot="You've already flagged this course"
+                       {% include 'partial/opentip_settings.html' %}
+                       class="opentip" />
+                {% else %}
+                  <a href="#" id="flag-button">
+                    <img src="{{ STATIC_URL }}img/note_flag.png" alt="course_flag" width="25" height="35" />
+                  </a>
+                {% endif %}
+              {% else %}
+                <img src="{{ STATIC_URL }}img/note_flag_disabled.png"
+                     alt="course_flag"
+                     width="25" height="35"
+                     data-ot="You need to log in to flag a course"
+                     {% include 'partial/opentip_settings.html' %}
+                     class="opentip" />
+              {% endif %}
+              <a href="#" id="flag-button-disabled" class="hide">
+                <img src="{{ STATIC_URL }}img/note_flag_disabled.png" alt="course_flag" width="25" height="35" />
+              </a>
             </div>
           </div>
         </div><!-- /course_actions -->
