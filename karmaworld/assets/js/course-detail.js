@@ -64,6 +64,7 @@ $(function() {
 
         // Delete all errors that currently exist
         $('.validation_error').remove()
+        $('#course_form_errors').empty();
 
         // Failed responses with no errors -> display message
         if (!errors) {

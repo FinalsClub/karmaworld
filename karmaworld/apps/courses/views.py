@@ -222,7 +222,6 @@ def edit_course(request, pk):
 
             return HttpResponse(json.dumps(resp), mimetype="application/json")
         else:
-            print course_form.errors
             return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Validation error',
                                           'errors': course_form.errors}),
                                           mimetype="application/json")
