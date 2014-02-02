@@ -14,46 +14,17 @@
     var note_thank_url = "{% url 'thank_note' note.id %}"
     var note_flag_url = "{% url 'flag_note' note.id %}"
     var note_downloaded_url = "{% url 'downloaded_note' note.id %}"
+    var note_contents_url = "{{ S3_URL }}{{ note.get_relative_s3_path }}"
+    {% if pdf_controls %}
+      var pdfControls = true;
+    {% else %}
+      var pdfControls = false;
+    {% endif %}
     var csrf_token = "{{ csrf_token }}";
   </script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
   <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
   <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
-
-  <script>
-
-    function writeNoteFrame(contents) {
-      var dstFrame = document.getElementById('noteframe');
-      var dstDoc = dstFrame.contentDocument || dstFrame.contentWindow.document;
-      dstDoc.write(contents);
-      dstDoc.close();
-    }
-
-    $(function() {
-      $.ajax('{{ STATIC_URL }}{{ note.get_relative_s3_path }}',
-        {
-          type: 'GET',
-          xhrFields: {
-            onprogress: function (progress) {
-              var percentage = Math.floor((progress.loaded / progress.totalSize) * 100);
-              writeNoteFrame("<h3 style='text-align: center'>" + percentage + "%</h3>");
-            }
-          },
-          success: function(data, textStatus, jqXHR) {
-            writeNoteFrame(data);
-            autoResize('noteframe');
-            {% if pdf_controls %}
-              setupPdfViewer();
-            {% endif %}
-          },
-          error: function(data, textStatus, jqXHR) {
-            writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
-          }
-        });
-    });
-
-  </script>
-
 {% endblock %}
 
 {% block content %}
@@ -85,40 +56,74 @@
       <div class="row">
         <div id="note_actions" class="large-3 medium-6 small-12 columns small-centered">
           <div class="row">
-            <div class="small-4 column">
-              <a href="#" id="flag-button" {% if already_flagged %} class="hide" {% endif %}><img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35"/></a>
-              <a href="#" id="flag-button-disabled" {% if not already_flagged %} class="hide" {% endif %}><img src="{{ STATIC_URL }}img/note_flag_disabled.png" alt="note_flag" width="25" height="35"/></a>
-            </div>
-            <div class="small-4 column">
-              <a href="#" id="thank-button" {% if already_thanked %} class="hide" {% endif %}><img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" width="34" height="34"/></a>
-              <a href="#" id="thank-button-disabled" {% if not already_thanked %} class="hide" {% endif %}><img src="{{ STATIC_URL }}img/note_thank_disabled.png" alt="note_thank" width="34" height="34"/></a>
-            </div>
-            <div class="small-4 column">
-              {% if user.is_authenticated %}
+            {% if user.is_authenticated %}
+              <div class="small-4 column">
+                {% if already_flagged %}
+                  <img src="{{ STATIC_URL }}img/note_flag_disabled.png"
+                       alt="note_flag"
+                       width="25" height="35"
+                       data-ot="You've already flagged this note"
+                       {% include 'partial/opentip_settings.html' %}
+                       class="opentip" />
+                {% else %}
+                  <a href="#" id="flag-button">
+                    <img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35" />
+                  </a>
+                {% endif %}
+              </div>
+              <div class="small-4 column">
+                {% if already_thanked %}
+                  <img src="{{ STATIC_URL }}img/note_thank_disabled.png"
+                       alt="note_thank"
+                       width="34" height="34"
+                       data-ot="You've already thanked this note"
+                       {% include 'partial/opentip_settings.html' %}
+                       class="opentip" />
+                {% else %}
+                  <a href="#" id="thank-button">
+                    <img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" width="34" height="34"/>
+                  </a>
+                {% endif %}
+              </div>
+              <div class="small-4 column">
                 <a id="note-download-button" href="{{ note.fp_file }}">
                   <img
                     src="{{ STATIC_URL }}img/note_download.png"
                     alt="note_download"
                     width="51" height="36"
                     data-ot="It costs 2 karma points to download a note"
-                    data-ot-target="true"
-                    data-ot-tip-joint="top center"
-                    data-ot-target-joint="bottom center"
-                    data-ot-background="white"
-                    data-ot-border-color="black"
+                    {% include 'partial/opentip_settings.html' %}
                     class="opentip" />
                 </a>
-              {% else %}
-                <img src="{{ STATIC_URL }}img/note_download_disabled.png" alt="note_download" width="51" height="36"
-                    data-ot="You need to log in to download a note"
-                    data-ot-target="true"
-                    data-ot-tip-joint="top center"
-                    data-ot-target-joint="bottom center"
-                    data-ot-background="white"
-                    data-ot-border-color="black"
-                    class="opentip" />
+              </div>
+            {% else %}
+              <div class="small-4 column">
+                <img src="{{ STATIC_URL }}img/note_flag_disabled.png"
+                     alt="note_flag"
+                     width="25" height="35"
+                     data-ot="You need to log in to flag a note"
+                     {% include 'partial/opentip_settings.html' %}
+                     class="opentip" />
+              </div>
+              <div class="small-4 column">
+                <img src="{{ STATIC_URL }}img/note_thank_disabled.png"
+                     alt="note_thank"
+                     width="34" height="34"
+                     data-ot="You need to log in to thank a note"
+                     {% include 'partial/opentip_settings.html' %}
+                     class="opentip" />
+              </div>
+              <div class="small-4 column">
+                <img
+                  src="{{ STATIC_URL }}img/note_download_disabled.png"
+                  alt="note_download"
+                  width="51" height="36"
+                  data-ot="You need to log in to download a note"
+                  {% include 'partial/opentip_settings.html' %}
+                  class="opentip" />
+              </div>
               {% endif %}
-            </div>
+
           </div>
         </div><!-- /note_actions -->
       </div>

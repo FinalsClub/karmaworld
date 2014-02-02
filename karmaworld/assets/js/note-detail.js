@@ -1,3 +1,5 @@
+
+
 // resize the iframe based on internal contents on page load
 function autoResize(id){
   var newheight;
@@ -62,6 +64,13 @@ function setupPdfViewer() {
   rescalePdf(pdfViewer, parseInt(noteFrame.width));
 }
 
+function writeNoteFrame(contents) {
+  var dstFrame = document.getElementById('noteframe');
+  var dstDoc = dstFrame.contentDocument || dstFrame.contentWindow.document;
+  dstDoc.write(contents);
+  dstDoc.close();
+}
+
 $(function() {
   $("#thank-button").click(function(event) {
     event.preventDefault();
@@ -120,4 +129,26 @@ $(function() {
       })
     };
   });
+
+  $.ajax(note_contents_url,
+    {
+      type: 'GET',
+      xhrFields: {
+        onprogress: function (progress) {
+          var percentage = Math.floor((progress.loaded / progress.total) * 100);
+          writeNoteFrame("<h3 style='text-align: center'>" + percentage + "%</h3>");
+        }
+      },
+      success: function(data, textStatus, jqXHR) {
+        writeNoteFrame(data);
+        autoResize('noteframe');
+        if (pdfControls == true) {
+          setupPdfViewer();
+        }
+      },
+      error: function(data, textStatus, jqXHR) {
+        writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
+      }
+    });
+
 });
