@@ -182,6 +182,9 @@
             <div class="note-text">
               <iframe style="border:none; width:100%; min-height: 1000px;"
                       id="noteframe"> </iframe>
+              <noscript>
+                {{ note.text }}
+              </noscript>
             </div> <!-- .note-text -->
 
           {% else %} {# note.static_html #}
