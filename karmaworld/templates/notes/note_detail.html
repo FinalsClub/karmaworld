@@ -70,6 +70,9 @@
                     <img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35" />
                   </a>
                 {% endif %}
+                <a href="#" id="flag-button-disabled" class="hide">
+                  <img src="{{ STATIC_URL }}img/note_flag_disabled.png" alt="note_flag" width="25" height="35" />
+                </a>
               </div>
               <div class="small-4 column">
                 {% if already_thanked %}
@@ -84,6 +87,9 @@
                     <img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" width="34" height="34"/>
                   </a>
                 {% endif %}
+                <a href="#" id="thank-button-disabled" class="hide">
+                  <img src="{{ STATIC_URL }}img/note_thank_disabled.png" alt="note_thank" width="34" height="34"/>
+                </a>
               </div>
               <div class="small-4 column">
                 <a id="note-download-button" href="{{ note.fp_file }}">
