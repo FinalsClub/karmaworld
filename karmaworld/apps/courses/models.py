@@ -254,12 +254,15 @@ class Course(models.Model):
         """ Save school and generate a slug if one doesn't exist """
         super(Course, self).save(*args, **kwargs) # generate a self.id
         if not self.slug:
-            self.slug = slugify(u"%s %s" % (self.name, self.id))
-            self.save() # Save the slug
+            self.set_slug()
 
     def get_updated_at_string(self):
         """ return the formatted style for datetime strings """
         return self.updated_at.strftime("%I%p // %a %b %d %Y")
+
+    def set_slug(self):
+        self.slug = slugify(u"%s %s" % (self.name, self.id))
+        self.save() # Save the slug
 
     @staticmethod
     def autocomplete_search_fields():

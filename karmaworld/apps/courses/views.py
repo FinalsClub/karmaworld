@@ -205,20 +205,22 @@ def edit_course(request, pk):
     """
     Saves the edited course content
     """
-    course = Course.objects.get(pk=pk)
-    course_form = CourseForm(request.POST or None, instance=course)
-
     if request.method == "POST" and request.is_ajax():
-        if course_form.is_valid():
+        course = Course.objects.get(pk=pk)
+        original_name = course.name
+        course_form = CourseForm(request.POST or None, instance=course)
 
-            # This will fail if name and school match one that already exists
-            # Same happens for add, should add specialized validation?
+        if course_form.is_valid():
             course_form.save()
 
-            # Make a helper for this? Kinda Ugly...
             course_json = serializers.serialize('json', [course,])
-            return HttpResponse(json.dumps(json.loads(course_json)[0]),
-                                mimetype="application/json")
+            resp = json.loads(course_json)[0]
+
+            if (course.name != original_name):
+                course.set_slug()
+                resp['fields']['new_url'] = course.get_absolute_url()
+
+            return HttpResponse(json.dumps(resp), mimetype="application/json")
         else:
             print course_form.errors
             return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Validation error',

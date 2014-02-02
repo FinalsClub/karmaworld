@@ -30,6 +30,10 @@ $(function() {
       data: $('#edit-course-form').children().serialize(),
       type: 'POST',
       success: function(data) {
+        if (data.fields.new_url) {
+          window.location.href = data.fields.new_url;
+        }
+
         // We might want to use a template here instead of rehashing logic
         // on both the client and server side
         $('#edit-course-form').slideUp();
