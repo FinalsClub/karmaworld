@@ -4,7 +4,6 @@
 """ Views for the KarmaNotes Courses app """
 
 import json
-import reversion
 
 from django.core import serializers
 from django.core.exceptions import MultipleObjectsReturned
@@ -202,7 +201,6 @@ def flag_course(request, pk):
     """Record that somebody has flagged a note."""
     return ajax_increment(Course, request, pk, FLAG_FIELD, process_course_flag_events)
 
-@reversion.create_revision()
 def edit_course(request, pk):
     """
     Saves the edited course content

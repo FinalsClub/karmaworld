@@ -177,6 +177,9 @@ MIDDLEWARE_CLASSES = (
     # Use GZip compression to reduce bandwidth.
     'django.middleware.gzip.GZipMiddleware',
 
+    # Version control middleware.
+    'reversion.middleware.RevisionMiddleware',
+
     # Default Django middleware.
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

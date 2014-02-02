@@ -249,7 +249,6 @@ class Course(models.Model):
         """ return url based on school slug and self slug """
         return u"/{0}/{1}".format(self.school.slug, self.slug)
 
-    @reversion.create_revision()
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
         super(Course, self).save(*args, **kwargs) # generate a self.id
@@ -265,7 +264,6 @@ class Course(models.Model):
     def autocomplete_search_fields():
         return ("name__icontains",)
 
-    @reversion.create_revision()
     def update_note_count(self):
         """ Update self.file_count by summing the note_set """
         self.file_count = self.note_set.count()
