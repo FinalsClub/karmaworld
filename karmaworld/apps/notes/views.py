@@ -32,10 +32,12 @@ PDF_MIMETYPES = (
     'application/vnd.openxmlformats-officedocument.presentationml.presentation'
 )
 
+
 def is_pdf(self):
     if self.object.file_type == 'pdf':
         return True
     return False
+
 
 def is_ppt(self):
     if self.object.file_type == 'ppt':
@@ -43,7 +45,10 @@ def is_ppt(self):
     return False
 
 THANKS_FIELD = 'thanks'
+USER_PROFILE_THANKS_FIELD = 'thanked_notes'
 FLAG_FIELD = 'flags'
+USER_PROFILE_FLAGS_FIELD = 'flagged_notes'
+
 
 class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
@@ -63,11 +68,18 @@ class NoteDetailView(DetailView):
         if self.object.mimetype in PDF_MIMETYPES:
             kwargs['pdf_controls'] = True
 
-        if self.request.session.get(format_session_increment_field(Note, self.object.id, THANKS_FIELD), False):
-            kwargs['already_thanked'] = True
+        if self.request.user.is_authenticated():
+            try:
+                self.request.user.get_profile().thanked_notes.get(pk=self.object.pk)
+                kwargs['already_thanked'] = True
+            except ObjectDoesNotExist:
+                pass
 
-        if self.request.session.get(format_session_increment_field(Note, self.object.id, FLAG_FIELD), False):
-            kwargs['already_flagged'] = True
+            try:
+                self.request.user.get_profile().flagged_notes.get(pk=self.object.pk)
+                kwargs['already_flagged'] = True
+            except ObjectDoesNotExist:
+                pass
 
         return super(NoteDetailView, self).get_context_data(**kwargs)
 
@@ -237,7 +249,7 @@ def process_note_thank_events(request_user, note):
 
 def thank_note(request, pk):
     """Record that somebody has thanked a note."""
-    return ajax_increment(Note, request, pk, THANKS_FIELD, process_note_thank_events)
+    return ajax_increment(Note, request, pk, THANKS_FIELD, USER_PROFILE_THANKS_FIELD, process_note_thank_events)
 
 
 def process_note_flag_events(request_user, note):
@@ -252,7 +264,7 @@ def process_note_flag_events(request_user, note):
 
 def flag_note(request, pk):
     """Record that somebody has flagged a note."""
-    return ajax_increment(Note, request, pk, FLAG_FIELD, process_note_flag_events)
+    return ajax_increment(Note, request, pk, FLAG_FIELD, USER_PROFILE_FLAGS_FIELD, process_note_flag_events)
 
 
 def process_downloaded_note(request_user, note):

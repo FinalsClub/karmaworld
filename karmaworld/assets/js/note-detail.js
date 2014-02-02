@@ -104,7 +104,7 @@ $(function() {
       $('#flag-button-disabled').show();
       $(this).unbind('click');
 
-      // tell server that somebody thanked
+      // tell server that somebody flagged
       // this note
       $.ajax({
         url: note_flag_url,

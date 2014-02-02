@@ -17,6 +17,7 @@ $(function() {
         dataType: "json",
         type: 'POST'
       });
+
     }
   });
 });

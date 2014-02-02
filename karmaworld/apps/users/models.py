@@ -22,9 +22,11 @@ class UserProfileManager(models.Manager):
 
 
 class UserProfile(models.Model):
-    user      = models.OneToOneField(User)
-
-    school    = models.ForeignKey(School, blank=True, null=True)
+    user = models.OneToOneField(User)
+    thanked_notes = models.ManyToManyField('notes.Note', related_name='users_thanked')
+    flagged_notes = models.ManyToManyField('notes.Note', related_name='users_flagged')
+    flagged_courses = models.ManyToManyField('courses.Course', related_name='users_flagged')
+    school = models.ForeignKey(School, blank=True, null=True)
 
     def natural_key(self):
         return (self.user,)

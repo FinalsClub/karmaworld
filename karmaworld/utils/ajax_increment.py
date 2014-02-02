@@ -25,7 +25,7 @@ def ajax_base(cls, request, pk, event_processor):
     return HttpResponse(status=204)
 
 
-def ajax_increment(cls, request, pk, field, event_processor=None):
+def ajax_increment(cls, request, pk, field, user_profile_field=None, event_processor=None):
     def ajax_increment_work(request_user, obj):
         count = getattr(obj, field)
         setattr(obj, field,  count+1)
@@ -36,7 +36,9 @@ def ajax_increment(cls, request, pk, field, event_processor=None):
 
         # Record that user has performed this, to prevent
         # them from doing it again
-        request.session[format_session_increment_field(cls, pk, field)] = True
+        if user_profile_field:
+            getattr(request_user.get_profile(), user_profile_field).add(obj)
+            obj.save()
 
     return ajax_base(cls, request, pk, ajax_increment_work)
 

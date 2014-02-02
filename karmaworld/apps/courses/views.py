@@ -24,6 +24,7 @@ from karmaworld.apps.notes.forms import FileUploadForm
 from karmaworld.utils import ajax_increment, format_session_increment_field
 
 FLAG_FIELD = 'flags'
+USER_PROFILE_FLAGS_FIELD = 'flagged_courses'
 
 
 class CourseListView(ListView, ModelFormMixin, ProcessFormView):
@@ -80,8 +81,12 @@ class CourseDetailView(DetailView):
         # For the Filepicker Partial template
         kwargs['file_upload_form'] = FileUploadForm()
 
-        if self.request.session.get(format_session_increment_field(Course, self.object.id, FLAG_FIELD), False):
-            kwargs['already_flagged'] = True
+        if self.request.user.is_authenticated():
+            try:
+                self.request.user.get_profile().flagged_courses.get(pk=self.object.pk)
+                kwargs['already_flagged'] = True
+            except ObjectDoesNotExist:
+                pass
 
         return kwargs
 
@@ -199,5 +204,5 @@ def process_course_flag_events(request_user, course):
 
 def flag_course(request, pk):
     """Record that somebody has flagged a note."""
-    return ajax_increment(Course, request, pk, FLAG_FIELD, process_course_flag_events)
+    return ajax_increment(Course, request, pk, FLAG_FIELD, USER_PROFILE_FLAGS_FIELD, process_course_flag_events)
 
