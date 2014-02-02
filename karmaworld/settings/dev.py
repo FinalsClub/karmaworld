@@ -71,10 +71,6 @@ AWS_HEADERS = {
     'Cache-Control': 'max-age=%d, s-maxage=%d, must-revalidate' % (AWS_EXPIREY,
         AWS_EXPIREY)
 }
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-# S3_URL comes from karmaworld.secret.static_s3
-STATIC_URL = S3_URL
 ########## END STORAGE CONFIGURATION
 
 
