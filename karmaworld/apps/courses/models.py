@@ -231,6 +231,7 @@ class Course(models.Model):
     class Meta:
         ordering = ['-file_count', 'school', 'name']
         unique_together = ('name', 'department')
+        unique_together = ('name', 'school')
         verbose_name = 'course'
         verbose_name_plural = 'courses'
 

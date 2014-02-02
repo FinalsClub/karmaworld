@@ -34,7 +34,7 @@ $(function() {
         // on both the client and server side
         $('#edit-course-form').slideUp();
         $('.validation_error').remove()
-        $('#course_form_errors').text('');
+        $('#course_form_errors').empty();
         $('#course_name').text(data.fields.name);
         $('#course_instructor_name').text(data.fields.instructor_name);
 
@@ -65,6 +65,13 @@ $(function() {
         if (!errors) {
           $('#course_form_errors').text(json.message);
         } else {
+          // Ugly, be works.  Could look into backbone or something similar to make it cleaner.
+          if (errors.__all__) {
+            $.each(errors.__all__, function(index, value) {
+              $('#course_form_errors').append($('<span>', { class: 'validation_error', text: value }));
+            });
+          }
+
           if (errors.instructor_email) {
             $.each(errors.instructor_email, function(index, value) {
               $('#id_instructor_email').parent().children('legend').append($('<span>', { class: 'validation_error', text: value }));
