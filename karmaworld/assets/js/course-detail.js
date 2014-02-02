@@ -49,7 +49,13 @@ $(function() {
         }
       },
       error: function(resp) {
-        var json = JSON.parse(resp.responseText);
+        var json;
+        try {
+          json = JSON.parse(resp.responseText);
+        } catch(e) {
+          json = { message: 'Unknown Error' };
+        }
+
         var errors = json.errors;
 
         // Delete all errors that currently exist

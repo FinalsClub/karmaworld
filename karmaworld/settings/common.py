@@ -227,6 +227,9 @@ THIRD_PARTY_APPS = (
     # Tagging https://github.com/yedpodtrzitko/django-taggit
     'taggit',
 
+    # Version control
+    'reversion',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
