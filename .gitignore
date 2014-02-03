@@ -64,3 +64,8 @@ karmaworld/secret/*
 
 ## USDE accreditation school CSV
 confs/accreditation.csv
+
+# Local SSL testing
+runserver_ssl
+stunnel
+
