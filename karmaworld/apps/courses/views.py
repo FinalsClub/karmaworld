@@ -5,6 +5,7 @@
 
 import json
 
+from django.core import serializers
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -89,7 +90,6 @@ class CourseDetailView(DetailView):
                 pass
 
         return kwargs
-
 
 class AboutView(TemplateView):
     """ Display the About page with the Schools leaderboard """
@@ -206,3 +206,30 @@ def flag_course(request, pk):
     """Record that somebody has flagged a note."""
     return ajax_increment(Course, request, pk, FLAG_FIELD, USER_PROFILE_FLAGS_FIELD, process_course_flag_events)
 
+def edit_course(request, pk):
+    """
+    Saves the edited course content
+    """
+    if request.method == "POST" and request.is_ajax():
+        course = Course.objects.get(pk=pk)
+        original_name = course.name
+        course_form = CourseForm(request.POST or None, instance=course)
+
+        if course_form.is_valid():
+            course_form.save()
+
+            course_json = serializers.serialize('json', [course,])
+            resp = json.loads(course_json)[0]
+
+            if (course.name != original_name):
+                course.set_slug()
+                resp['fields']['new_url'] = course.get_absolute_url()
+
+            return HttpResponse(json.dumps(resp), mimetype="application/json")
+        else:
+            return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Validation error',
+                                          'errors': course_form.errors}),
+                                          mimetype="application/json")
+    else:
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Invalid request'}),
+                                      mimetype="application/json")
