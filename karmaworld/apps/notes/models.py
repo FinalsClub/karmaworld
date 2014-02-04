@@ -146,23 +146,7 @@ class Document(models.Model):
         """ Downloads the file from filepicker.io and returns a
         Django File wrapper object """
         fpf = django_filepicker.utils.FilepickerFile(self.fp_file.name)
-        fd = fpf.get_file(self.fp_file.field.additional_params)
-        # temporary workaround. FilepickerFile closes/deletes the fd when
-        # garbage collected, so write it to another fd.
-        # https://github.com/Ink/django-filepicker/issues/25
-        newfd = os.tmpfile()
-        buff_size = 1048576 # read 1 MiB at a time
-        buff = fd.read(buff_size)
-        while buff != '':
-            # write until EOF
-            newfd.write(buff)
-            buff = fd.read(buff_size)
-        # replace the Django File's python file with the reset temp file.
-        newfd.seek(0)
-        fd.file = newfd
-        # force FilepickerFile to be garbage collected now, why not
-        del fpf
-        return fd
+        return fpf.get_file(self.fp_file.field.additional_params)
 
     def save(self, *args, **kwargs):
         if self.name and not self.slug:
