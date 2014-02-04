@@ -38,6 +38,9 @@ class UserProfile(models.Model):
 
         return sum
 
+    def can_edit_courses(self):
+        return (self.get_points() >= 20)
+
     NO_BADGE = 0
     PROSPECT = 1
     BEGINNER = 2
