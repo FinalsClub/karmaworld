@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load account %}
+
+{% block pagescripts %}
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/dashboard.css">
+{% endblock %}
+
+{% block title %}
+  {{ quiz.name }}
+{% endblock %}
+
+{% block content %}
+  <section id="dashboard_content">
+    <div id="stats_container" class="hero_gradient_bar">
+      <div class="row">
+        <div class="small-10 columns small-centered center header_title">
+          {{ quiz.name }}
+      </div>
+        </div>
+      <div class="row">
+        <div class="small-12 medium-8 large-4 columns small-centered">
+          <div class="row">
+            <div class="small-6 columns center  stat_lead_in">
+              you've had
+            </div>
+            <div class="small-6 columns center  stat_lead_in">
+              out of
+            </div>
+          </div>
+          <div class="row">
+            <div class="small-6 columns center  stat_number stat_earned">
+             3
+            </div>
+            <div class="small-6 columns  center stat_number stat_uploaded">
+              14
+            </div>
+          </div>
+          <div class="row">
+            <div class="small-6 columns center  stat_object stat_earned">
+              correct answers
+            </div>
+            <div class="small-6 columns center  stat_object stat_uploaded">
+              questions
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="activity_container">
+
+      {% if not questions %}
+        <div class="row">
+          <div id="no_activity" class="small-10 columns small-centered center">
+            <h4>This quiz has no questions.</h4>
+          </div>
+        </div>
+      {% endif %}
+
+      {% for item in questions %}
+
+        <div class="row">
+          <div class="small-10 columns small-centered {% cycle '' 'row_alt_on'%}">
+
+            <div class="activity_item">
+              {% if 'MultipleChoiceQuestion' in item.0 %}
+                {% with question=item.1 %}
+                  <p>{{ question.question_text }}</p>
+                  <ul>
+                    {% for choice in question.choices.all %}
+                      <li>{{ choice.text }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endwith %}
+
+              {% endif %}
+
+
+            </div>
+
+          </div>
+        </div>
+
+      {% endfor %}
+
+    </div>
+
+
+
+  </section>
+
+{% endblock %}
