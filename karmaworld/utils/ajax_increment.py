@@ -41,4 +41,3 @@ def ajax_increment(cls, request, pk, field, user_profile_field=None, event_proce
             obj.save()
 
     return ajax_base(cls, request, pk, ajax_increment_work)
-

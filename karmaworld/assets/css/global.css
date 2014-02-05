@@ -36,7 +36,6 @@ input[type="text"]:focus, textarea:focus
   border-radius: 0;
 }
 
-
 .half-padding
 {
   padding-left: 5px;
@@ -614,7 +613,8 @@ a.activity_target:hover
 #add-note-btn,
 #add-course-btn,
 #existing-course-btn,
-#save-btn
+#save-btn,
+#edit-save-btn
 {
   border: none;
   background-color: white;
@@ -628,18 +628,24 @@ a.activity_target:hover
 }
 
 #existing-course-btn,
-#save-btn {
+#save-btn,
+#edit-save-btn {
   margin-top: 13px;
 }
 
 #existing-course-btn.disabled,
-#save-btn.disabled
+#save-btn.disabled,
+#edit-save-btn.disabled
 {
   color: #afafaf;
   cursor: auto;
 }
 
-#add-note-form, #add-course-form
+.validation_error {
+  color:red;
+}
+
+#add-note-form, #add-course-form, #edit-course-form
 {
   display: none;
 }

@@ -9,6 +9,7 @@
     Courses have a manytoone relation to schools.
 """
 import datetime
+import reversion
 
 from django.db import models
 from django.utils.text import slugify
@@ -230,6 +231,7 @@ class Course(models.Model):
     class Meta:
         ordering = ['-file_count', 'school', 'name']
         unique_together = ('name', 'department')
+        unique_together = ('name', 'school')
         verbose_name = 'course'
         verbose_name_plural = 'courses'
 
@@ -252,12 +254,15 @@ class Course(models.Model):
         """ Save school and generate a slug if one doesn't exist """
         super(Course, self).save(*args, **kwargs) # generate a self.id
         if not self.slug:
-            self.slug = slugify(u"%s %s" % (self.name, self.id))
-            self.save() # Save the slug
+            self.set_slug()
 
     def get_updated_at_string(self):
         """ return the formatted style for datetime strings """
         return self.updated_at.strftime("%I%p // %a %b %d %Y")
+
+    def set_slug(self):
+        self.slug = slugify(u"%s %s" % (self.name, self.id))
+        self.save() # Save the slug
 
     @staticmethod
     def autocomplete_search_fields():
@@ -268,6 +273,7 @@ class Course(models.Model):
         self.file_count = self.note_set.count()
         self.save()
 
+reversion.register(Course)
 
 class ProfessorTaughtManager(models.Manager):
     """ Handle restoring data. """
