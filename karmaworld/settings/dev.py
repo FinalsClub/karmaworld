@@ -60,7 +60,6 @@ INSTALLED_APPS += (
 
 # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
 # DEFAULT_FILE_STORAGE comes from karmaworld.secret.static_s3
-STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
 
 # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
 AWS_CALLING_FORMAT = CallingFormat.SUBDOMAIN

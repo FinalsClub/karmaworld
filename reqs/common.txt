@@ -21,5 +21,4 @@ html2text
 django-allauth
 boto==2.6.0
 django-storages==1.1.4
-git+https://github.com/Soaa-/django-nested-inlines.git
 django-reversion

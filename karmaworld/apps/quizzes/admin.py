@@ -2,7 +2,6 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2014  FinalsClub Foundation
 from django.contrib import admin
-from nested_inlines.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 from karmaworld.apps.quizzes.models import MultipleChoiceQuestion, FlashCardQuestion, MultipleChoiceOption, Quiz
 
 
@@ -12,13 +11,7 @@ class MultipleChoiceOptionInlineAdmin(NestedTabularInline):
 
 class MultipleChoiceQuestionAdmin(NestedModelAdmin):
     model = MultipleChoiceQuestion
-    inlines = [MultipleChoiceOptionInlineAdmin,]
-    list_display = ('question_text', 'quiz')
-
-
-class MultipleChoiceQuestionInlineAdmin(NestedStackedInline):
-    model = MultipleChoiceQuestion
-    inlines = [MultipleChoiceOptionInlineAdmin,]
+    inlines = [MultipleChoiceOptionInlineAdmin]
     list_display = ('question_text', 'quiz')
 
 
@@ -28,9 +21,8 @@ class FlashCardQuestionInlineAdmin(NestedStackedInline):
 
 
 class QuizAdmin(NestedModelAdmin):
-    #search_fields = ['name', 'note__name']
-    #list_display = ('name', 'note')
-    inlines = [MultipleChoiceQuestionInlineAdmin, FlashCardQuestionInlineAdmin]
+    search_fields = ['name', 'note__name']
+    list_display = ('name', 'note')
 
 
 admin.site.register(Quiz, QuizAdmin)

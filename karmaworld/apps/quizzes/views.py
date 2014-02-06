@@ -3,8 +3,7 @@
 # Copyright (C) 2014  FinalsClub Foundation
 from itertools import chain
 
-from django.views.generic import TemplateView, DetailView
-from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import DetailView
 from karmaworld.apps.quizzes.models import Quiz, ALL_QUESTION_CLASSES
 
 
