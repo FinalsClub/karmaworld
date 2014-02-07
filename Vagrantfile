@@ -18,9 +18,9 @@ VAGRANTFILE_API_VERSION = "2"
 git_ssh_key = File.read(ENV['HOME'] + '/.vagrant.d/insecure_private_key');
 
 # build a shell script that installs prereqs, copies over the host secrets,
-# configures the database, sets up the user/group associations, pulls in the
-# code from the host machine, sets up some external dependency configs, and
-# then runs fabric.
+# configures the database, sets up the user/group associations, creates a self
+# signed SSL cert, pulls in the code from the host machine, sets up some
+# external dependency configs, and then runs fabric.
 shellscript = <<SCRIPT
 cat >>/home/vagrant/.ssh/insecure_private_key <<EOF
 #{git_ssh_key}
@@ -37,6 +37,29 @@ Host 127.0.0.1
     IdentityFile ~/.ssh/insecure_private_key
 EOF
 chmod 644 /home/vagrant/.ssh/config
+
+cat >/home/vagrant/localhost.conf <<EOF
+[req]
+default_keyfile=localhost.key.pem
+encrypt_key=no
+default_bits=512
+prompt=no
+utf8=yes
+distinguished_name=dn
+
+[dn]
+C=US
+ST=Massachusetts
+L=Cambridge
+O=FinalsClub Foundation
+CN=localhost
+emailAddress=info@karmanotes.org
+EOF
+cd /home/vagrant
+openssl req -new -config localhost.conf -out localhost.csr.pem
+openssl x509 -req -in localhost.csr.pem -signkey localhost.key.pem -out localhost.cert.pem
+chown vagrant:vagrant localhost*
+cd -
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -83,9 +106,12 @@ chown vagrant:vagrant karmaworld/$SECRETPATH/*.py
 cat > /etc/nginx/sites-available/karmaworld <<CONFIG
 server {
     listen 80;
+    listen 443 ssl;
     # don't do virtual hosting, handle all requests regardless of header
-    server_name "";
+    server_name localhost;
     client_max_body_size 20M;
+    ssl_certificate     /home/vagrant/localhost.cert.pem;
+    ssl_certificate_key /home/vagrant/localhost.key.pem;
 
     location / {
         # pass traffic through to gunicorn
@@ -137,7 +163,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.network :forwarded_port, guest: 80, host: 8080
 
   # OM (sanskrit) KW (KarmaWorld) on a phone: 66 59
-  config.vm.network :forwarded_port, guest: 80, host: 6659, auto_correct: true
+  config.vm.network :forwarded_port, guest: 443, host: 6659, auto_correct: true
+  config.vm.network :forwarded_port, guest: 80, host: 16659, auto_correct: true
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.

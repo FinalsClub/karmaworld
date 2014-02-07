@@ -131,6 +131,18 @@ ACCESS_TOKEN_KEY = '???'
 ACCESS_TOKEN_SECRET = '???'
 ```
 
+### SSL Certificate
+
+If you wish to host your system publicly, you'll need an SSL certificate
+signed by a proper authority.
+
+If you are working on local system for development, a self signed certificate
+will suffice. There are plenty of resources available for learning how to
+create one, so that will not be detailed here. Note that the Vagrant file will
+automatically generated a self signed certificate within the virtual machine.
+
+The certificate should be installed using nginx.
+
 # Development Install
 
 If you need to setup the project for development, it is highly recommend that
@@ -172,10 +184,15 @@ instructions, it is assumed Vagrant will be deployed to VirtualBox.
 1. Connect to the virtual machine with `vagrant ssh`
 
 Note:
-Port 80 of the virtual machine will be configured as port 6659 on the host
+Port 443 of the virtual machine will be configured as port 6659 on the host
 system. While on the host system, fire up your favorite browser and point it at
-`http://localhost:6659/`. This connects to your host system on port 6659, which
-forwards to your virtual machine's web site.
+`https://localhost:6659/`. This connects to your host system on port 6659, which
+forwards to your virtual machine's web site using SSL.
+
+Port 80 of the virtual machine will be configured as port 16659 on the host
+system. While on the host system, fire up your favorite browser and point it at
+`http://localhost:16659/`. This connects to your host system on port 16659,
+which forwards to your virtual machine's web site using plain text.
 
 ## Completing the Virtual Machine with Fabric
 
@@ -293,8 +310,8 @@ not generally be needed.
 
         server {
             listen 80;
-            # don't do virtual hosting, handle all requests regardless of header
-            server_name "";
+            listen 443 ssl;
+            server_name localhost;
             client_max_body_size 20M;
         
             location / {
