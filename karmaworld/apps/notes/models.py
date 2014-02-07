@@ -142,11 +142,34 @@ class Document(models.Model):
                     self.uploaded_at.day, self.uploaded_at.microsecond)
         self.slug = _slug
 
+    def _get_fpf(self):
+        """
+        Memoized FilepickerFile getter. Returns FilepickerFile.
+        """
+        if not hasattr(self, 'cached_fpf'):
+            # Fetch additional_params containing signature, etc
+            aps = self.fp_file.field.additional_params
+            self.cached_fpf = django_filepicker.utils.FilepickerFile(self.fp_file.name, aps)
+        return self.cached_fpf
+
+    def get_fp_url(self):
+        """
+        Returns the Filepicker URL for reading the upstream document.
+        """
+        # Fetch FilepickerFile
+        fpf = self._get_fpf()
+        # Return proper URL for reading
+        return fpf.get_url()
+
     def get_file(self):
-        """ Downloads the file from filepicker.io and returns a
-        Django File wrapper object """
-        fpf = django_filepicker.utils.FilepickerFile(self.fp_file.name)
-        return fpf.get_file(self.fp_file.field.additional_params)
+        """
+        Downloads the file from filepicker.io and returns a Django File wrapper
+        object.
+        """
+        # Fetch FilepickerFile
+        fpf = self._get_fpf()
+        # Return Django File
+        return fpf.get_file()
 
     def save(self, *args, **kwargs):
         if self.name and not self.slug:
