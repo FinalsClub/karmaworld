@@ -13,6 +13,7 @@ SSL = 'SSL'
 class SSLRedirect(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
+        # Does connection require security?
         if SSL in view_kwargs:
             secure = view_kwargs[SSL]
             del view_kwargs[SSL]
@@ -22,7 +23,8 @@ class SSLRedirect(object):
         if request.user.is_authenticated():
             secure = True
 
-        if not secure == self._is_secure(request):
+        # If connection is not secured but requires security, then redirect
+        if not self._is_secure(request) and secure:
             return self._redirect(request, secure)
 
     def _is_secure(self, request):
