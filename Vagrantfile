@@ -126,6 +126,8 @@ server {
         proxy_set_header X-Forwarded-SSL \\\$ssl;
         proxy_set_header X-Forwarded-Protocol \\\$scheme;
         proxy_set_header X-Forwarded-Proto \\\$scheme;
+        # pass nginx site back to Django
+        proxy_set_header Host \\\$http_host;
     }
 }
 CONFIG
