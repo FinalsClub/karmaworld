@@ -317,6 +317,16 @@ not generally be needed.
             location / {
                 # pass traffic through to gunicorn
                 proxy_pass http://127.0.0.1:8000;
+                # pass HTTP(S) status through to Django
+                if ($scheme ~ http) {
+                    set $ssl 'off';
+                }
+                if ($scheme ~ https) {
+                    set $ssl 'on';
+                }
+                proxy_set_header X-Forwarded-SSL $ssl;
+                proxy_set_header X-Forwarded-Protocol $scheme;
+                proxy_set_header X-Forwarded-Proto $scheme;
             }
         }
 
