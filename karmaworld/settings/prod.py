@@ -141,6 +141,10 @@ AWS_HEADERS = {
 STATIC_URL = S3_URL
 ########## END STORAGE CONFIGURATION
 
+########## SSL FORWARDING CONFIGURATION
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+########## END SSL FORWARDING CONFIGURATION
+
 ########## MIDDLEWARE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#middleware-classes
 MIDDLEWARE_CLASSES += (
