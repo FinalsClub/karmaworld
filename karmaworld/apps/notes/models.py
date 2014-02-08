@@ -11,6 +11,7 @@ import traceback
 import logging
 from allauth.account.signals import user_logged_in
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.files.storage import default_storage
@@ -300,6 +301,20 @@ class Note(Document):
         if do_save:
             self.save()
 
+    def update_note_on_s3(self, html):
+        # do nothing if HTML is empty.
+        if not html or not len(html):
+            return
+        # if it's not already there then bail out
+        filepath = self.get_relative_s3_path()
+        if not default_storage.exists(filepath):
+            logger.warn("Cannot update note on S3, it does not exist already: " + unicode(self))
+            return
+
+        key = default_storage.bucket.get_key(filepath)
+        key.set_contents_from_string(html, headers=s3_upload_headers)
+        key.set_xml_acl(all_read_xml_acl)
+
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug
             otherwise use note.id
@@ -324,7 +339,8 @@ class Note(Document):
         soup = BS(html)
         # Iterate through filters, applying all to the soup object.
         for soupfilter in (
-          self.sanitize_anchor_html,
+            self.sanitize_anchor_html,
+            self.set_canonical_link,
         ):
             soup = soupfilter(soup)
         return str(soup)
@@ -347,6 +363,33 @@ class Note(Document):
             tag['target'] = '_blank'
         # set all anchors to have target="_blank"
         map(set_attribute_target, a_tags)
+
+        # return filtered soup
+        return soup
+
+    @staticmethod
+    def canonical_link_predicate(tag):
+        return tag.name == u'link' and \
+            tag.has_attr('rel') and \
+            u'canonical' in tag['rel']
+
+    def set_canonical_link(self, soup):
+        """
+        Filter the given BeautifulSoup obj by adding
+        <link rel="canonical" href="note.get_absolute_url" />
+        to the document head.
+        Returns BeautifulSoup obj.
+        """
+        domain = Site.objects.all()[0].domain
+        note_full_href = 'http://' + domain + self.get_absolute_url()
+        canonical_tags = soup.find_all(self.canonical_link_predicate)
+        if canonical_tags:
+            for tag in canonical_tags:
+                tag['href'] = note_full_href
+        else:
+            new_tag = soup.new_tag('link', rel='canonical', href=note_full_href)
+            head = soup.find('head')
+            head.append(new_tag)
 
         # return filtered soup
         return soup
