@@ -106,7 +106,13 @@ chown vagrant:vagrant karmaworld/$SECRETPATH/*.py
 cat > /etc/nginx/sites-available/karmaworld <<CONFIG
 server {
     listen 80;
-    listen 443 ssl;
+    server_name localhost;
+    return 301 https://\\\$host:6659\\\$request_uri;
+}
+
+server {
+    listen 443;
+    ssl on;
     # don't do virtual hosting, handle all requests regardless of header
     server_name localhost;
     client_max_body_size 20M;
@@ -117,13 +123,7 @@ server {
         # pass traffic through to gunicorn
         proxy_pass http://127.0.0.1:8000;
         # pass HTTP(S) status through to Django
-        if (\\\$scheme ~ http) {
-            set \\\$ssl 'off';
-        }
-        if (\\\$scheme ~ https) {
-            set \\\$ssl 'on';
-        }
-        proxy_set_header X-Forwarded-SSL \\\$ssl;
+        proxy_set_header X-Forwarded-SSL \\\$https;
         proxy_set_header X-Forwarded-Protocol \\\$scheme;
         proxy_set_header X-Forwarded-Proto \\\$scheme;
         # pass nginx site back to Django
