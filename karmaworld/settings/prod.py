@@ -141,13 +141,9 @@ AWS_HEADERS = {
 STATIC_URL = S3_URL
 ########## END STORAGE CONFIGURATION
 
-########## MIDDLEWARE CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#middleware-classes
-MIDDLEWARE_CLASSES += (
-    # Use SSL when user is authenticated
-    'karmaworld.utils.SSLRedirect.SSLRedirect',
-)
-########## END MIDDLEWARE CONFIGURATION
+########## SSL FORWARDING CONFIGURATION
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+########## END SSL FORWARDING CONFIGURATION
 
 ########## COMPRESSION CONFIGURATION
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_OFFLINE

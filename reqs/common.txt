@@ -9,7 +9,7 @@ urllib3==1.5
 google-api-python-client==1.0
 django-grappelli==2.4.8
 git+https://github.com/FinalsClub/django-taggit.git
-git+https://github.com/btbonval/django-filepicker
+git+https://github.com/btbonval/django-filepicker.git
 filemagic==1.6
 requests
 beautifulsoup4
