@@ -3,6 +3,7 @@
 # Copyright (C) 2014  FinalsClub Foundation
 from django.contrib import admin
 from karmaworld.apps.quizzes.models import MultipleChoiceQuestion, FlashCardQuestion, MultipleChoiceOption, Quiz
+from nested_inlines.admin import NestedTabularInline, NestedModelAdmin, NestedStackedInline
 
 
 class MultipleChoiceOptionInlineAdmin(NestedTabularInline):
