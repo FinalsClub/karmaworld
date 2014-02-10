@@ -38,49 +38,6 @@ $(function() {
   // page header
   $('#add_course_header_button').click(addCourse);
 
-  $("#str_school").autocomplete({
-    source: function(request, response){
-      $.ajax({
-        url: json_school_list,
-        data: {q: request.term},
-        success: function(data) {
-          if (data['status'] === 'success') {
-            response($.map(data['schools'], function(item) {
-              return {
-                  value: item.name,
-                  real_value: item.id,
-                  label: item.name,
-              };
-            }));
-          } else {
-            // FIXME: do something if school not found
-            $('#create_school_link').show();
-          }
-        },
-        dataType: "json",
-        type: 'POST'
-      });
-    },
-    select: function(event, ui) {
-      // set the school id as the value of the hidden field
-      $('#id_school').val(ui.item.real_value);
-      schoolSelected = true;
-      $('#str_school').removeClass('error');
-      $('#save-btn').removeClass('disabled');
-      fieldEdited();
-    },
-    change: function(event, ui) {
-      if (ui.item == null) {
-        $('#id_school').val('');
-        schoolSelected = false;
-        $('#str_school').addClass('error');
-        $('#save-btn').addClass('disabled');
-        fieldEdited();
-      }
-    },
-    minLength: 3
-  });
-
   KARMAWORLD.Course.initCourseNameAutocomplete({
     select: function(event, ui) {
       courseNameSelected = true;

@@ -22,3 +22,5 @@ django-allauth
 boto==2.6.0
 django-storages==1.1.4
 django-reversion
+django-ajax-selects
+git+https://github.com/btbonval/django-ajax-selects-cascade.git

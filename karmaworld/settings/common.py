@@ -234,6 +234,10 @@ THIRD_PARTY_APPS = (
     # Version control
     'reversion',
 
+    # AJAX endpoints for autocompletion
+    'ajax_select',
+    'ajax_select_cascade',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

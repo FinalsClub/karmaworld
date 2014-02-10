@@ -144,6 +144,11 @@ STATIC_URL = S3_URL
 ########## END STORAGE CONFIGURATION
 
 
+########## SSL FORWARDING CONFIGURATION
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+########## END SSL FORWARDING CONFIGURATION
+
+
 ########## COMPRESSION CONFIGURATION
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_OFFLINE
 COMPRESS_OFFLINE = True

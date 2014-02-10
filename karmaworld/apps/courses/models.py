@@ -14,6 +14,11 @@ import reversion
 from django.db import models
 from django.utils.text import slugify
 from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
+from ajax_select import LookupChannel
+from ajax_select_cascade import DependentLookupChannel
+from ajax_select_cascade import register_channel_name
+
+from karmaworld.utils.ajax_selects import register_channel_name
 
 
 class SchoolManager(models.Manager):
@@ -75,6 +80,24 @@ class School(models.Model):
         self.save()
 
 
+@register_channel_name('school')
+class SchoolLookup(LookupChannel):
+    """
+    Handles AJAX lookups against the school model's name and value fields.
+    """
+    model = School
+
+    def get_query(self, q, request):
+        """ Search against both name and alias. """
+        query = models.Q(name__icontains=q) | models.Q(alias__icontains=q)
+        return School.objects.filter(query)
+
+    def check_auth(self, request):
+        """ Allow anonymous access. """
+        # By default, Lookups require request.is_staff. Don't require anything!
+        pass
+
+
 class DepartmentManager(models.Manager):
     """ Handle restoring data. """
     def get_by_natural_key(self, name, school):
@@ -116,6 +139,28 @@ class Department(models.Model):
         if not self.slug:
             self.slug = slugify(unicode(self.name))
         super(Department, self).save(*args, **kwargs)
+
+
+@register_channel_name('dept_given_school')
+class DeptGivenSchoolLookup(DependentLookupChannel):
+    """
+    Handles AJAX lookups against the department model's name field given a
+    school.
+    """
+    model = Department
+
+    def get_dependent_query(self, q, request, dependency):
+        """ Search against department name given a school. """
+        if dependency:
+            return Department.objects.filter(name__icontains=q,
+                                             school__id=dependency)
+        else:
+            return []
+
+    def check_auth(self, request):
+        """ Allow anonymous access. """
+        # By default, Lookups require request.is_staff. Don't require anything!
+        pass
 
 
 class ProfessorManager(models.Manager):
@@ -205,7 +250,7 @@ class Course(models.Model):
     objects     = CourseManager()
 
     # Core metadata
-    name        = models.CharField(max_length=255)
+    name        = models.CharField(max_length=255, verbose_name="Course:")
     slug        = models.SlugField(max_length=150, null=True)
     # department should remove nullable when school gets yoinked
     department  = models.ForeignKey(Department, blank=True, null=True)
@@ -215,7 +260,8 @@ class Course(models.Model):
     file_count  = models.IntegerField(default=0)
 
     desc        = models.TextField(max_length=511, blank=True, null=True)
-    url         = models.URLField(max_length=511, blank=True, null=True)
+    url         = models.URLField(max_length=511, blank=True, null=True,
+                                  verbose_name="Course URL:")
 
     # instructor_* is vestigial, replaced by Professor+ProfessorTaught models.
     instructor_name     = models.CharField(max_length=255, blank=True, null=True)

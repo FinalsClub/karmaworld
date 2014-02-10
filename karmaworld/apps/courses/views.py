@@ -91,6 +91,7 @@ class CourseDetailView(DetailView):
 
         return kwargs
 
+
 class AboutView(TemplateView):
     """ Display the About page with the Schools leaderboard """
     template_name = "about.html"
@@ -100,25 +101,6 @@ class AboutView(TemplateView):
         if 'schools' not in kwargs:
             kwargs['schools'] = School.objects.filter(file_count__gt=0).order_by('-file_count')[:20]
         return kwargs
-
-
-def school_list(request):
-    """ Return JSON describing Schools that match q query on name """
-    if not (request.method == 'POST' and request.is_ajax()
-                        and request.POST.has_key('q')):
-        #return that the api call failed
-        return HttpResponseBadRequest(json.dumps({'status':'fail'}), mimetype="application/json")
-
-    # if an ajax get request with a 'q' name query
-    # get the schools as a id name dict,
-    _query = request.POST['q']
-    matching_school_aliases = list(School.objects.filter(alias__icontains=_query))
-    matching_school_names = list(School.objects.filter(name__icontains=_query)[:20])
-    _schools = matching_school_aliases[:2] + matching_school_names
-    schools = [{'id': s.id, 'name': s.name} for s in _schools]
-
-    # return as json
-    return HttpResponse(json.dumps({'status':'success', 'schools': schools}), mimetype="application/json")
 
 
 def school_course_list(request):
@@ -205,6 +187,7 @@ def process_course_flag_events(request_user, course):
 def flag_course(request, pk):
     """Record that somebody has flagged a note."""
     return ajax_increment(Course, request, pk, FLAG_FIELD, USER_PROFILE_FLAGS_FIELD, process_course_flag_events)
+
 
 def edit_course(request, pk):
     """

@@ -891,7 +891,7 @@ hr.midrule
   margin: 2em auto;
 }
 
-legend
+legend, label
 {
   font: 12px/2em "MuseoSlab-300";
   margin-top: 20px;

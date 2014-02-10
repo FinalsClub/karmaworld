@@ -12,7 +12,6 @@ from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.views import AboutView, flag_course, edit_course
 from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.courses.views import CourseListView
-from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
 from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note
@@ -22,14 +21,13 @@ from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
 from karmaworld.apps.users.views import ProfileView
 
+from ajax_select import urls as ajax_select_urls
+
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
-
-
 admin.autodiscover()
 
 # reused named regex capture groups
 SLUG = r'(?P<{0}slug>[-A-Za-z0-9_]+)'
-
 """
 # ex: SLUG.format('')  :> (?P<slug>[-A-Za-z0-9_]+)
 # ex: SLUG.format('school_')  :> (?P<school_slug>[-A-Za-z0-9_]+)
@@ -42,10 +40,6 @@ SLUG = r'(?P<{0}slug>[-A-Za-z0-9_]+)'
         NoteView.as_view(), name='note_detail_pk'),
 """
 
-SCHOOL_SLUG = r'(?P<school_slug>[-A-Za-z0-9_]+)'
-COURSE_SLUG = r'(?P<course_slug>[-A-Za-z0-9_]+)'
-NOTE_SLUG   = r'(?P<slug>[-A-Za-z0-9_]+)'
-
 # See: https://docs.djangoproject.com/en/dev/topics/http/urls/
 urlpatterns = patterns('',
     ## Administrative URLpatterns
@@ -57,6 +51,9 @@ urlpatterns = patterns('',
     # Moderator panel and documentation:
     url(r'^moderator/doc/', include('django.contrib.admindocs.urls')),
     url(r'^moderator/', include(moderator.site.urls)),
+
+    # support AJAX lookup endpoints
+    url(r'^lookups/', include('ajax_select.urls')),
 
     ## Single-serving page URLpatterns
     url(r'^terms/$', TemplateView.as_view(template_name='terms.html'), name='terms'),
@@ -77,8 +74,6 @@ urlpatterns = patterns('',
     url(r'^api/upload$', save_fp_upload, name='upload_post'),
 
     # ---- JSON views ----#
-    # return json list of schools
-    url(r'^school/list/$', school_list, name='json_school_list'),
     # return json list of courses for a given school
     url(r'^school/course/list/$', school_course_list, name='json_school_course_list'),
     # return json list of instructors for a given school and course
