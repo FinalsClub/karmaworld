@@ -67,6 +67,8 @@ class RawDocument(Document):
 
     def save(self, user=None, *args, **kwargs):
         super(RawDocument, self).save(*args, **kwargs)
+
+    def process_document(self, user=None):
         if not self.is_processed:
             tasks.process_raw_document.delay(self, user)
 

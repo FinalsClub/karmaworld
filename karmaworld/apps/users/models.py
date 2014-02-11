@@ -40,7 +40,7 @@ class UserProfile(models.Model):
 
         return sum
 
-    def can_edit_courses(self):
+    def can_edit_items(self):
         return (self.get_points() >= 20)
 
     NO_BADGE = 0
