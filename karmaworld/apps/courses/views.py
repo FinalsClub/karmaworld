@@ -113,7 +113,7 @@ def school_list(request):
     # get the schools as a id name dict,
     _query = request.POST['q']
     matching_school_aliases = list(School.objects.filter(alias__icontains=_query))
-    matching_school_names = list(School.objects.filter(name__icontains=_query)[:20])
+    matching_school_names = sorted(list(School.objects.filter(name__icontains=_query)[:20]),key=lambda o:len(o.name))
     _schools = matching_school_aliases[:2] + matching_school_names
     schools = [{'id': s.id, 'name': s.name} for s in _schools]
 
