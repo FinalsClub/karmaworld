@@ -5,6 +5,25 @@ import datetime
 from django.db import models
 
 
+class Keyword(models.Model):
+    word = models.CharField(max_length=1024)
+    definition = models.OneToOneField('quizzes.Definition', related_name='keyword')
+
+    timestamp = models.DateTimeField(default=datetime.datetime.utcnow)
+
+    def __unicode__(self):
+        return self.word
+
+
+class Definition(models.Model):
+    text = models.CharField(max_length=2048)
+
+    timestamp = models.DateTimeField(default=datetime.datetime.utcnow)
+
+    def __unicode__(self):
+        return self.text
+
+
 class Quiz(models.Model):
     name = models.CharField(max_length=512)
     note = models.ForeignKey('notes.Note', blank=True, null=True)
