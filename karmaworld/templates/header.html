@@ -41,7 +41,11 @@
         <div id="user_dropdown_container">
           <ul id="user_dropdown">
             <li><a href="{% url 'accounts_profile' %}">Dashboard</a></li>
+            <li><a href="{% url 'account_email' %}">Add/Remove Emails</a></li>
+            <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
+            <li><a href="{% url 'socialaccount_connections' %}">Social Accounts</a></li>
             <li><a href="{% url 'account_logout' %}">Log Out</a></li>
+            
           </ul>
         </div>
         <script>
