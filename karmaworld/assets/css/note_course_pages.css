@@ -12,7 +12,7 @@
   margin-right: 3px;
 }
 
-#note_status, #note_pedigree
+#note_status, #note_pedigree, #note_tags
 {
   text-align: center;
   padding-top: 10px;
@@ -111,4 +111,25 @@
 {
   padding-bottom: 20px;
   margin-bottom: 20px;
+}
+
+.tag-span:after
+{
+  content: ', ';
+}
+
+.tag-span:last-child:after
+{
+  content: '';
+}
+
+#note_tags_form
+{
+  text-align: center;
+}
+
+#note_tags_input
+{
+  margin-left: 25%;
+  width: 50%;
 }

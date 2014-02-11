@@ -68,7 +68,7 @@
           <div class="row">
             <div class="small-12 column center">
               {% if user.is_authenticated %}
-                {% if user.get_profile.can_edit_courses %}
+                {% if user.get_profile.can_edit_items %}
                   <a href="#" id="edit-button"><img src="{{ STATIC_URL }}img/edit.png" alt="edit_flag" width="25" height="35"/></a>
                 {% endif %}
 
@@ -101,7 +101,7 @@
       </div>
     </div><!-- /course_header -->
 
-    {% if user.get_profile.can_edit_courses %}
+    {% if user.get_profile.can_edit_items %}
       <section id="edit-course-form">
         <form>
           {% csrf_token %}
