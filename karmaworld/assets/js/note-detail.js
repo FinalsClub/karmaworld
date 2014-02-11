@@ -159,7 +159,6 @@ $(function() {
       url: edit_note_tags_url,
       dataType: 'json',
       data: $('#note_tags_input').val(),
-      // data: JSON.stringify(['test','tags']),//$('#edit-course-form').children().serialize(),
       type: 'POST',
       success: function(data) {
         $('#note_tags_form').slideUp();

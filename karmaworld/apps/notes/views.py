@@ -285,10 +285,8 @@ def edit_note_tags(request, pk):
     """
     Saves the posted string of tags
     """
-    if request.method == "POST" and request.is_ajax():
+    if request.method == "POST" and request.is_ajax() and request.user.is_authenticated() and request.user.get_profile().can_edit_items():
         note = Note.objects.get(pk=pk)
-
-        # note.tags.set(*json.loads(request.body))
         note.tags.set(request.body)
 
         note_json = serializers.serialize('json', [note,])
