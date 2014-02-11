@@ -22,10 +22,10 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('quiz', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['quizzes.Quiz'])),
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.utcnow)),
+            ('explanation', self.gf('django.db.models.fields.CharField')(max_length=2048, null=True, blank=True)),
+            ('difficulty', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('category', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('question_text', self.gf('django.db.models.fields.CharField')(max_length=2048)),
-            ('explanation', self.gf('django.db.models.fields.CharField')(max_length=2048)),
-            ('difficulty', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('category', self.gf('django.db.models.fields.CharField')(max_length=50)),
         ))
         db.send_create_signal(u'quizzes', ['MultipleChoiceQuestion'])
 
@@ -43,10 +43,26 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('quiz', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['quizzes.Quiz'])),
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.utcnow)),
+            ('explanation', self.gf('django.db.models.fields.CharField')(max_length=2048, null=True, blank=True)),
+            ('difficulty', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('category', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('sideA', self.gf('django.db.models.fields.CharField')(max_length=2048)),
             ('sideB', self.gf('django.db.models.fields.CharField')(max_length=2048)),
         ))
         db.send_create_signal(u'quizzes', ['FlashCardQuestion'])
+
+        # Adding model 'TrueFalseQuestion'
+        db.create_table(u'quizzes_truefalsequestion', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('quiz', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['quizzes.Quiz'])),
+            ('timestamp', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.utcnow)),
+            ('explanation', self.gf('django.db.models.fields.CharField')(max_length=2048, null=True, blank=True)),
+            ('difficulty', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('category', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('text', self.gf('django.db.models.fields.CharField')(max_length=2048)),
+            ('true', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        ))
+        db.send_create_signal(u'quizzes', ['TrueFalseQuestion'])
 
 
     def backwards(self, orm):
@@ -61,6 +77,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'FlashCardQuestion'
         db.delete_table(u'quizzes_flashcardquestion')
+
+        # Deleting model 'TrueFalseQuestion'
+        db.delete_table(u'quizzes_truefalsequestion')
 
 
     models = {
@@ -101,7 +120,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         u'courses.course': {
-            'Meta': {'ordering': "['-file_count', 'school', 'name']", 'unique_together': "(('name', 'department'),)", 'object_name': 'Course'},
+            'Meta': {'ordering': "['-file_count', 'school', 'name']", 'unique_together': "(('name', 'school'),)", 'object_name': 'Course'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'department': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['courses.Department']", 'null': 'True', 'blank': 'True'}),
             'desc': ('django.db.models.fields.TextField', [], {'max_length': '511', 'null': 'True', 'blank': 'True'}),
@@ -171,6 +190,9 @@ class Migration(SchemaMigration):
         },
         u'quizzes.flashcardquestion': {
             'Meta': {'object_name': 'FlashCardQuestion'},
+            'category': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'difficulty': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'explanation': ('django.db.models.fields.CharField', [], {'max_length': '2048', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'quiz': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['quizzes.Quiz']"}),
             'sideA': ('django.db.models.fields.CharField', [], {'max_length': '2048'}),
@@ -186,9 +208,9 @@ class Migration(SchemaMigration):
         },
         u'quizzes.multiplechoicequestion': {
             'Meta': {'object_name': 'MultipleChoiceQuestion'},
-            'category': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'difficulty': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'explanation': ('django.db.models.fields.CharField', [], {'max_length': '2048'}),
+            'category': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'difficulty': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'explanation': ('django.db.models.fields.CharField', [], {'max_length': '2048', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'question_text': ('django.db.models.fields.CharField', [], {'max_length': '2048'}),
             'quiz': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['quizzes.Quiz']"}),
@@ -200,6 +222,17 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '512'}),
             'note': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notes.Note']", 'null': 'True', 'blank': 'True'}),
             'timestamp': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow'})
+        },
+        u'quizzes.truefalsequestion': {
+            'Meta': {'object_name': 'TrueFalseQuestion'},
+            'category': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'difficulty': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'explanation': ('django.db.models.fields.CharField', [], {'max_length': '2048', 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'quiz': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['quizzes.Quiz']"}),
+            'text': ('django.db.models.fields.CharField', [], {'max_length': '2048'}),
+            'timestamp': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow'}),
+            'true': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
         u'taggit.tag': {
             'Meta': {'ordering': "['namespace', 'name']", 'object_name': 'Tag'},
