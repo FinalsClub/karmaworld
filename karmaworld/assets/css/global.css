@@ -614,10 +614,11 @@ a.activity_target:hover
 #add-course-btn,
 #existing-course-btn,
 #save-btn,
+#save_note_tags,
 #edit-save-btn
 {
   border: none;
-  background-color: white;
+  background-color: transparent;
   color: #f05a28;
   cursor: pointer;
   font: 30px/1.2em "MuseoSlab-300", serif;

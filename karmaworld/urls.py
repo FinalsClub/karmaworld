@@ -15,7 +15,7 @@ from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_list
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
-from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note
+from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags
 from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.notes.views import PDFView
 from karmaworld.apps.moderation import moderator
@@ -96,6 +96,8 @@ urlpatterns = patterns('',
     url(r'^ajax/note/thank/(?P<pk>[\d]+)/$', thank_note, name='thank_note'),
     # Ajax endpoint to flag a note
     url(r'^ajax/note/flag/(?P<pk>[\d]+)/$', flag_note, name='flag_note'),
+    # Ajax endpoint to update a notes tags
+    url(r'^ajax/note/tags/(?P<pk>[\d]+)/$', edit_note_tags, name='edit_note_tags'),
     # Ajax endpoint to record that somebody downloaded a note
     url(r'^ajax/note/downloaded/(?P<pk>[\d]+)/$', downloaded_note, name='downloaded_note'),
     # Ajax endpoint to flag a course

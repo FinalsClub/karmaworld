@@ -5,6 +5,8 @@
 import json
 import traceback
 import logging
+
+from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
@@ -279,4 +281,22 @@ def downloaded_note(request, pk):
     """Record that somebody has flagged a note."""
     return ajax_base(Note, request, pk, process_downloaded_note)
 
+def edit_note_tags(request, pk):
+    """
+    Saves the posted string of tags
+    """
+    if request.method == "POST" and request.is_ajax():
+        note = Note.objects.get(pk=pk)
+
+        # note.tags.set(*json.loads(request.body))
+        note.tags.set(request.body)
+
+        note_json = serializers.serialize('json', [note,])
+        resp = json.loads(note_json)[0]
+        resp['fields']['tags'] = list(note.tags.names())
+
+        return HttpResponse(json.dumps(resp), mimetype="application/json")
+    else:
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Invalid request'}),
+                                      mimetype="application/json")
 
