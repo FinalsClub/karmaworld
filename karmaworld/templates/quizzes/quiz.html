@@ -76,6 +76,15 @@
               {% endwith %}
             {% endif %}
 
+            {% if 'TrueFalseQuestion' in item.0 %}
+              {% with question=item.1 %}
+                <div class="question true-false">
+                  <p>{{ question.text }}</p>
+                  <p>True or False?</p>
+                </div>
+              {% endwith %}
+            {% endif %}
+
             {% if 'FlashCardQuestion' in item.0 %}
               {% with question=item.1 %}
                 <div class="question flash-card">
