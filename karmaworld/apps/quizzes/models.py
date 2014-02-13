@@ -7,21 +7,17 @@ from django.db import models
 
 class Keyword(models.Model):
     word = models.CharField(max_length=1024)
-    definition = models.OneToOneField('quizzes.Definition', related_name='keyword')
+    definition = models.CharField(max_length=2048, blank=True, null=True)
+
+    note = models.ForeignKey('notes.Note', blank=True, null=True)
 
     timestamp = models.DateTimeField(default=datetime.datetime.utcnow)
+
+    class Meta:
+        unique_together = ('word', 'note')
 
     def __unicode__(self):
         return self.word
-
-
-class Definition(models.Model):
-    text = models.CharField(max_length=2048)
-
-    timestamp = models.DateTimeField(default=datetime.datetime.utcnow)
-
-    def __unicode__(self):
-        return self.text
 
 
 class Quiz(models.Model):

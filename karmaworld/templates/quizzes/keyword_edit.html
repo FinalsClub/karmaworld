@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load account %}
+
+{% block pagestyle %}
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/quiz.css">
+{% endblock %}
+
+{% block bodyscripts %}
+  <script src="{{ STATIC_URL }}js/quiz.js"></script>
+{% endblock %}
+
+{% block title %}
+  {{ note.name }}
+{% endblock %}
+
+{% block content %}
+  <section id="dashboard_content">
+    <div id="stats_container" class="hero_gradient_bar">
+      <div class="row">
+        <div class="small-10 columns small-centered center header_title">
+          <p>Define keywords for the note</p>
+          <p><a href="{{ note.get_absolute_url }}">{{ note.name }}</a></p>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="activity_container">
+      <div class="row">
+        <div class="small-12 columns center">
+          <form id="keyword-form" action="{% url 'keyword_edit' note.id %}" method="post">
+            {% csrf_token %}
+            <div class="hide" id="keyword-form-prototype">
+              {{ prototype_form.as_p }}
+            </div>
+            <div id="keyword-form-rows">
+              {{ form.as_p }}
+            </div>
+            <button type="submit" name="action">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+
+  </section>
+
+{% endblock %}

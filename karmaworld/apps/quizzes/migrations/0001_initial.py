@@ -8,6 +8,19 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'Keyword'
+        db.create_table(u'quizzes_keyword', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('word', self.gf('django.db.models.fields.CharField')(max_length=1024)),
+            ('definition', self.gf('django.db.models.fields.CharField')(max_length=2048, null=True, blank=True)),
+            ('note', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notes.Note'], null=True, blank=True)),
+            ('timestamp', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.utcnow)),
+        ))
+        db.send_create_signal(u'quizzes', ['Keyword'])
+
+        # Adding unique constraint on 'Keyword', fields ['word', 'note']
+        db.create_unique(u'quizzes_keyword', ['word', 'note_id'])
+
         # Adding model 'Quiz'
         db.create_table(u'quizzes_quiz', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -66,6 +79,12 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
+        # Removing unique constraint on 'Keyword', fields ['word', 'note']
+        db.delete_unique(u'quizzes_keyword', ['word', 'note_id'])
+
+        # Deleting model 'Keyword'
+        db.delete_table(u'quizzes_keyword')
+
         # Deleting model 'Quiz'
         db.delete_table(u'quizzes_quiz')
 
@@ -199,6 +218,14 @@ class Migration(SchemaMigration):
             'sideB': ('django.db.models.fields.CharField', [], {'max_length': '2048'}),
             'timestamp': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow'})
         },
+        u'quizzes.keyword': {
+            'Meta': {'unique_together': "(('word', 'note'),)", 'object_name': 'Keyword'},
+            'definition': ('django.db.models.fields.CharField', [], {'max_length': '2048', 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'note': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notes.Note']", 'null': 'True', 'blank': 'True'}),
+            'timestamp': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow'}),
+            'word': ('django.db.models.fields.CharField', [], {'max_length': '1024'})
+        },
         u'quizzes.multiplechoiceoption': {
             'Meta': {'object_name': 'MultipleChoiceOption'},
             'correct': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -235,10 +262,9 @@ class Migration(SchemaMigration):
             'true': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
         u'taggit.tag': {
-            'Meta': {'ordering': "['namespace', 'name']", 'object_name': 'Tag'},
+            'Meta': {'object_name': 'Tag'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
-            'namespace': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'})
         },
         u'taggit.taggeditem': {

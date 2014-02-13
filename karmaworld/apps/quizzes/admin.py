@@ -3,7 +3,7 @@
 # Copyright (C) 2014  FinalsClub Foundation
 from django.contrib import admin
 from karmaworld.apps.quizzes.models import MultipleChoiceQuestion, FlashCardQuestion, MultipleChoiceOption, Quiz, \
-    TrueFalseQuestion
+    TrueFalseQuestion, Keyword
 from nested_inlines.admin import NestedTabularInline, NestedModelAdmin, NestedStackedInline
 
 
@@ -43,3 +43,4 @@ admin.site.register(MultipleChoiceQuestion, MultipleChoiceQuestionAdmin)
 admin.site.register(MultipleChoiceOption)
 admin.site.register(FlashCardQuestion)
 admin.site.register(TrueFalseQuestion)
+admin.site.register(Keyword)
