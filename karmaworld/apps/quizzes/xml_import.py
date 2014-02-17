@@ -1,7 +1,9 @@
 from StringIO import StringIO
+from karmaworld.apps.notes.models import Note
 import re
 from bs4 import BeautifulSoup
-from karmaworld.apps.quizzes.models import MultipleChoiceQuestion, Quiz, TrueFalseQuestion, MultipleChoiceOption
+from karmaworld.apps.quizzes.models import MultipleChoiceQuestion, Quiz, TrueFalseQuestion, MultipleChoiceOption, \
+    Keyword
 from pyth.plugins.plaintext.writer import PlaintextWriter
 from pyth.plugins.rtf15.reader import Rtf15Reader
 
@@ -115,12 +117,13 @@ def _multiple_choice(question, quiz_object):
                                         question=question_object)
 
 
-def quiz_from_xml(filename):
+def quiz_from_xml(filename, note_id):
     with open(filename, 'r') as file:
         soup = BeautifulSoup(file.read(), "xml")
 
+    note_object = Note.objects.get(id=note_id)
     quiz_name = soup.find('EChapterTitle').string
-    quiz_object = Quiz.objects.create(name=quiz_name)
+    quiz_object = Quiz.objects.create(name=quiz_name, note=note_object)
 
     questions = soup.find_all('TestBank')
     for question in questions:
@@ -130,3 +133,14 @@ def quiz_from_xml(filename):
 
         elif type_string == 'True/False':
             _true_false(question, quiz_object)
+
+
+def keywords_from_xml(filename, note_id):
+    with open(filename, 'r') as file:
+        soup = BeautifulSoup(file.read(), "xml")
+
+    note_object = Note.objects.get(id=note_id)
+
+    keywords = soup.find_all('WordPhrase')
+    for word in keywords:
+        Keyword.objects.create(word=word.string, note=note_object)
