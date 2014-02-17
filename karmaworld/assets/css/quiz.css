@@ -74,3 +74,8 @@
   color: #8e8e8e;
   margin-bottom: 20px;
 }
+
+#add-row-btn
+{
+  cursor: pointer;
+}

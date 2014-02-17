@@ -34,8 +34,8 @@
       </div>
 
       <div class="row">
-        <div class="small-10 columns small-centered center">
-          <p>(Press tab in the last definition box for more rows)</p>
+        <div class="small-10 columns small-centered center show-for-large-up">
+          <p>(Press <i class="fa fa-plus"></i> button or hit tab in the last definition box for more rows)</p>
         </div>
       </div>
 
@@ -43,16 +43,44 @@
 
     <div id="activity_container">
       <div class="row">
-        <div class="small-12 columns center">
+        <div class="small-12 columns">
           <form id="keyword-form" action="{% url 'keyword_edit' note.course.school.slug note.course.slug note.slug %}" method="post">
             {% csrf_token %}
+            {{ form.management_form }}
             <div class="hide" id="keyword-form-prototype">
-              {{ prototype_form.as_p }}
+              <div class="row keyword-form-row">
+                <div class="small-12 large-4 columns">
+                  {{ prototype_form.keyword }}
+                </div>
+                <div class="small-12 large-8 columns">
+                  {{ prototype_form.definition }}
+                  {{ formprototype_form_row.id }}
+                </div>
+              </div>
+              <hr class="hide-for-large-up" />
             </div>
             <div id="keyword-form-rows">
-              {{ form.as_p }}
+              {% for form_row in form %}
+                <div class="row keyword-form-row">
+                  <div class="small-12 large-4 columns">
+                    {{ form_row.keyword }}
+                  </div>
+                  <div class="small-12 large-8 columns">
+                    {{ form_row.definition }}
+                    {{ form_row.id }}
+                  </div>
+                </div>
+                <hr class="hide-for-large-up" />
+              {% endfor %}
             </div>
-            <button type="submit" name="action">Save</button>
+            <div id="row">
+              <div class="small-1 columns">
+                <i id="add-row-btn" class="fa fa-plus fa-2x"></i>
+              </div>
+              <div class="small-10 large-11 columns center">
+                <button type="submit" name="action">Save</button>
+              </div>
+            </div>
           </form>
         </div>
       </div>
