@@ -50,10 +50,10 @@ class KeywordEditView(FormView):
         return super(KeywordEditView, self).post(requests, *args, **kwargs)
 
     def lookup_note(self):
-        self.note = Note.objects.get(pk=self.kwargs['pk'])
+        self.note = Note.objects.get(slug=self.kwargs['slug'])
 
     def get_success_url(self):
-        return reverse('keyword_edit', args=(self.note.pk,))
+        return reverse('keyword_edit', args=(self.note.course.school.slug, self.note.course.slug, self.note.slug))
 
     def get_initial(self):
         existing_keywords = self.note.keyword_set.order_by('id')

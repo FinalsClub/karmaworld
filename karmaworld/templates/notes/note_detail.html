@@ -16,14 +16,13 @@
     var edit_note_tags_url = "{% url 'edit_note_tags' note.id %}"
     var note_downloaded_url = "{% url 'downloaded_note' note.id %}"
     var note_contents_url = "{{ S3_URL }}{{ note.get_relative_s3_path }}"
-    {% if pdf_controls %}
-      var pdfControls = true;
-    {% else %}
-      var pdfControls = false;
-    {% endif %}
+    var pdfControls = {% if pdf_controls %} true {% else %} false {% endif %};
     var csrf_token = "{{ csrf_token }}";
   </script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+{% endblock %}
+
+{% block bodyscripts %}
   <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
   <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
 {% endblock %}
@@ -73,6 +72,17 @@
         <div id="note_status" class="twelve columns">
           <div class="activity_details_status">
             So far, <span id="thank-number" class="activity_details_status_number">{{ note.thanks }}</span> people have completely fallen in love with with these notes.
+          </div><!-- /activity_details_status -->
+          <div class="activity_details_status">
+
+          </div>
+        </div><!-- /note_status -->
+      </div>
+
+      <div class="row">
+        <div id="note_keyword_link" class="twelve columns">
+          <div class="activity_details_status">
+            <a href="{% url 'keyword_edit' note.course.school.slug note.course.slug note.slug %}">See key words and definitions&nbsp;<i class="fa fa-arrow-right"></i></a>
           </div><!-- /activity_details_status -->
         </div><!-- /note_status -->
       </div>

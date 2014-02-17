@@ -67,11 +67,6 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/', ProfileView.as_view(), name='accounts_profile'),
 
-    # Quizzes
-    url(r'^quiz/(?P<pk>\d+)/$', QuizView.as_view(), name='quiz'),
-    url(r'^note/(?P<pk>\d+)/keywords/$', KeywordEditView.as_view(), name='keyword_edit'),
-
-    #url(r'^pdfview$', PDFView.as_view(), name='pdf'),
     url(r'^pdfview/(?P<pk>\d+)$', PDFView.as_view(), name='pdf'),
 
     # Media handling
@@ -115,13 +110,17 @@ urlpatterns = patterns('',
     # b: school/course/id/slug
     # c: s../c../slug
     # note file as id, for notes without titles yet
-    url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<pk>[\d^/]+)$', \
+    url(r'^note/(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<pk>[\d^/]+)$', \
         NoteView.as_view(), name='note_detail_pk'),
     # note file by note.slug
-    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'$',
+    url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'$',
         NoteView.as_view(), name='note_detail'),
-    #url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', \
-    #    NoteView.as_view(), name='note_detail'),
+
+    # Quizzes
+    url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'/quiz/$',
+        QuizView.as_view(), name='quiz'),
+    url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'/keywords/$',
+        KeywordEditView.as_view(), name='keyword_edit'),
 
     url(r'^$', CourseListView.as_view(model=Course), name='home'),
 )

@@ -17,10 +17,25 @@
 {% block content %}
   <section id="dashboard_content">
     <div id="stats_container" class="hero_gradient_bar">
+
+      <div class="row">
+        <div class="twelve columns header_subhead">
+          <a href="{{ note.get_absolute_url}} ">
+            <i class="fa fa-arrow-left"></i>&nbsp;back to {{ note.name }}
+          </a>
+        </div>
+      </div>
+
       <div class="row">
         <div class="small-10 columns small-centered center header_title">
-          <p>Define keywords for the note</p>
-          <p><a href="{{ note.get_absolute_url }}">{{ note.name }}</a></p>
+          <p>Define keywords for the note<br/>
+          {{ note.name }}</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="small-10 columns small-centered center">
+          <p>(Press tab in the last definition for more rows)</p>
         </div>
       </div>
 
@@ -29,7 +44,7 @@
     <div id="activity_container">
       <div class="row">
         <div class="small-12 columns center">
-          <form id="keyword-form" action="{% url 'keyword_edit' note.id %}" method="post">
+          <form id="keyword-form" action="{% url 'keyword_edit' note.course.school.slug note.course.slug note.slug %}" method="post">
             {% csrf_token %}
             <div class="hide" id="keyword-form-prototype">
               {{ prototype_form.as_p }}
