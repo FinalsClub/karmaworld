@@ -5,6 +5,7 @@
 import datetime
 import logging
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from karmaworld.apps.notes.models import UserUploadMapping
 from karmaworld.apps.users.models import NoteKarmaEvent
@@ -74,6 +75,7 @@ def build_api_service():
 
     return build('drive', 'v2', http=credentials.authorize(httplib2.Http()))
 
+
 def pdf2html(content):
     pdf_file = tempfile.NamedTemporaryFile()
     pdf_file.write(content)
@@ -83,8 +85,13 @@ def pdf2html(content):
     html_file_path = os.path.join(tmp_dir, html_file_name)
 
     command = ['pdf2htmlEX', pdf_file.name, html_file_name]
-    call = subprocess.Popen(command, shell=False, cwd=tmp_dir)
+    devnull = open('/dev/null', 'w')
+    if settings.TESTING:
+        call = subprocess.Popen(command, shell=False, cwd=tmp_dir, stdout=devnull, stderr=devnull)
+    else:
+        call = subprocess.Popen(command, shell=False, cwd=tmp_dir)
     call.wait()
+    devnull.close()
     if call.returncode != 0:
         raise ValueError("PDF file could not be processed")
 

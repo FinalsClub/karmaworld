@@ -5,6 +5,7 @@
 
 
 from datetime import timedelta
+import sys
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
 
@@ -369,4 +370,9 @@ TAGGIT_FORCE_LOWERCASE = True
 TAGGIT_STOPWORDS = [u'a', u'an', u'and', u'be', u'from', u'of']
 
 ########## END TAGGIT CONFIGURATION
+
+########## TESTING CONFIGURATION
+if 'test' in sys.argv:
+    TESTING = True
+########## END TESTING CONFIGURATION
 

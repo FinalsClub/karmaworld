@@ -12,7 +12,6 @@ from karmaworld.apps.courses.views import flag_course
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
-from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.apps.notes.views import thank_note, flag_note, downloaded_note
 from karmaworld.apps.users.models import NoteKarmaEvent, GenericKarmaEvent, CourseKarmaEvent, give_email_confirm_karma
 
@@ -62,18 +61,6 @@ class TestUsers(TestCase):
         self.request2.method = 'POST'
         self.request2.META = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
         self.request2.session = SessionStore()
-
-    @classmethod
-    def setUpClass(cls):
-        index = SearchIndex(testing=True)
-        index.setup(testing=True)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Delete the test index that was automatically
-        created by notes/search.py"""
-        index = SearchIndex()
-        index.delete_index()
 
     def test_thank_own_note_karma(self):
         """Make sure you don't get karma for thanking your own note"""
