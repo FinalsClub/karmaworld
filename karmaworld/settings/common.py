@@ -372,7 +372,6 @@ TAGGIT_STOPWORDS = [u'a', u'an', u'and', u'be', u'from', u'of']
 ########## END TAGGIT CONFIGURATION
 
 ########## TESTING CONFIGURATION
-if 'test' in sys.argv:
-    TESTING = True
+TESTING = 'test' in sys.argv
 ########## END TESTING CONFIGURATION
 
