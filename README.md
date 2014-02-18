@@ -263,19 +263,24 @@ not generally be needed.
     pkg-config libfontconfig1-dev autoconf libtool
 
     wget http://poppler.freedesktop.org/poppler-0.24.4.tar.xz
-    tar xf poppler-0.24.4.tar.gz
+    tar xf poppler-0.24.4.tar.xz
+    cd poppler-0.24.4
     ./configure --prefix=/usr --enable-xpdf-headers
     make
     sudo make install
+    cd ~/
 
     git clone https://github.com/fontforge/fontforge.git
-    ./autogen.sh
+    cd fontforge
+    ./bootstrap
     ./configure --prefix=/usr
     make
     sudo make install
+    cd ~/
 
     git clone https://github.com/charlesconnell/pdf2htmlEX.git
     cd pdf2htmlEX
+    ./configure --prefix=/usr
     cmake .
     make
     sudo make install
