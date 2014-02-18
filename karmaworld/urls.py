@@ -17,7 +17,6 @@ from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
 from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags
 from karmaworld.apps.notes.views import RawNoteDetailView
-from karmaworld.apps.notes.views import PDFView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
 from karmaworld.apps.users.views import ProfileView
@@ -65,9 +64,6 @@ urlpatterns = patterns('',
     # All Auth
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/', ProfileView.as_view(), name='accounts_profile'),
-
-    #url(r'^pdfview$', PDFView.as_view(), name='pdf'),
-    url(r'^pdfview/(?P<pk>\d+)$', PDFView.as_view(), name='pdf'),
 
     # Media handling
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', 
