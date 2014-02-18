@@ -280,7 +280,6 @@ not generally be needed.
 
     git clone https://github.com/charlesconnell/pdf2htmlEX.git
     cd pdf2htmlEX
-    ./configure --prefix=/usr
     cmake .
     make
     sudo make install
