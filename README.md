@@ -422,7 +422,10 @@ to run Fabric against the virtual machine.
 You will need to setup the host machine with the proper SSH credentials to
 access the virtual machine. This is done by running `vagrant ssh-config` from
 `{project_root}` and copying the results into your SSH configuration file
-(usually found at `~/.ssh/config`).
+(usually found at `~/.ssh/config`). This can be done more simply by typing this
+on the host machine:
+
+        vagrant ssh-config >> ~/.ssh/config
 
 The VM will, by default, route its SSH connection through localhost port 2222
 on the host machine and the base user with be vagrant. Point Fabric there when
