@@ -1,4 +1,3 @@
-
 """ Karmaworld Fabric management script
     Finals Club (c) 2013"""
 
@@ -224,7 +223,7 @@ def file_setup():
       # touch a file and change ownership if needed
       if 'log' in option and not files.exists(filepath):
           sudo('touch {0}'.format(filepath))
-          sudo('chown {0}:{1} {2}'.format(env.local_user, env.group, filepath))
+          sudo('chown {0}:{1} {2}'.format(env.user, env.group, filepath))
 
 @task
 def check_secrets():
