@@ -3,21 +3,32 @@
 
 import os
 import ConfigParser
+from cStringIO import StringIO
 
-from fabric.api import cd, env, lcd, prefix, run, sudo, task, local, settings
+from fabric.api import cd, lcd, prefix, run, sudo, task, local, settings
+from fabric.state import env as fabenv
 from fabric.contrib import files
 
-######### GLOBAL
+from dicthelpers import fallbackdict
+
+# Use local SSH config for connections if available.
+fabenv['use_ssh_config'] = True
+
+######## env wrapper
+# global environment variables fallback to fabric env variables
+# (also getting vars will do format mapping on strings with env vars)
+env = fallbackdict(fabenv)
+
+######### GLOBALS
+env.django_user = '{user}' # this will be different when sudo/django users are
 env.group = 'www-data'
 env.proj_repo = 'git@github.com:FinalsClub/karmaworld.git'
-env.repo_root = '~/karmaworld' # transient setting for VMs only
+env.repo_root = '/home/{django_user}/karmaworld'
 env.proj_root = '/var/www/karmaworld'
 env.branch = 'prod' # only used for supervisor conf two lines below. cleanup?
 env.code_root = env.proj_root
-env.supervisor_conf = '{0}/confs/{1}/supervisord.conf'.format(env.code_root, env.branch)
-env.usde_csv = '{0}/confs/accreditation.csv'.format(env.code_root)
-
-env.use_ssh_config = True
+env.supervisor_conf = '{code_root}/confs/{branch}/supervisord.conf'
+env.usde_csv = '{code_root}/confs/accreditation.csv'
 
 ######## Run Commands in Virtual Environment
 def virtenv_path():
@@ -211,19 +222,22 @@ def file_setup():
     Deploy expected files and directories from non-apt system services.
     """
     ini_parser = ConfigParser.SafeConfigParser()
-    if not ini_parser.read(env.supervisor_conf):
-      raise Exception("Could not parse INI file {0}".format(env.supervisor_conf))
+    # read remote data into a file like object
+    data_flo = StringIO(run('cat {supervisor_conf}'.format(**env)))
+    ini_parser.readfp(data_flo)
     for section, option in (('supervisord','logfile'),
                             ('supervisord','pidfile'),
                             ('unix_http_server','file'),
                             ('program:celeryd','stdout_logfile')):
+      if not ini_parser.has_section(section):
+          raise Exception("Could not parse INI file {supervisor_conf}".format(**env))
       filepath = ini_parser.get(section, option)
       # generate file's directory structure if needed
       run('mkdir -p {0}'.format(os.path.split(filepath)[0]))
       # touch a file and change ownership if needed
       if 'log' in option and not files.exists(filepath):
           sudo('touch {0}'.format(filepath))
-          sudo('chown {0}:{1} {2}'.format(env.user, env.group, filepath))
+          sudo('chown {0}:{1} {2}'.format(env.django_user, env.group, filepath))
 
 @task
 def check_secrets():
