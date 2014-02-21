@@ -7,6 +7,85 @@
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/search.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/course_list_table.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
+{% endblock %}
+
+{% block pagescripts %}
+<script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // load dataTable for course data
+    $('#data_table_list').dataTable({
+      // remove the default filter label
+      'oLanguage': {
+        'sSearch': '',
+      },
+      // we will set column widths explicitly
+      'bAutoWidth': false,
+      // don't provide a option for the user to change the table page length
+      'bLengthChange': false,
+      // sepcify the number of rows in a page
+      'iDisplayLength': 20,
+      // Position the filter bar at the top
+      // DIFF: do now show search bar (f)
+      'sDom': '<"top">rt<"bottom"p><"clear">',
+      // Specify options for each column
+      "aoColumnDefs": [
+        {
+          // 3rd element: notes
+          "aTargets": [ 2 ],
+          "bSortable": true,
+          "bVisible": true,
+          "mData": function ( source, type, val ) {
+            //console.log(source);
+            if (type === 'set') {
+              source.count = val;
+              // Store the computed dislay and filter values for efficiency
+              // DIFF: label name change.
+              source.count_display = val=="" ? "" : "<span>"+val+" Thanks</span>";
+              return;
+            }
+            else if (type === 'display') {
+              return source.count_display;
+            }
+            // 'sort', 'type', 'filter' and undefined all just use the integer
+            return source.count;
+          }
+        },
+        {
+          // 2nd element: date
+          "aTargets": [ 1 ],
+          "bSortable": true,
+          "bVisible": true,
+          "mData": function ( source, type, val ) {
+            //console.log(source);
+            if (type === 'set') {
+              source.date = val;
+              // DIFF: label name change.
+              source.date_display = val=="" ? "" : "<span>Uploaded "+val+"</span>";
+
+              return;
+            }
+            else if (type === 'display') {
+              return source.date_display;
+            }
+            // for types 'sort', 'type', 'filter' and undefined use raw date
+            return source.date;
+          }
+        },
+        {
+          // 1st element: "sort by" label
+          "aTargets": [ 0 ],
+          "bSortable": false,
+          "bVisible": true
+        }
+      ],
+      // Initial sorting
+      'aaSorting': [[2,'desc']]
+    });
+  });
+</script>
 {% endblock %}
 
 {% block content %}
@@ -55,9 +134,21 @@
     <div class="row">
       {% if object_list %}
         <div class="small-12 columns large-10 large-offset-1">
-          {% for tuple in object_list %}
-            {% include 'notes/note_list_entry.html' with note=tuple.0 note_preview=tuple.1 %}
-          {% endfor %}
+          <table id="data_table_list">
+            <thead><tr>
+              <th id="data-table-sort-by"> Sort by: </th>
+              <th id="data-table-date"> Date </th>
+              <th id="data-table-thank-count"> Popularity </th>
+              <th class="no-display" id="data-table-note-name"> Name </th>
+              <th class="no-display" id="data-table-tags"> Tags </th>
+              <th class="no-display" id="data-table-note-preview"> Preview </th>
+            </tr></thead>
+            <tbody>
+              {% for tuple in object_list %}
+                {% include 'notes/note_list_entry.html' with note=tuple.0 note_preview=tuple.1 %}
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
         {% else %}
           <div id="no_results" class="small-12 columns center column">

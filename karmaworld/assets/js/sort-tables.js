@@ -68,13 +68,13 @@ $(function()
 
 
   // initialise the tablesorter
-  $("#course_list").tablesorter(
+  $("#data_table_list").tablesorter(
   {
     widgets: ["filter", "zebra"],
     headers: { 3: { filter: false, sorter: true }, 4: { filter: false, sorter: true } },
     widgetOptions: widgetOptions
   });
 
-  $("#course_list").tablesorterPager(pagerOptions);
+  $("#data_table_list").tablesorterPager(pagerOptions);
   console.log('Finished initing tablesorterPager');
 });
