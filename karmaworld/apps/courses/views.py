@@ -52,10 +52,8 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
         return context
 
     def get_success_url(self):
-        """ On form submission success, redirect to what url """
-        return u'/{school_slug}/{course_slug}'.format(
-                school_slug=self.object.school.slug,
-                course_slug=self.object.slug)
+        """ On success, return url based on urls.py definition. """
+        return self.object.get_absolute_url()
 
     def form_invalid(self, form, **kwargs):
         """ override form_invalid to populate object_list on redirect """

@@ -84,7 +84,7 @@ urlpatterns = patterns('',
     url(r'^search/$', NoteSearchView.as_view(), name='note_search'),
 
     # VIEW for displaying a single Course
-    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '/$',
+    url(r'^course/' + SLUG.format('') + '/$',
         CourseDetailView.as_view(), name='course_detail'),
 
     ## NOTE MODEL
