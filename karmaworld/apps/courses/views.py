@@ -5,6 +5,7 @@
 
 import json
 
+from django.conf import settings
 from django.core import serializers
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
@@ -49,11 +50,28 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
         # Include "Add Course" button in header
         context['display_add_course'] = True
 
+        # Include settings constants for honeypot
+        for key in ('HONEYPOT_FIELD_NAME', 'HONEYPOT_VALUE'):
+            context[key] = getattr(settings, key)
+
         return context
 
     def get_success_url(self):
         """ On success, return url based on urls.py definition. """
         return self.object.get_absolute_url()
+
+    def clean(self, *args, **kwargs):
+        """ Additional form validation. """
+        # Call ModelFormMixin or whoever normally cleans house.
+        cleaned_data = super(CourseListView, self).clean(*args, **kwargs)
+        # parts of this code borrow from
+        # https://github.com/sunlightlabs/django-honeypot
+        formhoneypot = cleaned_data.get(settings.HONEYPOT_FIELD_NAME, None)
+        if formhoneypot and (formhoneypot != settings.HONEYPOT_VALUE):
+            # Highlight a failure to follow instructions.
+            self._errors['honeypot'] = 'You did not follow directions.'
+            del cleaned_data[hfn]
+        return cleaned_data
 
     def form_invalid(self, form, **kwargs):
         """ override form_invalid to populate object_list on redirect """

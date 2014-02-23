@@ -13,12 +13,13 @@
   <form method="POST" action="{% url 'home' %}">
   {% csrf_token %}
 
+    {% if course_form.non_field_errors %}
     <div class="row">
       <div class="small-12 columns">
         {{ course_form.non_field_errors }}
       </div>
     </div>
-
+    {% endif %}
 
     <div class="row">
       <div class="small-12 columns">
@@ -42,7 +43,7 @@
         <legend>Course Name:
           {% if course_form.name.errors %}
             <span style="color:red">
-            * there was an error with this field
+            {{ course_form.name.errors }}
             </span>
           {% endif %}
         </legend>
@@ -51,12 +52,25 @@
     </div> <!-- .row -->
 
     <div class="row">
+      <div class="small-12 columns">
+        <legend>Do not fill in this field:
+          {% if course_form.honeypot.errors %}
+            <span style="color:red">
+            {{ course_form.honeypot.errors }}
+            </span>
+          {% endif %}
+        </legend>
+        <input type="text" name="{{HONEYPOT_FIELD_NAME}}" value="{{HONEYPOT_VALUE}}" />
+      </div>
+    </div>
+
+    <div class="row">
       <div class="small-12 columns large-6">
         <legend class="">
           Instructor Name:
           {% if course_form.instructor_name.errors %}
             <span style="color:red">
-            * there was an error with this field
+            {{ course_form.instructor_name.errors }}
             </span>
           {% endif %}
         </legend><!-- -->
@@ -68,7 +82,7 @@
           Instructor Email:
           {% if course_form.instructor_email.errors %}
             <span style="color:red">
-            * there was an error with this field
+            {{ course_form.instructor_email.errors }}
             </span>
           {% endif %}
         </legend>
@@ -81,7 +95,7 @@
         <legend>Course url:
           {% if course_form.url.errors %}
             <span style="color:red">
-            * there was an error with this field
+            {{ course_form.url.errors }}
             </span>
           {% endif %}
         </legend>

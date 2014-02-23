@@ -371,7 +371,15 @@ TAGGIT_STOPWORDS = [u'a', u'an', u'and', u'be', u'from', u'of']
 
 ########## END TAGGIT CONFIGURATION
 
+
+########## HONEYPOT CONFIGURATION
+# parts of this code borrow from
+# https://github.com/sunlightlabs/django-honeypot
+HONEYPOT_FIELD_NAME = "settings_field_name"
+HONEYPOT_VALUE = ""
+########## END HONEYPOT CONFIGURATION
+
+
 ########## TESTING CONFIGURATION
 TESTING = 'test' in sys.argv
 ########## END TESTING CONFIGURATION
-
