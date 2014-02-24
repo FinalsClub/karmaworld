@@ -13,6 +13,7 @@ import reversion
 
 from django.db import models
 from django.utils.text import slugify
+from django.core.urlresolvers import reverse
 from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
 
 
@@ -247,8 +248,8 @@ class Course(models.Model):
     natural_key.dependencies = ['courses.department']
 
     def get_absolute_url(self):
-        """ return url based on school slug and self slug """
-        return u"/{0}/{1}".format(self.school.slug, self.slug)
+        """ return url based on urls.py definition. """
+        return reverse('course_detail', kwargs={'slug':self.slug})
 
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """

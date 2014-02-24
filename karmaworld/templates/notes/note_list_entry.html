@@ -1,35 +1,31 @@
-<div class="row notes_result_container wide">
-  <div class="twelve columns notes_result">
+<tr>
+  <td class="no-display"><!-- this spot solely for the Sort By header --></td>
+  <td class="small-8 columns large-4 slim">{{ note.uploaded_at|date:"l M d o"|capfirst }}</td>
+  <td class="small-4 columns large-2 large-offset-2 slim">{{ note.thanks }}</td>
 
-    <div class="note_name">
-      <a href="{{ note.get_absolute_url }}" class="activity_target">{{ note.name }}</a>
-    </div>
+  <td class="small-12 large-5 columns">
+    <a href="{{ note.get_absolute_url }}">{{ note.name }}</a>
+  </td>
 
-    <time datetime="{{ note.uploaded_at }}">
-      {{ note.uploaded_at|date:"l M d o" }}
-    </time>
-
+  <td class="twelve columns">
     {% if note.tags.count > 0 %}
-    <div class="activity_details_context">
-      Tags:
-        {% for tag in note.tags.all %}
-          {{ tag.name }}
-          {% if not forloop.last %}, {% endif %}
-        {% endfor %}
-    </div>
+    <span class="activity_details_context">Tags:
+      {% for tag in note.tags.all %}
+        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </span>
     {% endif %}
+  </td>
 
+  <td class="twelve columns note_preview">
+    {% if note_preview %}
+      {{ note_preview|safe }}
+    {% elif note.text|length <= 500 %}
+      {{ note.text }}
+    {% else %}
+      {{ note.text|slice:":500" }} &hellip;
+    {% endif %}
+    <hr class="midrule"></hr>
+  </td>
 
-    <div class="note_preview">
-      {% if note_preview %}
-        {{ note_preview|safe }}
-      {% else %}
-        {{ note.text|slice:":500" }} &hellip;
-      {% endif %}
-    </div>
-
-
-  </div><!-- /notes_result -->
-</div><!-- /notes_result_container -->
-
-<hr class=midrule>
+</tr>

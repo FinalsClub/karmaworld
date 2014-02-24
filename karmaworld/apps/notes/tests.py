@@ -42,23 +42,10 @@ class TestNotes(TestCase):
         self.note = Note()
         self.note.course = self.course
         self.note.name = u"Lecture notes concerning the use of therefore ∴"
-        #self.note.slug := do not set for test_remake_slug() behavior
         self.note.file_type = 'doc'
         self.note.uploaded_at = self.now
         self.note.text = "This is the plaintext version of a note. It's pretty cool. Alpaca."
         self.note.save()
-
-    @classmethod
-    def setUpClass(cls):
-        index = SearchIndex(testing=True)
-        index.setup(testing=True)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Delete the test index that was automatically
-        created by notes/search.py"""
-        index = SearchIndex()
-        index.delete_index()
 
     def test_course_fkey(self):
         self.assertEqual(self.course, self.note.course)
@@ -92,22 +79,3 @@ class TestNotes(TestCase):
         self.note.slug = None
         url = self.expected_url_prefix + str(self.note.id)
         self.assertEqual(self.note.get_absolute_url(), url)
-
-    def test_search_index(self):
-        """Search for a note within IndexDen"""
-
-        index = SearchIndex()
-
-        # Search for it
-        results = index.search('alpaca')
-        self.assertIn(self.note.id, results.ordered_ids)
-
-        # Search for it, filtering by course
-        results = index.search('alpaca', self.note.course.id)
-        self.assertIn(self.note.id, results.ordered_ids)
-
-        # Delete the note, see if it's removed from the index
-        self.note.delete()
-        results = index.search('alpaca')
-        self.assertNotIn(self.note.id, results.ordered_ids)
-

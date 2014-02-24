@@ -17,7 +17,6 @@ from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
 from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags
 from karmaworld.apps.notes.views import RawNoteDetailView
-from karmaworld.apps.notes.views import PDFView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
 from karmaworld.apps.quizzes.views import QuizView, KeywordEditView
@@ -67,8 +66,6 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/', ProfileView.as_view(), name='accounts_profile'),
 
-    url(r'^pdfview/(?P<pk>\d+)$', PDFView.as_view(), name='pdf'),
-
     # Media handling
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', 
             {'document_root': settings.MEDIA_ROOT, }),
@@ -88,7 +85,7 @@ urlpatterns = patterns('',
     url(r'^search/$', NoteSearchView.as_view(), name='note_search'),
 
     # VIEW for displaying a single Course
-    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '/$',
+    url(r'^course/' + SLUG.format('') + '/$',
         CourseDetailView.as_view(), name='course_detail'),
 
     ## NOTE MODEL

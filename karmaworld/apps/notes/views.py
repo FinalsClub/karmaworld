@@ -34,18 +34,6 @@ PDF_MIMETYPES = (
     'application/vnd.openxmlformats-officedocument.presentationml.presentation'
 )
 
-
-def is_pdf(self):
-    if self.object.file_type == 'pdf':
-        return True
-    return False
-
-
-def is_ppt(self):
-    if self.object.file_type == 'ppt':
-        return True
-    return False
-
 THANKS_FIELD = 'thanks'
 USER_PROFILE_THANKS_FIELD = 'thanked_notes'
 FLAG_FIELD = 'flags'
@@ -61,12 +49,6 @@ class NoteDetailView(DetailView):
         """ Generate custom context for the page rendering a Note
             + if pdf, set the `pdf` flag
         """
-        # not current using these
-        #kwargs['hostname'] = Site.objects.get_current()
-
-        kwargs['pdf'] = is_pdf(self)
-        kwargs['ppt'] = is_ppt(self)
-
         if self.object.mimetype in PDF_MIMETYPES:
             kwargs['pdf_controls'] = True
 
@@ -152,26 +134,6 @@ class RawNoteDetailView(DetailView):
     template_name = u'notes/note_raw.html'
     context_object_name = u"note"
     model = Note
-
-
-class PDFView(DetailView):
-    """ Render PDF files in an iframe based on ID"""
-    template_name = u'partial/pdfembed.html'
-    model = Note
-
-    def get_context_data(self, **kwargs):
-        """ Generate a path to the pdf file associated with this note
-            by generating a path to the MEDIA_URL by hand """
-
-        if is_ppt(self):
-            kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
-                os.path.basename(self.object.pdf_file.name))
-        elif is_pdf(self):
-            kwargs['pdf_path'] = self.object.get_fp_url()
-            #kwargs['pdf_path'] = "{0}{1}".format(settings.MEDIA_URL,
-            #    os.path.basename(self.object.note_file.name))
-
-        return super(PDFView, self).get_context_data(**kwargs)
 
 
 class NoteSearchView(ListView):

@@ -196,20 +196,6 @@
 
 
     <div id="note_container">
-      {% if pdf or ppt %}
-        <!-- Add pdf.js -->
-        <div class="row">
-          <div class="small-12 columns">
-            <iframe
-                style="border:none; width:100%; min-height: 700px; margins: auto;"
-                id="noteframe"
-                src="/pdfview/{{ note.id }}"
-                onload="autoResize('noteframe')"> </iframe>
-          </div>
-        </div> <!-- .row -->
-
-      {% else %}
-
       <div class="row">
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
           {% if note.static_html %}
@@ -226,9 +212,6 @@
               This document's content is currently unavailable. Please try again later.
             </div>
           {% endif %} {# note.static_html #}
-
-      {% endif %}
-
         </div><!-- /body_copy -->
       </div>
 
