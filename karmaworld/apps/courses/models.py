@@ -274,6 +274,15 @@ class Course(models.Model):
         self.file_count = self.note_set.count()
         self.save()
 
+    def get_popularity(self):
+        """ Aggregate popularity of notes contained within. """
+        # Run an efficient GROUP BY aggregation within the database.
+        # It returns {'fieldname': #}, where fieldname is set in the left hand
+        # side of the aggregate kwarg. Call the field x and retrieve the dict
+        # value using that key.
+        # The value might be None, return zero in that case with shortcut logic.
+        return self.note_set.aggregate(x=models.Sum('thanks'))['x'] or 0
+
 reversion.register(Course)
 
 class ProfessorTaughtManager(models.Manager):

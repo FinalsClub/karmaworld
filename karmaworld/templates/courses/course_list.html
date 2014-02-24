@@ -42,43 +42,22 @@ $(document).ready(function() {
     // Specify options for each column
     "aoColumnDefs": [ 
       {
+        // 4th element: thanks
+        "aTargets": [ 3 ],
+        "bSortable": true,
+        "bVisible": true
+      },
+      {
         // 3rd element: notes
         "aTargets": [ 2 ],
         "bSortable": true,
-        "bVisible": true,
-        "mData": function ( source, type, val ) {
-          //console.log(source);
-          if (type === 'set') {
-            source.count = val;
-            // Store the computed dislay and filter values for efficiency
-            source.count_display = val=="" ? "" : "<span>"+val+" Notes</span>";
-            return;
-          }
-          else if (type === 'display') {
-            return source.count_display;
-          }
-          // 'sort', 'type', 'filter' and undefined all just use the integer
-          return source.count;
-        }
+        "bVisible": true
       },
       {
         // 2nd element: date
         "aTargets": [ 1 ],
         "bSortable": true,
-        "bVisible": true,
-        "mData": function ( source, type, val ) {
-          //console.log(source);
-          if (type === 'set') {
-            source.date = val;
-            source.date_display = val=="" ? "" : "<span>Updated "+val+"</span>";
-            return;
-          }
-          else if (type === 'display') {
-            return source.date_display;
-          }
-          // for types 'sort', 'type', 'filter' and undefined use raw date
-          return source.date;
-        }
+        "bVisible": true
       },
       {
         // 1st element: "sort by" label
@@ -118,6 +97,7 @@ $(document).ready(function() {
             <th id="data-table-sort-by"> Sort by: </th>
             <th id="data-table-date"> Date </th>
             <th id="data-table-note-count"> #Notes </th>
+            <th id="data-table-thanks"> Popularity </th>
             <th class="no-display" id="data-table-upload"> Upload </th>
             <th class="no-display" id="data-table-course-name"> Course Name </th>
             <th class="no-display" id="data-table-school-name"> Institution </th>
