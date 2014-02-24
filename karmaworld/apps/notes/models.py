@@ -242,7 +242,7 @@ class Note(Document):
         ordering = ['-uploaded_at']
 
     def __unicode__(self):
-        return u"Note at {0} (from {1})".format(self.fp_file, self.upstream_link)
+        return u"Note at {0} (from {1}) ({2})".format(self.fp_file, self.upstream_link, self.id)
 
     def natural_key(self):
         """

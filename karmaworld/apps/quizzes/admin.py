@@ -24,7 +24,7 @@ class MultipleChoiceQuestionInlineAdmin(NestedStackedInline):
 
 class FlashCardQuestionInlineAdmin(NestedStackedInline):
     model = FlashCardQuestion
-    list_display = ('sideA', 'sideB', 'quiz')
+    list_display = ('keyword_side', 'definition_side', 'quiz')
 
 
 class TrueFalseQuestionInlineAdmin(NestedStackedInline):

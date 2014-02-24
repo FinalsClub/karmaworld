@@ -114,7 +114,7 @@ urlpatterns = patterns('',
         NoteView.as_view(), name='note_detail'),
 
     # Quizzes
-    url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'/quiz/$',
+    url(r'^quiz/(?P<pk>[\d]+)/$',
         QuizView.as_view(), name='quiz'),
     url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'/keywords/$',
         KeywordEditView.as_view(), name='keyword_edit'),

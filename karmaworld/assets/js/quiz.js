@@ -23,7 +23,7 @@ function addForm(event) {
   var definitionInput = newForm.find('.definition');
   definitionInput.attr('id', newIdRoot + 'definition');
   definitionInput.attr('name', newNameRoot + 'definition');
-  definitionInput.keydown(addForm);
+  definitionInput.keydown(tabHandler);
 
   var objectIdInput = newForm.find('.object-id');
   objectIdInput.attr('id', newIdRoot + 'id');

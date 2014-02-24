@@ -88,8 +88,8 @@
             {% if 'FlashCardQuestion' in item.0 %}
               {% with question=item.1 %}
                 <div class="question flash-card">
-                  <p>{{ question.sideA }}</p>
-                  <p>{{ question.sideB }}</p>
+                  <p>{{ question.keyword_side }}</p>
+                  <p>{{ question.definition_side }}</p>
                 </div>
               {% endwith %}
             {% endif %}

@@ -87,14 +87,14 @@ class MultipleChoiceOption(models.Model):
 
 
 class FlashCardQuestion(BaseQuizQuestion):
-    sideA = models.CharField(max_length=2048, verbose_name='Side A')
-    sideB = models.CharField(max_length=2048, verbose_name='Side B')
+    keyword_side = models.CharField(max_length=2048, verbose_name='Keyword')
+    definition_side = models.CharField(max_length=2048, verbose_name='Definition')
 
     class Meta:
         verbose_name = 'Flash card question'
 
     def __unicode__(self):
-        return self.sideA + ' / ' + self.sideB
+        return self.keyword_side + ' / ' + self.definition_side
 
 
 class TrueFalseQuestion(BaseQuizQuestion):
