@@ -375,7 +375,7 @@ TAGGIT_STOPWORDS = [u'a', u'an', u'and', u'be', u'from', u'of']
 ########## HONEYPOT CONFIGURATION
 # parts of this code borrow from
 # https://github.com/sunlightlabs/django-honeypot
-HONEYPOT_FIELD_NAME = "settings_field_name"
+HONEYPOT_FIELD_NAME = "instruction_url" # see that "_url"? bots gotta want that.
 HONEYPOT_VALUE = ""
 ########## END HONEYPOT CONFIGURATION
 
