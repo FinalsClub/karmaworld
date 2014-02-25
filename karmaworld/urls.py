@@ -20,6 +20,7 @@ from karmaworld.apps.notes.views import RawNoteDetailView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
 from karmaworld.apps.users.views import ProfileView
+from karmaworld.apps.users.views import ControlView
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 
@@ -64,6 +65,7 @@ urlpatterns = patterns('',
     # All Auth
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/', ProfileView.as_view(), name='accounts_profile'),
+    url(r'^accounts/control_panel', ControlView.as_view(), name='control_panel'),
 
     # Media handling
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', 
