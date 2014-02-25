@@ -13,22 +13,23 @@
   <form method="POST" action="{% url 'home' %}">
   {% csrf_token %}
 
+    {% for error in course_form.non_field_errors %}
     <div class="row">
       <div class="small-12 columns">
-        {{ course_form.non_field_errors }}
+        {{ error }}
       </div>
     </div>
-
+    {% endfor %}
 
     <div class="row">
       <div class="small-12 columns">
         <legend>
           School
-         {% if course_form.school.errors %}
+          {% for error in course_form.school.errors %}
           <span style="color:red">
-            Please select a school from the drop-down
+            {{ error }}
           </span>
-         {% endif %}
+          {% endfor %}
         </legend>
         <div>
           <input id="str_school" class="" type="text" name="str_school" placeholder="Select a school"/>
@@ -42,7 +43,7 @@
         <legend>Course Name:
           {% if course_form.name.errors %}
             <span style="color:red">
-            * there was an error with this field
+            {{ course_form.name.errors }}
             </span>
           {% endif %}
         </legend>
@@ -51,14 +52,27 @@
     </div> <!-- .row -->
 
     <div class="row">
+      <div class="small-12 columns">
+        <legend>Do not fill in this field:
+          {% for error in honeypot_errors %}
+            <span style="color:red">
+            {{ error }}
+            </span>
+          {% endfor %}
+        </legend>
+        <input type="text" name="{{HONEYPOT_FIELD_NAME}}" value="{{HONEYPOT_VALUE}}" />
+      </div>
+    </div>
+
+    <div class="row">
       <div class="small-12 columns large-6">
         <legend class="">
           Instructor Name:
-          {% if course_form.instructor_name.errors %}
+          {% for error in course_form.instructor_name.errors %}
             <span style="color:red">
-            * there was an error with this field
+            {{ error }}
             </span>
-          {% endif %}
+          {% endfor %}
         </legend><!-- -->
         <input id="id_instructor_name" class="" type="text" name="instructor_name" maxlength="75" />
       </div>
@@ -66,11 +80,11 @@
       <div class="small-12 columns large-6">
         <legend class="">
           Instructor Email:
-          {% if course_form.instructor_email.errors %}
+          {% for error in course_form.instructor_email.errors %}
             <span style="color:red">
-            * there was an error with this field
+            {{ error }}
             </span>
-          {% endif %}
+          {% endfor %}
         </legend>
         <input id="id_instructor_email" class="" type="text" name="instructor_email" maxlength="75" />
       </div><!--  -->
@@ -79,11 +93,11 @@
     <div class="row">
       <div class="small-12 columns">
         <legend>Course url:
-          {% if course_form.url.errors %}
+          {% for error in course_form.url.errors %}
             <span style="color:red">
-            * there was an error with this field
+            {{ error }}
             </span>
-          {% endif %}
+          {% endfor %}
         </legend>
         <input id="id_url" class="" type="text" name="url" maxlength="255" />
       </div>
