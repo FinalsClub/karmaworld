@@ -1,9 +1,8 @@
-{% load dict_filters %}
 <tr>
   <td class="no-display"><!-- this spot solely for the Sort By header --></td>
   <td class="small-8 columns large-4 slim"><span>Updated {{ course.updated_at|date:"b d, o"|capfirst }}</span></td>
   <td class="small-4 columns large-2 large-offset-2 slim"><span>{{ course.file_count }} Notes</span></td>
-  <td class="small-4 columns large-2 large-offset-1 slim"><span>{{ course_thanks|get:course.id }} Thanks</span></td>
+  <td class="small-4 columns large-2 large-offset-1 slim"><span>{{ course.get_popularity }} Thanks</span></td>
 
   <td class="small-12 large-5 columns">
     <a href="{{ course.get_absolute_url }}">{% if course.department %}{{course.department.name}}: {% endif %}{{ course.name }}</a> 

@@ -5,7 +5,6 @@
 
 import json
 
-from django.db.models import Sum
 from django.core import serializers
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
@@ -49,12 +48,6 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
 
         # Include "Add Course" button in header
         context['display_add_course'] = True
-
-        # Include courses to number of total note thanks mapping
-        # See Course.get_popularity for a more detailed explanation.
-        thanks = Course.objects.values('id').annotate(sum=Sum('note__thanks'))
-        # Create a generator to convert the list of dicts into a dict.
-        context['course_thanks'] = dict((x['id'],x['sum'] or 0) for x in thanks)
 
         return context
 
