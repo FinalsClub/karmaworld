@@ -59,48 +59,68 @@
         </div>
       {% endif %}
 
-      {% for item in questions %}
+      <form action="{{ quiz.get_absolute_url }}" method="post">
+        {% csrf_token %}
+        {% for item in questions %}
 
-        <div class="row">
-          <div class="small-10 columns small-centered quiz-center">
-            {% if 'MultipleChoiceQuestion' in item.0 %}
-              {% with question=item.1 %}
-                <div class="question multiple-choice">
-                  <p>{{ question.question_text }}</p>
-                  <ul>
-                    {% for choice in question.choices.all %}
-                      <li>{{ choice.text }}</li>
-                    {% endfor %}
-                  </ul>
-                </div>
-              {% endwith %}
-            {% endif %}
+          <div class="row">
+            <div class="small-10 columns small-centered quiz-center">
+              {% if 'MultipleChoiceQuestion' in item.0 %}
+                {% with question=item.1 %}
+                  <div class="question multiple-choice">
+                    <p>{{ question.question_text }}</p>
+                    <ul>
+                      {% for choice in question.choices.all %}
+                        <li><input id="choice_{{ question.id }}_{{ choice.id }}"
+                                   type="radio"
+                                   name="{{ question.id }}"
+                                   value="{{ choice.id }}">
+                          <label for="choice_{{ question.id }}_{{ choice.id }}">{{ choice.text }}</label></li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endwith %}
+              {% endif %}
 
-            {% if 'TrueFalseQuestion' in item.0 %}
-              {% with question=item.1 %}
-                <div class="question true-false">
-                  <p>{{ question.text }}</p>
-                  <p>True or False?</p>
-                </div>
-              {% endwith %}
-            {% endif %}
+              {% if 'TrueFalseQuestion' in item.0 %}
+                {% with question=item.1 %}
+                  <div class="question true-false">
+                    <p>{{ question.text }}</p>
+                    <li><input id="choice_{{ question.id }}_true"
+                               type="radio"
+                               name="{{ question.id }}"
+                               value="true">
+                    <label for="choice_{{ question.id }}_true">True</label></li>
+                    <li><input id="choice_{{ question.id }}_false"
+                               type="radio"
+                               name="{{ question.id }}"
+                               value="false">
+                    <label for="choice_{{ question.id }}_false">False</label></li>
+                  </div>
+                {% endwith %}
+              {% endif %}
 
-            {% if 'FlashCardQuestion' in item.0 %}
-              {% with question=item.1 %}
-                <div class="question flash-card">
-                  <p>{{ question.keyword_side }}</p>
-                  <p>{{ question.definition_side }}</p>
-                </div>
-              {% endwith %}
-            {% endif %}
+              {% if 'FlashCardQuestion' in item.0 %}
+                {% with question=item.1 %}
+                  <div class="question flash-card">
+                    <p>{{ question.definition_side }}</p>
+                    <input type="text"
+                           name="{{ question.id }}"
+                           id="text_{{ question.id }}">
 
-
+                  </div>
+                {% endwith %}
+              {% endif %}
             </div>
-
+          </div>
+          <br/>
+        {% endfor %}
+        <div class="row">
+          <div class="small-12 columns center">
+            <button type="submit">Submit</button>
           </div>
         </div>
-
-      {% endfor %}
+      </form>
 
     </div>
 
