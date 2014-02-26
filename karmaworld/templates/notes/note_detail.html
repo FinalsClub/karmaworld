@@ -13,6 +13,7 @@
   <script type="text/javascript">
     var note_thank_url = "{% url 'thank_note' note.id %}"
     var note_flag_url = "{% url 'flag_note' note.id %}"
+    var edit_note_tags_url = "{% url 'edit_note_tags' note.id %}"
     var note_downloaded_url = "{% url 'downloaded_note' note.id %}"
     var note_contents_url = "{{ S3_URL }}{{ note.get_relative_s3_path }}"
     {% if pdf_controls %}
@@ -44,6 +45,29 @@
           {{ note.name }}
         </div><!-- /note_name -->
       </div>
+
+      <div class="row">
+        <div id="note_tags" class="twelve columns activity_details_context">
+          <span>Tags: </span>
+          <span class="tags">
+            {% for tag in note.tags.all %}
+              <span class="tag-span">{{ tag.name }}</span>
+            {% endfor %}
+          </span>
+          {% if user.get_profile.can_edit_items %}
+            <i id="edit_note_tags" class="fa fa-pencil-square-o"></i>
+          {% endif %}
+        </div><!-- /note_tags -->
+      </div>
+
+      {% if user.get_profile.can_edit_items %}
+        <div class="row">
+          <div id="note_tags_form" class="twelve columns activity_details_context hide">
+            <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+            <button id="save_note_tags" type=button><i class="fa fa-save"></i> Save</button>
+          </div>
+        </div>
+      {% endif %}
 
       <div class="row">
         <div id="note_status" class="twelve columns">
@@ -162,20 +186,6 @@
 
 
     <div id="note_container">
-      {% if pdf or ppt %}
-        <!-- Add pdf.js -->
-        <div class="row">
-          <div class="small-12 columns">
-            <iframe
-                style="border:none; width:100%; min-height: 700px; margins: auto;"
-                id="noteframe"
-                src="/pdfview/{{ note.id }}"
-                onload="autoResize('noteframe')"> </iframe>
-          </div>
-        </div> <!-- .row -->
-
-      {% else %}
-
       <div class="row">
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
           {% if note.static_html %}
@@ -192,9 +202,6 @@
               This document's content is currently unavailable. Please try again later.
             </div>
           {% endif %} {# note.static_html #}
-
-      {% endif %}
-
         </div><!-- /body_copy -->
       </div>
 

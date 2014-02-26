@@ -14,9 +14,8 @@ from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
-from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note
+from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags
 from karmaworld.apps.notes.views import RawNoteDetailView
-from karmaworld.apps.notes.views import PDFView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
 from karmaworld.apps.users.views import ProfileView
@@ -63,9 +62,6 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/', ProfileView.as_view(), name='accounts_profile'),
 
-    #url(r'^pdfview$', PDFView.as_view(), name='pdf'),
-    url(r'^pdfview/(?P<pk>\d+)$', PDFView.as_view(), name='pdf'),
-
     # Media handling
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', 
             {'document_root': settings.MEDIA_ROOT, }),
@@ -83,7 +79,7 @@ urlpatterns = patterns('',
     url(r'^search/$', NoteSearchView.as_view(), name='note_search'),
 
     # VIEW for displaying a single Course
-    url(r'^' + SLUG.format('school_') + '/' + SLUG.format('') + '/$',
+    url(r'^course/' + SLUG.format('') + '/$',
         CourseDetailView.as_view(), name='course_detail'),
 
     ## NOTE MODEL
@@ -91,6 +87,8 @@ urlpatterns = patterns('',
     url(r'^ajax/note/thank/(?P<pk>[\d]+)/$', thank_note, name='thank_note'),
     # Ajax endpoint to flag a note
     url(r'^ajax/note/flag/(?P<pk>[\d]+)/$', flag_note, name='flag_note'),
+    # Ajax endpoint to update a notes tags
+    url(r'^ajax/note/tags/(?P<pk>[\d]+)/$', edit_note_tags, name='edit_note_tags'),
     # Ajax endpoint to record that somebody downloaded a note
     url(r'^ajax/note/downloaded/(?P<pk>[\d]+)/$', downloaded_note, name='downloaded_note'),
     # Ajax endpoint to flag a course

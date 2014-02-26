@@ -13,6 +13,7 @@ import reversion
 
 from django.db import models
 from django.utils.text import slugify
+from django.core.urlresolvers import reverse
 from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
 from ajax_select import LookupChannel
 from ajax_select_cascade import DependentLookupChannel
@@ -293,8 +294,8 @@ class Course(models.Model):
     natural_key.dependencies = ['courses.department']
 
     def get_absolute_url(self):
-        """ return url based on school slug and self slug """
-        return u"/{0}/{1}".format(self.school.slug, self.slug)
+        """ return url based on urls.py definition. """
+        return reverse('course_detail', kwargs={'slug':self.slug})
 
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
@@ -318,6 +319,15 @@ class Course(models.Model):
         """ Update self.file_count by summing the note_set """
         self.file_count = self.note_set.count()
         self.save()
+
+    def get_popularity(self):
+        """ Aggregate popularity of notes contained within. """
+        # Run an efficient GROUP BY aggregation within the database.
+        # It returns {'fieldname': #}, where fieldname is set in the left hand
+        # side of the aggregate kwarg. Call the field x and retrieve the dict
+        # value using that key.
+        # The value might be None, return zero in that case with shortcut logic.
+        return self.note_set.aggregate(x=models.Sum('thanks'))['x'] or 0
 
 reversion.register(Course)
 

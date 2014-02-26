@@ -5,13 +5,17 @@
 import calendar
 import time
 import uuid
+from django.core.exceptions import ImproperlyConfigured
 
 import indextank.client as itc
+from django.conf import settings
 import karmaworld.secret.indexden as secret
 
 import logging
 
 PAGE_SIZE = 10
+
+MOCK_MODE = settings.TESTING
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -52,15 +56,15 @@ class SearchIndex(object):
 
     __metaclass__ = Singleton
 
-    def __init__(self, testing=False):
-        if not testing:
-            self.setup()
+    def __init__(self):
+        self.index_name = secret.INDEX
 
-    def setup(self, testing=False):
-        if testing:
-            self.index_name = uuid.uuid4().hex
-        else:
-            self.index_name = secret.INDEX
+        # If we're in production mode,
+        # or if we're in testing mode with indexing
+        # explicity turned on,
+        # do index setup stuff
+        if MOCK_MODE:
+            return
 
         self.api_client = itc.ApiClient(secret.PRIVATE_URL)
         if not self.api_client.get_index(self.index_name).exists():
@@ -77,11 +81,6 @@ class SearchIndex(object):
         # and number of thanks they have received.
         # "Relevance" is a black box provided by IndexDen.
         self.index.add_function(0, 'relevance * log(doc.var[0])')
-
-    def delete_index(self):
-        """This is meant for test cases that want to clean up
-        after themselves."""
-        self.api_client.delete_index(self.index_name)
 
     @staticmethod
     def _tags_to_str(tags):
@@ -105,9 +104,20 @@ class SearchIndex(object):
 
         return d
 
+    def delete_index(self):
+        """This is meant for test cases that want to clean up
+        after themselves."""
+        if MOCK_MODE:
+            return
+
+        self.api_client.delete_index(self.index_name)
+
     def add_note(self, note):
         """Add a note to the index. If the note is
         already in the index, it will be overwritten."""
+        if MOCK_MODE:
+            return
+
         if note.text:
             logger.info("Indexing {n}".format(n=note))
             self.index.add_document(note.id, SearchIndex._note_to_dict(note), variables={0: note.thanks})
@@ -118,6 +128,9 @@ class SearchIndex(object):
         """Update a note. Will only truly update the search
         index if it needs to. Compares the fields in new_note with
         old_note to see what has changed."""
+        if MOCK_MODE:
+            return
+
         if not new_note.text:
             logger.info("Note {n} has no text, will not add to IndexDen".format(n=new_note))
             return
@@ -144,12 +157,16 @@ class SearchIndex(object):
 
     def remove_note(self, note):
         """Remove a note from the search index."""
+        if MOCK_MODE:
+            return
 
         logger.info("Removing from index: {n}".format(n=note))
         self.index.delete_document(note.id)
 
     def search(self, query, course_id=None, page=0):
         """Returns an instance of SearchResult for your query."""
+        if MOCK_MODE:
+            raise ImproperlyConfigured("Attempting to use SearchIndex while in test mode.")
 
         if course_id:
             real_query = '("%s" OR name:"%s") AND course_id:%s' % (query, query, course_id)

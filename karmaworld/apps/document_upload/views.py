@@ -13,6 +13,7 @@ def save_fp_upload(request):
     """ ajax endpoint for saving a FilePicker uploaded file form
     """
     r_d_f = RawDocumentForm(request.POST)
+
     if r_d_f.is_valid():
         raw_document = r_d_f.save(commit=False)
 
@@ -33,6 +34,9 @@ def save_fp_upload(request):
             raw_document.save()
         # save the tags to the database, too. don't forget those guys.
         r_d_f.save_m2m()
+        # Proccess document after the tags are saved so that it isn't converted
+        # to a note before the tags are attached to the document
+        raw_document.process_document()
 
         return HttpResponse({'success'})
     else:

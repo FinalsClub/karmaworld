@@ -5,6 +5,7 @@
 
 
 from datetime import timedelta
+import sys
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
 
@@ -374,3 +375,15 @@ TAGGIT_STOPWORDS = [u'a', u'an', u'and', u'be', u'from', u'of']
 
 ########## END TAGGIT CONFIGURATION
 
+
+########## HONEYPOT CONFIGURATION
+# parts of this code borrow from
+# https://github.com/sunlightlabs/django-honeypot
+HONEYPOT_FIELD_NAME = "instruction_url" # see that "_url"? bots gotta want that.
+HONEYPOT_VALUE = ""
+########## END HONEYPOT CONFIGURATION
+
+
+########## TESTING CONFIGURATION
+TESTING = 'test' in sys.argv
+########## END TESTING CONFIGURATION

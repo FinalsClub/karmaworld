@@ -527,7 +527,7 @@ a.activity_target:hover
 
 .note_preview
 {
-  margin-top: 2em;
+  margin-bottom: 2em;
   line-height: 125%;
   font: 14px/1.4em "Georga", Serif;
   font-style: italic;
@@ -614,10 +614,11 @@ a.activity_target:hover
 #add-course-btn,
 #existing-course-btn,
 #save-btn,
+#save_note_tags,
 #edit-save-btn
 {
   border: none;
-  background-color: white;
+  background-color: transparent;
   color: #f05a28;
   cursor: pointer;
   font: 30px/1.2em "MuseoSlab-300", serif;
@@ -750,10 +751,6 @@ ul#course_menu li a
   text-transform: uppercase;
   padding-top: 20px;
   padding-bottom: 1px;
-}
-
-#course_list_filter {
-  margin: 0;
 }
 
 .center
@@ -946,21 +943,4 @@ ul.socialaccount_providers li {
   #subhead span {
     font-size: 22px;
   }
-
-  /* make some fields of the frontpage table a larger font, but only when large */
-  table#course_list .table-font {
-    font-family: "MuseoSlab-300";
-    font-size: 18px;
-    font-style: normal;
-  }
-
-  table#course_list tr td:last-child {
-    /* override some vertical margin spacing for the front page table */
-    margin-bottom: 0;
-  }
-
-
-
-
-
 }

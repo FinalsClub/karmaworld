@@ -1,4 +1,5 @@
-from django.db import IntegrityError
+from django.db import IntegrityError, DatabaseError
+from django.middleware.transaction import transaction
 from django.test import TestCase
 from karmaworld.apps.courses.models import *
 from django.test.client import Client
@@ -19,14 +20,9 @@ class CoursesTests(TestCase):
 
     def testCourseUniqueness(self):
         """Make sure we can't create multiple courses with the same unique constraint."""
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(DatabaseError):
             Course.objects.create(name=self.course1.name, instructor_name=self.course1.instructor_name,
                                   school=self.course1.school, department=self.department)
-        # We can't actually do anything with Course.objects now,
-        # because every database hit in a single test is wrapped in one
-        # transaction, and now that we have an integrity error,
-        # the transaction is borked. Look into TransactionTestCase.
-        #self.assertEqual(Course.objects.count(), 1)
 
     def testSchoolSlug(self):
         self.assertEqual(self.harvard.slug, slugify(unicode(self.harvard.name)))

@@ -7,6 +7,7 @@
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
   <script src="{{ STATIC_URL }}js/course.js"></script>
   <script src="{{ STATIC_URL }}js/course-detail.js" ></script>
+  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js" ></script>
   <script>
     var json_school_course_list = "{% url 'json_school_course_list' %}";
     var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}";
@@ -18,6 +19,8 @@
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/data_table_list.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
 {% endblock %}
 
 
@@ -68,7 +71,7 @@
           <div class="row">
             <div class="small-12 column center">
               {% if user.is_authenticated %}
-                {% if user.get_profile.can_edit_courses %}
+                {% if user.get_profile.can_edit_items %}
                   <a href="#" id="edit-button"><img src="{{ STATIC_URL }}img/edit.png" alt="edit_flag" width="25" height="35"/></a>
                 {% endif %}
 
@@ -101,7 +104,7 @@
       </div>
     </div><!-- /course_header -->
 
-    {% if user.get_profile.can_edit_courses %}
+    {% if user.get_profile.can_edit_items %}
       <section id="edit-course-form">
         <form>
           {% csrf_token %}
@@ -170,37 +173,25 @@
     <div id="course_container">
       <div class="row">
         <div class="small-12 columns large-10 large-offset-1">
-          {% for note in note_set %}
-            {% include 'notes/note_list_entry.html' with note=note %}
-          {% endfor %}
+          <table id="data_table_list">
+            <thead><tr>
+              <th id="data-table-sort-by"> Sort by: </th>
+              <th id="data-table-date"> Date </th>
+              <th id="data-table-thank-count"> Popularity </th>
+              <th class="no-display" id="data-table-note-name"> Name </th>
+              <th class="no-display" id="data-table-tags"> Tags </th>
+              <th class="no-display" id="data-table-note-preview"> Preview </th>
+            </tr></thead>
+            <tbody>
+              {% for note in note_set %}
+                {% include 'notes/note_list_entry.html' with note=note %}
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div><!-- /course_container -->
 
-    {% comment %}
-    <div class="row">
-      <div class="twelve columns">
-        <div id="search_pagination" style="width: 232px"><!-- WIDTH SHOULD BE SET DYNAMICALLY TO ENABLE MARGIN: AUTO -->
-          <div id="search_pagination_left">
-            <img src="img/search_arrow_left.png" alt="search_arrow_left" width="5" height="10" />
-          </div><!-- /search_pagination_left -->
-          <div id="search_pagination_numbers">
-            <ul>
-              <li class="button_interior">1</li>
-              <li>2</li>
-              <li>3</li>
-              <li>4</li>
-              <li>5</li>
-              <li>6</li>
-            </ul>
-          </div><!-- /search_pagination_numbers -->
-          <div id="search_pagination_right">
-            <img src="img/search_arrow_right.png" alt="search_arrow_right" width="5" height="10" />
-          </div><!-- /search_pagination_right -->
-        </div><!-- /search_pagination -->
-      </div>
-    </div>
-    {% endcomment %}
   </section><!--/course_content-->
 
 {% endblock %}

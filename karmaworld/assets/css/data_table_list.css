@@ -1,4 +1,4 @@
-table#course_list
+table#data_table_list
 {
   margin:14px auto;
 }
@@ -9,10 +9,16 @@ a:hover {
   color:#f05a28;
 }
 
+
 /***************
 Search Bar
 ***************/
-#course_list_filter input {
+#data_table_list_filter {
+  /* pulled out of global.css */
+  margin: 0;
+}
+
+#data_table_list_filter input {
   font: 22px/1em "MuseoSlab-300";
   margin-top: 20px;
   margin-bottom: 20px;
@@ -35,16 +41,16 @@ table.dataTable thead th {
   *cursor: hand;
 }
 
-table.dataTable thead th.sort_by {
+table.dataTable thead th.sort-by {
   padding-right: 0px;
 }
 
-table#course_list thead tr
+table#data_table_list thead tr
 {
   height: 50px;
 }
 
-table#course_list th
+table#data_table_list th
 {
   float:left;
   font-family: "MuseoSlab-300";
@@ -56,21 +62,7 @@ th.sorting_asc, th.sorting_desc {
   text-decoration: underline;
 }
 
-th.date {
-}
-
-th.note-count {
-}
-
-th.school-name {
-  display: none;
-}
-
-th.course-name {
-  display: none;
-}
-
-th.instructor-name {
+th.no-display {
   display: none;
 }
 
@@ -78,7 +70,7 @@ th.instructor-name {
 /***************
 Table Data 
 ***************/
-table#course_list {
+table#data_table_list {
   /*border-collapse: collapse;*/
 }
 
@@ -107,25 +99,30 @@ td.slim * {
   height: 20px; /* required for :hover on Table Rows  (when floating td elements) */
 }
 
-table#course_list tr:nth-child(even)
+td.no-display {
+  display: none;
+}
+
+table#data_table_list tr:nth-child(even)
 {
   /*background: url(../img/dashboard_activity_alt_on_bg.gif);*/
 }
 
 /* underline all links in the table body */
-table#course_list tbody td a {
+table#data_table_list tbody td a {
   text-decoration: underline;
 }
 
 /* rows of course data */
-table#course_list tbody tr {
+table#data_table_list tbody tr {
   width: 840px;
 }
+
 
 /***************
 Slim Row
 ***************/
-table.dataTable td.sort_by {
+table.dataTable td.sort-by {
   /* hack - Provide positioning for the "sort by text" */
   display:none;
 }
@@ -135,6 +132,7 @@ td.note-count * {
   /*width: 400px; [> 100% minus td.date width -- make sure the next line wraps <]*/
 }
 
+
 /***************
 Fat Row
 ***************/
@@ -143,7 +141,7 @@ td.course-name * {
   font-size: 18px;
 }
 
-table#course_list td div.upload {
+table#data_table_list td div.upload {
   width: 45px;
   height: 45px;
   visibility: hidden;
@@ -153,16 +151,16 @@ table#course_list td div.upload {
   margin-top: -8px;
 }
 
-
-table#course_list td div.upload i { 
+table#data_table_list td div.upload i {
   display: block;
   cursor: pointer;
 }
-table#course_list td div.upload a { 
+
+table#data_table_list td div.upload a {
   text-decoration: none;
 }
 
-table#course_list tr:hover td div.upload {
+table#data_table_list tr:hover td div.upload {
   visibility: visible;
 }
 
@@ -172,13 +170,27 @@ table#course_list tr:hover td div.upload {
   font-size: 18px;
 }
 
-
 /* CSS HACKS */
 /* Makes lines look better */
 td.columns {
   line-height: 1.5em;
 }
 
-table#course_list tr td:last-child {
+table#data_table_list tr td:last-child {
   margin-bottom: 20px;
+}
+
+@media only screen and (min-width: 768px) {
+  /* pulled out of global.css */
+
+  table#data_table_list .table-font {
+    font-family: "MuseoSlab-300";
+    font-size: 18px;
+    font-style: normal;
+  }
+
+  table#data_table_list tr td:last-child {
+    /* override some vrtial margin spacing for the front page table */
+    margin-bottom: 0;
+  }
 }

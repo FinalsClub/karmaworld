@@ -13,11 +13,13 @@
   <form method="POST" action="{% url 'home' %}">
   {% csrf_token %}
 
+    {% for error in course_form.non_field_errors %}
     <div class="row">
       <div class="small-12 columns">
-        {{ course_form.non_field_errors }}
+        {{ error }}
       </div>
     </div>
+    {% endfor %}
 
     {{ course_form }}
 

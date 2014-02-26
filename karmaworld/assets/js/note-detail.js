@@ -6,8 +6,8 @@ function autoResize(id){
   var newwidth;
 
   if(document.getElementById){
-    newheight = document.getElementById(id).contentWindow.document .body.scrollHeight;
-    newwidth = document.getElementById(id).contentWindow.document .body.scrollWidth;
+    newheight = document.getElementById(id).contentWindow.document.body.scrollHeight;
+    newwidth = document.getElementById(id).contentWindow.document.body.scrollWidth;
   }
 
   document.getElementById(id).height = (newheight + 10) + "px";
@@ -130,25 +130,44 @@ $(function() {
     };
   });
 
-  $.ajax(note_contents_url,
-    {
-      type: 'GET',
-      xhrFields: {
-        onprogress: function (progress) {
-          var percentage = Math.floor((progress.loaded / progress.total) * 100);
-          writeNoteFrame("<h3 style='text-align: center'>" + percentage + "%</h3>");
-        }
-      },
-      success: function(data, textStatus, jqXHR) {
-        writeNoteFrame(data);
-        autoResize('noteframe');
-        if (pdfControls == true) {
-          setupPdfViewer();
-        }
-      },
-      error: function(data, textStatus, jqXHR) {
-        writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
+  $.ajax(note_contents_url, {
+    type: 'GET',
+    xhrFields: {
+      onprogress: function (progress) {
+        var percentage = Math.floor((progress.loaded / progress.total) * 100);
+        writeNoteFrame("<h3 style='text-align: center'>" + percentage + "%</h3>");
+      }
+    },
+    success: function(data, textStatus, jqXHR) {
+      writeNoteFrame(data);
+      autoResize('noteframe');
+      if (pdfControls == true) {
+        setupPdfViewer();
+      }
+    },
+    error: function(data, textStatus, jqXHR) {
+      writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
+    }
+  });
+
+  $('#edit_note_tags').click(function(event) {
+    $('#note_tags_form').slideToggle();
+  });
+
+  $('#save_note_tags').click(function(event) {
+    $.ajax({
+      url: edit_note_tags_url,
+      dataType: 'json',
+      data: $('#note_tags_input').val(),
+      type: 'POST',
+      success: function(data) {
+        $('#note_tags_form').slideUp();
+        $('.tags').empty();
+        $.each(data.fields.tags, function(index, tag) {
+          $('.tags').append($('<span>', { class: 'tag-span', text: tag }));
+        });
       }
     });
+  });
 
 });
