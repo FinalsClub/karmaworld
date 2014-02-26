@@ -19,8 +19,6 @@ from ajax_select import LookupChannel
 from ajax_select_cascade import DependentLookupChannel
 from ajax_select_cascade import register_channel_name
 
-from karmaworld.utils.ajax_selects import register_channel_name
-
 
 class SchoolManager(models.Manager):
     """ Handle restoring data. """

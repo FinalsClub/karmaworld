@@ -645,6 +645,10 @@ a.activity_target:hover
 .validation_error {
   color:red;
 }
+ul.validation_error {
+  display: inline;
+  list-style-type: none;
+}
 
 #add-note-form, #add-course-form, #edit-course-form
 {
@@ -891,7 +895,6 @@ hr.midrule
 legend, label
 {
   font: 12px/2em "MuseoSlab-300";
-  margin-top: 20px;
 }
 
 .qq-upload-button {
