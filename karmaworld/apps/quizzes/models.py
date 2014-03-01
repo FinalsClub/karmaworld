@@ -108,4 +108,9 @@ class TrueFalseQuestion(BaseQuizQuestion):
         return self.text
 
 ALL_QUESTION_CLASSES = (MultipleChoiceQuestion, FlashCardQuestion, TrueFalseQuestion)
+ALL_QUESTION_CLASSES_NAMES = {
+    MultipleChoiceQuestion.__name__: MultipleChoiceQuestion,
+    FlashCardQuestion.__name__: FlashCardQuestion,
+    TrueFalseQuestion.__name__: TrueFalseQuestion,
+}
 

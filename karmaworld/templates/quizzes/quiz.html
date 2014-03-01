@@ -6,6 +6,17 @@
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/quiz.css">
 {% endblock %}
 
+{% block bodyscripts %}
+  <script>
+    var csrf_token = "{{ csrf_token }}";
+    var num_quiz_questions = {{ questions|length }};
+    var current_question_index = 0;
+    var check_answer_url = '{% url 'quiz_answer' %}';
+  </script>
+  <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+  <script src="{{ STATIC_URL }}js/quiz.js"></script>
+{% endblock %}
+
 {% block title %}
   {{ quiz.name }}
 {% endblock %}
@@ -59,68 +70,64 @@
         </div>
       {% endif %}
 
-      <form action="{{ quiz.get_absolute_url }}" method="post">
-        {% csrf_token %}
-        {% for item in questions %}
-
-          <div class="row">
-            <div class="small-10 columns small-centered quiz-center">
+      {% for item in questions %}
+        {% with question=item.1 %}
+          <div class="row hide question"
+               data-question-id="{{ question.id }}"
+               data-question-index="{{ forloop.counter0 }}"
+               data-question-type="{{ item.0 }}">
+            <div class="small-10 large-6 columns small-centered">
               {% if 'MultipleChoiceQuestion' in item.0 %}
-                {% with question=item.1 %}
-                  <div class="question multiple-choice">
-                    <p>{{ question.question_text }}</p>
-                    <ul>
-                      {% for choice in question.choices.all %}
-                        <li><input id="choice_{{ question.id }}_{{ choice.id }}"
-                                   type="radio"
-                                   name="{{ question.id }}"
-                                   value="{{ choice.id }}">
-                          <label for="choice_{{ question.id }}_{{ choice.id }}">{{ choice.text }}</label></li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                {% endwith %}
+                <p class="question-text">{{ question.question_text }}</p>
+                <ul>
+                  {% for choice in question.choices.all %}
+                    <li><input id="choice_{{ question.id }}_{{ choice.id }}"
+                               type="radio"
+                               name="{{ question.id }}"
+                               value="{{ choice.id }}"
+                               data-choice-id="{{ choice.id }}">
+                      <label for="choice_{{ question.id }}_{{ choice.id }}">{{ choice.text }}</label></li>
+                  {% endfor %}
+                </ul>
               {% endif %}
 
               {% if 'TrueFalseQuestion' in item.0 %}
-                {% with question=item.1 %}
-                  <div class="question true-false">
-                    <p>{{ question.text }}</p>
-                    <li><input id="choice_{{ question.id }}_true"
-                               type="radio"
-                               name="{{ question.id }}"
-                               value="true">
-                    <label for="choice_{{ question.id }}_true">True</label></li>
-                    <li><input id="choice_{{ question.id }}_false"
-                               type="radio"
-                               name="{{ question.id }}"
-                               value="false">
-                    <label for="choice_{{ question.id }}_false">False</label></li>
-                  </div>
-                {% endwith %}
+                <p class="question-text">{{ question.text }}</p>
+                <li><input id="choice_{{ question.id }}_true"
+                           type="radio"
+                           name="{{ question.id }}"
+                           value="true">
+                <label for="choice_{{ question.id }}_true">True</label></li>
+                <li><input id="choice_{{ question.id }}_false"
+                           type="radio"
+                           name="{{ question.id }}"
+                           value="false">
+                <label for="choice_{{ question.id }}_false">False</label></li>
               {% endif %}
 
               {% if 'FlashCardQuestion' in item.0 %}
-                {% with question=item.1 %}
-                  <div class="question flash-card">
-                    <p>{{ question.definition_side }}</p>
-                    <input type="text"
-                           name="{{ question.id }}"
-                           id="text_{{ question.id }}">
-
-                  </div>
-                {% endwith %}
+                <p class="question-text">{{ question.definition_side }}</p>
+                <input type="text"
+                       name="{{ question.id }}"
+                       id="text_{{ question.id }}">
               {% endif %}
+
+              <div class="row">
+                <div class="small-4 columns">
+                  <button class="prev-question {% if forloop.first %}disabled{% endif %}">Previous</button>
+                </div>
+                <div class="small-4 columns">
+                  <button class="check-answer">Check Answer</button>
+                </div>
+                <div class="small-4 columns">
+                  <button class="next-question {% if forloop.last %}disabled{% endif %}">Next</button>
+                </div>
+              </div>
+
             </div>
           </div>
-          <br/>
-        {% endfor %}
-        <div class="row">
-          <div class="small-12 columns center">
-            <button type="submit">Submit</button>
-          </div>
-        </div>
-      </form>
+        {% endwith %}
+      {% endfor %}
 
     </div>
 

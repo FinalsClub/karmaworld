@@ -2,17 +2,20 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2014  FinalsClub Foundation
 from itertools import chain
+import json
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.forms.formsets import formset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
 
 from django.views.generic import DetailView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin, ProcessFormView
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.quizzes.forms import KeywordForm
-from karmaworld.apps.quizzes.models import Quiz, ALL_QUESTION_CLASSES, Keyword
+from karmaworld.apps.quizzes.models import Quiz, ALL_QUESTION_CLASSES, Keyword, BaseQuizQuestion, \
+    ALL_QUESTION_CLASSES_NAMES, MultipleChoiceQuestion, MultipleChoiceOption, TrueFalseQuestion, FlashCardQuestion
+from karmaworld.utils import ajax_base
 
 
 class QuizView(DetailView):
@@ -85,3 +88,40 @@ class KeywordEditView(FormView):
 
         return super(KeywordEditView, self).form_valid(formset)
 
+
+def quiz_answer(request):
+    """Handle an AJAX request checking if a quiz answer is correct"""
+    if not (request.method == 'POST' and request.is_ajax()):
+        # return that the api call failed
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'must be a POST ajax request'}),
+                                      mimetype="application/json")
+
+    try:
+        question_type_str = request.POST['question_type']
+        if question_type_str not in ALL_QUESTION_CLASSES_NAMES:
+            raise Exception("Not a valid question type")
+        question_type_class = ALL_QUESTION_CLASSES_NAMES[question_type_str]
+        question = question_type_class.objects.get(id=request.POST['id'])
+
+        correct = False
+
+        if question_type_class is MultipleChoiceQuestion:
+            answer = MultipleChoiceOption.objects.get(id=request.POST['answer'])
+            if answer.question == question and answer.correct:
+                correct = True
+
+        elif question_type_class is TrueFalseQuestion:
+            answer = request.POST['answer'] == 'true'
+            correct = question.true == answer
+
+        elif question_type_class is FlashCardQuestion:
+            answer = request.POST['answer'].lower()
+            correct = question.keyword_side.lower() == answer
+
+    except Exception, e:
+        return HttpResponseBadRequest(json.dumps({'status': 'fail',
+                                                'message': e.message,
+                                                'exception': e.__class__.__name__}),
+                                    mimetype="application/json")
+
+    return HttpResponse(json.dumps({'correct': correct}), mimetype="application/json")

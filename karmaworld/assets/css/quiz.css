@@ -79,3 +79,23 @@
 {
   cursor: pointer;
 }
+
+.correct-answer-flash
+{
+  background-color: #67ff50;
+}
+
+.correct-answer
+{
+  background-color: #b5ffaa;
+}
+
+.wrong-answer-flash
+{
+  background-color: #ff3a3a;
+}
+
+.wrong-answer
+{
+  background-color: #ffb4b4;
+}
