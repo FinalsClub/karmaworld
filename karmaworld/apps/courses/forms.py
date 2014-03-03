@@ -7,14 +7,14 @@ import random
 from django.conf import settings
 from django.forms import ModelForm
 from django.forms import CharField
+from django.forms import ValidationError
 from django.forms.util import ErrorList
 
 from ajax_select.fields import AutoCompleteSelectField
-from ajax_select.fields import AutoCompleteSelectWidget
 from ajax_select_cascade.fields import AutoCompleteDependentSelectField
-from ajax_select_cascade.fields import AutoCompleteDependentSelectWidget
 
 from karmaworld.apps.courses.models import Course
+from karmaworld.apps.courses.models import Department
 
 
 # Django hard codes CSS attributes into ModelForm returned ErrorList
@@ -43,19 +43,14 @@ class NiceErrorModelForm(ModelForm):
 
 
 class CourseForm(NiceErrorModelForm):
-    school = AutoCompleteSelectField(
-        'school',
-        widget=AutoCompleteSelectWidget(
-            'school',
-            attrs={'id': 'dom_autocomplete_school'}
-        )
-    )
+    # first argument is ajax channel name, defined in models as LookupChannel.
+    school = AutoCompleteSelectField('school', help_text='')
     department = AutoCompleteDependentSelectField(
-        'dept_given_school',
-        widget=AutoCompleteDependentSelectWidget(
-            'dept_given_school',
-             attrs={'data-upstream-id': 'dom_autocomplete_school'},
-        )
+        'dept_given_school', help_text='',
+        # autocomplete department based on school
+        dependsOn=school, 
+        # allows creating a new department on the fly
+        required=False
     )
 
     def __init__(self, *args, **kwargs):
@@ -72,6 +67,30 @@ class CourseForm(NiceErrorModelForm):
         # order the fields
         fields = ('school', 'department', 'name', 'instructor_name',
                   'instructor_email', 'url')
+
+    def clean_department(self, *args, **kwargs):
+        """ Create a new department if one is not provided. """
+        if 'department' not in self.cleaned_data or \
+           not self.cleaned_data['department']:
+            # Department is missing.
+            # Can a new one be made?
+            if 'school' not in self.cleaned_data or \
+               not self.cleaned_data['school']:
+                raise ValidationError('Cannot create a new department without a school.')
+            if 'department_text' not in self.data or \
+               not self.data['department_text']:
+                raise ValidationError('Cannot create a new department without a name.')
+
+            # Build a new Department.
+            school = self.cleaned_data['school']
+            dept_name = self.data['department_text']
+            dept = Department(name=dept_name, school=school)
+            dept.save()
+
+            # Fill in cleaned data as though this department were chosen.
+            self.cleaned_data['department'] = dept
+        # Return the clean Department
+        return self.cleaned_data['department']
 
     def clean(self, *args, **kwargs):
         """ Additional form validation. """
