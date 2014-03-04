@@ -78,11 +78,12 @@ urlpatterns = patterns('',
 
     url(r'^search/$', NoteSearchView.as_view(), name='note_search'),
 
+    ## Course Model
     # VIEW for displaying a single Course
     url(r'^course/' + SLUG.format('') + '/$',
         CourseDetailView.as_view(), name='course_detail'),
 
-    ## NOTE MODEL
+    ## Note Model
     # Ajax endpoint to thank a note
     url(r'^ajax/note/thank/(?P<pk>[\d]+)/$', thank_note, name='thank_note'),
     # Ajax endpoint to flag a note
@@ -109,5 +110,5 @@ urlpatterns = patterns('',
     #url(r'^(?P<school_slug>[^/]+)/(?P<course_slug>[^/]+)/(?P<slug>[^/]+)$', \
     #    NoteView.as_view(), name='note_detail'),
 
-    url(r'^$', CourseListView.as_view(model=Course), name='home'),
+    url(r'^$', CourseListView.as_view(), name='home'),
 )

@@ -18,7 +18,7 @@
 <script>
 $(document).ready(function() {
   // If there were form errors, open the form and jump to it
-  var jump_to_form = {% if jump_to_form %}true{% else%}false{% endif %};
+  var jump_to_form = {% if course_form.errors %}true{% else%}false{% endif %};
   if (jump_to_form) {
     $("#add-course-form").show();
     $('#add-course-btn').hide();
@@ -105,7 +105,7 @@ $(document).ready(function() {
           </tr>
         </thead>
         <tbody>
-        {% for course in object_list %}
+        {% for course in course_list %}
           {% include 'courses/course_list_entry.html' %}
         {% endfor %}
         </tbody>
