@@ -19,10 +19,22 @@ function prevQuestion() {
   }
 }
 
+function updateCorrectCount() {
+  var count = 0;
+  for (var i = 0; i < num_quiz_questions; i++) {
+    if (correct_questions[i]) {
+      count += 1
+    }
+  }
+  $('#num-correct').html(count);
+}
+
 function checkAnswerCallback(data, textStatus, jqXHR) {
   var question = $('div[data-question-index="' + current_question_index + '"]');
   var question_text = question.find('p.question-text');
   if (data.correct == true) {
+    correct_questions[current_question_index] = true;
+    updateCorrectCount();
     question_text.removeClass('wrong-answer');
     question_text.removeClass('correct-answer');
     question_text.addClass('correct-answer-flash');
@@ -73,8 +85,20 @@ function checkAnswer() {
 }
 
 $(function () {
+  // show the first question
   showQuestion();
+
+  // set up handlers
   $('button.check-answer').click(checkAnswer);
   $('button.prev-question').click(prevQuestion);
   $('button.next-question').click(nextQuestion);
+  $('input.multiple-choice-choice').click(checkAnswer);
+  $('input.true-false-choice').click(checkAnswer);
+
+  // initialize record of correct answers
+  correct_questions = new Array(num_quiz_questions);
+  for (var i = 0; i < num_quiz_questions; i++) {
+    correct_questions[i] = false;
+  }
+
 });

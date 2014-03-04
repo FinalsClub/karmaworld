@@ -99,3 +99,9 @@
 {
   background-color: #ffb4b4;
 }
+
+div.question ul
+{
+  list-style-type: none;
+}
+

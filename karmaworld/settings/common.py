@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     'beta.karmanotes.org',
     'www.karmanotes.org',
     'karmanotes.org',
+    'ec2-184-73-42-39.compute-1.amazonaws.com',
 ]
 ########## END SECURITY CONFIGURATION
 

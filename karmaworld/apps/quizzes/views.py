@@ -36,6 +36,7 @@ class QuizView(DetailView):
                              reverse=True)
 
         kwargs['questions'] = result_list
+        kwargs['quiz'] = self.object
 
         return super(QuizView, self).get_context_data(**kwargs)
 
@@ -120,8 +121,8 @@ def quiz_answer(request):
 
     except Exception, e:
         return HttpResponseBadRequest(json.dumps({'status': 'fail',
-                                                'message': e.message,
-                                                'exception': e.__class__.__name__}),
-                                    mimetype="application/json")
+                                                  'message': e.message,
+                                                  'exception': e.__class__.__name__}),
+                                      mimetype="application/json")
 
     return HttpResponse(json.dumps({'correct': correct}), mimetype="application/json")

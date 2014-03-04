@@ -25,6 +25,13 @@
   <section id="dashboard_content">
     <div id="stats_container" class="hero_gradient_bar">
       <div class="row">
+        <div class="twelve columns header_subhead">
+          <a href="{{ quiz.note.get_absolute_url}} ">
+            <i class="fa fa-arrow-left"></i>&nbsp;back to {{ quiz.note.name }}
+          </a>
+        </div>
+      </div>
+      <div class="row">
         <div class="small-10 columns small-centered center header_title">
           {{ quiz.name }}
       </div>
@@ -40,11 +47,11 @@
             </div>
           </div>
           <div class="row">
-            <div class="small-6 columns center  stat_number stat_earned">
-              3
+            <div id="num-correct" class="small-6 columns center  stat_number stat_earned">
+              0
             </div>
             <div class="small-6 columns  center stat_number stat_uploaded">
-              14
+              {{ questions|length }}
             </div>
           </div>
           <div class="row">
@@ -81,34 +88,42 @@
                 <p class="question-text">{{ question.question_text }}</p>
                 <ul>
                   {% for choice in question.choices.all %}
-                    <li><input id="choice_{{ question.id }}_{{ choice.id }}"
-                               type="radio"
-                               name="{{ question.id }}"
-                               value="{{ choice.id }}"
-                               data-choice-id="{{ choice.id }}">
-                      <label for="choice_{{ question.id }}_{{ choice.id }}">{{ choice.text }}</label></li>
+                    <li><label for="choice_{{ question.id }}_{{ choice.id }}">
+                          <input id="choice_{{ question.id }}_{{ choice.id }}"
+                                 type="radio"
+                                 name="multiple_choice_{{ question.id }}"
+                                 value="{{ choice.id }}"
+                                 class="multiple-choice-choice"
+                                 data-choice-id="{{ choice.id }}">
+                          {{ choice.text }}</label></li>
                   {% endfor %}
                 </ul>
               {% endif %}
 
               {% if 'TrueFalseQuestion' in item.0 %}
                 <p class="question-text">{{ question.text }}</p>
-                <li><input id="choice_{{ question.id }}_true"
-                           type="radio"
-                           name="{{ question.id }}"
-                           value="true">
-                <label for="choice_{{ question.id }}_true">True</label></li>
-                <li><input id="choice_{{ question.id }}_false"
-                           type="radio"
-                           name="{{ question.id }}"
-                           value="false">
-                <label for="choice_{{ question.id }}_false">False</label></li>
+                <ul>
+                  <li><label for="choice_{{ question.id }}_true">
+                        <input id="choice_{{ question.id }}_true"
+                               type="radio"
+                               name="true_false_{{ question.id }}"
+                               class="true-false-choice"
+                               value="true">
+                          True</label></li>
+                  <li><label for="choice_{{ question.id }}_false">
+                        <input id="choice_{{ question.id }}_false"
+                               type="radio"
+                               name="true_false_{{ question.id }}"
+                               class="true-false-choice"
+                               value="false">
+                          False</label></li>
+                </ul>
               {% endif %}
 
               {% if 'FlashCardQuestion' in item.0 %}
                 <p class="question-text">{{ question.definition_side }}</p>
                 <input type="text"
-                       name="{{ question.id }}"
+                       name="flash_card_{{ question.id }}"
                        id="text_{{ question.id }}">
               {% endif %}
 
