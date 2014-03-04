@@ -142,7 +142,12 @@ class Command(BaseCommand):
                             ulresp = requests.post(fpurl, data={
                               'url': url,
                             })
-                            ulresp.raise_for_status()
+                            try:
+                                ulresp.raise_for_status()
+                            except Exception, e:
+                                print "Failed to upload note: " + str(e)
+                                print "Skipping."
+                                continue
                             # Filepicker returns JSON, so use that
                             uljson = ulresp.json()
 
@@ -167,21 +172,33 @@ class Command(BaseCommand):
                         dbnote.tags.add('mit-ocw','karma')
 
                         print "Converting document and saving note to S3."
-                        try:
-                            convert_raw_document(dbnote)
-                        except ValueError, e:
-                            # only catch one specific error
-                            if not str(e).startswith('PDF file could not be'):
-                                raise e
-                            # write the link to file.
-                            with open('pdferrors.log', 'a') as pdferrs:
-                                pdferrs.write(url + '\n')
-                            # delete the partial Note created in convert_raw_doc
-                            dbnote = Note.objects.filter(upstream_link=url)[0]
-                            dbnote.tags.set()
-                            dbnote.delete()
-                            print "This note errored, so it is removed :("
-                        else:
-                            print "This note is done."
+                        while True:
+                            try:
+                                convert_raw_document(dbnote)
+                            except ValueError, e:
+                                # only catch one specific error
+                                if not str(e).startswith('PDF file could not be'):
+                                    raise e
+                                # write the link to file.
+                                with open('pdferrors.log', 'a') as pdferrs:
+                                    pdferrs.write(url + '\n')
+                                # delete the partial Note created in convert_raw_doc
+                                dbnote = Note.objects.filter(upstream_link=url)[0]
+                                dbnote.tags.set()
+                                dbnote.delete()
+                                print "This note errored, so it is removed :("
+                                break
+                            except Exception, e:
+                                if '403' in str(e):
+                                    print "Failed: " + str(e)
+                                    print "Trying again."
+                                    continue
+                                else:
+                                    print "Failed: " + str(e)
+                                    print "Aborting."
+                                    break
+                            else:
+                                print "This note is done."
+                                break
 
                     print "Notes for {0} are done.".format(dbcourse.name)

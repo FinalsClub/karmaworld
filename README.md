@@ -263,16 +263,20 @@ not generally be needed.
     pkg-config libfontconfig1-dev autoconf libtool
 
     wget http://poppler.freedesktop.org/poppler-0.24.4.tar.xz
-    tar xf poppler-0.24.4.tar.gz
+    tar xf poppler-0.24.4.tar.xz
+    cd poppler-0.24.4
     ./configure --prefix=/usr --enable-xpdf-headers
     make
     sudo make install
+    cd ~/
 
     git clone https://github.com/fontforge/fontforge.git
-    ./autogen.sh
+    cd fontforge
+    ./bootstrap
     ./configure --prefix=/usr
     make
     sudo make install
+    cd ~/
 
     git clone https://github.com/charlesconnell/pdf2htmlEX.git
     cd pdf2htmlEX
@@ -418,17 +422,20 @@ to run Fabric against the virtual machine.
 You will need to setup the host machine with the proper SSH credentials to
 access the virtual machine. This is done by running `vagrant ssh-config` from
 `{project_root}` and copying the results into your SSH configuration file
-(usually found at `~/.ssh/config`).
+(usually found at `~/.ssh/config`). This can be done more simply by typing this
+on the host machine:
+
+        vagrant ssh-config --host karmavm >> ~/.ssh/config
 
 The VM will, by default, route its SSH connection through localhost port 2222
 on the host machine and the base user with be vagrant. Point Fabric there when
 running fab commands from `{project_root}`. So the command will look like this:
 
-        fab -H 127.0.0.1 --port=2222 -u vagrant <commands>
+        fab -H karmavm <commands>
 
 In unix, it might be convenient to create and use an alias like so:
 
-        alias vmfab='fab -H 127.0.0.1 --port=2222 -u vagrant'
+        alias vmfab='fab -H karmavm'
         vmfab <commands>
 
 Removing a unix alias is done with `unalias`.

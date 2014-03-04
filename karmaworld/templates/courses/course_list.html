@@ -8,8 +8,8 @@
 {% block pagestyle %}
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
 <!-- <link rel="stylesheet" href="{{ STATIC_URL }}css/responsive-tables.css"> -->
-<link rel="stylesheet" href="{{ STATIC_URL }}css/course_list_table.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css"> <!-- dataTables -->
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/data_table_list.css">
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
 {% endblock %}
 
 {% block pagescripts %}
@@ -25,9 +25,8 @@ $(document).ready(function() {
     document.getElementById('add-course-form').scrollIntoView(true);
   }
 
-
   // load dataTable for course data
-  $('#course_list').dataTable({
+  $('#data_table_list').dataTable({
     // remove the default filter label
     'oLanguage': {
       'sSearch': '',
@@ -41,49 +40,32 @@ $(document).ready(function() {
     // Position the filter bar at the top
     'sDom': '<"top"f>rt<"bottom"p><"clear">', 
     // Specify options for each column
-    'aoColumns': [
-      { "bSearchable": false, "bSortable":false, },
-      { "bSearchable": false },
-      { "bSearchable": false },
-      null,
-      null,
-      null,
-      null, 
-    ],
     "aoColumnDefs": [ 
-    {
-      "aTargets": [ 'note-count' ], // matches a 'th' element class name
-      "mData": function ( source, type, val ) {
-        //console.log(source);
-        if (type === 'set') {
-          source.count = val;
-          // Store the computed dislay and filter values for efficiency
-          source.count_display = val=="" ? "" : "<span>"+val+" Notes</span>";
-          return;
-        }
-        else if (type === 'display') {
-          return source.count_display;
-        }
-        // 'sort', 'type', 'filter' and undefined all just use the integer
-        return source.count;
-      } 
-    },
-    {
-      "aTargets": [ 'date' ], // matches a 'th' element class name
-      "mData": function ( source, type, val ) {
-        //console.log(source);
-        if (type === 'set') {
-          source.date = val;
-          source.date_display = val=="" ? "" : "<span>Updated "+val+"</span>";
-          return;
-        }
-        else if (type === 'display') {
-          return source.date_display;
-        }
-        // for types 'sort', 'type', 'filter' and undefined use raw date
-        return source.date;
+      {
+        // 4th element: thanks
+        "aTargets": [ 3 ],
+        "bSortable": true,
+        "bVisible": true
+      },
+      {
+        // 3rd element: notes
+        "aTargets": [ 2 ],
+        "bSortable": true,
+        "bVisible": true
+      },
+      {
+        // 2nd element: date
+        "aTargets": [ 1 ],
+        "bSortable": true,
+        "bVisible": true
+      },
+      {
+        // 1st element: "sort by" label
+        "aTargets": [ 0 ],
+        "bSortable": false,
+        "bVisible": true
       }
-    }],
+    ],
     // Initial sorting
     'aaSorting': [[2,'desc']]
   });
@@ -98,7 +80,7 @@ $(document).ready(function() {
   <div id="page_header" class="">
     <div id="subhead" class="row">
       <div class="small-3 large-2 columns">
-        <img src='{{ STATIC_URL }}img/noun_project_6858.svg' alt="Pieter J. Smits, from The Noun Project">
+        <img src='{{ STATIC_URL }}img/noun_project_6858.svg' alt="A depiction of books">
       </div>
       <div class="small-9 large-10 columns">
         <div class="row subhead-spacer hide-for-small"> </div>
@@ -109,20 +91,17 @@ $(document).ready(function() {
   <div class="row">
     <div class="small-12 columns">
       <!-- Main course table -->
-      <table id="course_list" class="">
-        <!-- specify col widths -->
-        <colgroup>
-          <col span="1" style="width: 100%">
-          <col span="5" style="width: 0%">
-        </colgroup> 
+      <table id="data_table_list">
         <thead>
           <tr>
-            <th class="sort_by">Sort by:</th>
-            <th class="date"> Date </th>
-            <th class="note-count"> #Notes </th>
-            <th class="course-name"> Course Name </th>
-            <th class="school-name"> Institution </th>
-            <th class="instructor-name"> Instructor </th>
+            <th id="data-table-sort-by"> Sort by: </th>
+            <th id="data-table-date"> Date </th>
+            <th id="data-table-note-count"> #Notes </th>
+            <th id="data-table-thanks"> Popularity </th>
+            <th class="no-display" id="data-table-upload"> Upload </th>
+            <th class="no-display" id="data-table-course-name"> Course Name </th>
+            <th class="no-display" id="data-table-school-name"> Institution </th>
+            <th class="no-display" id="data-table-instructor-name"> Instructor </th>
           </tr>
         </thead>
         <tbody>
