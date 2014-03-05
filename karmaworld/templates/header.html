@@ -1,60 +1,43 @@
 {% load url from future %}
 
-<header id="global_header">
-  <div class="row">
-    <div id="logo_container" class="small-7 medium-5 large-5 columns">
-      <div class="row">
-        <div class="small-12 medium-5 large-5 columns">
-          <a href="/">
-            <img src="{{ STATIC_URL }}img/global_header_logo.png" alt="global_header_logo" width="144" height="17" />
-          </a>
-        </div>
-        <div class="medium-7 large-7 columns show-for-medium-up">
-          {% if course.id %}
-            <div id="search_container">
-              <form action="{% url 'note_search' %}" method="GET">
-                <input type="text" id="search_txt" name="query" placeholder="Search in this course">
-                <input type="hidden" name="course_id" value="{{ course.id }}">
-              </form>
-            </div>
-          {% endif %}
-        </div>
-      </div>
+
+<header id="global-header">
+  {% if request.user.is_authenticated %}
+  <div id="header-login-nav" class="row nav-list">
+    <div class="small-12 columns">
+      <ul>
+        <li><a href="{% url 'accounts_profile' %}">{{ request.user.get_profile.get_points }} Karma Points</a></li>
+        <li><a href="{% url 'control_panel' %}">My Account</a></li>
+        <li><a href="{% url 'account_logout' %}">Log Out</a></li>
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+
+  <div id="main-header" class="row gradient-bar">
+    <div id="logo-container" class="small-12 large-4 columns">
+      <a href="/">
+        <img src="{{ STATIC_URL }}img/global_header_logo.png" alt="global_header_logo" width="144" height="17" />
+      </a>
     </div><!--/logo container-->
 
-    {% if display_add_course %}
-      <div class="small-2 columns small-offset-3 show-for-medium-up">
-        <a id="add_course_header_button" href="#"><img src="{{ STATIC_URL }}img/global_header_pluscourse.png" /></a>
-      </div>
-    {% endif %}
-
-    {% if display_add_note %}
-      <div class="small-2 columns small-offset-3 show-for-medium-up">
-        <a id="add_note_header_button" href="#" onclick="$('.add-note-btn').click();">
-          <img src="{{ STATIC_URL }}img/global_header_plusnote.png" /></a>
-      </div>
-    {% endif %}
-
-    <div id="login_container" class="small-4 medium-2 large-2 columns">
+    <div id="header-nav" class="small-12 large-8 columns nav-list">
       {% if request.user.is_authenticated %}
-        <i id="user_settings" class="fa fa-cog fa-lg"></i>
-        <div id="user_dropdown_container">
-          <ul id="user_dropdown">
-            <li><a href="{% url 'accounts_profile' %}">Dashboard</a></li>
-            <li><a href="{% url 'control_panel' %}">Control Panel</a></li>
-            <li><a href="{% url 'account_logout' %}">Log Out</a></li>
-          </ul>
-        </div>
-        <script>
-         $('#user_settings').click(function() {
-           $('#user_dropdown_container').toggle();
-         });
-        </script>
+        <ul>
+          <li>Courses</li>
+          <li>My Courses</li>
+          <li>My Notes</li>
+          <li>My Quizzes</li>
+        </ul>
       {% else %}
-        <a class="white" href="{% url 'account_login' %}">Log In</a>
+        <ul>
+          <li>Courses</li>
+          <li><a href="{% url 'account_login' %}">Log In</a></li>
+          <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+        </ul>
       {% endif %}
-      <a class="white show-for-large-up" href="{% url 'about' %}">About</a>
+      <!--/header-nav-->
     </div>
-
   </div>
+
 </header><!--/global header-->

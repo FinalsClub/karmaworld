@@ -47,9 +47,6 @@ class CourseListView(ListView, ModelFormMixin, ProcessFormView):
             # if there was an error in the form
             context['jump_to_form'] = True
 
-        # Include "Add Course" button in header
-        context['display_add_course'] = True
-
         # Include settings constants for honeypot
         for key in ('HONEYPOT_FIELD_NAME', 'HONEYPOT_VALUE'):
             context[key] = getattr(settings, key)
@@ -83,9 +80,6 @@ class CourseDetailView(DetailView):
         """ filter the Course.note_set to return no Drafts """
         kwargs = super(CourseDetailView, self).get_context_data()
         kwargs['note_set'] = self.object.note_set.filter(is_hidden=False)
-
-        # Include "Add Note" button in header
-        kwargs['display_add_note'] = True
 
         # For the Filepicker Partial template
         kwargs['file_upload_form'] = FileUploadForm()

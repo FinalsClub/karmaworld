@@ -7,7 +7,6 @@
 
 {% block pagestyle %}
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
-<!-- <link rel="stylesheet" href="{{ STATIC_URL }}css/responsive-tables.css"> -->
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/data_table_list.css">
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
 {% endblock %}
@@ -79,15 +78,29 @@ $(document).ready(function() {
 <section id="home_content">
   <div id="page_header" class="">
     <div id="subhead" class="row">
-      <div class="small-3 large-2 columns">
-        <img src='{{ STATIC_URL }}img/noun_project_6858.svg' alt="A depiction of books">
-      </div>
-      <div class="small-9 large-10 columns">
-        <div class="row subhead-spacer hide-for-small"> </div>
-        <span>Access a growing database of <span style="color: #f05a28;">{{ note_count }}</span> college lecture notes</span>
+      <div id="splash">
+        Browse and contribute lecture notes and quizzes from over 100 college courses.
       </div>
     </div>
   </div>
+
+  <div id="course-search-bar" class="row">
+    <div class="small-12 columns">
+      <button class="add-course">Add a Course</button>
+      <input class="search-courses" type="text" placeholder="Search Courses" />
+      <button class="search-courses">Search</button>
+      <div id="course-sort-wrapper">
+        Sort By
+        <select class="course-sort">
+          <option value="date" selected>Date</option>
+          <option value="notes">Number of Notes</option>
+          <option value="popularity">Popularity</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+
   <div class="row">
     <div class="small-12 columns">
       <!-- Main course table -->
