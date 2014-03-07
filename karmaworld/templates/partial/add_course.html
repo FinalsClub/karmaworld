@@ -9,7 +9,7 @@
 <script src="{{ STATIC_URL }}js/course.js"></script>
 <script src="{{ STATIC_URL }}js/add-course.js"></script>
 
-<section id="add-course-form">
+<section id="add-course-form" class="hide">
   <form method="POST" action="{% url 'home' %}">
   {% csrf_token %}
 
@@ -23,14 +23,14 @@
 
     <div class="row">
       <div class="small-12 columns">
-        <legend>
+        <label for="str_school">
           School
           {% for error in course_form.school.errors %}
           <span style="color:red">
             {{ error }}
           </span>
           {% endfor %}
-        </legend>
+        </label>
         <div>
           <input id="str_school" class="" type="text" name="str_school" placeholder="Select a school"/>
           <input id="id_school" name="school" type='hidden'/>
@@ -40,65 +40,65 @@
 
     <div class="row">
       <div class="small-12 columns">
-        <legend>Course Name:
+        <label for="id_name">Course Name:
           {% if course_form.name.errors %}
             <span style="color:red">
             {{ course_form.name.errors }}
             </span>
           {% endif %}
-        </legend>
+        </label>
         <input id="id_name" class="" type="text" name="name" maxlength="255" />
       </div>
     </div> <!-- .row -->
 
     <div class="row">
       <div class="small-12 columns">
-        <legend>Do not fill in this field:
+        <label>Do not fill in this field:
           {% for error in honeypot_errors %}
             <span style="color:red">
             {{ error }}
             </span>
           {% endfor %}
-        </legend>
+        </label>
         <input type="text" name="{{HONEYPOT_FIELD_NAME}}" value="{{HONEYPOT_VALUE}}" />
       </div>
     </div>
 
     <div class="row">
       <div class="small-12 columns large-6">
-        <legend class="">
+        <label for="id_instructor_name">
           Instructor Name:
           {% for error in course_form.instructor_name.errors %}
             <span style="color:red">
             {{ error }}
             </span>
           {% endfor %}
-        </legend><!-- -->
+        </label><!-- -->
         <input id="id_instructor_name" class="" type="text" name="instructor_name" maxlength="75" />
       </div>
 
       <div class="small-12 columns large-6">
-        <legend class="">
+        <label for="id_instructor_email">
           Instructor Email:
           {% for error in course_form.instructor_email.errors %}
             <span style="color:red">
             {{ error }}
             </span>
           {% endfor %}
-        </legend>
+        </label>
         <input id="id_instructor_email" class="" type="text" name="instructor_email" maxlength="75" />
       </div><!--  -->
     </div> <!-- .row -->
 
     <div class="row">
       <div class="small-12 columns">
-        <legend>Course url:
+        <label for="id_url">Course url:
           {% for error in course_form.url.errors %}
             <span style="color:red">
             {{ error }}
             </span>
           {% endfor %}
-        </legend>
+        </label>
         <input id="id_url" class="" type="text" name="url" maxlength="255" />
       </div>
     </div> <!-- .row -->

@@ -1,26 +1,23 @@
-<tr>
-  <td class="no-display"><!-- this spot solely for the Sort By header --></td>
-  <td class="small-8 columns large-4 slim"><span>Updated {{ course.updated_at|date:"b d, o"|capfirst }}</span></td>
-  <td class="small-4 columns large-2 large-offset-2 slim"><span>{{ course.file_count }} Notes</span></td>
-  <td class="small-4 columns large-2 large-offset-1 slim"><span>{{ course.get_popularity }} Thanks</span></td>
+<tr class="table-row">
+  <td class="hide">{{ course.updated_at|date:"U" }}</td>
+  <td class="hide">{{ course.file_count }}</td>
+  <td class="hide">{{ course.get_popularity }}</td>
 
-  <td class="small-12 large-5 columns">
-    <a href="{{ course.get_absolute_url }}">{% if course.department %}{{course.department.name}}: {% endif %}{{ course.name }}</a> 
+  <td class="small-12 columns">
+    <span class="table-school">{{ course.school.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+    {% if course.department %}<span class="table-department">{{ course.department.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;{% endif %}
+    <span class="table-instructor">{{ course.instructor_name }}</span>
   </td>
-  <td class="hide-for-small large-1 column">
-    <div class="upload">
-      <a href="{{ course.get_absolute_url }}#upload-note">
-        <i
-          data-ot="Upload directly to this course"
-          data-ot-target="true"
-          data-ot-tip-joint="top center"
-          data-ot-target-joint="bottom center"
-          data-ot-background="white"
-          data-ot-border-color="black"
-          class="fa fa-arrow-circle-o-up opentip"></i>
-      </a>
-    </div>
+
+  <td class="small-12 columns">
+    <span class="table-course-name"><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></span>
   </td>
-  <td class="small-6 large-3 columns"><span class="table-font">{{ course.school.name }}</span></td>
-  <td class="small-6 large-3 columns"><span class="table-font">{{ course.instructor_name }}</span></td>
+
+  <td class="small-12 columns last-td">
+    <span class="table-note-count">{{ course.file_count }} Notes</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+    <span class="table-quiz-count">{{ course.quiz_count }} Quizzes </span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+    <span class="table-thanks-count">{{ course.get_popularity }} Thanks </span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+    <span>Updated {{ course.updated_at|date:"b d, o"|capfirst }}</span>
+  </td>
+
 </tr>

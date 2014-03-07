@@ -23,15 +23,6 @@ input.search-courses {
   margin-right: 0;
 }
 
-button.search-courses {
-  display: inline;
-  border: 1px solid grey;
-  padding: 5px;
-  margin: 0;
-  background: white;
-  color: grey;
-}
-
 #course-sort-wrapper {
   float: right;
   display: inline;
@@ -46,4 +37,30 @@ select.course-sort {
   padding: 10px 0 0 0;
 }
 
+span.table-school,
+span.table-note-count,
+span.table-quiz-count,
+span.table-thanks-count {
+  font-weight: bold;
+}
+
+span.table-course-name {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+table.dataTable tbody tr {
+  height: 8em;
+  border-bottom: 1px solid grey;
+}
+
+td.last-td {
+  border-bottom: 1px solid grey;
+}
+
+#add-course-btn {
+  text-transform: uppercase;
+  font-size: 2.5em;
+  text-align: center;
+}
 
