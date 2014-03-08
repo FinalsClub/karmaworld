@@ -4,20 +4,26 @@
   <td class="hide">{{ course.get_popularity }}</td>
 
   <td class="small-12 columns">
-    <span class="table-school">{{ course.school.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-    {% if course.department %}<span class="table-department">{{ course.department.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;{% endif %}
-    <span class="table-instructor">{{ course.instructor_name }}</span>
+    <div class="table-entry-first-line">
+      <span class="table-school">{{ course.school.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+      {% if course.department %}<span class="table-department">{{ course.department.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;{% endif %}
+      <span class="table-instructor">{{ course.instructor_name }}</span>
+    </div>
   </td>
 
   <td class="small-12 columns">
-    <span class="table-course-name"><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></span>
+    <div class="table-entry-second-line">
+      <span class="table-course-name"><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></span>
+    </div>
   </td>
 
-  <td class="small-12 columns last-td">
-    <span class="table-note-count">{{ course.file_count }} Notes</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-    <span class="table-quiz-count">{{ course.quiz_count }} Quizzes </span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-    <span class="table-thanks-count">{{ course.get_popularity }} Thanks </span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-    <span>Updated {{ course.updated_at|date:"b d, o"|capfirst }}</span>
+  <td class="small-12 columns">
+    <div class="table-entry-third-line">
+      <span class="table-note-count">{{ course.file_count }} Notes</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+      <span class="table-quiz-count">{{ course.quiz_count }} Quizzes </span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+      <span class="table-thanks-count">{{ course.get_popularity }} Thanks </span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+      <span>Updated {{ course.updated_at|date:"b d, o"|capfirst }}</span>
+    </div>
   </td>
 
 </tr>

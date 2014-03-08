@@ -1,11 +1,5 @@
 $(function() {
 
-  if (jump_to_form) {
-    $("#add-course-form").show();
-    $('#add-course-btn').hide();
-    document.getElementById('add-course-form').scrollIntoView(true);
-  }
-
   // load dataTable for course data
   var dataTable = $('#data_table_list').dataTable({
     // we will set column widths explicitly

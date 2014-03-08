@@ -14,10 +14,20 @@
 {% block pagescripts %}
   <script>
     // If there were form errors, open the form and jump to it
-    var jump_to_form = {% if jump_to_form %} true {% else%} false {% endif %};
+    var jump_to_form = {% if jump_to_form %}true{% else%}false{% endif %};
+    var json_school_list = "{% url 'json_school_list' %}"
+    var json_school_course_list = "{% url 'json_school_course_list' %}"
+    var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}"
+    var csrf_token = "{{ csrf_token }}";
   </script>
-  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
+  <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+  <script src="{{ STATIC_URL }}js/course.js"></script>
+  <script src="{{ STATIC_URL }}js/add-course.js"></script>
   <script src="{{ STATIC_URL }}js/course-list.js"></script>
+{% endblock %}
+
+{% block bodyscripts %}
+  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -32,7 +42,7 @@
 
   <div id="course-search-bar" class="row">
     <div class="small-12 columns">
-      <button class="add-course" onclick="$('#add-course-btn').click();">Add a Course</button>
+      <button id="add-course-btn" class="add-course">Add a Course</button>
       <input class="search-courses" type="text" placeholder="Search Courses" />
       <div id="course-sort-wrapper">
         Sort By
@@ -69,26 +79,9 @@
     </div><!-- .ten columns -->
   </div> <!-- .row -->
 
-  <div class="row">
-    <div id="add-course-divider" class="small-10 columns small-offset-1"> <hr/> </div>
-  </div>
-
-  <div class="row">
-    <div class="small-12 columns large-10 large-offset-1">
-      <div id="add-course-btn">
-        <i class="fa fa-arrow-circle-o-up"></i> add a course
-      </div>
-      {% include 'partial/add_course.html' %}
-    </div><!-- .ten columns -->
-  </div> <!-- .row -->
-
-  <div class="row">
-    <div class="small-10 columns small-offset-1"> <hr/> </div>
-  </div>
+  {% include 'partial/add_course.html' %}
 
 </section> <!-- #results_content -->
 
 {% endblock %}
 
-{% block bodyscripts %}
-{% endblock bodyscripts %}

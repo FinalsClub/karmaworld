@@ -45,22 +45,16 @@ span.table-thanks-count {
 }
 
 span.table-course-name {
-  font-size: 2em;
-  font-weight: bold;
+  font-size: 1.8em;
 }
 
-table.dataTable tbody tr {
-  height: 8em;
+div.table-entry-third-line {
   border-bottom: 1px solid grey;
+  padding-bottom: 10px;
 }
 
-td.last-td {
-  border-bottom: 1px solid grey;
+div.table-entry-first-line {
+  padding-top: 10px;
 }
 
-#add-course-btn {
-  text-transform: uppercase;
-  font-size: 2.5em;
-  text-align: center;
-}
 

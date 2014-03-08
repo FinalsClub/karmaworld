@@ -21,11 +21,7 @@ $(function() {
 
   addCourse = function() {
     // Show the add a course form
-    $('#add-course-form').show();
-    // Hide the add a course button
-    $('#add-course-btn').hide();
-    // Scroll the user's page to here
-    $('#add-course-divider').ScrollTo();
+    $('#add-course-form').dialog("open");
     // Put focus in first input field
     $('#str_school').focus();
   };
@@ -34,9 +30,16 @@ $(function() {
   // of page
   $('#add-course-btn').click(addCourse);
 
-  // Set up the "Add Course" button in the
-  // page header
-  $('#add_course_header_button').click(addCourse);
+  $('#add-course-form').dialog({
+    autoOpen: false,
+    modal: true,
+    show: { effect: 'fade', duration: 500 },
+    width: 700
+  });
+
+  if (jump_to_form) {
+    $("#add-course-form").dialog("open");
+  }
 
   $("#str_school").autocomplete({
     source: function(request, response){

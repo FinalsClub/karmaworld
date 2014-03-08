@@ -43,10 +43,6 @@
 
 #global_footer {
   line-height: 1.5em;
-  margin: 10px 0 20px 0;
-}
-
-#footer-links-container {
-  border-top: 1px dashed grey;
+  margin: 20px 0 20px 0;
 }
 
