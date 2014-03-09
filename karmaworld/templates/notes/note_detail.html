@@ -193,10 +193,11 @@
             <div class="note-text">
               {% if note.has_markdown %}
                 <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
-              {% else %}
-                <iframe style="border:none; width:100%; min-height: 1000px;"
-                        id="noteframe"> </iframe>
+                <a id="note-iframe-toggle">Show original document</a>
               {% endif %}
+              <iframe style="border:none; width:100%; min-height: 1000px;"
+                      class="{% if note.has_markdown %}hide{% endif %}"
+                      id="noteframe"> </iframe>
               <noscript>
                 {{ note.text }}
               </noscript>
