@@ -204,6 +204,12 @@ class Note(Document):
         (UNKNOWN_FILE, 'Unknown file'),
     )
 
+    PDF_MIMETYPES = (
+      'application/pdf',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    )
+
     file_type       = models.CharField(max_length=15,
                             choices=FILE_TYPE_CHOICES,
                             default=UNKNOWN_FILE,
@@ -407,6 +413,9 @@ class Note(Document):
 
     def has_markdown(self):
         return hasattr(self, "notemarkdown")
+
+    def is_pdf(self):
+        return self.mimetype in Note.PDF_MIMETYPES
 
 
 class NoteMarkdown(models.Model):
