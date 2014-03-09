@@ -26,6 +26,7 @@
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
   <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
   <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
+  <script src="{{ STATIC_URL }}js/marked.js" ></script>
 {% endblock %}
 
 {% block content %}
@@ -190,8 +191,12 @@
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
           {% if note.static_html %}
             <div class="note-text">
-              <iframe style="border:none; width:100%; min-height: 1000px;"
-                      id="noteframe"> </iframe>
+              {% if note.has_markdown %}
+                <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
+              {% else %}
+                <iframe style="border:none; width:100%; min-height: 1000px;"
+                        id="noteframe"> </iframe>
+              {% endif %}
               <noscript>
                 {{ note.text }}
               </noscript>

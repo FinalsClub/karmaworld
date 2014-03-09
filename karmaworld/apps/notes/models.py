@@ -405,6 +405,13 @@ class Note(Document):
             self._update_parent_updated_at()
         super(Note, self).save(*args, **kwargs)
 
+    def has_markdown(self):
+        return hasattr(self, "notemarkdown")
+
+
+class NoteMarkdown(models.Model):
+    note     = models.OneToOneField(Note, primary_key=True)
+    markdown = models.TextField(blank=True, null=True)
 
 auto_add_check_unique_together(Note)
 

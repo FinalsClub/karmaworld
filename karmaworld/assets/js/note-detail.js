@@ -130,25 +130,30 @@ $(function() {
     };
   });
 
-  $.ajax(note_contents_url, {
-    type: 'GET',
-    xhrFields: {
-      onprogress: function (progress) {
-        var percentage = Math.floor((progress.loaded / progress.total) * 100);
-        writeNoteFrame("<h3 style='text-align: center'>" + percentage + "%</h3>");
+  // Embed the converted markdown if it is on the page, else default to the iframe
+  if ($('#note-markdown').length > 0) {
+    $('#note-markdown').html(marked($('#note-markdown').data('markdown')));
+  } else {
+    $.ajax(note_contents_url, {
+      type: 'GET',
+      xhrFields: {
+        onprogress: function (progress) {
+          var percentage = Math.floor((progress.loaded / progress.total) * 100);
+          writeNoteFrame("<h3 style='text-align: center'>" + percentage + "%</h3>");
+        }
+      },
+      success: function(data, textStatus, jqXHR) {
+        writeNoteFrame(data);
+        autoResize('noteframe');
+        if (pdfControls == true) {
+          setupPdfViewer();
+        }
+      },
+      error: function(data, textStatus, jqXHR) {
+        writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
       }
-    },
-    success: function(data, textStatus, jqXHR) {
-      writeNoteFrame(data);
-      autoResize('noteframe');
-      if (pdfControls == true) {
-        setupPdfViewer();
-      }
-    },
-    error: function(data, textStatus, jqXHR) {
-      writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
-    }
-  });
+    });
+  }
 
   $('#edit_note_tags').click(function(event) {
     $('#note_tags_form').slideToggle();
@@ -169,5 +174,4 @@ $(function() {
       }
     });
   });
-
 });
