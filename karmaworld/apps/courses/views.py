@@ -208,6 +208,7 @@ def flag_course(request, pk):
     """Record that somebody has flagged a note."""
     return ajax_increment(Course, request, pk, FLAG_FIELD, USER_PROFILE_FLAGS_FIELD, process_course_flag_events)
 
+
 def edit_course(request, pk):
     """
     Saves the edited course content

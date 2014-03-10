@@ -23,9 +23,9 @@ class UserProfileManager(models.Manager):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    thanked_notes = models.ManyToManyField('notes.Note', related_name='users_thanked')
-    flagged_notes = models.ManyToManyField('notes.Note', related_name='users_flagged')
-    flagged_courses = models.ManyToManyField('courses.Course', related_name='users_flagged')
+    thanked_notes = models.ManyToManyField('notes.Note', related_name='users_thanked', blank=True, null=True)
+    flagged_notes = models.ManyToManyField('notes.Note', related_name='users_flagged', blank=True, null=True)
+    flagged_courses = models.ManyToManyField('courses.Course', related_name='users_flagged', blank=True, null=True)
     school = models.ForeignKey(School, blank=True, null=True)
 
     def natural_key(self):
@@ -41,7 +41,10 @@ class UserProfile(models.Model):
         return sum
 
     def can_edit_items(self):
-        return (self.get_points() >= 20)
+        if self.user.is_staff:
+            return True
+        else:
+            return (self.get_points() >= 20)
 
     NO_BADGE = 0
     PROSPECT = 1

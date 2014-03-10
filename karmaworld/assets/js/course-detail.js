@@ -20,8 +20,15 @@ $(function() {
     }
   });
 
+  $('#edit-course-form').dialog({
+    autoOpen: false,
+    modal: true,
+    show: { effect: 'fade', duration: 500 },
+    width: dialogWidth
+  });
+
   $('#edit-button').click(function(event) {
-    $('#edit-course-form').slideToggle();
+    $('#edit-course-form').dialog("open");
   });
 
   $('#edit-save-btn').click(function(event) {

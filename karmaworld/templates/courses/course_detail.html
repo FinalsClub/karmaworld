@@ -7,7 +7,6 @@
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
   <script src="{{ STATIC_URL }}js/course.js"></script>
   <script src="{{ STATIC_URL }}js/course-detail.js" ></script>
-  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js" ></script>
   <script>
     var json_school_course_list = "{% url 'json_school_course_list' %}";
     var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}";
@@ -19,8 +18,6 @@
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/data_table_list.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
 {% endblock %}
 
 
@@ -31,81 +28,53 @@
 {% block content %}
   <section id="course_content">
 
-    <div id="course_header" class="hero_gradient_bar">
+    <div id="course-header">
       <div class="row">
-        <div id="course_name" class="small-12 columns header_title">
-          {{ course.name }}
-        </div><!-- /course_name -->
+        <div class="small-12 columns">
+          <span class="course-header-school">{{ course.school.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          {% if course.department %}<span class="course-header-department">{{ course.department.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;{% endif %}
+          <span class="course-header-instructor">{{ course.instructor_name }}</span>
+        </div>
       </div>
 
       <div class="row">
-        <div id="course_meta" class="twelve columns">
-          <div class="activity_details_context">
-            <span id="course_instructor_name">{{ course.instructor_name }}</span>
-            <span id="course_department">{% if course.department %}// {{ course.department.name }}{% endif %}</span>
-          </div><!-- /activity_details_context -->
-        </div><!-- /course_meta -->
-      </div>
+        <div class="small-12 columns">
+          <span id="course-header-name">{{ course.name }}</span>
 
-      <div class="row">
-        <div id="course_meta" class="twelve columns">
-          <div class="activity_details_context">
-            {{ course.school.name }}
-          </div><!-- /activity_details_context -->
-        </div><!-- /course_meta -->
+          &nbsp;&nbsp;
+
+          {% if user.is_authenticated %}
+            {% if user.get_profile.can_edit_items %}
+              <i id="edit-button" class="fa fa-edit"></i>
+            {% endif %}
+
+            {% if already_flagged %}
+              <i class="fa fa-flag"></i> You have reported this course as inappropriate
+            {% else %}
+              <i class="fa fa-flag" id="flag-button"></i> Report course as inappropriate
+            {% endif %}
+          {% else %}
+            <i class="fa fa-flag"></i> Log in to flag a course as inappropraite
+          {% endif %}
+        </div>
       </div>
 
       <div class="row {% if not course.url %}hide{% endif %}">
-        <div id="course_link" class="twelve columns">
-          <div class="activity_details_context">
-            <a id="course_url" rel="nofollow" target="_blank" href="{{ course.url }}">
-              {{ course.url|slice:":50" }}
-              <i class="fa fa-external-link-square"></i>
-            </a>
-          </div><!-- /activity_details_context -->
-        </div><!-- /course_meta -->
+        <div id="course_link" class="small-12 columns">
+          <a id="course_url" rel="nofollow" target="_blank" href="{{ course.url }}">
+            {{ course.url|slice:":50" }}
+            <i class="fa fa-external-link-square"></i>
+          </a>
+        </div>
       </div>
 
-      <div class="row">
-        <div id="course_actions" class="large-3 medium-6 small-12 columns small-centered">
-          <div class="row">
-            <div class="small-12 column center">
-              {% if user.is_authenticated %}
-                {% if user.get_profile.can_edit_items %}
-                  <a href="#" id="edit-button"><img src="{{ STATIC_URL }}img/edit.png" alt="edit_flag" width="25" height="35"/></a>
-                {% endif %}
-
-                {% if already_flagged %}
-                  <img src="{{ STATIC_URL }}img/note_flag_disabled.png"
-                       alt="course_flag"
-                       width="25" height="35"
-                       data-ot="You've already flagged this course"
-                       {% include 'partial/opentip_settings.html' %}
-                       class="opentip" />
-                {% else %}
-                  <a href="#" id="flag-button">
-                    <img src="{{ STATIC_URL }}img/note_flag.png" alt="course_flag" width="25" height="35" />
-                  </a>
-                {% endif %}
-              {% else %}
-                <img src="{{ STATIC_URL }}img/note_flag_disabled.png"
-                     alt="course_flag"
-                     width="25" height="35"
-                     data-ot="You need to log in to flag a course"
-                     {% include 'partial/opentip_settings.html' %}
-                     class="opentip" />
-              {% endif %}
-              <a href="#" id="flag-button-disabled" class="hide">
-                <img src="{{ STATIC_URL }}img/note_flag_disabled.png" alt="course_flag" width="25" height="35" />
-              </a>
-            </div>
-          </div>
-        </div><!-- /course_actions -->
+      <div id="end-header" class="row">
       </div>
+
     </div><!-- /course_header -->
 
     {% if user.get_profile.can_edit_items %}
-      <section id="edit-course-form">
+      <section id="edit-course-form" class="hide">
         <form>
           {% csrf_token %}
 
@@ -117,7 +86,7 @@
 
           <div class="row hide">
             <div class="small-12 columns">
-              <legend>School</legend>
+              <label for="id_school">School</label>
               <div>
                 <input id="id_school" value="{{ course.school.id }}" name="school" type='hidden'/>
               </div>
@@ -126,26 +95,26 @@
 
           <div class="row">
             <div class="small-12 columns">
-              <legend>Course Name:</legend>
+              <label for="id_name">Course Name:</label>
               <input id="id_name" class="" type="text" name="name" maxlength="255" value="{{ course.name }}"/>
             </div>
           </div> <!-- .row -->
 
           <div class="row">
             <div class="small-12 columns large-6">
-              <legend>Instructor Name:</legend>
+              <label for="id_instructor_name">Instructor Name:</label>
               <input id="id_instructor_name" class="" type="text" name="instructor_name" maxlength="75" value="{{ course.instructor_name }}"/>
             </div>
 
             <div class="small-12 columns large-6">
-              <legend>Instructor Email:</legend>
+              <label for="id_instructor_email">Instructor Email:</label>
               <input id="id_instructor_email" class="" type="text" name="instructor_email" maxlength="75" value="{{ course.instructor_email }}"/>
             </div>
           </div> <!-- .row -->
 
           <div class="row">
             <div class="small-12 columns">
-              <legend>Course url:</legend>
+              <label for="id_url">Course url:</label>
               <input id="id_url" class="" type="text" name="url" maxlength="255" value="{{ course.url }}"/>
             </div>
           </div> <!-- .row -->
@@ -158,6 +127,22 @@
         </form>
       </section>
     {% endif %}
+
+    <div id="course-search-bar" class="row">
+    <div class="small-12 columns">
+      <button id="add-course-btn" class="add-course">Add a Course</button>
+      <input class="search-courses" type="text" placeholder="Search Courses" />
+      <div id="course-sort-wrapper">
+        Sort By
+        <select class="course-sort">
+          <option value="0">Date</option>
+          <option value="1">Number of Notes</option>
+          <option value="2" selected>Popularity</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
 
     <div class="row">
       <div class="small-10 columns small-offset-1"> <hr/> </div>

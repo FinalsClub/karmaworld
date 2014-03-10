@@ -34,7 +34,7 @@ $(function() {
     autoOpen: false,
     modal: true,
     show: { effect: 'fade', duration: 500 },
-    width: 700
+    width: dialogWidth
   });
 
   if (jump_to_form) {
