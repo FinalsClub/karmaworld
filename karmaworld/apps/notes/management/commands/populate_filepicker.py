@@ -22,7 +22,7 @@ class Command(BaseCommand):
            """
 
     def handle(self, *args, **kwargs):
-        for note in Note.objects.iterator():
+        for note in Note.objects.filter(fp_file='').iterator():
             if note.fp_file.name:
                 print "Skipping {0}".format(str(note))
                 continue
@@ -76,4 +76,4 @@ class Command(BaseCommand):
 
             note.save()
 
-
+            print "Successfully fixed {0}".format(str(note))
