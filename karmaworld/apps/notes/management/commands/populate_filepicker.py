@@ -27,13 +27,15 @@ class Command(BaseCommand):
                 print "Skipping {0}".format(str(note))
                 continue
 
-            # grab the html from inside the note and process it
-            html_resp = requests.get('http:{0}{1}'.format(settings.S3_URL, note.get_relative_s3_path()))
-            if html_resp.status_code is not 200:
-                print html_resp.text
-                continue
-
-            html = html_resp.text
+            if note.static_html:
+                # grab the html from inside the note and process it
+                html_resp = requests.get('http:{0}{1}'.format(settings.S3_URL, note.get_relative_s3_path()))
+                if html_resp.status_code is not 200:
+                    print html_resp.text
+                    continue
+                html = html_resp.text
+            else:
+                html = note.html
 
             fp_policy_json = '{{"expiry": {0}, "call": ["pick","store","read","stat"]}}'
             fp_policy_json = fp_policy_json.format(int(time.time() + 31536000))
@@ -65,6 +67,9 @@ class Command(BaseCommand):
                 print "It looks like this note upload did not succeed"
                 print str(note)
                 continue
+
+            if get_resp.text != html:
+                print "The content at the new Filepicker URL does not match the original note contents!"
 
             note.save()
 
