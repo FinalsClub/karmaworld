@@ -57,9 +57,11 @@ window.KARMAWORLD.Course = {
   }
 };
 
-var bodyWidth = $('body').width();
-if (bodyWidth < 700) {
-  var dialogWidth = bodyWidth;
-} else {
-  var dialogWidth = 700;
+function dialogWidth() {
+  var bodyWidth = $('body').width();
+  if (bodyWidth < 700) {
+    return bodyWidth;
+  } else {
+    return 700;
+  }
 }

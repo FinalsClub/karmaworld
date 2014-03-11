@@ -20,3 +20,41 @@ span.course-header-school
   margin-top: 20px;
   border-bottom: 1px solid black;
 }
+
+#edit-button,
+#flag-button
+{
+  cursor: pointer;
+}
+
+button.add-note {
+  background: grey;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 0.3em;
+  display: inline;
+}
+
+input.search-notes {
+  width: 15em;
+  display: inline;
+  margin-right: 0;
+}
+
+#note-sort-wrapper {
+  float: right;
+  display: inline;
+}
+
+select.note-sort {
+  width: 10em;
+}
+
+#note-search-bar {
+  margin-top: 20px;
+  border: 1px solid grey;
+  padding: 10px 0 0 0;
+}
+
+

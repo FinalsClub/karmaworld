@@ -24,7 +24,7 @@ $(function() {
     autoOpen: false,
     modal: true,
     show: { effect: 'fade', duration: 500 },
-    width: dialogWidth
+    width: dialogWidth()
   });
 
   $('#edit-button').click(function(event) {
@@ -44,7 +44,6 @@ $(function() {
 
         // We might want to use a template here instead of rehashing logic
         // on both the client and server side
-        $('#edit-course-form').slideUp();
         $('.validation_error').remove()
         $('#course_form_errors').empty();
         $('#course_name').text(data.fields.name);

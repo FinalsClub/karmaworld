@@ -18,6 +18,12 @@
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/data_table_list.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
+{% endblock %}
+
+{% block bodyscripts %}
+  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
 {% endblock %}
 
 
@@ -45,13 +51,13 @@
 
           {% if user.is_authenticated %}
             {% if user.get_profile.can_edit_items %}
-              <i id="edit-button" class="fa fa-edit"></i>
+              <span id="edit-button"> <i class="fa fa-edit"></i> Edit this course</span>&nbsp;&nbsp;
             {% endif %}
 
             {% if already_flagged %}
               <i class="fa fa-flag"></i> You have reported this course as inappropriate
             {% else %}
-              <i class="fa fa-flag" id="flag-button"></i> Report course as inappropriate
+              <span id="flag-button"><i class="fa fa-flag"></i> Report course as inappropriate</span>
             {% endif %}
           {% else %}
             <i class="fa fa-flag"></i> Log in to flag a course as inappropraite
@@ -128,20 +134,22 @@
       </section>
     {% endif %}
 
-    <div id="course-search-bar" class="row">
-    <div class="small-12 columns">
-      <button id="add-course-btn" class="add-course">Add a Course</button>
-      <input class="search-courses" type="text" placeholder="Search Courses" />
-      <div id="course-sort-wrapper">
-        Sort By
-        <select class="course-sort">
-          <option value="0">Date</option>
-          <option value="1">Number of Notes</option>
-          <option value="2" selected>Popularity</option>
-        </select>
+    <div id="note-search-bar" class="row">
+      <div class="small-12 columns">
+        <button id="add-note-btn" class="add-note">Add a Note</button>
+        <input class="search-notes" type="text" placeholder="Search Notes" />
+        <input id="quiz-available-filter" type="checkbox" />
+        <label class="inline-label" for="quiz-available-filter">Quiz Available</label>
+        <div id="note-sort-wrapper">
+          Sort By
+          <select class="note-sort">
+            <option value="0">Date</option>
+            <option value="1">Number of Quizzes</option>
+            <option value="2" selected>Popularity</option>
+          </select>
+        </div>
       </div>
     </div>
-  </div>
 
 
     <div class="row">

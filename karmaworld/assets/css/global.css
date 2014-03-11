@@ -46,3 +46,7 @@
   margin: 20px 0 20px 0;
 }
 
+label.inline-label
+{
+  display: inline;
+}
