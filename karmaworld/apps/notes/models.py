@@ -158,6 +158,9 @@ class Document(models.Model):
         Returns the Filepicker URL for reading the upstream document.
         """
         # Fetch FilepickerFile
+        if not self.fp_file.name:
+            return None
+
         fpf = self._get_fpf()
         # Return proper URL for reading
         return fpf.get_url()
