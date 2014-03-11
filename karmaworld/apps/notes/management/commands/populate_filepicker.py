@@ -4,6 +4,7 @@
 import time
 import json
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 from karmaworld.apps.notes.models import Note
@@ -27,25 +28,44 @@ class Command(BaseCommand):
                 continue
 
             # grab the html from inside the note and process it
-            html = note.filter_html(note.html)
+            html_resp = requests.get('http:{0}{1}'.format(settings.S3_URL, note.get_relative_s3_path()))
+            if html_resp.status_code is not 200:
+                print html_resp.text
+                continue
+
+            html = html_resp.text
 
             fp_policy_json = '{{"expiry": {0}, "call": ["pick","store","read","stat"]}}'
             fp_policy_json = fp_policy_json.format(int(time.time() + 31536000))
             fp_policy      = encode_fp_policy(fp_policy_json)
             fp_signature   = sign_fp_policy(fp_policy)
 
-            resp = requests.post('https://www.filepicker.io/api/store/S3',
+            upload_resp = requests.post('https://www.filepicker.io/api/store/S3',
                           params={'key': FILEPICKER_API_KEY,
                                   'policy': fp_policy,
                                   'signature': fp_signature,
-                                  'filename': slugify(note.name)})
+                                  'filename': slugify(note.name)},
+                          headers={'Content-Type': 'text/html; charset=utf-8'},
+                          data=html.encode('utf-8'))
 
-            if resp.status_code is not 200:
-                print resp.text
+            if upload_resp.status_code is not 200:
+                print upload_resp.text
                 continue
 
-            resp_json = json.loads(resp.text)
-            note.fp_file = resp_json['url']
+            resp_json = json.loads(upload_resp.text)
+            url = resp_json['url']
+            note.fp_file = url
+
+            get_resp = requests.get(url,
+                                    params={'key': FILEPICKER_API_KEY,
+                                            'policy': fp_policy,
+                                            'signature': fp_signature})
+
+            if get_resp.status_code is not 200:
+                print "It looks like this note upload did not succeed"
+                print str(note)
+                continue
+
             note.save()
 
 
