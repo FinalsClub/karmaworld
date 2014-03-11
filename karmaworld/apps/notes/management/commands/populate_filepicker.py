@@ -34,8 +34,11 @@ class Command(BaseCommand):
                     print html_resp.text
                     continue
                 html = html_resp.text
-            else:
+            elif note.html:
                 html = note.html
+            else:
+                print "Couldn't find any HTML for {0}".format(str(note))
+                continue
 
             fp_policy_json = '{{"expiry": {0}, "call": ["pick","store","read","stat"]}}'
             fp_policy_json = fp_policy_json.format(int(time.time() + 31536000))
