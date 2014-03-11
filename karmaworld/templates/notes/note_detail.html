@@ -116,25 +116,15 @@
                 </a>
               </div>
               <div class="small-4 column">
-                {% if note.get_fp_url %}
-                  <a id="note-download-button" href="{{ note.get_fp_url }}">
-                    <img
-                      src="{{ STATIC_URL }}img/note_download.png"
-                      alt="note_download"
-                      width="51" height="36"
-                      data-ot="It costs 2 karma points to download a note"
-                      {% include 'partial/opentip_settings.html' %}
-                      class="opentip" />
-                  </a>
-                {% else %}
+                <a id="note-download-button" href="{{ note.get_fp_url }}">
                   <img
-                    src="{{ STATIC_URL }}img/note_download_disabled.png"
+                    src="{{ STATIC_URL }}img/note_download.png"
                     alt="note_download"
                     width="51" height="36"
-                    data-ot="Sorry, this note cannot be downloaded"
+                    data-ot="It costs 2 karma points to download a note"
                     {% include 'partial/opentip_settings.html' %}
                     class="opentip" />
-                {% endif %}
+                </a>
               </div>
             {% else %}
               <div class="small-4 column">
