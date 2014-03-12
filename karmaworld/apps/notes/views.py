@@ -28,12 +28,6 @@ from karmaworld.apps.notes.forms import NoteForm
 
 logger = logging.getLogger(__name__)
 
-PDF_MIMETYPES = (
-    'application/pdf',
-    'application/vnd.ms-powerpoint',
-    'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-)
-
 THANKS_FIELD = 'thanks'
 USER_PROFILE_THANKS_FIELD = 'thanked_notes'
 FLAG_FIELD = 'flags'
@@ -49,7 +43,7 @@ class NoteDetailView(DetailView):
         """ Generate custom context for the page rendering a Note
             + if pdf, set the `pdf` flag
         """
-        if self.object.mimetype in PDF_MIMETYPES:
+        if self.object.is_pdf():
             kwargs['pdf_controls'] = True
 
         if self.request.user.is_authenticated():
