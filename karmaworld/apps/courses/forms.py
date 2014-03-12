@@ -5,53 +5,115 @@
 import random
 
 from django.conf import settings
-from django.forms import ModelForm
 from django.forms import CharField
 from django.forms import ValidationError
-from django.forms.util import ErrorList
 
+from ajax_select.fields import AutoCompleteField
 from ajax_select.fields import AutoCompleteSelectField
 from ajax_select_cascade.fields import AutoCompleteDependentSelectField
 
+# generates DIV errors with appropriate classes
+from karmaworld.utils.forms import NiceErrorModelForm
+# supports handling autocomplete fields as a model object or a value
+from karmaworld.utils.forms import ACFieldModelForm
+# supports filling in Foreign Key fields with another ModelForm
+from karmaworld.utils.forms import DependentModelForm
+
 from karmaworld.apps.courses.models import Course
+from karmaworld.apps.courses.models import School
+from karmaworld.apps.courses.models import Professor
 from karmaworld.apps.courses.models import Department
+from karmaworld.apps.courses.models import ProfessorTaught
 
 
-# Django hard codes CSS attributes into ModelForm returned ErrorList
-# https://github.com/django/django/blob/1.5.5/django/forms/util.py#L54-L60
-# https://docs.djangoproject.com/en/1.5/ref/forms/api/#customizing-the-error-list-format
-# so this unfortunately doesn't do anything with ModelForms:
-# https://docs.djangoproject.com/en/1.5/ref/forms/api/#django.forms.Form.error_css_class
-class CSSErrorList(ErrorList):
-    """ Override ErrorList classes. """
-    def as_ul(self, *args, **kwargs):
-        errorhtml = super(CSSErrorList, self).as_ul(*args, **kwargs)
-        # insert <label> around the error
-        errorhtml = errorhtml.replace('<li>', "<li><label class='validation_error'>")
-        errorhtml = errorhtml.replace('</li>', '</label></li>')
-        # replace hard coded "errorlist" with something in our CSS:
-        errorhtml = errorhtml.replace('errorlist', 'validation_error')
-        return errorhtml
+class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
+    """ Find or create a Professor. """
+    # AutoCompleteField would make sense for these fields because it only
+    # returns the value while AutoCompleteSelectField returns the object.
+    # This way, Javascript on the front end can autofill the other field based
+    # on the autocompletion of one field because the whole object is available.
 
-
-class NiceErrorModelForm(ModelForm):
-    """ By default use CSSErrorList for displaying errors. """
-    def __init__(self, *args, **kwargs):
-        if 'error_class' not in kwargs:
-            kwargs['error_class'] = CSSErrorList
-        super(NiceErrorModelForm, self).__init__(*args, **kwargs)
-
-
-class CourseForm(NiceErrorModelForm):
     # first argument is ajax channel name, defined in models as LookupChannel.
-    school = AutoCompleteSelectField('school', help_text='')
-    department = AutoCompleteDependentSelectField(
-        'dept_given_school', help_text='',
+    name = AutoCompleteSelectField('professor_object_by_name', help_text='',
+        label="Professor's name",
+        # allows creating a new Professor on the fly
+        required=False)
+    email = AutoCompleteSelectField('professor_object_by_email', help_text='',
+        label="Professor's email address",
+        # allows creating a new Professor on the fly
+        required=False)
+
+    class Meta:
+        model = Professor
+        # order the fields
+        fields = ('name', 'email')
+
+    def _clean_distinct_field(self, field, *args, **kwargs):
+        """
+        Check to see if Professor model is found before grabbing the field.
+        Ensure that if Professor was already found, the new field corresponds.
+
+        In theory, Javascript could and should ensure this.
+        In practice, better safe than incoherent.
+        """
+        oldprof = None
+        if hasattr(self, 'instance') and self.instance:
+            # Professor was already autocompleted. Save that object.
+            oldprof = self.instance
+        # Extract the field value, possibly replacing self.instance
+        value = self._clean_field(field, *args, **kwargs)
+        if oldprof and not value:
+            # This field was not supplied, but another one determined the prof.
+            # Grab field from prof model object.
+            value = getattr(oldprof, field)
+        if oldprof and self.instance != oldprof:
+            # Two different Professor objects have been found across fields.
+            raise ValidationError('It looks like two or more different Professors have been autocompleted.')
+        return value
+
+    def clean_name(self, *args, **kwargs):
+        return self._clean_distinct_field('name', *args, **kwargs)
+
+    def clean_email(self, *args, **kwargs):
+        return self._clean_distinct_field('email', *args, **kwargs)
+
+
+class DepartmentForm(NiceErrorModelForm, ACFieldModelForm):
+    """ Find and create a Department given a School. """
+    # first argument is ajax channel name, defined in models as LookupChannel.
+    school = AutoCompleteSelectField('school_object_by_name', help_text='')
+    # first argument is ajax channel name, defined in models as LookupChannel.
+    name = AutoCompleteDependentSelectField(
+        'dept_object_by_name_given_school', help_text='',
+        label='Department name',
         # autocomplete department based on school
-        dependsOn=school, 
+        dependsOn=school,
         # allows creating a new department on the fly
         required=False
     )
+
+    class Meta:
+        model = Department
+        # order the fields
+        fields = ('school', 'name')
+
+    def clean_name(self, *args, **kwargs):
+        """
+        Extract the name from the Department object if it already exists.
+        """
+        name = self._clean_field('name', *args, **kwargs)
+        # this might be unnecessary
+        if not name:
+            raise ValidationError('Cannot create a Department without a name.')
+        return name
+
+
+class CourseForm(NiceErrorModelForm, DependentModelForm):
+    """ A course form which adds a honeypot and autocompletes some fields. """
+    # first argument is ajax channel name, defined in models as LookupChannel.
+    # note this AJAX field returns a field value, not a course object.
+    name = AutoCompleteField('course_name_by_name', help_text='',
+        label="Course name")
 
     def __init__(self, *args, **kwargs):
         """ Add a dynamically named field. """
@@ -65,39 +127,17 @@ class CourseForm(NiceErrorModelForm):
     class Meta:
         model = Course
         # order the fields
-        fields = ('school', 'department', 'name', 'instructor_name',
-                  'instructor_email', 'url')
-
-    def clean_department(self, *args, **kwargs):
-        """ Create a new department if one is not provided. """
-        if 'department' not in self.cleaned_data or \
-           not self.cleaned_data['department']:
-            # Department is missing.
-            # Can a new one be made?
-            if 'school' not in self.cleaned_data or \
-               not self.cleaned_data['school']:
-                raise ValidationError('Cannot create a new department without a school.')
-            if 'department_text' not in self.data or \
-               not self.data['department_text']:
-                raise ValidationError('Cannot create a new department without a name.')
-
-            # Build a new Department.
-            school = self.cleaned_data['school']
-            dept_name = self.data['department_text']
-            dept = Department(name=dept_name, school=school)
-            dept.save()
-
-            # Fill in cleaned data as though this department were chosen.
-            self.cleaned_data['department'] = dept
-        # Return the clean Department
-        return self.cleaned_data['department']
+        fields = ('name', 'url')
+        # pass department data onto DepartmentForm
+        model_fields = {'department': DepartmentForm}
 
     def clean(self, *args, **kwargs):
-        """ Additional form validation. """
+        """ Honeypot validation. """
 
         # Call ModelFormMixin or whoever normally cleans house.
         cleaned_data = super(CourseForm, self).clean(*args, **kwargs)
 
+        # Check the honeypot
         # parts of this code borrow from
         # https://github.com/sunlightlabs/django-honeypot
         hfn = settings.HONEYPOT_FIELD_NAME
@@ -107,3 +147,17 @@ class CourseForm(NiceErrorModelForm):
             self._errors[hfn] = [settings.HONEYPOT_ERROR]
             del cleaned_data[hfn]
         return cleaned_data
+
+
+class ProfessorTaughtForm(NiceErrorModelForm, DependentModelForm):
+    """ Create an association between the chosen Professor and Course. """
+
+    class Meta:
+        model = ProfessorTaught
+        # no actual fields
+        fields = tuple()
+        # pass professor and course data onto appropriate forms.
+        model_fields = {
+            'professor': ProfessorForm,
+            'course': CourseForm,
+        }

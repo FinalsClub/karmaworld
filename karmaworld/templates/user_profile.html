@@ -93,7 +93,7 @@
                         <a href="{{ event.note.get_absolute_url }}" class="activity_target">{{ event.note.name }}</a>
                       </div>
                       <div class="small-12 columns activity_details_context">
-                        <a href="{{ event.note.course.get_absolute_url }}" class="course_link">{{ event.note.course.name }} // {{ event.note.course.school.name }}</a>
+                        <a href="{{ event.note.course.get_absolute_url }}" class="course_link">{{ event.note.course.name }} // {% if event.note.course.school %}{{ event.note.course.school.name }}{% else %}{{ event.note.course.department.school.name }}{% endif %}</a>
                       </div>
                     {% endif %}
                     {% if item.0 == 'CourseKarmaEvent' %}
@@ -101,7 +101,7 @@
                         <a href="{{ event.course.get_absolute_url }}" class="activity_target">{{ event.course.name }}</a>
                       </div>
                       <div class="small-12 columns activity_details_context">
-                        {{ event.course.school.name }}
+                        {% if event.course.school %}{{ event.course.school.name }}{% else %}{{ event.course.department.school.name }}{% endif %}</a>
                       </div>
                     {% endif %}
 

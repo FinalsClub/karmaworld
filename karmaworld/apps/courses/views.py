@@ -16,13 +16,16 @@ from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 
-from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.users.models import CourseKarmaEvent
 from karmaworld.apps.notes.forms import FileUploadForm
 from karmaworld.utils import ajax_increment, format_session_increment_field
+
+# ProfessorTaughtForm contains CourseForm
+from karmaworld.apps.courses.forms import ProfessorTaughtForm as CourseForm
+
 
 FLAG_FIELD = 'flags'
 USER_PROFILE_FLAGS_FIELD = 'flagged_courses'
@@ -63,7 +66,7 @@ class CourseListSubView(ListView):
         # get the total number of notes
         context['note_count'] = Note.objects.count()
         # get the course form for the form at the bottom of the homepage
-        context['course_form'] = CourseAddFormView.form_class()
+        context['course_form'] = CourseForm()
 
         # Include "Add Course" button in header
         context['display_add_course'] = True

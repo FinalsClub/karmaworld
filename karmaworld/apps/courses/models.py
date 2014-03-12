@@ -20,6 +20,23 @@ from ajax_select_cascade import DependentLookupChannel
 from ajax_select_cascade import register_channel_name
 
 
+class AnonLookupChannel(LookupChannel):
+    def check_auth(self, request):
+        """ Allow anonymous access. """
+        # By default, Lookups require request.is_staff. Don't require anything!
+        pass
+
+
+class FieldLookupChannel(AnonLookupChannel):
+    def get_query(self, q, request):
+        """
+        Case insensitive contain search against the given field.
+        Returns model objects with matching field.
+        """
+        kwargs = { str(self.field_lookup) + '__icontains': q }
+        return self.model.objects.filter(**kwargs)
+
+
 class SchoolManager(models.Manager):
     """ Handle restoring data. """
     def get_by_natural_key(self, usde_id):
@@ -79,22 +96,17 @@ class School(models.Model):
         self.save()
 
 
-@register_channel_name('school')
-class SchoolLookup(LookupChannel):
+@register_channel_name('school_object_by_name')
+class SchoolLookup(AnonLookupChannel):
     """
-    Handles AJAX lookups against the school model's name and value fields.
+    Handles AJAX lookups against the school model's name and alias fields.
     """
     model = School
 
     def get_query(self, q, request):
         """ Search against both name and alias. """
         query = models.Q(name__icontains=q) | models.Q(alias__icontains=q)
-        return School.objects.filter(query)
-
-    def check_auth(self, request):
-        """ Allow anonymous access. """
-        # By default, Lookups require request.is_staff. Don't require anything!
-        pass
+        return self.model.objects.filter(query)
 
 
 class DepartmentManager(models.Manager):
@@ -110,7 +122,7 @@ class Department(models.Model):
     """ Department within a School. """
     objects     = DepartmentManager()
 
-    name        = models.CharField(max_length=255)
+    name        = models.CharField(max_length=255, verbose_name="Department name")
     school      = models.ForeignKey(School) # Should this be optional ever?
     slug        = models.SlugField(max_length=150, null=True)
     url         = models.URLField(max_length=511, blank=True, null=True)
@@ -140,8 +152,8 @@ class Department(models.Model):
         super(Department, self).save(*args, **kwargs)
 
 
-@register_channel_name('dept_given_school')
-class DeptGivenSchoolLookup(DependentLookupChannel):
+@register_channel_name('dept_object_by_name_given_school')
+class DeptGivenSchoolLookup(DependentLookupChannel, AnonLookupChannel):
     """
     Handles AJAX lookups against the department model's name field given a
     school.
@@ -154,12 +166,8 @@ class DeptGivenSchoolLookup(DependentLookupChannel):
             return Department.objects.filter(name__icontains=q,
                                              school__id=dependency)
         else:
+            # If no dependency is submit, return nothing.
             return []
-
-    def check_auth(self, request):
-        """ Allow anonymous access. """
-        # By default, Lookups require request.is_staff. Don't require anything!
-        pass
 
 
 class ProfessorManager(models.Manager):
@@ -177,8 +185,9 @@ class Professor(models.Model):
     """
     objects = ProfessorManager()
 
-    name = models.CharField(max_length=255)
-    email = models.EmailField(blank=True, null=True)
+    name  = models.CharField(max_length=255, verbose_name="Professor's name")
+    email = models.EmailField(blank=True, null=True,
+        verbose_name="Professor's Email")
 
     class Meta:
         """
@@ -196,6 +205,24 @@ class Professor(models.Model):
         A Professor is uniquely defined by his/her name and email.
         """
         return (self.name,self.email)
+
+
+@register_channel_name('professor_object_by_name')
+class ProfessorLookup(FieldLookupChannel):
+    """
+    Handles AJAX lookups against the professor model's name field.
+    """
+    model = Professor
+    field_lookup = 'name'
+
+
+@register_channel_name('professor_object_by_email')
+class ProfessorEmailLookup(FieldLookupChannel):
+    """
+    Handles AJAX lookups against the professor model's email field.
+    """
+    model = Professor
+    field_lookup = 'email'
 
 
 class ProfessorAffiliationManager(models.Manager):
@@ -249,7 +276,7 @@ class Course(models.Model):
     objects     = CourseManager()
 
     # Core metadata
-    name        = models.CharField(max_length=255, verbose_name="Course:")
+    name        = models.CharField(max_length=255, verbose_name="Course name")
     slug        = models.SlugField(max_length=150, null=True)
     # department should remove nullable when school gets yoinked
     department  = models.ForeignKey(Department, blank=True, null=True)
@@ -260,7 +287,7 @@ class Course(models.Model):
 
     desc        = models.TextField(max_length=511, blank=True, null=True)
     url         = models.URLField(max_length=511, blank=True, null=True,
-                                  verbose_name="Course URL:")
+                                  verbose_name="Course URL")
 
     # instructor_* is vestigial, replaced by Professor+ProfessorTaught models.
     instructor_name     = models.CharField(max_length=255, blank=True, null=True)
@@ -328,6 +355,24 @@ class Course(models.Model):
         return self.note_set.aggregate(x=models.Sum('thanks'))['x'] or 0
 
 reversion.register(Course)
+
+
+@register_channel_name('course_name_by_name')
+class CourseNameLookup(FieldLookupChannel):
+    """
+    Handles AJAX lookups against the course model's name field.
+    Returns just the matching field values.
+    """
+    model = Course
+    field_lookup = 'name'
+
+    def get_query(self, q, request):
+        """ Return only the list of name fields. """
+        # Find the matching objects.
+        results = super(CourseNameLookup, self).get_query(q, request)
+        # Only return the name field, not the object.
+        return results.values_list(self.field_lookup, flat=True)
+
 
 class ProfessorTaughtManager(models.Manager):
     """ Handle restoring data. """

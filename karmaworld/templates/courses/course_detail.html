@@ -25,7 +25,7 @@
 
 
 {% block title %}
-  Share Notes for {{ course.name }} | {{ course.school.name }}
+  Share Notes for {{ course.name }} | {% if course.school %}{{ course.school.name }}{% else %}{{ course.department.school.name }}{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -50,7 +50,7 @@
       <div class="row">
         <div id="course_meta" class="twelve columns">
           <div class="activity_details_context">
-            {{ course.school.name }}
+            {% if course.school %}{{ course.school.name }}{% else %}{{ course.department.school.name }}{% endif %}
           </div><!-- /activity_details_context -->
         </div><!-- /course_meta -->
       </div>
