@@ -81,14 +81,6 @@
       </div>
 
       <div class="row">
-        <div id="note_keyword_link" class="twelve columns">
-          <div class="activity_details_status">
-            <a href="{% url 'keyword_edit' note.course.school.slug note.course.slug note.slug %}">See key words and definitions&nbsp;<i class="fa fa-arrow-right"></i></a>
-          </div><!-- /activity_details_status -->
-        </div><!-- /note_status -->
-      </div>
-
-      <div class="row">
         <div id="note_actions" class="large-3 medium-6 small-12 columns small-centered">
           <div class="row">
             {% if user.is_authenticated %}
