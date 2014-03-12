@@ -158,7 +158,6 @@ class Document(models.Model):
         """
         Returns the Filepicker URL for reading the upstream document.
         """
-        # Fetch FilepickerFile
         fpf = self._get_fpf()
         # Return proper URL for reading
         return fpf.get_url()
@@ -203,6 +202,12 @@ class Note(Document):
         ('ppt', 'Powerpoint'),
         ('txt', 'Text'),
         (UNKNOWN_FILE, 'Unknown file'),
+    )
+
+    PDF_MIMETYPES = (
+      'application/pdf',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     )
 
     file_type       = models.CharField(max_length=15,
@@ -406,6 +411,16 @@ class Note(Document):
             self._update_parent_updated_at()
         super(Note, self).save(*args, **kwargs)
 
+    def has_markdown(self):
+        return hasattr(self, "notemarkdown")
+
+    def is_pdf(self):
+        return self.mimetype in Note.PDF_MIMETYPES
+
+
+class NoteMarkdown(models.Model):
+    note     = models.OneToOneField(Note, primary_key=True)
+    markdown = models.TextField(blank=True, null=True)
 
 auto_add_check_unique_together(Note)
 
