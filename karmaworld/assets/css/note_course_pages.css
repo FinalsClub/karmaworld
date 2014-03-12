@@ -27,7 +27,7 @@ span.course-header-school
   cursor: pointer;
 }
 
-button.add-note {
+.add-note-btn {
   background: grey;
   color: white;
   border: none;
@@ -40,6 +40,10 @@ input.search-notes {
   width: 15em;
   display: inline;
   margin-right: 0;
+}
+
+form.search-notes {
+  display: inline;
 }
 
 #note-sort-wrapper {
@@ -55,6 +59,11 @@ select.note-sort {
   margin-top: 20px;
   border: 1px solid grey;
   padding: 10px 0 0 0;
+}
+
+ul.socialaccount_providers li
+{
+  display: inline;
 }
 
 

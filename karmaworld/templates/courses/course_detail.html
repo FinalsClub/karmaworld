@@ -136,10 +136,11 @@
 
     <div id="note-search-bar" class="row">
       <div class="small-12 columns">
-        <button id="add-note-btn" class="add-note">Add a Note</button>
-        <input class="search-notes" type="text" placeholder="Search Notes" />
-        <input id="quiz-available-filter" type="checkbox" />
-        <label class="inline-label" for="quiz-available-filter">Quiz Available</label>
+        {{ file_upload_form.fp_file }}
+        <form class="search-notes" action="{% url 'note_search' %}" method="GET">
+          <input name="query" class="search-notes" type="text" placeholder="Search Notes" />
+          <input type="hidden" name="course_id" value="{{ course.id }}">
+        </form>
         <div id="note-sort-wrapper">
           Sort By
           <select class="note-sort">
@@ -149,15 +150,10 @@
           </select>
         </div>
       </div>
+      <div class="small-12 columns">
+        {% include 'partial/filepicker.html' %}
+      </div>
     </div>
-
-
-    <div class="row">
-      <div class="small-10 columns small-offset-1"> <hr/> </div>
-    </div>
-
-
-    {% include 'partial/filepicker.html' %}
 
     <div class="row">
       <div class="small-10 columns small-offset-1"> <hr/> </div>

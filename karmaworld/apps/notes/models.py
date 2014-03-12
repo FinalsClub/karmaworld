@@ -108,17 +108,14 @@ class Document(models.Model):
                     'data-fp-multiple': 'true', 
                     'data-fp-folders': 'true',
                     'data-fp-button-class':
-                      'add-note-btn small-10 columns large-4',
-                    'data-fp-button-text':
-                      mark_safe("<i class='fa fa-arrow-circle-o-up'></i> add notes"),
-                    'data-fp-drag-class':
-                      'dragdrop show-for-medium-up large-7 columns',
-                    'data-fp-drag-text': 'Drop Some Knowledge',
+                      'add-note-btn',
+                    'data-fp-button-text': 'Add Notes',
                     'data-fp-extensions':
                       '.pdf,.doc,.docx,.txt,.html,.rtf,.odt,.png,.jpg,.jpeg,.ppt,.pptx',
                     'data-fp-store-location': 'S3',
                     'data-fp-policy': fp_policy,
                     'data-fp-signature': fp_signature,
+                    'type': 'filepicker',
                     'onchange': "got_file(event)",
                 },
                 # FileField settings

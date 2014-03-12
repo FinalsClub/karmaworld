@@ -2,16 +2,11 @@
 {% load socialaccount %}
 {{ file_upload_form.media }}
 <section id=filepicker-form class="extend-form">
-  <div class="row" id="filepicker_row">
-    <div class="small-8 small-offset-1 columns large-10">
-       {{ file_upload_form.as_p }}
-    </div>
-  </div> <!--.row -->
   <div class="row" >
-    <div class="small-10 small-offset-1 columns">
+    <div class="small-12 columns">
       <div id="forms_container">
       </div>
-      <div id="success" class="hide">
+      <div id="success" class="">
         <p>Thank you for sharing:</p>
         <ul id="uploaded_files">
         </ul>
@@ -20,7 +15,7 @@
             We'd love to have you sign up so you can <strong>claim the <span id="thank-points"></span> karma points
             you just got.</strong> With a KarmaNotes account,
             you can build a reputation by continuing to upload great notes.
-            <a href="">Want to share again?</a></p>
+            Refresh to share more notes.</p>
           <div class="socialaccount_ballot">
             <ul class="socialaccount_providers">
               {% include "socialaccount/snippets/provider_list.html" with process="login" %}
@@ -36,15 +31,15 @@
       </div>
     </div>
 
-    <div id="form-template" class="row" style="display:none">
+    <div id="form-template" class="row">
       <form class="inline-form" method="POST" action="{% url 'upload_post' %}">
         <div class="small-11 large-6 columns">
-          <legend>Title of Note <small class="form">* Required</small></legend>
+          <label for="id_name">Title of Note <small class="form">* Required</small></label>
           <input type="text" class="intext" id="id_name" name="name"
                 placeholder="">
         </div>
         <div class="small-12 large-5 columns">
-          <legend>Tags (comma seperated)</legend>
+          <label for="id_tags">Tags (comma seperated)</label>
           <input type="text" id="id_tags" name="tags" class="taggit-tags"
                 placeholder="shakespeare, econ, physics">
         </div>
