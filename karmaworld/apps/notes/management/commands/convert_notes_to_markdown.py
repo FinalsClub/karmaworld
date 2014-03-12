@@ -36,26 +36,5 @@ class Command(BaseCommand):
                 converted_notes += 1
                 print 'Processed {n}'.format(n=note)
 
-            """if not note.static_html:
-                # no HTML to fetch
-                continue
-            try:
-                h = html2text.HTML2Text()
-                h.escape_snob = True
-                h.unicode_snob = True
-                h.ignore_links = True
-                h.ignore_images = True
-                h.ignore_emphasis = True
-                # fetch data
-                with default_storage.open(note.get_relative_s3_path(),'r') as \
-                  html:
-                    note.text = h.handle(html.read())
-                note.save()
-                cleaned_notes += 1
-                print 'Processed {n}'.format(n=note)
-            except Exception, e:
-                print note
-                print e
-                continue"""
         print 'Processed %s notes' % converted_notes
 
