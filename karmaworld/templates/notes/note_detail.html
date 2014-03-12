@@ -195,7 +195,6 @@
                 <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
               {% else %}
                 <iframe style="border:none; width:100%; min-height: 1000px;"
-                      class="{% if note.has_markdown %}hide{% endif %}"
                       id="noteframe"></iframe>
                 <noscript>
                   {{ note.text }}
