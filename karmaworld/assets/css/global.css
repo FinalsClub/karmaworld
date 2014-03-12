@@ -698,6 +698,20 @@ a.activity_target:hover
   padding-left: 30px;
 }
 
+/*
+ * Hack to make the wrongly added code blocks look normal.  Html2text should not
+ * actually make these code blocks, but does when users have whitespace in d
+ * ocuments. Longterm fix should be in Html2text.
+ */
+code
+{
+  font-family: "MuseoSlab-500";
+  font-size: 15px;
+  font-weight: normal;
+  color: black;
+}
+
+
 /* GLOBAL FOOTER */
 
 footer#global_footer
