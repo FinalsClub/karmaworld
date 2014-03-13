@@ -12,6 +12,7 @@ import logging
 from allauth.account.signals import user_logged_in
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.files.storage import default_storage
@@ -246,7 +247,7 @@ class Note(Document):
         ordering = ['-uploaded_at']
 
     def __unicode__(self):
-        return u"Note at {0} (from {1})".format(self.fp_file, self.upstream_link)
+        return u"Note at {0} (from {1}) ({2})".format(self.fp_file, self.upstream_link, self.id)
 
     def natural_key(self):
         """
@@ -326,10 +327,10 @@ class Note(Document):
         """
         if self.slug is not None:
             # return a url ending in slug
-            return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.slug)
+            return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.slug])
         else:
             # return a url ending in id
-            return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.id)
+            return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.id])
 
     def filter_html(self, html):
         """

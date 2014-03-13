@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     'beta.karmanotes.org',
     'www.karmanotes.org',
     'karmanotes.org',
+    'ec2-184-73-42-39.compute-1.amazonaws.com',
 ]
 ########## END SECURITY CONFIGURATION
 
@@ -242,6 +243,9 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.twitter',
+
+    # Added to make quizzes moderation nicer
+    'nested_inlines',
 )
 
 LOCAL_APPS = (
@@ -252,6 +256,7 @@ LOCAL_APPS = (
     'karmaworld.apps.users',
     'karmaworld.apps.moderation',
     'karmaworld.apps.licenses',
+    'karmaworld.apps.quizzes',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
