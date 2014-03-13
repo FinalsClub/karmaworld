@@ -17,8 +17,10 @@ pyopenssl
 python-twitter
 gdshortener
 git+https://github.com/flaptor/indextank-py.git
-html2text
+git+https://github.com/jhilker/html2text.git
 django-allauth
 boto==2.6.0
 django-storages==1.1.4
 django-reversion
+git+https://github.com/Soaa-/django-nested-inlines.git
+pyth

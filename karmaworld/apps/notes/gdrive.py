@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from karmaworld.apps.notes.models import UserUploadMapping
+from karmaworld.apps.notes.models import NoteMarkdown
 from karmaworld.apps.users.models import NoteKarmaEvent
 import os
 import subprocess
@@ -19,6 +20,7 @@ import json
 import time
 
 import httplib2
+import html2text
 from apiclient.discovery import build
 from apiclient.http import MediaInMemoryUpload
 from oauth2client.client import SignedJwtAssertionCredentials
@@ -228,12 +230,14 @@ def convert_raw_document(raw_document, user=None):
 
     # Extract HTML from the appropriate place
     html = ''
+    convert_to_markdown = False
     if raw_document.mimetype == PDF_MIMETYPE:
         html = pdf2html(original_content)
     elif raw_document.mimetype in PPT_MIMETYPES:
         html = pdf2html(content_dict['pdf'])
     elif 'html' in content_dict and content_dict['html']:
         html = content_dict['html']
+        convert_to_markdown = True
     # cleanup the HTML
     html = note.filter_html(html)
 
@@ -241,6 +245,16 @@ def convert_raw_document(raw_document, user=None):
     note.send_to_s3(html, do_save=False)
 
     note.text = content_dict['text']
+
+    if convert_to_markdown:
+        h = html2text.HTML2Text()
+        h.google_doc = True
+        h.escape_snob = True
+        h.unicode_snob = True
+        markdown = h.handle(html.decode('utf8', 'ignore'))
+
+        note_markdown = NoteMarkdown(note=note, markdown=markdown)
+        note_markdown.save()
 
     note_details = extract_file_details(fp_file)
     if 'year' in note_details and note_details['year']:

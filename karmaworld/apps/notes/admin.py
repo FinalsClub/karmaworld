@@ -14,5 +14,6 @@ class NoteAdmin(admin.ModelAdmin):
     autocomplete_lookup_fields = {
         'fk': ('course', 'user'),
     }
+    list_display = ('fp_file', 'upstream_link', 'name', 'id')
 
 admin.site.register(Note, NoteAdmin)

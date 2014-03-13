@@ -16,16 +16,16 @@
     var edit_note_tags_url = "{% url 'edit_note_tags' note.id %}"
     var note_downloaded_url = "{% url 'downloaded_note' note.id %}"
     var note_contents_url = "{{ S3_URL }}{{ note.get_relative_s3_path }}"
-    {% if pdf_controls %}
-      var pdfControls = true;
-    {% else %}
-      var pdfControls = false;
-    {% endif %}
+    var pdfControls = {% if pdf_controls %} true {% else %} false {% endif %};
     var csrf_token = "{{ csrf_token }}";
   </script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+{% endblock %}
+
+{% block bodyscripts %}
   <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
   <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
+  <script src="{{ STATIC_URL }}js/marked.js" ></script>
 {% endblock %}
 
 {% block content %}
@@ -74,6 +74,9 @@
           <div class="activity_details_status">
             So far, <span id="thank-number" class="activity_details_status_number">{{ note.thanks }}</span> people have completely fallen in love with with these notes.
           </div><!-- /activity_details_status -->
+          <div class="activity_details_status">
+
+          </div>
         </div><!-- /note_status -->
       </div>
 
@@ -190,11 +193,15 @@
         <div class="small-12 small-centered columns medium-12 large-12 body_copy">
           {% if note.static_html %}
             <div class="note-text">
-              <iframe style="border:none; width:100%; min-height: 1000px;"
-                      id="noteframe"> </iframe>
-              <noscript>
-                {{ note.text }}
-              </noscript>
+              {% if note.has_markdown %}
+                <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
+              {% else %}
+                <iframe style="border:none; width:100%; min-height: 1000px;"
+                      id="noteframe"></iframe>
+                <noscript>
+                  {{ note.text }}
+                </noscript>
+              {% endif %}
             </div> <!-- .note-text -->
 
           {% else %} {# note.static_html #}
