@@ -6,7 +6,7 @@
     <div class="small-12 columns">
       <div id="forms_container">
       </div>
-      <div id="success" class="">
+      <div id="success" class="hide">
         <p>Thank you for sharing:</p>
         <ul id="uploaded_files">
         </ul>
@@ -17,10 +17,11 @@
             you can build a reputation by continuing to upload great notes.
             Refresh to share more notes.</p>
           <div class="socialaccount_ballot">
+            <p>Sign up with:</p>
             <ul class="socialaccount_providers">
               {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+              <li><a href="{{ signup_url }}"> or a traditional account</a></li>
             </ul>
-            <a href="{{ signup_url }}">Sign up for a traditional account</a>
           </div>
         {% else %}
           <p>It will take a minute for your notes to appear. This page will refresh soon so you
@@ -31,7 +32,7 @@
       </div>
     </div>
 
-    <div id="form-template" class="row">
+    <div id="form-template" class="hide">
       <form class="inline-form" method="POST" action="{% url 'upload_post' %}">
         <div class="small-11 large-6 columns">
           <label for="id_name">Title of Note <small class="form">* Required</small></label>
@@ -54,15 +55,15 @@
           {% csrf_token %}
           <input type="text" class="csrf" value='{{ csrf_token }}'>
         </div>
-        <div class="show-for-medium-up columns large-1 end">
-          <i class="fa fa-times-circle awesome-action remove" id="icon-remove-sign"></i>
+        <div class="show-for-medium-up columns medium-1 large-1 end">
+          <i class="fa fa-times-circle fa-lg awesome-action remove" id="icon-remove-sign"></i>
         </div>
       </form>
     </div>
   </div>
   <div class="small-8 small-offset-3 columns large-2">
     <div id="save-btn" class="hide">
-      <i id="save-btn-icon" class="fa fa-save"></i> Save
+      <button class="inline-button"><i id="save-btn-icon" class="fa fa-save"></i> Save</button>
     </div>
   </div>
 

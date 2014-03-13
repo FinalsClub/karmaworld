@@ -27,15 +27,6 @@ span.course-header-school
   cursor: pointer;
 }
 
-.add-note-btn {
-  background: grey;
-  color: white;
-  border: none;
-  padding: 5px;
-  border-radius: 0.3em;
-  display: inline;
-}
-
 input.search-notes {
   width: 15em;
   display: inline;
@@ -61,9 +52,9 @@ select.note-sort {
   padding: 10px 0 0 0;
 }
 
-ul.socialaccount_providers li
+ul.socialaccount_providers li,
+ul#uploaded_files li
 {
   display: inline;
 }
-
 

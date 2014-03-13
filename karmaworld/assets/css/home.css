@@ -8,15 +8,6 @@
   text-align: center;
 }
 
-button.add-course {
-  background: grey;
-  color: white;
-  border: none;
-  padding: 5px;
-  border-radius: 0.3em;
-  display: inline;
-}
-
 input.search-courses {
   width: 15em;
   display: inline;

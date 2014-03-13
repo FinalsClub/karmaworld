@@ -51,3 +51,11 @@ label.inline-label
   display: inline;
 }
 
+button.inline-button {
+  background: grey;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 0.3em;
+  display: inline;
+}
