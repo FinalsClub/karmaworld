@@ -15,16 +15,16 @@ class AddCourseTest(LiveServerTestCase):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(3)
         self.wait = WebDriverWait(self.driver, 10)
-        self.harvard = School.objects.create(name="Harvard University")
-        self.northeastern = School.objects.create(name="Northeastern University")
+        self.harvard = School.objects.create(name="Harvard University", usde_id=12345)
+        self.northeastern = School.objects.create(name="Northeastern University", usde_id=33333)
 
     def tearDown(self):
         self.driver.close()
 
-    def selectAutocomplete(self, inputId, keys, fieldIndex):
-        input = self.driver.find_element_by_id(inputId)
+    def selectAutocomplete(self, name, keys, fieldIndex):
+        input = self.driver.find_element_by_name(name)
         input.send_keys(keys)
-        self.wait.until(EC.element_to_be_clickable((By.XPATH, "//ul[contains(@class,'ui-autocomplete')][" + str(fieldIndex) + "]/li")))
+        self.wait.until(EC.element_to_be_clickable((By.XPATH, "//ul[contains(@class,'ui-autocomplete')]/li[" + str(fieldIndex) + "]")))
         input.send_keys(Keys.DOWN)
         autocompleteMenuItem = self.driver.find_element_by_id("ui-active-menuitem")
         autocompleteMenuItem.click()
@@ -41,20 +41,22 @@ class AddCourseTest(LiveServerTestCase):
         self.driver.execute_script("javascript:window.scrollBy(0,200)")
 
         # Type in part of a school name
-        schoolInput = self.driver.find_element_by_id("str_school")
+        schoolInput = self.driver.find_element_by_name("DepartmentForm-school_text")
         schoolInput.send_keys("harvard u")
 
         # Wait for autocomplete menu to appear
-        self.wait.until(EC.element_to_be_clickable((By.XPATH, "//ul[contains(@class,'ui-autocomplete')][1]/li")))
+        # li.ui-menu-item:nth-child(1)
+        self.wait.until(EC.element_to_be_clickable((By.XPATH, "//ul[contains(@class,'ui-autocomplete')]/li[1]")))
 
         # Choose the first suggestion
         schoolInput.send_keys(Keys.DOWN)
         activeItem = self.driver.find_element_by_id("ui-active-menuitem")
         activeItem.click()
 
-        self.assertEqual(schoolInput.get_attribute("value"), "Harvard University")
+        school_name_on_deck = self.driver.find_element_by_xpath("//div[contains(@class,'results-on-deck')][1]")
+        self.assertIn("Harvard University", school_name_on_deck.text)
 
-        schoolId = self.driver.find_element_by_id("id_school")
+        schoolId = self.driver.find_element_by_name("DepartmentForm-school")
         self.assertEqual(schoolId.get_attribute("value"), str(self.harvard.id))
 
     def testCreateCourse(self):
@@ -65,24 +67,17 @@ class AddCourseTest(LiveServerTestCase):
         addCourseButton.click()
         self.driver.execute_script("javascript:window.scrollBy(0,200)")
 
-        # We shouldn't be able to save it yet
-        saveButton = self.driver.find_element_by_id("save-btn")
-        self.assertIn("disabled", saveButton.get_attribute("class"))
-
         # Choose a school
-        self.selectAutocomplete("str_school", "northeastern u", 1)
-
-        # Check that save button is now enabled
-        self.assertNotIn("disabled", saveButton.get_attribute("class"))
+        self.selectAutocomplete("DepartmentForm-school_text", "northeastern u", 1)
 
         # Course name
         newCourseName = "SELENIUM TEST COURSE " + uuid.uuid4().hex
-        courseNameInput = self.driver.find_element_by_id("id_name")
+        courseNameInput = self.driver.find_element_by_id("id_CourseForm-name")
         courseNameInput.send_keys(newCourseName)
 
         # Instructor name
         newInstructorName = "SELENIUM TEST INSTRUCTOR " + uuid.uuid4().hex
-        instructorNameInput = self.driver.find_element_by_id("id_instructor_name")
+        instructorNameInput = self.driver.find_element_by_id("id_ProfessorForm-name_text")
         instructorNameInput.send_keys(newInstructorName)
 
         # Click "Save"
@@ -101,24 +96,17 @@ class AddCourseTest(LiveServerTestCase):
         addCourseButton.click()
         self.driver.execute_script("javascript:window.scrollBy(0,200)")
 
-        # We shouldn't be able to save it yet
-        saveButton = self.driver.find_element_by_id("save-btn")
-        self.assertIn("disabled", saveButton.get_attribute("class"))
-
         # Choose a school
-        self.selectAutocomplete("str_school", "northeastern u", 1)
-
-        # Check that save button is now enabled
-        self.assertNotIn("disabled", saveButton.get_attribute("class"))
+        self.selectAutocomplete("DepartmentForm-school_text", "northeastern u", 1)
 
         # Course name
         newCourseName = "SELENIUM TEST COURSE " + uuid.uuid4().hex
-        courseNameInput = self.driver.find_element_by_id("id_name")
+        courseNameInput = self.driver.find_element_by_id("id_CourseForm-name")
         courseNameInput.send_keys(newCourseName)
 
         # Instructor name
         newInstructorName = "SELENIUM TEST INSTRUCTOR " + uuid.uuid4().hex
-        instructorNameInput = self.driver.find_element_by_id("id_instructor_name")
+        instructorNameInput = self.driver.find_element_by_id("id_ProfessorForm-name_text")
         instructorNameInput.send_keys(newInstructorName)
 
         # Click "Save"
@@ -137,25 +125,15 @@ class AddCourseTest(LiveServerTestCase):
         self.driver.execute_script("javascript:window.scrollBy(0,200)")
 
         # Choose the SAME school
-        self.selectAutocomplete("str_school", "northeastern u", 1)
+        self.selectAutocomplete("DepartmentForm-school_text", "northeastern u", 1)
 
         # The SAME course name
-        self.selectAutocomplete("id_name", newCourseName, 2)
+        self.selectAutocomplete("id_CourseForm-name", newCourseName, 2)
 
         # The SAME instructor name
-        self.selectAutocomplete("id_instructor_name", newInstructorName, 3)
+        self.selectAutocomplete("id_ProfessorForm-name_text", newInstructorName, 3)
 
-        # Make sure Save button is disabled and hidden
-        saveButton = self.driver.find_element_by_id("save-btn")
-        self.assertIn("disabled", saveButton.get_attribute("class"))
-        self.wait.until_not(EC.visibility_of(saveButton))
+        saveButton.click()
 
-        # Make sure Existing Course link is shown
-        existingCourse = self.driver.find_element_by_id("existing-course-btn")
-        self.wait.until(EC.visibility_of(existingCourse))
-        existingCourse.click()
-
-        # See if we are taken to the new course page
-        self.wait.until(EC.title_contains(newCourseName))
 
 

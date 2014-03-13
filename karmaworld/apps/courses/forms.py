@@ -89,7 +89,8 @@ class DepartmentForm(NiceErrorModelForm, ACFieldModelForm):
         # autocomplete department based on school
         dependsOn=school,
         # allows creating a new department on the fly
-        required=False
+        required=False,
+        widget_id='input_department_name'
     )
 
     class Meta:
