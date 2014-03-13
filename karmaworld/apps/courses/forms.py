@@ -23,7 +23,6 @@ from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 from karmaworld.apps.courses.models import Professor
 from karmaworld.apps.courses.models import Department
-from karmaworld.apps.courses.models import ProfessorTaught
 
 
 class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
@@ -152,17 +151,3 @@ class CourseForm(NiceErrorModelForm, DependentModelForm):
             self._errors[hfn] = [settings.HONEYPOT_ERROR]
             del cleaned_data[hfn]
         return cleaned_data
-
-
-class ProfessorTaughtForm(NiceErrorModelForm, DependentModelForm):
-    """ Create an association between the chosen Professor and Course. """
-
-    class Meta:
-        model = ProfessorTaught
-        # no actual fields
-        fields = tuple()
-        # pass professor and course data onto appropriate forms.
-        model_fields = {
-            'professor': ProfessorForm,
-            'course': CourseForm,
-        }
