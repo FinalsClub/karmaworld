@@ -44,7 +44,7 @@
     <div id="activity_container">
       <div class="row">
         <div class="small-12 columns">
-          <form id="keyword-form" action="{% url 'keyword_edit' note.course.school.slug note.course.slug note.slug %}" method="post">
+          <form id="keyword-form" action="{% url 'keyword_edit' note.slug %}" method="post">
             {% csrf_token %}
             {{ form.management_form }}
             <div class="hide" id="keyword-form-prototype">

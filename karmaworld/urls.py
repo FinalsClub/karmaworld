@@ -121,7 +121,7 @@ urlpatterns = patterns('',
     # Quizzes
     url(r'^quiz/(?P<pk>[\d]+)/$',
         QuizView.as_view(), name='quiz'),
-    url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'/keywords/$',
+    url(r'^keywords/' + SLUG.format('') + '/$',
         KeywordEditView.as_view(), name='keyword_edit'),
 
     url(r'^$', CourseListView.as_view(model=Course), name='home'),
