@@ -225,43 +225,6 @@ class ProfessorEmailLookup(FieldLookupChannel):
     field_lookup = 'email'
 
 
-class ProfessorAffiliationManager(models.Manager):
-    """ Handle restoring data. """
-    def get_by_natural_key(self, prof, dept):
-        """
-        Return a ProfessorAffiliation defined by prof and department.
-        """
-        return self.get(professor=prof,department=dept)
-
-
-class ProfessorAffiliation(models.Model):
-    """
-    Track professors for departments. (many-to-many)
-    """
-    objects    = ProfessorAffiliationManager()
-
-    professor  = models.ForeignKey(Professor)
-    department = models.ForeignKey(Department)
-
-    def __unicode__(self):
-        return u'Professor {0} working for {1}'.format(unicode(self.professor), unicode(self.department))
-
-    class Meta:
-        """
-        Many-to-many across both professor and department.
-        However, (prof, dept) as a tuple should only appear once.
-        """
-        unique_together = ('professor', 'department',)
-
-    def natural_key(self):
-        """
-        A ProfessorAffiliation is uniquely defined by the prof and department
-        """
-        return (self.professor.natural_key(), self.department.natural_key())
-    # Requires dependencies to be dumped first
-    natural_key.dependencies = ['courses.professor','courses.department']
-
-
 class CourseManager(models.Manager):
     """ Handle restoring data. """
     def get_by_natural_key(self, name, dept):
@@ -289,7 +252,9 @@ class Course(models.Model):
     url         = models.URLField(max_length=511, blank=True, null=True,
                                   verbose_name="Course URL")
 
-    # instructor_* is vestigial, replaced by Professor+ProfessorTaught models.
+    # professor should remove nullable when school instructor_* yoinked
+    professor = models.ManyToManyField(Professor, blank=True, null=True)
+    # instructor_* is vestigial
     instructor_name     = models.CharField(max_length=255, blank=True, null=True)
     instructor_email    = models.EmailField(blank=True, null=True)
 
@@ -354,6 +319,22 @@ class Course(models.Model):
         # The value might be None, return zero in that case with shortcut logic.
         return self.note_set.aggregate(x=models.Sum('thanks'))['x'] or 0
 
+    def get_prof_names(self):
+        """ Comma separated list of professor names. """
+        # old style: just use the given name
+        if self.instructor_name:
+            return str(self.instructor_name)
+        # Run through all associated professors and concatenate their names.
+        return ','.join(self.professor.values_list('name', flat=True))
+
+    def get_prof_emails(self):
+        """ Comma separated list of professor emails. """
+        # old style: just use the given name
+        if self.instructor_email:
+            return str(self.instructor_email)
+        # Run through all associated professors and concatenate their names.
+        return ','.join(self.professor.values_list('email', flat=True))
+
 reversion.register(Course)
 
 
@@ -374,45 +355,9 @@ class CourseNameLookup(FieldLookupChannel):
         return results.values_list(self.field_lookup, flat=True)
 
 
-class ProfessorTaughtManager(models.Manager):
-    """ Handle restoring data. """
-    def get_by_natural_key(self, prof, course):
-        """
-        Return a ProfessorTaught defined by professor and course.
-        """
-        return self.get(professor=prof, course=course)
-
-
-class ProfessorTaught(models.Model):
-    """
-    Track professors teaching courses. (many-to-many)
-    """
-    objects   = ProfessorTaughtManager()
-
-    professor = models.ForeignKey(Professor)
-    course    = models.ForeignKey(Course)
-
-    def __unicode__(self):
-        return u'Professor {0} taught {1}'.format(unicode(self.professor), unicode(self.course))
-
-    class Meta:
-        # many-to-many across both fields,
-        # but (prof, course) as a tuple should only appear once.
-        unique_together = ('professor', 'course',)
-
-    def natural_key(self):
-        """
-        A ProfessorTaught is uniquely defined by the prof and course.
-        """
-        return (self.professor.natural_key(), self.course.natural_key())
-    # Requires dependencies to be dumped first
-    natural_key.dependencies = ['courses.professor','courses.course']
-
-
 # Enforce unique constraints even when we're using a database like
 # SQLite that doesn't understand them
 auto_add_check_unique_together(Course)
+auto_add_check_unique_together(School)
 auto_add_check_unique_together(Department)
 auto_add_check_unique_together(Professor)
-auto_add_check_unique_together(ProfessorAffiliation)
-auto_add_check_unique_together(ProfessorTaught)

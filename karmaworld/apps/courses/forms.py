@@ -57,7 +57,7 @@ class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
         In practice, better safe than incoherent.
         """
         oldprof = None
-        if hasattr(self, 'instance') and self.instance:
+        if hasattr(self, 'instance') and self.instance and self.instance.pk:
             # Professor was already autocompleted. Save that object.
             oldprof = self.instance
         # Extract the field value, possibly replacing self.instance
@@ -128,8 +128,12 @@ class CourseForm(NiceErrorModelForm, DependentModelForm):
         model = Course
         # order the fields
         fields = ('name', 'url')
-        # pass department data onto DepartmentForm
-        model_fields = {'department': DepartmentForm}
+        model_fields = {
+            # pass department data onto DepartmentForm
+            'department': DepartmentForm,
+            # pass professor data onto ProfessorForm
+            'professor': ProfessorForm,
+        }
 
     def clean(self, *args, **kwargs):
         """ Honeypot validation. """

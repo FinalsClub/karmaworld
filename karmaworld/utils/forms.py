@@ -10,6 +10,13 @@ from django.forms.util import ErrorList
 from django.utils.safestring import mark_safe
 
 
+# helper function to determine if field of form is ManyToMany.
+def is_m2m(form, field):
+    modelfield = getattr(form.Meta.model, field)
+    # check by contract (quacks like a duck) rather than instance checking
+    return hasattr(modelfield, 'through') and hasattr(modelfield, 'field')
+
+
 # Django hard codes CSS attributes into ModelForm returned ErrorList
 # https://github.com/django/django/blob/1.5.5/django/forms/util.py#L54-L60
 # https://docs.djangoproject.com/en/1.5/ref/forms/api/#customizing-the-error-list-format
@@ -94,8 +101,11 @@ class DependentModelForm(ModelForm):
         self.dependent_modelforms_data = {}
         super(DependentModelForm, self).__init__(*args, **kwargs)
 
-    def _get_forms(self, with_data=False):
+    def _get_forms(self):
         """ Memoize dependent form objects. """
+        # Determine if there is data.
+        with_data = True if self.data else False
+        # Memoize data separately if there is or is not data.
         data = (self.data,) if with_data else tuple()
         memo = self.dependent_modelforms_data if with_data else \
                self.dependent_modelforms
@@ -138,7 +148,7 @@ class DependentModelForm(ModelForm):
         """ Check all subforms for validity and then this form. """
         all_valid = True
         # Perform validation and error checking for each ModelForm.
-        for attribute, modelform in self._get_forms(with_data=True).iteritems():
+        for attribute, modelform in self._get_forms().iteritems():
             if not modelform.is_valid():
                 all_valid = False
 
@@ -148,7 +158,7 @@ class DependentModelForm(ModelForm):
 
     def _post_clean(self, *args, **kwargs):
         """ Inject objects created from required ModelForms. """
-        super(ModelForm, self)._post_clean(*args, **kwargs)
+        super(DependentModelForm, self)._post_clean(*args, **kwargs)
 
         # If self.instance has not been created by _post_clean, create it now.
         # This happens when only model_fields are present and no fields.
@@ -161,9 +171,47 @@ class DependentModelForm(ModelForm):
         if not self.is_valid():
             return
 
-        for attribute, modelform in self._get_forms(with_data=True).iteritems():
-            # create foreign model object and associate it internally here
-            setattr(self.instance, attribute, modelform.save())
+        # create foreign model object and associate it internally here
+        for attribute, modelform in self._get_forms().iteritems():
+            # handle ManyToMany versus ForeignKey
+            if not is_m2m(self, attribute):
+                # Handle Foreign Key, assign object directly to attribute
+                setattr(self.instance, attribute, modelform.save())
+
+    def save(self, *args, **kwargs):
+        """ Handle ManyToMany objects. """
+        instance = super(DependentModelForm, self).save(*args, **kwargs)
+
+        # Check for and update any M2M model_fields
+        if hasattr(self.instance, 'pk') and self.instance.pk:
+            # objects were created during commit. associate M2M now.
+            for attribute, modelform in self._get_forms().iteritems():
+                # handle ManyToMany versus ForeignKey
+                if is_m2m(self, attribute):
+                    # use add() to create association between models.
+                    getattr(instance, attribute).add(modelform.save())
+        else:
+            # objects not yet in database. save for later.
+            # reference to save_m2m deferred function from BaseModelForm.save()
+            old_save_m2m = self.save_m2m
+
+            # write a new save_m2m with Python closure power!
+            def save_m2m():
+                # call "super"
+                old_save_m2m()
+                # associate M2M objects with self instance
+                for attribute, modelform in self._get_forms().iteritems():
+                    # ManyToMany contract test.
+                    # use add() to create association between models.
+                    objattr = getattr(instance, attribute, None)
+                    if objattr and hasattr(objattr, 'add'):
+                        objattr.add(modelform.save())
+
+            # save function for later just as BaseModelForm.save() does
+            self.save_m2m = save_m2m
+
+        # passthrough instance
+        return instance
 
     def _render_dependencies_first(self, method, *args, **kwargs):
         """ Render dependent forms prior to rendering this form. """

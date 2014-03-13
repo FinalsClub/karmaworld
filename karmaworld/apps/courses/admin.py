@@ -11,7 +11,6 @@ from karmaworld.apps.courses.models import School
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import Professor
 from karmaworld.apps.courses.models import Department
-from karmaworld.apps.courses.models import ProfessorAffiliation
 
 class CourseAdmin(reversion.VersionAdmin, admin.ModelAdmin):
     """ an Admin handler for the Course model that handles fk search """
@@ -31,4 +30,3 @@ admin.site.register(School)
 admin.site.register(Professor)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Department, DepartmentAdmin)
-admin.site.register(ProfessorAffiliation)

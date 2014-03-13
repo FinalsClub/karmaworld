@@ -18,13 +18,11 @@ from django.views.generic.edit import CreateView
 
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
+from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.users.models import CourseKarmaEvent
 from karmaworld.apps.notes.forms import FileUploadForm
 from karmaworld.utils import ajax_increment, format_session_increment_field
-
-# ProfessorTaughtForm contains CourseForm
-from karmaworld.apps.courses.forms import ProfessorTaughtForm as CourseForm
 
 
 FLAG_FIELD = 'flags'

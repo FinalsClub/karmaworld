@@ -22,5 +22,5 @@
     </div>
   </td>
   <td class="small-6 large-3 columns"><span class="table-font">{% if course.school %}{{ course.school.name }}{% else %}{{ course.department.school.name }}{% endif %}</span></td>
-  <td class="small-6 large-3 columns"><span class="table-font">{{ course.instructor_name }}</span></td>
+  <td class="small-6 large-3 columns"><span class="table-font">{{ course.get_prof_names }}</span></td>
 </tr>
