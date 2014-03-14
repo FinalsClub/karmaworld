@@ -1,3 +1,4 @@
+import time
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -14,17 +15,17 @@ class AddCourseTest(LiveServerTestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(3)
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 200)
         self.harvard = School.objects.create(name="Harvard University", usde_id=12345)
         self.northeastern = School.objects.create(name="Northeastern University", usde_id=33333)
 
     def tearDown(self):
         self.driver.close()
 
-    def selectAutocomplete(self, name, keys, fieldIndex):
+    def selectAutocomplete(self, name, keys):
         input = self.driver.find_element_by_name(name)
         input.send_keys(keys)
-        self.wait.until(EC.element_to_be_clickable((By.XPATH, "//ul[contains(@class,'ui-autocomplete')]/li[" + str(fieldIndex) + "]")))
+        self.wait.until(EC.element_to_be_clickable((By.XPATH, "//ul[contains(@style,'display: block')]/li[contains(@class,'ui-menu-item')][1]")))
         input.send_keys(Keys.DOWN)
         autocompleteMenuItem = self.driver.find_element_by_id("ui-active-menuitem")
         autocompleteMenuItem.click()
@@ -53,7 +54,7 @@ class AddCourseTest(LiveServerTestCase):
         activeItem = self.driver.find_element_by_id("ui-active-menuitem")
         activeItem.click()
 
-        school_name_on_deck = self.driver.find_element_by_xpath("//div[contains(@class,'results-on-deck')][1]")
+        school_name_on_deck = self.driver.find_element_by_xpath("//div[contains(@class,'results_on_deck')][1]")
         self.assertIn("Harvard University", school_name_on_deck.text)
 
         schoolId = self.driver.find_element_by_name("DepartmentForm-school")
@@ -68,16 +69,21 @@ class AddCourseTest(LiveServerTestCase):
         self.driver.execute_script("javascript:window.scrollBy(0,200)")
 
         # Choose a school
-        self.selectAutocomplete("DepartmentForm-school_text", "northeastern u", 1)
+        self.selectAutocomplete("DepartmentForm-school_text", "northeastern u")
 
         # Course name
         newCourseName = "SELENIUM TEST COURSE " + uuid.uuid4().hex
-        courseNameInput = self.driver.find_element_by_id("id_CourseForm-name")
+        courseNameInput = self.driver.find_element_by_name("CourseForm-name")
         courseNameInput.send_keys(newCourseName)
+
+        # Department name
+        newDepartmentName = "SELENIUM TEST DEPARTMENT " + uuid.uuid4().hex
+        departmentNameInput = self.driver.find_element_by_name("DepartmentForm-name_text")
+        departmentNameInput.send_keys(newDepartmentName)
 
         # Instructor name
         newInstructorName = "SELENIUM TEST INSTRUCTOR " + uuid.uuid4().hex
-        instructorNameInput = self.driver.find_element_by_id("id_ProfessorForm-name_text")
+        instructorNameInput = self.driver.find_element_by_name("ProfessorForm-name_text")
         instructorNameInput.send_keys(newInstructorName)
 
         # Click "Save"
@@ -97,16 +103,21 @@ class AddCourseTest(LiveServerTestCase):
         self.driver.execute_script("javascript:window.scrollBy(0,200)")
 
         # Choose a school
-        self.selectAutocomplete("DepartmentForm-school_text", "northeastern u", 1)
+        self.selectAutocomplete("DepartmentForm-school_text", "northeastern u")
 
         # Course name
         newCourseName = "SELENIUM TEST COURSE " + uuid.uuid4().hex
-        courseNameInput = self.driver.find_element_by_id("id_CourseForm-name")
+        courseNameInput = self.driver.find_element_by_name("CourseForm-name")
         courseNameInput.send_keys(newCourseName)
+
+        # Department name
+        newDepartmentName = "SELENIUM TEST DEPARTMENT " + uuid.uuid4().hex
+        departmentNameInput = self.driver.find_element_by_name("DepartmentForm-name_text")
+        departmentNameInput.send_keys(newDepartmentName)
 
         # Instructor name
         newInstructorName = "SELENIUM TEST INSTRUCTOR " + uuid.uuid4().hex
-        instructorNameInput = self.driver.find_element_by_id("id_ProfessorForm-name_text")
+        instructorNameInput = self.driver.find_element_by_name("ProfessorForm-name_text")
         instructorNameInput.send_keys(newInstructorName)
 
         # Click "Save"
@@ -125,15 +136,26 @@ class AddCourseTest(LiveServerTestCase):
         self.driver.execute_script("javascript:window.scrollBy(0,200)")
 
         # Choose the SAME school
-        self.selectAutocomplete("DepartmentForm-school_text", "northeastern u", 1)
+        self.selectAutocomplete("DepartmentForm-school_text", "northeastern u")
 
         # The SAME course name
-        self.selectAutocomplete("id_CourseForm-name", newCourseName, 2)
+        # Choose the SAME school
+        self.selectAutocomplete("CourseForm-name", newCourseName)
+        #courseNameInput = self.driver.find_element_by_name("CourseForm-name")
+        #courseNameInput.send_keys(newCourseName)
 
         # The SAME instructor name
-        self.selectAutocomplete("id_ProfessorForm-name_text", newInstructorName, 3)
+        self.selectAutocomplete("ProfessorForm-name_text", newInstructorName)
 
+        # The SAME department name
+        self.selectAutocomplete("DepartmentForm-name_text", newDepartmentName)
+        #instructorNameInput = self.driver.find_element_by_name("ProfessorForm-name_text")
+        #instructorNameInput.send_keys(newInstructorName)
+
+        saveButton = self.driver.find_element_by_id("save-btn")
         saveButton.click()
+        self.assertEqual(Course.objects.count(), 1, "Duplicated course not created")
+
 
 
 

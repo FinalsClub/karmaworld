@@ -13,6 +13,7 @@ from ajax_select.fields import AutoCompleteSelectField
 from ajax_select_cascade.fields import AutoCompleteDependentSelectField
 
 # generates DIV errors with appropriate classes
+from django.utils.safestring import mark_safe
 from karmaworld.utils.forms import NiceErrorModelForm
 # supports handling autocomplete fields as a model object or a value
 from karmaworld.utils.forms import ACFieldModelForm
@@ -20,7 +21,6 @@ from karmaworld.utils.forms import ACFieldModelForm
 from karmaworld.utils.forms import DependentModelForm
 
 from karmaworld.apps.courses.models import Course
-from karmaworld.apps.courses.models import School
 from karmaworld.apps.courses.models import Professor
 from karmaworld.apps.courses.models import Department
 
@@ -80,7 +80,9 @@ class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
 class DepartmentForm(NiceErrorModelForm, ACFieldModelForm):
     """ Find and create a Department given a School. """
     # first argument is ajax channel name, defined in models as LookupChannel.
-    school = AutoCompleteSelectField('school_object_by_name', help_text='')
+    school = AutoCompleteSelectField('school_object_by_name',
+                                     help_text='',
+                                     label=mark_safe('School <span class="required-field">(required)</span>'))
     # first argument is ajax channel name, defined in models as LookupChannel.
     name = AutoCompleteDependentSelectField(
         'dept_object_by_name_given_school', help_text='',
@@ -113,7 +115,7 @@ class CourseForm(NiceErrorModelForm, DependentModelForm):
     # first argument is ajax channel name, defined in models as LookupChannel.
     # note this AJAX field returns a field value, not a course object.
     name = AutoCompleteField('course_name_by_name', help_text='',
-        label="Course name")
+        label=mark_safe('Course name <span class="required-field">(required)</span>'))
 
     def __init__(self, *args, **kwargs):
         """ Add a dynamically named field. """

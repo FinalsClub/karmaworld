@@ -14,25 +14,22 @@
   {% csrf_token %}
 
     {% if course_form.non_field_errors %}
-    <div class="row">
-      <div class="small-12 columns">
-        <ul>{% for error in course_form.non_field_errors %}
-          <li><label class="validation_error">{{ error }}</label></li>
-        {% endfor %}</ul>
+      <div class="row">
+        <div class="small-12 columns">
+          <ul>{% for error in course_form.non_field_errors %}
+            <li><label class="validation_error">{{ error }}</label></li>
+          {% endfor %}</ul>
+        </div>
       </div>
-    </div>
-
     {% endif %}
-    {{ course_form.as_p }}
+
+    {{ course_form.as_p|safe }}
 
     <div class="row">
       <div class="small-4 large-8 columns small-centered text-center">
         <button id="save-btn" type="submit">
           <i class="fa fa-save"></i> Save
         </button>
-        <span id="existing-course-msg" class="hide">
-          Looks like this course already exists on KarmaNotes!
-          <a id="existing-course-btn" class="button">Go To Existing Course <i class="fa fa-arrow-right"></i></a></span>
       </div>
     </div>
 
