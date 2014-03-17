@@ -679,13 +679,42 @@ ul.validation_error {
   margin-bottom: 10px;
 }
 
-.body_copy p
+.body_copy p, ol, ul
 {
   font-family: "MuseoSlab-500";
   font-size: 15px;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
+
+.body_copy strong
+{
+  font-family: "MuseoSlab-700";
+}
+
+.body_copy p
+{
+  white-space: pre-wrap;
+}
+
+.body_copy ol, ul
+{
+  padding-left: 30px;
+}
+
+/*
+ * Hack to make the wrongly added code blocks look normal.  Html2text should not
+ * actually make these code blocks, but does when users have whitespace in d
+ * ocuments. Longterm fix should be in Html2text.
+ */
+code
+{
+  font-family: "MuseoSlab-500";
+  font-size: 15px;
+  font-weight: normal;
+  color: black;
+}
+
 
 /* GLOBAL FOOTER */
 

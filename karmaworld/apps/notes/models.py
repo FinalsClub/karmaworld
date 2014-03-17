@@ -12,6 +12,7 @@ import logging
 from allauth.account.signals import user_logged_in
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.files.storage import default_storage
@@ -157,7 +158,6 @@ class Document(models.Model):
         """
         Returns the Filepicker URL for reading the upstream document.
         """
-        # Fetch FilepickerFile
         fpf = self._get_fpf()
         # Return proper URL for reading
         return fpf.get_url()
@@ -204,6 +204,12 @@ class Note(Document):
         (UNKNOWN_FILE, 'Unknown file'),
     )
 
+    PDF_MIMETYPES = (
+      'application/pdf',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    )
+
     file_type       = models.CharField(max_length=15,
                             choices=FILE_TYPE_CHOICES,
                             default=UNKNOWN_FILE,
@@ -241,7 +247,7 @@ class Note(Document):
         ordering = ['-uploaded_at']
 
     def __unicode__(self):
-        return u"Note at {0} (from {1})".format(self.fp_file, self.upstream_link)
+        return u"Note at {0} (from {1}) ({2})".format(self.fp_file, self.upstream_link, self.id)
 
     def natural_key(self):
         """
@@ -321,10 +327,10 @@ class Note(Document):
         """
         if self.slug is not None:
             # return a url ending in slug
-            return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.slug)
+            return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.slug])
         else:
             # return a url ending in id
-            return u"/{0}/{1}/{2}".format(self.course.school.slug, self.course.slug, self.id)
+            return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.id])
 
     def filter_html(self, html):
         """
@@ -405,6 +411,16 @@ class Note(Document):
             self._update_parent_updated_at()
         super(Note, self).save(*args, **kwargs)
 
+    def has_markdown(self):
+        return hasattr(self, "notemarkdown")
+
+    def is_pdf(self):
+        return self.mimetype in Note.PDF_MIMETYPES
+
+
+class NoteMarkdown(models.Model):
+    note     = models.OneToOneField(Note, primary_key=True)
+    markdown = models.TextField(blank=True, null=True)
 
 auto_add_check_unique_together(Note)
 

@@ -31,3 +31,6 @@ class ProfileView(TemplateView, MultipleObjectMixin):
 
         return super(ProfileView, self).get_context_data(**kwargs)
 
+class ControlView(TemplateView):
+    template_name = 'control_panel.html'
+
