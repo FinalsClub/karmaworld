@@ -56,8 +56,8 @@ EXAMPLE_NEW_COURSE_URL = 'http://neu.edu/stuff'
 EXAMPLE_HONEYPOT_VALUE = 'Free drugs!'
 
 SCHOOL_DEPARTMENT_FIELD_OPTIONS = (
-    # Choose a school from autocomplete
-    FieldAction(SCHOOL_FIELD_NAME, EXAMPLE_SCHOOL, autocomplete=True, error_expected=False),
+    # Choose a school from autocomplete without department
+    FieldAction(SCHOOL_FIELD_NAME, EXAMPLE_SCHOOL, autocomplete=True, error_expected=True),
     # Type in a school without choosing from autocomplete
     FieldAction(SCHOOL_FIELD_NAME, EXAMPLE_SCHOOL, autocomplete=False, error_expected=True),
     # Empty school name
@@ -72,7 +72,7 @@ SCHOOL_DEPARTMENT_FIELD_OPTIONS = (
     # Choose school and choose existing department
     CompositeFieldAction([
         FieldAction(SCHOOL_FIELD_NAME, EXAMPLE_SCHOOL, autocomplete=True, error_expected=False),
-        FieldAction(DEPARTMENT_FIELD_NAME, EXAMPLE_EXISTING_DEPARTMENT, autocomplete=True, error_expected=False)],
+        FieldAction(DEPARTMENT_FIELD_NAME, EXAMPLE_EXISTING_DEPARTMENT, autocomplete=True, error_expected=False, new_object_expected=False)],
                          error_expected=False),
 )
 
@@ -126,7 +126,7 @@ HONEYPOT_FIELD_OPTIONS = (
     # something in the honeypot
     FieldAction(HONEYPOT_FIELD_NAME, EXAMPLE_HONEYPOT_VALUE, autocomplete=False, error_expected=True),
     # nothing in the honeypot
-    FieldAction(HONEYPOT_FIELD_NAME, '', autocomplete=False, error_expected=False)
+    FieldAction(HONEYPOT_FIELD_NAME, '', autocomplete=False, error_expected=False),
 )
 
 
@@ -150,7 +150,6 @@ class DynamicTestCasesType(type):
             newdct[test_name] = new.function(m.func_code, globals(), test_name, tuple(), m.func_closure)
             i += 1
 
-
         return super(DynamicTestCasesType, mcs).__new__(mcs, name, bases, newdct)
 
 
@@ -171,13 +170,13 @@ class AddCourseTest(LiveServerTestCase):
         cls.driver.quit()
         super(AddCourseTest, cls).tearDownClass()
 
-    def set_up(self):
+    def setUp(self):
         self.northeastern = School.objects.create(name=EXAMPLE_SCHOOL, usde_id=33333)
         self.department = Department.objects.create(name=EXAMPLE_EXISTING_DEPARTMENT, school=self.northeastern)
         self.professor = Professor.objects.create(name=EXAMPLE_EXISTING_PROFESSOR, email=EXAMPLE_EXISTING_PROFESSOR_EMAIL)
         self.course = Course.objects.create(name=EXAMPLE_EXISTING_COURSE_NAME, department=self.department)
 
-    def tear_down(self):
+    def tearDown(self):
         School.objects.all().delete()
         Department.objects.all().delete()
         Professor.objects.all().delete()
@@ -258,7 +257,6 @@ class AddCourseTest(LiveServerTestCase):
                              format(n=desired_count, url=value, a=str(actions)))
 
     def do_actions(self, actions):
-        self.set_up()
         self.driver.get(self.live_server_url)
         error_expected = self.expect_error(actions)
         self.fill_out_form(actions)
@@ -270,4 +268,23 @@ class AddCourseTest(LiveServerTestCase):
             for action in AddCourseTest.flatten_actions(actions):
                 if action.new_object_expected:
                     self.check_object_exists(action.value, action.field, exists=True, actions=actions)
-        self.tear_down()
+
+    def test_duplicate_course_allowed(self):
+        # A basic usage
+        actions = [
+            FieldAction(SCHOOL_FIELD_NAME, EXAMPLE_SCHOOL, autocomplete=True, error_expected=False),
+            FieldAction(DEPARTMENT_FIELD_NAME, EXAMPLE_EXISTING_DEPARTMENT, autocomplete=True, error_expected=False),
+            FieldAction(COURSE_FIELD_NAME, EXAMPLE_NEW_COURSE_NAME, autocomplete=False, error_expected=False),
+            FieldAction(PROFESSOR_FIELD_NAME, EXAMPLE_NEW_PROFESSOR, autocomplete=False, error_expected=False),
+        ]
+
+        # Fill out field and make sure it worked
+        self.do_actions(actions)
+        for action in actions:
+            self.check_object_exists(action.value, action.field, exists=True, actions=actions)
+
+        # Fill out field again, and make sure duplicated were not created
+        self.do_actions(actions)
+        for action in actions:
+            self.check_object_exists(action.value, action.field, exists=True, actions=actions)
+

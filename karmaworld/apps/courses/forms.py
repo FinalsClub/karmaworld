@@ -86,7 +86,7 @@ class DepartmentForm(NiceErrorModelForm, ACFieldModelForm):
     # first argument is ajax channel name, defined in models as LookupChannel.
     name = AutoCompleteDependentSelectField(
         'dept_object_by_name_given_school', help_text='',
-        label='Department name',
+        label=mark_safe('Department name <span class="required-field">(required)</span>'),
         # autocomplete department based on school
         dependsOn=school,
         # allows creating a new department on the fly
