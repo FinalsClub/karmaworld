@@ -1,0 +1,10 @@
+.results_on_deck
+{
+  padding: 0;
+}
+
+span.required-field
+{
+  font-size: 0.8em;
+  color: red;
+}

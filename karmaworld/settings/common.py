@@ -386,7 +386,7 @@ TAGGIT_STOPWORDS = [u'a', u'an', u'and', u'be', u'from', u'of']
 # https://github.com/sunlightlabs/django-honeypot
 HONEYPOT_FIELD_NAME = "instruction_url" # see that "_url"? bots gotta want that.
 HONEYPOT_VALUE = ""
-HONEYPOT_LABEL = "Do not fill in this field:"
+HONEYPOT_LABEL = "Do not fill in this field (we need to make sure you're not a robot)"
 HONEYPOT_ERROR = "You did not follow directions."
 ########## END HONEYPOT CONFIGURATION
 

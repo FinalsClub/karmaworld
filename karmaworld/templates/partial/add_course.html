@@ -8,6 +8,7 @@
 <script src="{{ STATIC_URL }}js/course.js"></script>
 <script src="{{ STATIC_URL }}js/add-course.js"></script>
 {{ course_form.media }}
+<link href="{{ STATIC_URL }}css/add_course.css" type="text/css" media="all" rel="stylesheet" />
 
 <section id="add-course-form">
   <form method="POST" action="{% url 'home' %}">

@@ -8,7 +8,7 @@ from django.conf import settings
 from django.forms import CharField
 from django.forms import ValidationError
 
-from ajax_select.fields import AutoCompleteField
+from ajax_select.fields import AutoCompleteField, AutoCompleteSelectWidget
 from ajax_select.fields import AutoCompleteSelectField
 from ajax_select_cascade.fields import AutoCompleteDependentSelectField
 
@@ -36,7 +36,8 @@ class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
     name = AutoCompleteSelectField('professor_object_by_name', help_text='',
         label="Professor's name",
         # allows creating a new Professor on the fly
-        required=False)
+        required=False,
+        widget=AutoCompleteSelectWidget('professor_object_by_name', attrs={'class': 'small-6 columns'}))
     email = AutoCompleteSelectField('professor_object_by_email', help_text='',
         label="Professor's email address",
         # allows creating a new Professor on the fly
