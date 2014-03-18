@@ -43,21 +43,24 @@ $(document).ready(function() {
     "aoColumnDefs": [ 
       {
         // 4th element: thanks
-        "aTargets": [ 3 ],
+        "aTargets": [ 6 ],
         "bSortable": true,
-        "bVisible": true
+        "bVisible": true,
+        "aDataSort": [ 3 ]
       },
       {
         // 3rd element: notes
-        "aTargets": [ 2 ],
+        "aTargets": [ 5 ],
         "bSortable": true,
-        "bVisible": true
+        "bVisible": true,
+        "aDataSort": [ 2 ]
       },
       {
         // 2nd element: date
-        "aTargets": [ 1 ],
+        "aTargets": [ 4 ],
         "bSortable": true,
-        "bVisible": true
+        "bVisible": true,
+        "aDataSort": [ 1 ]
       },
       {
         // 1st element: "sort by" label
@@ -67,7 +70,7 @@ $(document).ready(function() {
       }
     ],
     // Initial sorting
-    'aaSorting': [[2,'desc']]
+    'aaSorting': [[6,'desc']]
   });
   $('.dataTables_filter input').attr("placeholder", "search courses");
   // TODO: can't prepend html to .dataTables_filter input html for fontawesome search icon
@@ -95,8 +98,11 @@ $(document).ready(function() {
         <thead>
           <tr>
             <th id="data-table-sort-by"> Sort by: </th>
+            <th class="no-display" id="data-table-date-hidden"> Date </th>
+            <th class="no-display" id="data-table-note-count-hidden"> # Notes </th>
+            <th class="no-display" id="data-table-thanks-hidden"> Popularity </th>
             <th id="data-table-date"> Date </th>
-            <th id="data-table-note-count"> #Notes </th>
+            <th id="data-table-note-count"> # Notes </th>
             <th id="data-table-thanks"> Popularity </th>
             <th class="no-display" id="data-table-upload"> Upload </th>
             <th class="no-display" id="data-table-course-name"> Course Name </th>
