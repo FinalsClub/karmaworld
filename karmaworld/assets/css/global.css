@@ -8,6 +8,16 @@
   padding: 0 5px 0 5px;
 }
 
+.mobile-nav-list ul {
+  list-style-type: none;
+  margin: 0;
+}
+
+.mobile-nav-list li {
+  padding: 10px 10px 10px 10px;
+  font-size: 1.5em;
+}
+
 #header-nav {
   text-align: right;
   font-size: 1.3em;
@@ -15,6 +25,12 @@
 
 #header-login-nav {
   text-align: right;
+  background: #000000;
+  color: #d4d4d4;
+}
+
+#header-login-nav a {
+  color: #d4d4d4;
 }
 
 #logo-container {
@@ -22,17 +38,14 @@
 }
 
 #main-header {
-  border: 1px solid grey;
-  border-radius: 0.2em;
-}
-
-#global-header {
-  margin-top: 20px;
+  background: #333333;
+  color: #d4d4d4;
+  padding: 1em 0 0.4em 0;
+  font: 1em 'museo300';
 }
 
 .gradient-bar
 {
-  background-color: #ffffff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e8e8e8)); /* Safari 4+, Chrome */
   background-image: -webkit-linear-gradient(top, #ffffff, #e8e8e8); /* Chrome 10+, Safari 5.1+, iOS 5+ */
   background-image: -moz-linear-gradient(top, #ffffff, #e8e8e8); /* Firefox 3.6-15 */
@@ -43,7 +56,10 @@
 
 #global_footer {
   line-height: 1.5em;
-  margin: 20px 0 20px 0;
+  padding: 20px 0 20px 0;
+  margin-top: 20px;
+  background: #333333;
+  color: #d4d4d4;
 }
 
 label.inline-label
@@ -51,11 +67,64 @@ label.inline-label
   display: inline;
 }
 
-button.inline-button {
-  background: grey;
+button {
   color: white;
   border: none;
-  padding: 5px;
-  border-radius: 0.3em;
+  padding: 10px;
+  border-radius: 0.1em;
+}
+
+button.inline-button {
   display: inline;
+}
+
+button.important {
+  background: #f1592a;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #802e16;
+  text-decoration: underline;
+}
+
+
+span.table-school,
+span.table-note-count,
+span.table-quiz-count,
+span.table-thanks-count {
+  font-weight: bold;
+}
+
+span.table-course-name {
+  font-size: 1.8em;
+}
+
+table.dataTable {
+  margin-bottom: 30px;
+  border: none;
+}
+
+table.dataTable div.table-entry-first-line {
+  padding-top: 20px;
+  font-family: 'museo700';
+}
+
+table.dataTable div.table-entry-second-line {
+  font-family: 'museo700';
+}
+
+table.dataTable div.table-entry-third-line {
+  padding-bottom: 20px;
+  font-family: 'Akkurat-Leicht';
+}
+
+table.dataTable tr.even {
+  background: #fafafa;
+  border-top: 2px solid #f0f0f0;
+  border-bottom: 2px solid #f0f0f0;
 }

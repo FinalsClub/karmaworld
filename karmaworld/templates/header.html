@@ -2,41 +2,59 @@
 
 
 <header id="global-header">
-  {% if request.user.is_authenticated %}
-  <div id="header-login-nav" class="row nav-list">
-    <div class="small-12 columns">
-      <ul>
-        <li><a href="{% url 'accounts_profile' %}">{{ request.user.get_profile.get_points }} Karma Points</a></li>
-        <li><a href="{% url 'control_panel' %}">My Account</a></li>
-        <li><a href="{% url 'account_logout' %}">Log Out</a></li>
-      </ul>
-    </div>
+
+  <div id="header-login-nav" class="show-for-large-up">
+    {% if request.user.is_authenticated %}
+      <div class="row nav-list">
+        <div class="large-12 columns">
+          <ul>
+            <li><a href="{% url 'accounts_profile' %}">{{ request.user.get_profile.get_points }} Karma Points</a></li>
+            <li><a href="{% url 'control_panel' %}">My Account</a></li>
+            <li><a href="{% url 'account_logout' %}">Log Out</a></li>
+          </ul>
+        </div>
+      </div>
+    {% endif %}
   </div>
-  {% endif %}
 
-  <div id="main-header" class="row gradient-bar">
-    <div id="logo-container" class="small-12 large-4 columns">
-      <a href="/">
-        <img src="{{ STATIC_URL }}img/global_header_logo.png" alt="global_header_logo" width="144" height="17" />
-      </a>
-    </div><!--/logo container-->
 
-    <div id="header-nav" class="small-12 large-8 columns nav-list">
-      {% if request.user.is_authenticated %}
+  <div id="main-header">
+    <div class="row">
+      <div id="logo-container" class="small-12 large-4 columns">
+        <div style="display: inline;">
+          <a class="left-off-canvas-toggle show-for-small-down"><i class="fa fa-bars fa-lg"></i>&nbsp;</a>
+          <a href="/">
+            <img src="{{ STATIC_URL }}img/global_header_logo.png" alt="global_header_logo" width="144" height="17" />
+          </a>
+        </div>
+      </div><!--/logo container-->
+
+      <div id="header-nav" class="large-8 columns nav-list show-for-large-up">
+        {% if request.user.is_authenticated %}
+          <ul>
+            <li>Courses</li>
+            <li>My Courses</li>
+            <li>My Notes</li>
+            <li>My Quizzes</li>
+          </ul>
+        {% else %}
+          <ul>
+            <li>Courses</li>
+            <li><a href="{% url 'account_login' %}">Log In</a></li>
+            <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+          </ul>
+        {% endif %}
+      </div>
+
+      <aside class="left-off-canvas-menu mobile-nav-list">
         <ul>
           <li>Courses</li>
           <li>My Courses</li>
           <li>My Notes</li>
           <li>My Quizzes</li>
         </ul>
-      {% else %}
-        <ul>
-          <li>Courses</li>
-          <li><a href="{% url 'account_login' %}">Log In</a></li>
-          <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
-        </ul>
-      {% endif %}
-      <!--/header-nav-->
+      </aside>
+
     </div>
   </div>
 

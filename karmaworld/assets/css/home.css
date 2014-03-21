@@ -1,17 +1,15 @@
 #splash {
-  font-size: 2.5em;
-  padding: 20vh 15vw 20vh 15vw;
+  font: 3em 'Museo700';
+  padding: 10vh 5vh 10vh 5vh;
   background: grey;
-  margin: 20px 0 20px 0;
-  border-radius: 0.2em;
-  color: white;
+  color: #ffffff;
   text-align: center;
 }
 
 input.search-courses {
-  width: 15em;
   display: inline;
-  margin-right: 0;
+  margin: 0 0 10px 5px;
+  max-width: 30em;
 }
 
 #course-sort-wrapper {
@@ -24,28 +22,15 @@ select.course-sort {
 }
 
 #course-search-bar {
-  border: 1px solid grey;
-  padding: 10px 0 0 0;
+  background: #f5f5f5;
+  padding: 15px 0 0 0;
+  font: 1em 'museo300';
 }
 
-span.table-school,
-span.table-note-count,
-span.table-quiz-count,
-span.table-thanks-count {
-  font-weight: bold;
+#intro-video-button {
+  color: #f1592a;
+  background: #ffffff;
+  font: 0.3em 'museo700';
+  margin: 50px 0 0 0;
+  padding: 5px 5px 5px 5px;
 }
-
-span.table-course-name {
-  font-size: 1.8em;
-}
-
-div.table-entry-third-line {
-  border-bottom: 1px solid grey;
-  padding-bottom: 10px;
-}
-
-div.table-entry-first-line {
-  padding-top: 10px;
-}
-
-

@@ -6,7 +6,7 @@ span.course-header-school
 
 #course-header-name
 {
-  font-size: 1.8em;
+  font: 2.5em 'museo700';
 }
 
 #course-header
@@ -27,10 +27,10 @@ span.course-header-school
   cursor: pointer;
 }
 
-input.search-notes {
-  width: 15em;
+input.search-courses {
   display: inline;
-  margin-right: 0;
+  margin: 0 0 10px 5px;
+  max-width: 30em;
 }
 
 form.search-notes {

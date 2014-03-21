@@ -109,7 +109,7 @@ class Document(models.Model):
                     'data-fp-multiple': 'true', 
                     'data-fp-folders': 'true',
                     'data-fp-button-class':
-                      'inline-button add-note-btn',
+                      'inline-button important add-note-btn',
                     'data-fp-button-text': 'Add Notes',
                     'data-fp-extensions':
                       '.pdf,.doc,.docx,.txt,.html,.rtf,.odt,.png,.jpg,.jpeg,.ppt,.pptx',

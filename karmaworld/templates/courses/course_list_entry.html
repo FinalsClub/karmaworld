@@ -5,9 +5,26 @@
 
   <td class="small-12 columns">
     <div class="table-entry-first-line">
-      <span class="table-school">{{ course.school.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-      {% if course.department %}<span class="table-department">{{ course.department.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;{% endif %}
-      <span class="table-instructor">{{ course.instructor_name }}</span>
+      <span class="table-school">
+        {% if course.school.name %}
+          {{ course.school.name }}
+        {% endif %}
+        {% if course.department.school.name %}
+          {{ course.department.school.name }}
+        {% endif %}
+      </span>
+      {% if course.department %}
+        &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+        <span class="table-department">{{ course.department.name }}</span>
+      {% endif %}
+      {% if course.instructor_name %}
+        &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+        <span class="table-instructor">{{ course.instructor_name }}</span>
+      {% endif %}
+      {% if couse.instructor.name %}
+        &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+        <span class="table-instructor">{{ course.instructor.name }}</span>
+      {% endif %}
     </div>
   </td>
 

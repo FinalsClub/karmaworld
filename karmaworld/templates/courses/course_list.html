@@ -6,9 +6,8 @@
 {% endblock %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/data_table_list.css">
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
 {% endblock %}
 
 {% block pagescripts %}
@@ -32,29 +31,42 @@
 
 {% block content %}
 <section id="home_content">
-  <div id="page_header" class="">
-    <div id="subhead" class="row">
+  <div id="page_header">
       <div id="splash">
-        Browse and contribute lecture notes and quizzes from over 100 college courses.
+        <div class="row">
+          <div class="small-12 large-8 columns large-offset-2">
+            Browse and contribute lecture notes and quizzes from over 100 college courses.
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <button id="intro-video-button">Watch the video&nbsp;&nbsp;<i class='fa fa-caret-right'></i></button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div id="course-search-bar" class="row">
-    <div class="small-12 columns">
-      <button id="add-course-btn" class="inline-button">Add a Course</button>
-      <input class="search-courses" type="text" placeholder="Search Courses" />
-      <div id="course-sort-wrapper">
-        Sort By
-        <select class="course-sort">
-          <option value="0">Date</option>
-          <option value="1">Number of Notes</option>
-          <option value="2" selected>Popularity</option>
-        </select>
+  <div id="course-search-bar">
+    <div class="row">
+      <div class="large-2 columns show-for-large-up">
+        <button id="add-course-btn" class="inline-button important">Add a Course</button>
+      </div>
+      <div class="small-12 large-6 columns">
+        <input class="search-courses" type="text" placeholder="Search Courses" />
+      </div>
+      <div class="large-4 columns show-for-large-up">
+        <div id="course-sort-wrapper">
+          Sort By
+          <select class="course-sort">
+            <option value="0">Date</option>
+            <option value="1">Number of Notes</option>
+            <option value="2" selected>Popularity</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
-
 
   <div class="row">
     <div class="small-12 columns">
