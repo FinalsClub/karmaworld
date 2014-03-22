@@ -1,9 +1,9 @@
 <tr>
   <td class="no-display"><!-- this spot solely for the Sort By header --></td>
-  <td class="no-display">{{ course.get_popularity|stringformat:"010g" }}</td>
+  <td class="no-display">{{ note.thanks|stringformat:"010g" }}</td>
 
   <td class="small-8 columns large-4 slim">{{ note.uploaded_at|date:"l M d o"|capfirst }}</td>
-  <td class="small-4 columns large-2 large-offset-2 slim"><span>{{ course.get_popularity }} Thank{{ course.get_popularity|pluralize }}</span></td>
+  <td class="small-4 columns large-2 large-offset-2 slim"><span>{{ note.thanks }} Thank{{ note.thanks|pluralize }}</span></td>
   <td class="small-12 large-5 columns">
     <a href="{{ note.get_absolute_url }}">{{ note.name }}</a>
   </td>
