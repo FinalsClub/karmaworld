@@ -43,24 +43,21 @@ $(document).ready(function() {
     "aoColumnDefs": [ 
       {
         // 4th element: thanks
-        "aTargets": [ 6 ],
+        "aTargets": [ 3 ],
         "bSortable": true,
-        "bVisible": true,
-        "aDataSort": [ 3 ]
+        "bVisible": true
       },
       {
         // 3rd element: notes
-        "aTargets": [ 5 ],
+        "aTargets": [ 2 ],
         "bSortable": true,
-        "bVisible": true,
-        "aDataSort": [ 2 ]
+        "bVisible": true
       },
       {
         // 2nd element: date
-        "aTargets": [ 4 ],
+        "aTargets": [ 1 ],
         "bSortable": true,
-        "bVisible": true,
-        "aDataSort": [ 1 ]
+        "bVisible": true
       },
       {
         // 1st element: "sort by" label
@@ -70,24 +67,24 @@ $(document).ready(function() {
       }
     ],
     // Initial sorting
-    'aaSorting': [[6,'desc']]
-  });
+    'aaSorting': [[3,'desc']]
+  })
   $('.dataTables_filter input').attr("placeholder", "search courses");
   // TODO: can't prepend html to .dataTables_filter input html for fontawesome search icon
 });
 
-  //scrolling scripts - scrolls to top of page after scrolling between pages
-    $(function(){
-        $('#paginate_enabled_next').click(function() {
-        $("#data-table-sort-by").ScrollTo();;
+//button
+$(function(){
+    $('#paginate_enabled_next').click(function() {
+    $("#data-table-sort-by").ScrollTo();;
     });
-  
-    $(function(){
-	$('paginate_enabled_previous').click(function() {
-	$("#data-table-sort-by").ScrollTo();;
+});
+
+$(function(){
+    $('#paginate_enabled_previous').click(function() {
+    $("#data-table-sort-by").ScrollTo();;
     });
-
-
+});
 </script>
 {% endblock %}
 
@@ -111,11 +108,8 @@ $(document).ready(function() {
         <thead>
           <tr>
             <th id="data-table-sort-by"> Sort by: </th>
-            <th class="no-display" id="data-table-date-hidden"> Date </th>
-            <th class="no-display" id="data-table-note-count-hidden"> # Notes </th>
-            <th class="no-display" id="data-table-thanks-hidden"> Popularity </th>
             <th id="data-table-date"> Date </th>
-            <th id="data-table-note-count"> # Notes </th>
+            <th id="data-table-note-count"> #Notes </th>
             <th id="data-table-thanks"> Popularity </th>
             <th class="no-display" id="data-table-upload"> Upload </th>
             <th class="no-display" id="data-table-course-name"> Course Name </th>
