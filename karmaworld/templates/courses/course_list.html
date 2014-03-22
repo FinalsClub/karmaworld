@@ -75,6 +75,19 @@ $(document).ready(function() {
   $('.dataTables_filter input').attr("placeholder", "search courses");
   // TODO: can't prepend html to .dataTables_filter input html for fontawesome search icon
 });
+
+  //scrolling scripts - scrolls to top of page after scrolling between pages
+    $(function(){
+        $('#paginate_enabled_next').click(function() {
+        $("#data-table-sort-by").ScrollTo();;
+    });
+  
+    $(function(){
+	$('paginate_enabled_previous').click(function() {
+	$("#data-table-sort-by").ScrollTo();;
+    });
+
+
 </script>
 {% endblock %}
 
