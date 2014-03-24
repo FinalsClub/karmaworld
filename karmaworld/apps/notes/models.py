@@ -324,7 +324,10 @@ class Note(Document):
         """
         if self.slug is not None:
             # return a url ending in slug
-            return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.slug])
+            if self.course.school:
+                return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.slug])
+            else:
+                return reverse('note_detail', args=[self.course.department.school.slug, self.course.slug, self.slug])
         else:
             # return a url ending in id
             return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.id])

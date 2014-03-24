@@ -103,72 +103,51 @@ $(function() {
   KARMAWORLD.Course.initCourseNameAutocomplete({});
   KARMAWORLD.Course.initInstructorNameAutocomplete({});
 
-  $('#data_table_list').dataTable({
-    // remove the default filter label
-    'oLanguage': {
-      'sSearch': '',
-    },
-    // we will set column widths explicitly
-    'bAutoWidth': false,
-    // don't provide a option for the user to change the table page length
-    'bLengthChange': false,
-    // sepcify the number of rows in a page
-    'iDisplayLength': 20,
-    // Position the filter bar at the top
-    // DIFF: do not show search bar (f)
-    'sDom': '<"top">rt<"bottom"p><"clear">',
-    // Specify options for each column
-    "aoColumnDefs": [
-      {
-        // 3rd element: likes
-        "aTargets": [ 2 ],
-        "bSortable": true,
-        "bVisible": true,
-        "mData": function ( source, type, val ) {
-          //console.log(source);
-          if (type === 'set') {
-            source.count = val;
-            // Store the computed dislay and filter values for efficiency
-            // DIFF: label name change.
-            source.count_display = val=="" ? "" : "<span>"+val+" Thanks</span>";
-            return;
-          }
-          else if (type === 'display') {
-            return source.count_display;
-          }
-          // 'sort', 'type', 'filter' and undefined all just use the integer
-          return source.count;
+  $(function() {
+
+    // load dataTable for course data
+    var dataTable = $('#data_table_list').dataTable({
+      // we will set column widths explicitly
+      'bAutoWidth': false,
+      // don't provide a option for the user to change the table page length
+      'bLengthChange': false,
+      // sepcify the number of rows in a page
+      'iDisplayLength': 20,
+      // Position the filter bar at the top
+      'sDom': '<"top">rt<"bottom"p><"clear">',
+      // Specify options for each column
+      "aoColumnDefs": [
+        {
+          // 2nd element: thanks
+          "aTargets": [ 1 ],
+          "bSortable": true,
+          "bVisible": true
+        },
+        {
+          // 1st element: date
+          "aTargets": [ 0 ],
+          "bSortable": true,
+          "bVisible": true
         }
-      },
-      {
-        // 2nd element: date
-        "aTargets": [ 1 ],
-        "bSortable": true,
-        "bVisible": true,
-        "mData": function ( source, type, val ) {
-          //console.log(source);
-          if (type === 'set') {
-            source.date = val;
-            // DIFF: label name change.
-            source.date_display = val=="" ? "" : "<span>Uploaded "+val+"</span>";
-            return;
-          }
-          else if (type === 'display') {
-            return source.date_display;
-          }
-          // for types 'sort', 'type', 'filter' and undefined use raw date
-          return source.date;
-        }
-      },
-      {
-        // 1st element: "sort by" label
-        "aTargets": [ 0 ],
-        "bSortable": false,
-        "bVisible": true
-      }
-    ],
-    // Initial sorting
-    'aaSorting': [[2,'desc']]
+      ],
+      // Initial sorting
+      'aaSorting': [[1,'desc']]
+    });
+
+    // wire up search box
+    $('input.search-notes').keyup(function() {
+      dataTable.fnFilter($(this).val());
+    });
+
+    // wire up sort chooser
+    $('select.course-sort').change(function() {
+      dataTable.fnSort([[$(this).val(), 'desc']]);
+    });
+
+    // sort by current value of sort chooser, since
+    // the browser may change this from our default
+    dataTable.fnSort([[$('select.note-sort').val(), 'desc']]);
+
   });
 
 });

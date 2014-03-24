@@ -1,46 +1,45 @@
 <tr class="table-row">
   <td class="hide">{{ course.updated_at|date:"U" }}</td>
-  <td class="hide">{{ course.file_count }}</td>
-  <td class="hide">{{ course.get_popularity }}</td>
+  <td class="hide">{{ course.file_count|stringformat:"010g" }}</td>
+  <td class="hide">{{ course.get_popularity|stringformat:"010g" }}</td>
 
   <td class="small-12 columns">
-    <div class="table-entry-first-line">
-      <span class="table-school">
-        {% if course.school.name %}
-          {{ course.school.name }}
+    <div class="data-table-entry">
+      <div class="table-entry-first-line">
+        <span class="table-school">
+          {% if course.school.name %}
+            {{ course.school.name }}
+          {% endif %}
+          {% if course.department.school.name %}
+            {{ course.department.school.name }}
+          {% endif %}
+        </span>
+        {% if course.department %}
+          &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <span class="table-department">{{ course.department.name }}</span>
         {% endif %}
-        {% if course.department.school.name %}
-          {{ course.department.school.name }}
+        {% if course.instructor_name %}
+          &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <span class="table-instructor">{{ course.instructor_name }}</span>
         {% endif %}
-      </span>
-      {% if course.department %}
-        &nbsp;&nbsp;&bull;&nbsp;&nbsp;
-        <span class="table-department">{{ course.department.name }}</span>
-      {% endif %}
-      {% if course.instructor_name %}
-        &nbsp;&nbsp;&bull;&nbsp;&nbsp;
-        <span class="table-instructor">{{ course.instructor_name }}</span>
-      {% endif %}
-      {% if couse.instructor.name %}
-        &nbsp;&nbsp;&bull;&nbsp;&nbsp;
-        <span class="table-instructor">{{ course.instructor.name }}</span>
-      {% endif %}
-    </div>
-  </td>
+        {% if couse.instructor.name %}
+          &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <span class="table-instructor">{{ course.instructor.name }}</span>
+        {% endif %}
+      </div>
 
-  <td class="small-12 columns">
-    <div class="table-entry-second-line">
-      <span class="table-course-name"><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></span>
-    </div>
-  </td>
+      <div class="table-entry-second-line museo700">
+        <span class="table-course-name"><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></span>
+      </div>
 
-  <td class="small-12 columns">
-    <div class="table-entry-third-line">
-      <span class="table-note-count">{{ course.file_count }} Notes</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-      <span class="table-quiz-count">{{ course.quiz_count }} Quizzes </span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-      <span class="table-thanks-count">{{ course.get_popularity }} Thanks </span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-      <span>Updated {{ course.updated_at|date:"b d, o"|capfirst }}</span>
+      <div class="table-entry-third-line">
+        <span class="table-note-count"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;{{ course.file_count }} Notes</span>
+        <span class="table-quiz-count"><i class="fa fa-question"></i>&nbsp;&nbsp;{{ course.quiz_count }} Quizzes </span>
+        <span class="table-thanks-count"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;{{ course.get_popularity }} Thanks </span>
+        <span>Updated {{ course.updated_at|date:"b d, o"|capfirst }}</span>
+      </div>
     </div>
+
   </td>
 
 </tr>

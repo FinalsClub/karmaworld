@@ -18,7 +18,6 @@ span.course-header-school
 #end-header
 {
   margin-top: 20px;
-  border-bottom: 1px solid black;
 }
 
 #edit-button,
@@ -47,14 +46,23 @@ select.note-sort {
 }
 
 #note-search-bar {
-  margin-top: 20px;
-  border: 1px solid grey;
-  padding: 10px 0 0 0;
+  background: #f5f5f5;
+  padding: 15px 0 0 0;
+  font: 1em 'museo300';
+  margin-bottom: 20px;
 }
 
 ul.socialaccount_providers li,
 ul#uploaded_files li
 {
   display: inline;
+}
+
+table.dataTable div.note-date {
+  margin-bottom: 10px;
+}
+
+table.dataTable div.note-text {
+  margin: 10px 0 10px 0;
 }
 

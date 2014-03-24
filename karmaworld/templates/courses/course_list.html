@@ -27,21 +27,24 @@
 
 {% block bodyscripts %}
   <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.backstretch.min.js"></script>
+  <script>
+    $("#splash").backstretch("{{ STATIC_URL }}img/banner.jpg");
+  </script>
 {% endblock %}
 
 {% block content %}
 <section id="home_content">
   <div id="page_header">
-      <div id="splash">
-        <div class="row">
-          <div class="small-12 large-8 columns large-offset-2">
-            Browse and contribute lecture notes and quizzes from over 100 college courses.
-          </div>
+    <div id="splash">
+      <div class="row">
+        <div class="small-12 large-8 columns large-offset-2">
+          Browse and contribute lecture notes and quizzes from over 100 college courses.
         </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <button id="intro-video-button">Watch the video&nbsp;&nbsp;<i class='fa fa-caret-right'></i></button>
-          </div>
+      </div>
+      <div class="row">
+        <div class="small-12 columns">
+          <button id="intro-video-button">Watch the video&nbsp;&nbsp;<i class='fa fa-caret-right'></i></button>
         </div>
       </div>
     </div>
@@ -77,9 +80,7 @@
             <th class="no-display" id="data-table-date"> Date </th>
             <th class="no-display" id="data-table-note-count"> # Notes </th>
             <th class="no-display" id="data-table-thanks"> Popularity </th>
-            <th class="no-display" id="data-table-upload"> School & Instructor </th>
-            <th class="no-display" id="data-table-course-name"> Course Name </th>
-            <th class="no-display" id="data-table-school-name"> Stats </th>
+            <th class="no-display" id="data-table-upload"> Course </th>
           </tr>
         </thead>
         <tbody>
@@ -88,7 +89,7 @@
         {% endfor %}
         </tbody>
       </table>
-    </div><!-- .ten columns -->
+    </div>
   </div> <!-- .row -->
 
   {% include 'partial/add_course.html' %}

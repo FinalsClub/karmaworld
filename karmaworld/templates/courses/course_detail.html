@@ -139,7 +139,7 @@
         {{ file_upload_form.fp_file }}
       </div>
       <div class="small-12 large-6 columns">
-        <form class="search-notes" action="{% url 'note_search' %}" method="GET">
+        <form class="search-notes adelle-sans" action="{% url 'note_search' %}" method="GET">
           <input name="query" class="search-notes" type="text" placeholder="Search Notes" />
           <input type="hidden" name="course_id" value="{{ course.id }}">
         </form>
@@ -149,8 +149,7 @@
           Sort By
           <select class="note-sort">
             <option value="0">Date</option>
-            <option value="1">Number of Quizzes</option>
-            <option value="2" selected>Popularity</option>
+            <option value="1" selected>Popularity</option>
           </select>
         </div>
       </div>
@@ -159,22 +158,18 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="small-10 columns small-offset-1"> <hr/> </div>
-    </div>
-
     <div id="course_container">
       <div class="row">
-        <div class="small-12 columns large-10 large-offset-1">
+        <div class="small-12 columns">
+          <!-- Main course table -->
           <table id="data_table_list">
-            <thead><tr>
-              <th id="data-table-sort-by"> Sort by: </th>
-              <th id="data-table-date"> Date </th>
-              <th id="data-table-thank-count"> Popularity </th>
-              <th class="no-display" id="data-table-note-name"> Name </th>
-              <th class="no-display" id="data-table-tags"> Tags </th>
-              <th class="no-display" id="data-table-note-preview"> Preview </th>
-            </tr></thead>
+            <thead class="hide">
+              <tr>
+                <th class="no-display" id="data-table-date"> Date </th>
+                <th class="no-display" id="data-table-thanks"> Popularity </th>
+                <th class="no-display" id="data-table-note"> Note </th>
+              </tr>
+            </thead>
             <tbody>
               {% for note in note_set %}
                 {% include 'notes/note_list_entry.html' with note=note %}
@@ -182,7 +177,8 @@
             </tbody>
           </table>
         </div>
-      </div>
+      </div> <!-- .row -->
+
     </div><!-- /course_container -->
 
   </section><!--/course_content-->

@@ -17,6 +17,8 @@
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="//use.typekit.net/pnc8diw.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
 
   <!-- block pagescripts -->
@@ -49,6 +51,8 @@
     {% include 'footer.html' %}
     <!-- end include footer-->
 
+    <a class="exit-off-canvas"></a>
+
     <!-- block bodyscripts -->
     {% block bodyscripts %}
     {% endblock %}
@@ -59,7 +63,6 @@
     <script>
       $(document).foundation();
     </script>
-    <a class="exit-off-canvas"></a>
   </div>
 
 </body>

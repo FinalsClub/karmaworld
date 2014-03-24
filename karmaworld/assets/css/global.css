@@ -1,3 +1,19 @@
+body {
+  font-family: 'adelle-sans';
+}
+
+.museo300 {
+  font-family: 'museo300';
+}
+
+.museo700 {
+  font-family: 'museo700';
+}
+
+.adelle-sans {
+  font-family: 'adelle-sans';
+}
+
 .nav-list ul {
   list-style-type: none;
   margin: 0;
@@ -14,8 +30,15 @@
 }
 
 .mobile-nav-list li {
-  padding: 10px 10px 10px 10px;
   font-size: 1.5em;
+  padding: 0 20px 0 10px;
+}
+
+.mobile-nav-item {
+  padding: 5px 0px 5px 0px;
+  border-bottom: 1px solid black;
+  width: 100%;
+  color: #999999;
 }
 
 #header-nav {
@@ -26,11 +49,12 @@
 #header-login-nav {
   text-align: right;
   background: #000000;
-  color: #d4d4d4;
+  padding: 3px 0 3px 0;
 }
 
-#header-login-nav a {
+#header-login-nav ul {
   color: #d4d4d4;
+  font: 0.8em 'adelle-sans';
 }
 
 #logo-container {
@@ -41,7 +65,6 @@
   background: #333333;
   color: #d4d4d4;
   padding: 1em 0 0.4em 0;
-  font: 1em 'museo300';
 }
 
 .gradient-bar
@@ -93,15 +116,19 @@ a:hover {
 }
 
 
-span.table-school,
-span.table-note-count,
-span.table-quiz-count,
-span.table-thanks-count {
+span.table-school {
   font-weight: bold;
 }
 
-span.table-course-name {
+span.table-note-count,
+span.table-quiz-count,
+span.table-thanks-count {
+  margin-right: 15px;
+}
+
+.table-course-name {
   font-size: 1.8em;
+  margin-right: 10px;
 }
 
 table.dataTable {
@@ -110,17 +137,17 @@ table.dataTable {
 }
 
 table.dataTable div.table-entry-first-line {
-  padding-top: 20px;
-  font-family: 'museo700';
-}
-
-table.dataTable div.table-entry-second-line {
-  font-family: 'museo700';
+  font-size: 0.9em;
+  margin: 0 0 5px 0;
 }
 
 table.dataTable div.table-entry-third-line {
-  padding-bottom: 20px;
-  font-family: 'Akkurat-Leicht';
+  font-size: 0.9em;
+  margin: 5px 0 0 0;
+}
+
+table.dataTable div.data-table-entry {
+  margin: 20px 0 20px 0;
 }
 
 table.dataTable tr.even {

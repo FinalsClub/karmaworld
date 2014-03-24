@@ -18,7 +18,7 @@
   </div>
 
 
-  <div id="main-header">
+  <div id="main-header" class="museo300">
     <div class="row">
       <div id="logo-container" class="small-12 large-4 columns">
         <div style="display: inline;">
@@ -46,16 +46,18 @@
         {% endif %}
       </div>
 
-      <aside class="left-off-canvas-menu mobile-nav-list">
-        <ul>
-          <li>Courses</li>
-          <li>My Courses</li>
-          <li>My Notes</li>
-          <li>My Quizzes</li>
-        </ul>
-      </aside>
-
     </div>
   </div>
 
 </header><!--/global header-->
+
+<aside class="left-off-canvas-menu mobile-nav-list museo700">
+  <ul>
+    <li><div class="mobile-nav-item">Courses</div></li>
+    <li><div class="mobile-nav-item">My Courses</div></li>
+    <li><div class="mobile-nav-item">My Notes</div></li>
+    <li><div class="mobile-nav-item">My Quizzes</div></li>
+    <li><div class="mobile-nav-item"><a href="{% url 'control_panel' %}">My Account</a></div></li>
+    <li><div class="mobile-nav-item"><a href="{% url 'account_logout' %}">Log Out</a></div></li>
+  </ul>
+</aside>
