@@ -25,12 +25,66 @@
   <script src="{{ STATIC_URL }}js/course-list.js"></script>
 {% endblock %}
 
+<<<<<<< HEAD
 {% block bodyscripts %}
   <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
   <script src="{{ STATIC_URL }}js/jquery.backstretch.min.js"></script>
   <script>
     $("#splash").backstretch("{{ STATIC_URL }}img/banner.jpg");
   </script>
+=======
+  // load dataTable for course data
+  $('#data_table_list').dataTable({
+    // remove the default filter label
+    'oLanguage': {
+      'sSearch': '',
+    },
+    // we will set column widths explicitly
+    'bAutoWidth': false,
+    // don't provide a option for the user to change the table page length
+    'bLengthChange': false,
+    // sepcify the number of rows in a page
+    'iDisplayLength': 20,
+    // Position the filter bar at the top
+    'sDom': '<"top"f>rt<"bottom"p><"clear">', 
+    // Specify options for each column
+    "aoColumnDefs": [ 
+      {
+        // 4th element: thanks
+        "aTargets": [ 6 ],
+        "bSortable": true,
+        "bVisible": true,
+        "aDataSort": [ 3 ]
+      },
+      {
+        // 3rd element: notes
+        "aTargets": [ 5 ],
+        "bSortable": true,
+        "bVisible": true,
+        "aDataSort": [ 2 ]
+      },
+      {
+        // 2nd element: date
+        "aTargets": [ 4 ],
+        "bSortable": true,
+        "bVisible": true,
+        "aDataSort": [ 1 ]
+      },
+      {
+        // 1st element: "sort by" label
+        "aTargets": [ 0 ],
+        "bSortable": false,
+        "bVisible": true
+      }
+    ],
+    // Initial sorting
+    'aaSorting': [[6,'desc']]
+  });
+  $('.dataTables_filter input').attr("placeholder", "search courses");
+  // TODO: can't prepend html to .dataTables_filter input html for fontawesome search icon
+});
+</script>
+>>>>>>> master
 {% endblock %}
 
 {% block content %}

@@ -15,8 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         """ On all calls, clean all notes with html and not text using html2text """
-        notes = Note.objects.all()
-
+        notes = Note.objects.only('static_html', 'mimetype', 'slug').filter(static_html=True).iterator()
         converted_notes = 0
         for note in notes:
             if note.static_html and not note.is_pdf():
