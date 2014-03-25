@@ -56,12 +56,3 @@ window.KARMAWORLD.Course = {
     $("#id_instructor_name").autocomplete(opts);
   }
 };
-
-function dialogWidth() {
-  var bodyWidth = $('body').width();
-  if (bodyWidth < 700) {
-    return bodyWidth;
-  } else {
-    return 700;
-  }
-}

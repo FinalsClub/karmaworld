@@ -72,6 +72,9 @@ function writeNoteFrame(contents) {
 }
 
 $(function() {
+
+  $("#tabs").tabs();
+
   $("#thank-button").click(function(event) {
     event.preventDefault();
 
@@ -114,6 +117,35 @@ $(function() {
     }
   });
 
+  $('#note-tag-dialog').dialog({
+    title: "Edit note tags",
+    autoOpen: false,
+    modal: true,
+    show: { effect: 'fade', duration: 500 },
+    width: dialogWidth()
+  });
+
+  $('#edit-note-tags').click(function(event) {
+    $('#note-tag-dialog').dialog("open");
+  });
+
+  $('#save_note_tags').click(function(event) {
+    $.ajax({
+      url: edit_note_tags_url,
+      dataType: 'json',
+      data: $('#note_tags_input').val(),
+      type: 'POST',
+      success: function(data) {
+        $('#note_tags_form').slideUp();
+        $('.tags').empty();
+        $.each(data.fields.tags, function(index, tag) {
+          $('.tags').append($('<span>', { class: 'tag-span', text: tag }));
+        });
+        $('#note-tag-dialog').dialog("close");
+      }
+    });
+  });
+
   $("#note-download-button").click(function(event) {
     if (confirm('It costs 2 karma points to download a note. Are you sure?')) {
       // disable handler so it won't be run again
@@ -153,25 +185,8 @@ $(function() {
         writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
       }
     });
-
-    $('#edit_note_tags').click(function(event) {
-      $('#note_tags_form').slideToggle();
-    });
-
-    $('#save_note_tags').click(function(event) {
-      $.ajax({
-        url: edit_note_tags_url,
-        dataType: 'json',
-        data: $('#note_tags_input').val(),
-        type: 'POST',
-        success: function(data) {
-          $('#note_tags_form').slideUp();
-          $('.tags').empty();
-          $.each(data.fields.tags, function(index, tag) {
-            $('.tags').append($('<span>', { class: 'tag-span', text: tag }));
-          });
-        }
-      });
-    });
   }
+
+
+
 });

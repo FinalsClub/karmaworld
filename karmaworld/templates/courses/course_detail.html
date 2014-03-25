@@ -42,7 +42,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row museo700">
         <div class="small-12 columns">
           <span id="course-header-name">{{ course.name }}</span>
 
@@ -51,13 +51,13 @@
 
           {% if user.is_authenticated %}
             {% if user.get_profile.can_edit_items %}
-              <span id="edit-button"> <i class="fa fa-edit"></i> Edit this course</span>&nbsp;&nbsp;
+              <button id="edit-button" class="modify-button"> <i class="fa fa-edit"></i> Edit this course</button>&nbsp;&nbsp;
             {% endif %}
 
             {% if already_flagged %}
               <i class="fa fa-flag"></i> You have reported this course as inappropriate
             {% else %}
-              <span id="flag-button"><i class="fa fa-flag"></i> Report course as inappropriate</span>
+              <button id="flag-button" class="modify-button"><i class="fa fa-flag"></i> Report course as inappropriate</button>
             {% endif %}
           {% else %}
             <i class="fa fa-flag"></i> Log in to flag a course as inappropraite

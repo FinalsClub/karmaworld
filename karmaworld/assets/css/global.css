@@ -95,14 +95,30 @@ button {
   border: none;
   padding: 10px;
   border-radius: 0.1em;
-}
-
-button.inline-button {
-  display: inline;
+  font-family: inherit;
+  background: #333333;
+  cursor: pointer;
 }
 
 button.important {
   background: #f1592a;
+}
+
+button:hover,
+button:focus {
+  background: #f1592a;
+}
+
+button.disabled,
+button.disabled:hover,
+button.disabled:focus {
+  background: #333333;
+  color: #bcbdc0;
+  cursor: default;
+}
+
+button.inline-button {
+  display: inline;
 }
 
 a {

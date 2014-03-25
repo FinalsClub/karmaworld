@@ -10,9 +10,10 @@
           <a href="{{ note.get_absolute_url }}">
             {{ note.name }}</a>
         </span>
+        <span class="hide-for-large-up"></span>
         <span class="note-thanks"><i class="fa fa-thumbs-up"></i> {{ note.thanks }} thanks</span>
       </div>
-      <div class="note-text">{{ note.text|slice:":500" }} &hellip;</div>
+      <div class="note-text show-for-large-up">{{ note.text|slice:":500" }} &hellip;</div>
       <div class="note-tags">
         {% if note.tags.count > 0 %}
           <span class="activity_details_context"><strong>Tags:</strong>

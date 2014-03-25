@@ -31,189 +31,173 @@
 {% block content %}
   <section id="note_content">
 
-    <div id="note_header" class="hero_gradient_bar">
+    <div class="return-to-course">
       <div class="row">
-        <div class="twelve columns header_subhead">
+        <div class="small-12 columns">
           <a href="{{note.course.get_absolute_url}}">
-            <i class="fa fa-arrow-left"></i>&nbsp;back to {{ note.course.name }}
+            <i class="fa fa-angle-double-left"></i> See all notes for {{ note.course.name }}
           </a>
         </div>
       </div>
+    </div>
+
+    <div id="note_header">
 
       <div class="row">
-        <div class="small-12 columns header_title">
-          {{ note.name }}
-        </div><!-- /note_name -->
+        <div class="small-12 columns">
+          <strong>Lecture note for {{ note.course.name }} </strong>
+          at
+          {% if note.course.department.school %}
+            {{ note.course.department.school.name }}
+          {% else %}
+            {{ note.course.school.name }}
+          {% endif %}
+          &nbsp;&nbsp;
+          <i class="fa fa-thumbs-up"></i> <span id="thank-number">{{ note.thanks }}</span> Thanks
+        </div>
       </div>
 
-      <div class="row">
-        <div id="note_tags" class="twelve columns activity_details_context">
-          <span>Tags: </span>
+      <div class="row museo700">
+        <div class="small-12 columns header-title-row">
+          <span class="header-title">{{ note.name }} </span>
+          {% if user.is_authenticated %}
+            {% if already_thanked %}
+              <button id="thank-button-disabled" class="modify-button disabled opentip"
+                      data-ot="You've already thanked this note"
+                       {% include 'partial/opentip_settings.html' %}>
+                <i class="fa fa-thumbs-up"></i> Thank Note</button>
+            {% else %}
+              <button id="thank-button" class="modify-button"><i class="fa fa-thumbs-up"></i> Thank Note</button>
+              <button id="thank-button-disabled" class="modify-button disabled opentip hide"
+                      data-ot="You've already thanked this note"
+                       {% include 'partial/opentip_settings.html' %}>
+                <i class="fa fa-thumbs-up"></i> Thank Note</button>
+            {% endif %}
+          {% else %}
+            <button id="thank-button-disabled" class="modify-button disabled opentip"
+                      data-ot="Log in to thank this note"
+                       {% include 'partial/opentip_settings.html' %}>
+                <i class="fa fa-thumbs-up"></i> Thank Note</button>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            {% if already_flagged %}
+              <button id="flag-button-disabled" class="modify-button disabled opentip"
+                      data-ot="You've already reported this note"
+                       {% include 'partial/opentip_settings.html' %}>
+                <i class="fa fa-thumbs-up"></i> Report Note</button>
+            {% else %}
+              <button id="flag-button" class="modify-button"><i class="fa fa-thumbs-up"></i> Report Note</button>
+              <button id="flag-button-disabled" class="modify-button disabled opentip hide"
+                      data-ot="You've already reported this note"
+                       {% include 'partial/opentip_settings.html' %}>
+                <i class="fa fa-thumbs-up"></i> Report Note</button>
+            {% endif %}
+          {% else %}
+            <button id="flag-button-disabled" class="modify-button disabled opentip"
+                      data-ot="Log in to report this note"
+                       {% include 'partial/opentip_settings.html' %}>
+                <i class="fa fa-thumbs-up"></i> Report Note</button>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            <a href="{{ note.get_fp_url }}">
+              <button id="note-download-button" class="modify-button opentip"
+                      data-ot="It costs 2 karma points to download a note"
+                      {% include 'partial/opentip_settings.html' %}>
+                <i class="fa fa-download"></i> Download Note</button></a>
+          {% else %}
+            <button id="note-download-button-disabled" class="modify-button disabled opentip"
+                      data-ot="Log in to download this note"
+                       {% include 'partial/opentip_settings.html' %}>
+              <i class="fa fa-download"></i> Download Note</button>
+          {% endif %}
+
+          {% if user.get_profile.can_edit_items %}
+            <button id="edit-note-tags" class="modify-button">
+              <i class="fa fa-pencil-square-o"></i> Edit Tags
+            </button>
+          {% endif %}
+
+        </div>
+      </div>
+
+      <div id="note-tags" class="row">
+        <div class="small-12 columns">
+          <strong>Tags: </strong>
           <span class="tags">
             {% for tag in note.tags.all %}
               <span class="tag-span">{{ tag.name }}</span>
             {% endfor %}
           </span>
-          {% if user.get_profile.can_edit_items %}
-            <i id="edit_note_tags" class="fa fa-pencil-square-o"></i>
-          {% endif %}
         </div><!-- /note_tags -->
       </div>
 
-      {% if user.get_profile.can_edit_items %}
-        <div class="row">
-          <div id="note_tags_form" class="twelve columns activity_details_context hide">
-            <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
-            <button id="save_note_tags" type=button><i class="fa fa-save"></i> Save</button>
-          </div>
+      <div id="note-tag-dialog" class="row">
+        <div class="small-12 columns">
+          <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+          <button id="save_note_tags" type=button><i class="fa fa-save"></i> Save</button>
         </div>
-      {% endif %}
-
-      <div class="row">
-        <div id="note_status" class="twelve columns">
-          <div class="activity_details_status">
-            So far, <span id="thank-number" class="activity_details_status_number">{{ note.thanks }}</span> people have completely fallen in love with with these notes.
-          </div><!-- /activity_details_status -->
-          <div class="activity_details_status">
-
-          </div>
-        </div><!-- /note_status -->
-      </div>
-
-      <div class="row">
-        <div id="note_actions" class="large-3 medium-6 small-12 columns small-centered">
-          <div class="row">
-            {% if user.is_authenticated %}
-              <div class="small-4 column">
-                {% if already_flagged %}
-                  <img src="{{ STATIC_URL }}img/note_flag_disabled.png"
-                       alt="note_flag"
-                       width="25" height="35"
-                       data-ot="You've already flagged this note"
-                       {% include 'partial/opentip_settings.html' %}
-                       class="opentip" />
-                {% else %}
-                  <a href="#" id="flag-button">
-                    <img src="{{ STATIC_URL }}img/note_flag.png" alt="note_flag" width="25" height="35" />
-                  </a>
-                {% endif %}
-                <a href="#" id="flag-button-disabled" class="hide">
-                  <img src="{{ STATIC_URL }}img/note_flag_disabled.png" alt="note_flag" width="25" height="35" />
-                </a>
-              </div>
-              <div class="small-4 column">
-                {% if already_thanked %}
-                  <img src="{{ STATIC_URL }}img/note_thank_disabled.png"
-                       alt="note_thank"
-                       width="34" height="34"
-                       data-ot="You've already thanked this note"
-                       {% include 'partial/opentip_settings.html' %}
-                       class="opentip" />
-                {% else %}
-                  <a href="#" id="thank-button">
-                    <img src="{{ STATIC_URL }}img/note_thank.png" alt="note_thank" width="34" height="34"/>
-                  </a>
-                {% endif %}
-                <a href="#" id="thank-button-disabled" class="hide">
-                  <img src="{{ STATIC_URL }}img/note_thank_disabled.png" alt="note_thank" width="34" height="34"/>
-                </a>
-              </div>
-              <div class="small-4 column">
-                <a id="note-download-button" href="{{ note.get_fp_url }}">
-                  <img
-                    src="{{ STATIC_URL }}img/note_download.png"
-                    alt="note_download"
-                    width="51" height="36"
-                    data-ot="It costs 2 karma points to download a note"
-                    {% include 'partial/opentip_settings.html' %}
-                    class="opentip" />
-                </a>
-              </div>
-            {% else %}
-              <div class="small-4 column">
-                <img src="{{ STATIC_URL }}img/note_flag_disabled.png"
-                     alt="note_flag"
-                     width="25" height="35"
-                     data-ot="You need to log in to flag a note"
-                     {% include 'partial/opentip_settings.html' %}
-                     class="opentip" />
-              </div>
-              <div class="small-4 column">
-                <img src="{{ STATIC_URL }}img/note_thank_disabled.png"
-                     alt="note_thank"
-                     width="34" height="34"
-                     data-ot="You need to log in to thank a note"
-                     {% include 'partial/opentip_settings.html' %}
-                     class="opentip" />
-              </div>
-              <div class="small-4 column">
-                <img
-                  src="{{ STATIC_URL }}img/note_download_disabled.png"
-                  alt="note_download"
-                  width="51" height="36"
-                  data-ot="You need to log in to download a note"
-                  {% include 'partial/opentip_settings.html' %}
-                  class="opentip" />
-              </div>
-              {% endif %}
-
-          </div>
-        </div><!-- /note_actions -->
       </div>
 
       {% if note.license %}
-      <div class="row">
-        <div id="note_pedigree" class="twelve columns activity_details_status">
-          {{ note.license.html|safe }} {% if note.upstream_link %}<a href="{{note.upstream_link}}" target="_blank">{{ note.upstream_link|slice:":80" }}</a>{% endif %}
-        </div><!-- /note_pedigree -->
-      </div>
+        <div class="row">
+          <div id="note_pedigree" class="twelve columns activity_details_status">
+            {{ note.license.html|safe }} {% if note.upstream_link %}<a href="{{note.upstream_link}}" target="_blank">{{ note.upstream_link|slice:":80" }}</a>{% endif %}
+          </div><!-- /note_pedigree -->
+        </div>
       {% endif %}
 
-      </div><!-- /course_header -->
+    </div><!-- /note header -->
 
-      {% if pdf_controls %}
-      <div id="zoom-buttons" class="row show-for-medium-up">
-        <div id="outline-btn-wrapper" class="small-1 columns hide show-for-medium-up">
-          <i id="outline-btn" class="zoom-button fa fa-bars fa-2x"></i>
-        </div>
-        <div class="small-4 columns">
-          <span>Jump to page:
-          <input id="scroll-to" type="text" style="width: 3em; display: inline" /></span>
-        </div>
-        <div class="small-2 small-centered columns center">
-          <i id="minus-btn" class="zoom-button fa fa-search-minus fa-2x"></i>
-          <i id="plus-btn" class="zoom-button fa fa-search-plus fa-2x"></i>
-        </div>
-      </div>
-      {% endif %}
-
-
-    <div id="note_container">
-      <div class="row">
-        <div class="small-12 small-centered columns medium-12 large-12 body_copy">
-          {% if note.static_html %}
-            <div class="note-text">
-              {% if note.has_markdown %}
-                <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
-              {% else %}
-                <iframe style="border:none; width:100%; min-height: 1000px;"
-                      id="noteframe"></iframe>
-                <noscript>
-                  {{ note.text }}
-                </noscript>
-              {% endif %}
-            </div> <!-- .note-text -->
-
-          {% else %} {# note.static_html #}
-            <div class="note-error">
-              This document's content is currently unavailable. Please try again later.
+    <div class="row">
+      <div id="tabs" class="small-12 columns">
+        <ul>
+          <li><a href="#note_container">Note</a></li>
+        </ul>
+        <div id="note_container">
+          {% if pdf_controls %}
+            <div id="zoom-buttons" class="row show-for-medium-up">
+              <div id="outline-btn-wrapper" class="small-1 columns hide show-for-medium-up">
+                <i id="outline-btn" class="zoom-button fa fa-bars fa-2x"></i>
+              </div>
+              <div class="small-4 columns">
+                <span>Jump to page:
+                <input id="scroll-to" type="text" style="width: 3em; display: inline" /></span>
+              </div>
+              <div class="small-2 small-centered columns center">
+                <i id="minus-btn" class="zoom-button fa fa-search-minus fa-2x"></i>
+                <i id="plus-btn" class="zoom-button fa fa-search-plus fa-2x"></i>
+              </div>
             </div>
-          {% endif %} {# note.static_html #}
-        </div><!-- /body_copy -->
+          {% endif %}
+
+          <div class="row">
+            <div class="small-12 small-centered columns medium-12 large-12 body_copy">
+              {% if note.static_html %}
+                <div class="note-text">
+                  {% if note.has_markdown %}
+                    <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
+                  {% else %}
+                    <iframe style="border:none; width:100%; min-height: 1000px;"
+                          id="noteframe"></iframe>
+                    <noscript>
+                      {{ note.text }}
+                    </noscript>
+                  {% endif %}
+                </div> <!-- .note-text -->
+
+              {% else %} {# note.static_html #}
+                <div class="note-error">
+                  This document's content is currently unavailable. Please try again later.
+                </div>
+              {% endif %} {# note.static_html #}
+            </div><!-- /body_copy -->
+          </div>
+
+        </div><!-- /note_container -->
       </div>
-
-    </div><!-- /note_container -->
-
+    </div>
 
   </section><!--/note_content-->
 
