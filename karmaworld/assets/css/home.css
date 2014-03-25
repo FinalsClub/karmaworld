@@ -1,9 +1,15 @@
 #splash {
-  font: 3em 'Museo700';
-  padding: 10vh 5vh 10vh 5vh;
+  padding: 10vh 5vw 10vh 5vw;
   color: #ffffff;
   text-align: center;
+  font-size: 3em;
 }
+
+@media only screen and (max-width: 40.063em) {
+  #splash {
+    font-size: 1.8em;
+  }
+} /* medium screens and down */
 
 input.search-courses {
   display: inline;
@@ -29,7 +35,6 @@ select.course-sort {
 #intro-video-button {
   color: #f1592a;
   background: #ffffff;
-  font: 0.3em 'museo700';
-  margin: 50px 0 0 0;
+  margin: 10px 0 0 0;
   padding: 5px 5px 5px 5px;
 }
