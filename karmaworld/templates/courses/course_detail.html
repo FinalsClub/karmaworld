@@ -30,11 +30,11 @@
   Share Notes for {{ course.name }} | {{ course.school.name }}
 {% endblock %}
 
-{% block content %}
+{% block raw_content %}
   <section id="course_content">
 
     <div id="course-header">
-      <div class="row">
+      <div class="row header-byline">
         <div class="small-12 columns">
           <span class="course-header-school">{{ course.school.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
           {% if course.department %}<span class="course-header-department">{{ course.department.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;{% endif %}
@@ -44,24 +44,32 @@
 
       <div class="row museo700">
         <div class="small-12 columns">
-          <span id="course-header-name">{{ course.name }}</span>
+          <span id="course-header-name" class="header-title">{{ course.name }}</span>
 
           &nbsp;&nbsp;
           <div class="hide-for-large-up"></div>
 
-          {% if user.is_authenticated %}
-            {% if user.get_profile.can_edit_items %}
-              <button id="edit-button" class="modify-button"> <i class="fa fa-edit"></i> Edit this course</button>&nbsp;&nbsp;
-            {% endif %}
+          <span style="display: inline;">
+            <span class="show-for-large-up">
+              {% if user.is_authenticated %}
+                {% if user.get_profile.can_edit_items %}
+                  <button id="edit-button" class="modify-button"> <i class="fa fa-edit"></i> Edit this course</button>&nbsp;&nbsp;
+                {% endif %}
 
-            {% if already_flagged %}
-              <i class="fa fa-flag"></i> You have reported this course as inappropriate
-            {% else %}
-              <button id="flag-button" class="modify-button"><i class="fa fa-flag"></i> Report course as inappropriate</button>
-            {% endif %}
-          {% else %}
-            <i class="fa fa-flag"></i> Log in to flag a course as inappropraite
-          {% endif %}
+                {% if already_flagged %}
+                  <i class="fa fa-flag"></i> You have reported this course as inappropriate
+                {% else %}
+                  <button id="flag-button" class="modify-button"><i class="fa fa-flag"></i> Report course as inappropriate</button>
+                {% endif %}
+              {% else %}
+                <button id="flag-button-disabled" class="modify-button disabled opentip"
+                        data-ot="Log in to report a course"
+                        {% include 'partial/opentip_settings.html' %}>
+                        <i class="fa fa-flag"></i> Report course as inappropriate</button>
+              {% endif %}
+            </span>
+          </span>
+
         </div>
       </div>
 
@@ -142,6 +150,7 @@
         <form class="search-notes adelle-sans" action="{% url 'note_search' %}" method="GET">
           <input name="query" class="search-notes" type="text" placeholder="Search Notes" />
           <input type="hidden" name="course_id" value="{{ course.id }}">
+          <button type="submit" class="inline-button">Search</button>
         </form>
       </div>
       <div class="large-4 columns show-for-large-up">

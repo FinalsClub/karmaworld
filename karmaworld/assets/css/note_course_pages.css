@@ -4,6 +4,10 @@ span.course-header-school
   font-weight: bold;
 }
 
+div.header-byline {
+  margin-bottom: 10px;
+}
+
 #course-header-name
 {
   font-size: 2.5em;
@@ -11,7 +15,6 @@ span.course-header-school
 
 #course-header
 {
-  line-height: 2em;
   margin: 20px 0 0 0;
 }
 
@@ -80,6 +83,7 @@ div.header-title-row {
 
 .header-title {
   font-size: 2.5em;
+  vertical-align: middle;
 }
 
 .modify-button {
