@@ -61,7 +61,7 @@ class DepartmentModerator(DepartmentAdmin):
     # Identify fields to display on the Change page
     list_display = ('name', 'school', 'url')
     # Sort by highest number of flags first, and then by date for ties
-    ordering = ()
+    ordering = ('-school', '-name')
     # Enable resetting flags
     actions = (reset_flags,)
 
@@ -71,7 +71,7 @@ class ProfessorModerator(ProfessorAdmin):
     # Identify fields to display on the Change page
     list_display = ('name', 'email')
     # Sort by highest number of flags first, and then by date for ties
-    ordering = ()
+    ordering = ('-name', '-email')
     # Enable resetting flags
     actions = (reset_flags,)
 
