@@ -57,8 +57,8 @@
       <li><div class="mobile-nav-item"><a href="{% url 'control_panel' %}">My Account</a></div></li>
       <li><div class="mobile-nav-item"><a href="{% url 'account_logout' %}">Log Out</a></div></li>
     {% else %}
-      <li><a href="{% url 'account_login' %}">Log In</a></li>
-      <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+      <li><div class="mobile-nav-item"><a href="{% url 'account_login' %}">Log In</a></div></li>
+      <li><div class="mobile-nav-item"><a href="{% url 'account_signup' %}">Sign Up</a></div></li>
     {% endif %}
   </ul>
 </aside>
