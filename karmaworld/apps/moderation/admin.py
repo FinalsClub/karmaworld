@@ -33,7 +33,7 @@ show_notes.short_description = "Show selected notes"
 class CourseModerator(CourseAdmin):
     date_heirarchy = 'updated_at'
     # Identify fields to display on the Change page
-    list_display = ('name', 'flags', 'school', 'created_at', 'updated_at', 'instructor_name')
+    list_display = ('name', 'flags', 'url', 'updated_at', 'department','professor')
     # Sort by highest number of flags first, and then by date for ties.
     ordering = ('-flags', '-updated_at')
     # Enable resetting flags
@@ -50,6 +50,27 @@ class NoteModerator(NoteAdmin):
     # Enable resetting flags
     actions = (reset_flags, hide_notes, show_notes)
 
+# Structure views of Department objects
+class DepartmentModerator(NoteAdmin):
+    date_heirarchy = 'uploaded_at'
+    # Identify fields to display on the Change page
+    list_display = ('name', 'school', 'url')
+    # Sort by highest number of flags first, and then by date for ties
+    ordering = ('-flags', '-uploaded_at')
+    # Enable resetting flags
+    actions = (reset_flags,)
+
+# Structure views of Professor objects
+class DepartmentModerator(NoteAdmin):
+    date_heirarchy = 'uploaded_at'
+    # Identify fields to display on the Change page
+    list_display = ('name', 'email')
+    # Sort by highest number of flags first, and then by date for ties
+    ordering = ('-flags', '-uploaded_at')
+    # Enable resetting flags
+    actions = (reset_flags,)
 
 moderator.site.register(Course, CourseModerator)
 moderator.site.register(Note, NoteModerator)
+moderator.site.register(Department, DepartmentModerator)
+moderator.site.register(Professor, ProfessorModerator)
