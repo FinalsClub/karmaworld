@@ -22,7 +22,7 @@
     <div class="row">
       <div id="logo-container" class="small-12 large-4 columns">
         <div style="display: inline;">
-          <a class="left-off-canvas-toggle show-for-small-down"><i class="fa fa-bars fa-lg"></i>&nbsp;</a>
+          <a class="left-off-canvas-toggle show-for-medium-down"><i class="fa fa-bars fa-lg"></i>&nbsp;</a>
           <a href="/">
             <img src="{{ STATIC_URL }}img/global_header_logo.png" alt="global_header_logo" width="144" height="17" />
           </a>
@@ -33,9 +33,7 @@
         {% if request.user.is_authenticated %}
           <ul>
             <li><a href="/">Courses</a></li>
-            <li>My Courses</li>
             <li>My Notes</li>
-            <li>My Quizzes</li>
           </ul>
         {% else %}
           <ul>
@@ -54,10 +52,13 @@
 <aside class="left-off-canvas-menu mobile-nav-list museo700">
   <ul>
     <li><div class="mobile-nav-item"><a href="/">Courses</a></div></li>
-    <li><div class="mobile-nav-item">My Courses</div></li>
-    <li><div class="mobile-nav-item">My Notes</div></li>
-    <li><div class="mobile-nav-item">My Quizzes</div></li>
-    <li><div class="mobile-nav-item"><a href="{% url 'control_panel' %}">My Account</a></div></li>
-    <li><div class="mobile-nav-item"><a href="{% url 'account_logout' %}">Log Out</a></div></li>
+    {% if request.user.is_authenticated %}
+      <li><div class="mobile-nav-item">My Notes</div></li>
+      <li><div class="mobile-nav-item"><a href="{% url 'control_panel' %}">My Account</a></div></li>
+      <li><div class="mobile-nav-item"><a href="{% url 'account_logout' %}">Log Out</a></div></li>
+    {% else %}
+      <li><a href="{% url 'account_login' %}">Log In</a></li>
+      <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+    {% endif %}
   </ul>
 </aside>
