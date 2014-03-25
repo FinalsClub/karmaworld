@@ -61,7 +61,7 @@ class DepartmentModerator(NoteAdmin):
     actions = (reset_flags,)
 
 # Structure views of Professor objects
-class DepartmentModerator(NoteAdmin):
+class ProfessorModerator(NoteAdmin):
     date_heirarchy = 'uploaded_at'
     # Identify fields to display on the Change page
     list_display = ('name', 'email')
