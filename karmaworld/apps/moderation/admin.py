@@ -52,7 +52,7 @@ class NoteModerator(NoteAdmin):
     list_display = ('name', 'flags', 'course', 'is_hidden', 'uploaded_at', 'ip')
     # Sort by highest number of flags first, and then by date for ties
     ordering = ('-flags', '-uploaded_at')
-    # Enable resetting flags
+    # Enable resetting flagsoo
     actions = (reset_flags, hide_notes, show_notes)
 
 # Structure views of Department objects
@@ -61,7 +61,7 @@ class DepartmentModerator(DepartmentAdmin):
     # Identify fields to display on the Change page
     list_display = ('name', 'school', 'url')
     # Sort by highest number of flags first, and then by date for ties
-    ordering = ('-flags', '-uploaded_at')
+    ordering = ()
     # Enable resetting flags
     actions = (reset_flags,)
 
@@ -71,7 +71,7 @@ class ProfessorModerator(ProfessorAdmin):
     # Identify fields to display on the Change page
     list_display = ('name', 'email')
     # Sort by highest number of flags first, and then by date for ties
-    ordering = ('-flags', '-uploaded_at')
+    ordering = ()
     # Enable resetting flags
     actions = (reset_flags,)
 
