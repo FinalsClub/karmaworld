@@ -8,6 +8,11 @@ from karmaworld.apps.courses.admin import CourseAdmin
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.admin import NoteAdmin
 from karmaworld.apps.moderation import moderator
+from karmaworld.apps.courses.models import Professor
+from karmaworld.apps.courses.admin import ProfessorAdmin
+from karmaworld.apps.courses.models import Department
+from karmaworld.apps.courses.admin import DepartmentAdmin
+
 
 
 # Create a simple action to reset flags to zero.
@@ -33,7 +38,7 @@ show_notes.short_description = "Show selected notes"
 class CourseModerator(CourseAdmin):
     date_heirarchy = 'updated_at'
     # Identify fields to display on the Change page
-    list_display = ('name', 'flags', 'url', 'updated_at', 'department','professor')
+    list_display = ('name', 'flags', 'url', 'updated_at', 'department',)
     # Sort by highest number of flags first, and then by date for ties.
     ordering = ('-flags', '-updated_at')
     # Enable resetting flags
@@ -51,7 +56,7 @@ class NoteModerator(NoteAdmin):
     actions = (reset_flags, hide_notes, show_notes)
 
 # Structure views of Department objects
-class DepartmentModerator(NoteAdmin):
+class DepartmentModerator(DepartmentAdmin):
     date_heirarchy = 'uploaded_at'
     # Identify fields to display on the Change page
     list_display = ('name', 'school', 'url')
@@ -61,7 +66,7 @@ class DepartmentModerator(NoteAdmin):
     actions = (reset_flags,)
 
 # Structure views of Professor objects
-class ProfessorModerator(NoteAdmin):
+class ProfessorModerator(ProfessorAdmin):
     date_heirarchy = 'uploaded_at'
     # Identify fields to display on the Change page
     list_display = ('name', 'email')
