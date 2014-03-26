@@ -134,11 +134,6 @@ $(function() {
       'aaSorting': [[1,'desc']]
     });
 
-    // wire up search box
-    $('input.search-notes').keyup(function() {
-      dataTable.fnFilter($(this).val());
-    });
-
     // wire up sort chooser
     $('select.course-sort').change(function() {
       dataTable.fnSort([[$(this).val(), 'desc']]);
