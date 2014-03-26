@@ -4,7 +4,7 @@
 
 """
     Models for the courses django app.
-    Handles courses, and their related modelsl
+    Handles courses, and their related models
     Courses are the first class object, they contain notes.
     Courses have a manytoone relation to schools.
 """
