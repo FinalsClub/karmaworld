@@ -20,17 +20,6 @@ $(function() {
     }
   });
 
-  $('#edit-course-form').dialog({
-    autoOpen: false,
-    modal: true,
-    show: { effect: 'fade', duration: 500 },
-    width: dialogWidth()
-  });
-
-  $('#edit-button').click(function(event) {
-    $('#edit-course-form').dialog("open");
-  });
-
   $('#edit-save-btn').click(function(event) {
     $.ajax({
       url: course_edit_url,
@@ -46,8 +35,8 @@ $(function() {
         // on both the client and server side
         $('.validation_error').remove()
         $('#course_form_errors').empty();
-        $('#course_name').text(data.fields.name);
-        $('#course_instructor_name').text(data.fields.instructor_name);
+        $('#course-header-name').text(data.fields.name);
+        $('#course-header-instructor').text(data.fields.instructor_name);
 
         var $externalLinkSquare = $('<i>', {'class': 'fa fa-external-link-square'});
         $('#course_url').text(data.fields.url.slice(0, 50) + ' ');
@@ -58,6 +47,8 @@ $(function() {
         } else {
           $('#course_link').parent().show();
         }
+
+        $('#edit-course-form').foundation('reveal', 'close');
       },
       error: function(resp) {
         var json;

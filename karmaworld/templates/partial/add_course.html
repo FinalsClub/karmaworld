@@ -1,6 +1,7 @@
 {% load url from future %}
 
-<section id="add-course-form" class="hide">
+<section id="add-course-form" class="reveal-modal" data-reveal>
+  <a class="close-reveal-modal">&#215;</a>
   <form method="POST" action="{% url 'home' %}">
   {% csrf_token %}
 

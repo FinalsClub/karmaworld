@@ -171,3 +171,8 @@ table.dataTable tr.even {
   border-top: 2px solid #f0f0f0;
   border-bottom: 2px solid #f0f0f0;
 }
+
+ul.ui-autocomplete {
+  z-index: 1000;
+}
+

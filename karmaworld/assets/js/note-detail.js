@@ -117,18 +117,6 @@ $(function() {
     }
   });
 
-  $('#note-tag-dialog').dialog({
-    title: "Edit note tags",
-    autoOpen: false,
-    modal: true,
-    show: { effect: 'fade', duration: 500 },
-    width: dialogWidth()
-  });
-
-  $('#edit-note-tags').click(function(event) {
-    $('#note-tag-dialog').dialog("open");
-  });
-
   $('#save_note_tags').click(function(event) {
     $.ajax({
       url: edit_note_tags_url,
@@ -141,7 +129,7 @@ $(function() {
         $.each(data.fields.tags, function(index, tag) {
           $('.tags').append($('<span>', { class: 'tag-span', text: tag }));
         });
-        $('#note-tag-dialog').dialog("close");
+        $('#note-tag-dialog').foundation('reveal', 'close');
       }
     });
   });

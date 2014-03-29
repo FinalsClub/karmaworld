@@ -20,8 +20,6 @@ $(function() {
   };
 
   addCourse = function() {
-    // Show the add a course form
-    $('#add-course-form').dialog("open");
     // Put focus in first input field
     $('#str_school').focus();
   };
@@ -30,15 +28,8 @@ $(function() {
   // of page
   $('#add-course-btn').click(addCourse);
 
-  $('#add-course-form').dialog({
-    autoOpen: false,
-    modal: true,
-    show: { effect: 'fade', duration: 500 },
-    width: dialogWidth()
-  });
-
   if (jump_to_form) {
-    $("#add-course-form").dialog("open");
+    $("#add-course-form").foundation('reveal', 'open');
   }
 
   $("#str_school").autocomplete({

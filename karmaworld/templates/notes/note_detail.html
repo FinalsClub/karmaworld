@@ -116,7 +116,7 @@
               {% endif %}
 
               {% if user.get_profile.can_edit_items %}
-                <button id="edit-note-tags" class="modify-button">
+                <button id="edit-note-tags" class="modify-button" data-reveal-id="note-tag-dialog">
                   <i class="fa fa-pencil-square-o"></i> Edit Tags
                 </button>
               {% endif %}
@@ -136,10 +136,14 @@
         </div><!-- /note_tags -->
       </div>
 
-      <div id="note-tag-dialog" class="row">
-        <div class="small-12 columns">
-          <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
-          <button id="save_note_tags" type=button><i class="fa fa-save"></i> Save</button>
+      <div id="note-tag-dialog" class="reveal-modal" data-reveal>
+        <a class="close-reveal-modal">&#215;</a>
+        <div class="row">
+          <div class="small-12 columns">
+            <p>Edit this note's tags:
+            <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"></p>
+            <button id="save_note_tags" type=button><i class="fa fa-save"></i> Save</button>
+          </div>
         </div>
       </div>
 
