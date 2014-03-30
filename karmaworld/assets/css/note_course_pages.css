@@ -73,6 +73,11 @@ div.return-to-course {
   font-size: 0.8em;
 }
 
+#results_header {
+  margin: 20px 0 20px 0;
+  font-size: 1.8em;
+}
+
 div#note_header {
   margin: 20px 0 20px 0;
 }
@@ -91,21 +96,6 @@ div.header-title-row {
   padding: 5px 10px 5px 10px;
   margin: 0 5px 0 5px;
   font-size: 0.8em;
-}
-
-.ui-tabs-panel {
-  border: none;
-  border-top: 1px solid #dfdfdf;
-  padding: 20px 10px 20px 10px;
-}
-
-.ui-tabs-nav li {
-  margin: 0 10px 0 10px;
-  border: 1px solid #dfdfdf;
-}
-
-#tabs {
-  border: none;
 }
 
 #outline-btn,

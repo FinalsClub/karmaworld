@@ -6,6 +6,14 @@
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/dashboard.css">
 {% endblock %}
 
+{% block bodyscripts %}
+  <script>
+    $(function() {
+      $("#tabs").tabs();
+    });
+  </script>
+{% endblock %}
+
 {% block title %}
   Your KarmaNotes Profile
 {% endblock %}
@@ -53,6 +61,64 @@
     </div>
 
     <div id="activity_container">
+      <div class="row">
+        <div id="tabs" class="small-12 columns">
+          <ul>
+            <li><a href="#activity">Karma Point Activity</a></li>
+          </ul>
+          <div id="activity">
+            {% for item in object_list %}
+
+              <div class="row">
+                <div class="small-10 columns small-centered {% cycle '' 'row_alt_on'%}">
+
+                  <div class="activity_item">
+                    {% if 'KarmaEvent' in item.0 %}
+                      {% with event=item.1 %}
+                        <div class="row">
+                          <div class="small-12 columns activity_timestamp">
+                            <span class="activity_date">{{ event.timestamp|date:"D b j Y" }}</span>
+                          </div>
+                          <div class="small-12 columns activity_details_action">
+                            {% if event.points > 0 %}
+                            <span class="activity_details_points_positive">+{{ event.points }}</span>
+                            {% else %}
+                            <span class="activity_details_points_negative">{{ event.points }}</span>
+                            {% endif %}
+                            {{ event.get_message }}
+                          </div>
+                          {% if item.0 == 'NoteKarmaEvent' %}
+                            <div class="small-12 columns activity_details_action">
+                              <a href="{{ event.note.get_absolute_url }}" class="activity_target">{{ event.note.name }}</a>
+                            </div>
+                            <div class="small-12 columns activity_details_context">
+                              <a href="{{ event.note.course.get_absolute_url }}" class="course_link">{{ event.note.course.name }} // {{ event.note.course.school.name }}</a>
+                            </div>
+                          {% endif %}
+                          {% if item.0 == 'CourseKarmaEvent' %}
+                            <div class="small-12 columns activity_details_action">
+                              <a href="{{ event.course.get_absolute_url }}" class="activity_target">{{ event.course.name }}</a>
+                            </div>
+                            <div class="small-12 columns activity_details_context">
+                              {{ event.course.school.name }}
+                            </div>
+                          {% endif %}
+
+                        </div>
+                      {% endwith %}
+
+                    {% endif %}
+
+
+                  </div>
+
+                </div>
+              </div>
+
+            {% endfor %}
+          </div>
+        </div>
+      </div>
 
       <div class="row">
         <div class="small-10 columns small-centered column_header">
@@ -68,55 +134,7 @@
         </div>
       {% endif %}
 
-      {% for item in object_list %}
 
-        <div class="row">
-          <div class="small-10 columns small-centered {% cycle '' 'row_alt_on'%}">
-
-            <div class="activity_item">
-              {% if 'KarmaEvent' in item.0 %}
-                {% with event=item.1 %}
-                  <div class="row">
-                    <div class="small-12 columns activity_timestamp">
-                      <span class="activity_date">{{ event.timestamp|date:"D b j Y" }}</span>
-                    </div>
-                    <div class="small-12 columns activity_details_action">
-                      {% if event.points > 0 %}
-                      <span class="activity_details_points_positive">+{{ event.points }}</span>
-                      {% else %}
-                      <span class="activity_details_points_negative">{{ event.points }}</span>
-                      {% endif %}
-                      {{ event.get_message }}
-                    </div>
-                    {% if item.0 == 'NoteKarmaEvent' %}
-                      <div class="small-12 columns activity_details_action">
-                        <a href="{{ event.note.get_absolute_url }}" class="activity_target">{{ event.note.name }}</a>
-                      </div>
-                      <div class="small-12 columns activity_details_context">
-                        <a href="{{ event.note.course.get_absolute_url }}" class="course_link">{{ event.note.course.name }} // {{ event.note.course.school.name }}</a>
-                      </div>
-                    {% endif %}
-                    {% if item.0 == 'CourseKarmaEvent' %}
-                      <div class="small-12 columns activity_details_action">
-                        <a href="{{ event.course.get_absolute_url }}" class="activity_target">{{ event.course.name }}</a>
-                      </div>
-                      <div class="small-12 columns activity_details_context">
-                        {{ event.course.school.name }}
-                      </div>
-                    {% endif %}
-
-                  </div>
-                {% endwith %}
-
-              {% endif %}
-
-
-            </div>
-
-          </div>
-        </div>
-
-      {% endfor %}
 
     </div>
 

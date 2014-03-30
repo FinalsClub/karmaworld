@@ -176,3 +176,18 @@ ul.ui-autocomplete {
   z-index: 1000;
 }
 
+.ui-tabs-panel {
+  border: none;
+  border-top: 1px solid #dfdfdf;
+  padding: 20px 10px 20px 10px;
+}
+
+.ui-tabs-nav li {
+  margin: 0 10px 0 10px;
+  border: 1px solid #dfdfdf;
+}
+
+#tabs {
+  border: none;
+}
+

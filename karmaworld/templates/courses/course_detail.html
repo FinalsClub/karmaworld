@@ -3,16 +3,14 @@
 
 
 {% block pagescripts %}
-  <script src="{{ STATIC_URL }}js/bootstrap-modal.js" ></script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
-  <script src="{{ STATIC_URL }}js/course.js"></script>
-  <script src="{{ STATIC_URL }}js/course-detail.js" ></script>
   <script>
     var json_school_course_list = "{% url 'json_school_course_list' %}";
     var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}";
     var csrf_token = "{{ csrf_token }}";
     var course_flag_url = "{% url 'flag_course' course.id %}";
     var course_edit_url = "{% url 'edit_course' course.id %}";
+    var dataTable_sDom = '<"top">rt<"bottom"p><"clear">';
   </script>
 {% endblock %}
 
@@ -23,6 +21,9 @@
 
 {% block bodyscripts %}
   <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
+  <script src="{{ STATIC_URL }}js/course.js"></script>
+  <script src="{{ STATIC_URL }}js/course-detail.js" ></script>
+  <script src="{{ STATIC_URL }}js/note-list.js" ></script>
 {% endblock %}
 
 
@@ -148,9 +149,9 @@
         {{ file_upload_form.fp_file }}
       </div>
       <div class="small-12 large-6 columns">
-        <form style="display: inline" class="search-notes" action="{% url 'note_search' %}" method="GET">
+        <form class="search-notes" action="{% url 'note_search' %}" method="GET">
           <span>
-          <input style="display: inline;" type="hidden" name="course_id" value="{{ course.id }}" />
+          <input type="hidden" name="course_id" value="{{ course.id }}" />
           <input name="query" class="search-notes" type="text" placeholder="Search Notes" />
           </span>
         </form>

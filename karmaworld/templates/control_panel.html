@@ -3,16 +3,16 @@
 {% load i18n %}
 {% load account %}
 
-{% block head_title %}Control Panel{% endblock %}
+{% block title %}Control Panel{% endblock %}
 
 {% block content %}
-<h1>Hello {% user_display user %}!</h1>
-
-   <h2>Control Panel</h2>
-    
-  <h2><p><a href="{% url 'account_email' %}">Add/Remove Emails</a></p></h2>
-  <h2><p><a href="{% url 'account_change_password' %}">Change Password</a></p></h2>
-  <h2><p><a href="{% url 'socialaccount_connections' %}">Social Accounts</a></p></h2>
+  <h1>Hello {% user_display user %}!</h1>
+  <p>Your account control panel:</p>
+  <ul>
+    <li><a href="{% url 'account_email' %}"><button>Add/Remove Emails</button></a></li>
+    <li><a href="{% url 'account_change_password' %}"><button>Change Password</button></a></li>
+    <li><a href="{% url 'socialaccount_connections' %}"><button>Social Accounts</button></a></li>
+  </ul>
  
 {% endblock %}
 
