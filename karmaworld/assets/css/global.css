@@ -135,6 +135,8 @@ span.table-thanks-count {
 table.dataTable {
   margin-bottom: 30px;
   border: none;
+  word-wrap: break-word;
+  table-layout: fixed;
 }
 
 table.dataTable div.table-entry-first-line {
