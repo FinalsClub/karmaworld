@@ -17,48 +17,31 @@
   </div>
 
 
-  <div id="main-header" class="museo300">
-    <div class="row">
-      <div id="logo-container" class="small-12 large-4 columns">
-        <div style="display: inline;">
-          <a class="left-off-canvas-toggle show-for-medium-down"><i class="fa fa-bars fa-lg"></i>&nbsp;</a>
-          <a href="/">
-            <img src="{{ STATIC_URL }}img/global_header_logo.png" alt="global_header_logo" width="144" height="17" />
-          </a>
-        </div>
-      </div><!--/logo container-->
-
-      <div id="header-nav" class="large-8 columns nav-list show-for-large-up">
-        {% if request.user.is_authenticated %}
-          <ul>
-            <li><a href="/">Courses</a></li>
-            <li>My Notes</li>
-          </ul>
-        {% else %}
-          <ul>
-            <li>Courses</li>
+  <div class="contain-to-grid">
+    <nav id="main-header" class="top-bar" data-topbar>
+      <ul class="title-area">
+        <li class="name">
+          <h1 class="museo700"><a href="/"><img src="{{ STATIC_URL }}img/global_header_logo.png" alt="KarmaNotes" /></a></h1>
+        </li>
+        <li class="toggle-topbar menu-icon">
+          <a href="#">Menu</a>
+        </li>
+      </ul>
+      <section class="top-bar-section">
+        <ul class="right museo300">
+          <li><a href="/">Courses</a></li>
+          {% if request.user.is_authenticated %}
+            <li class="hide-for-large-up"><a href="{% url 'accounts_profile' %}">Dashboard</a></li>
+            <li class="hide-for-large-up"><a href="{% url 'accounts_profile' %}#control_panel">My Account</a></li>
+            <li class="hide-for-large-up"><a href="{% url 'account_logout' %}">Log Out</a></li>
+          {% else %}
             <li><a href="{% url 'account_login' %}">Log In</a></li>
             <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
-          </ul>
-        {% endif %}
-      </div>
-
-    </div>
+          {% endif %}
+        </ul>
+      </section>
+    </nav>
   </div>
 
 </header><!--/global header-->
 
-<aside class="left-off-canvas-menu mobile-nav-list museo700">
-  <ul>
-    <li><div class="mobile-nav-item"><a href="/">Courses</a></div></li>
-    {% if request.user.is_authenticated %}
-      <li><div class="mobile-nav-item">My Notes</div></li>
-      <li><div class="mobile-nav-item"><a href="{% url 'accounts_profile' %}">Dashboard</a></div></li>
-      <li><div class="mobile-nav-item"><a href="{% url 'accounts_profile' %}#control_panel">My Account</a></div></li>
-      <li><div class="mobile-nav-item"><a href="{% url 'account_logout' %}">Log Out</a></div></li>
-    {% else %}
-      <li><div class="mobile-nav-item"><a href="{% url 'account_login' %}">Log In</a></div></li>
-      <li><div class="mobile-nav-item"><a href="{% url 'account_signup' %}">Sign Up</a></div></li>
-    {% endif %}
-  </ul>
-</aside>

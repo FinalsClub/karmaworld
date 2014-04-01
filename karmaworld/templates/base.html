@@ -34,35 +34,30 @@
 
 	
 </head>
-<body class="off-canvas-wrap">
-  <div class="inner-wrap">
+<body>
 
-    <!-- include header -->
-    {% include 'header.html' %}
-    <!-- end include header -->
+  <!-- include header -->
+  {% include 'header.html' %}
+  <!-- end include header -->
 
-    <!-- block content -->
-    {% block raw_content %}
-    {% endblock %}
-    <!-- end block content -->
+  <!-- block content -->
+  {% block raw_content %}
+  {% endblock %}
+  <!-- end block content -->
 
-    <!-- include footer-->
-    {% include 'footer.html' %}
-    <!-- end include footer-->
+  <!-- include footer-->
+  {% include 'footer.html' %}
+  <!-- end include footer-->
 
-    <a class="exit-off-canvas"></a>
-
-    <!-- block bodyscripts -->
-    {% block bodyscripts %}
-    {% endblock %}
-    <!-- end block bodyscripts -->
-    <script src="{{ STATIC_URL }}js/opentip-jquery-excanvas.min.js"></script>
-    <script src="{{ STATIC_URL }}js/foundation.min.js"></script>
-    <script src="{{ STATIC_URL }}js/foundation.offcanvas.js"></script>
-    <script>
-      $(document).foundation();
-    </script>
-  </div>
+  <!-- block bodyscripts -->
+  {% block bodyscripts %}
+  {% endblock %}
+  <!-- end block bodyscripts -->
+  <script src="{{ STATIC_URL }}js/opentip-jquery-excanvas.min.js"></script>
+  <script src="{{ STATIC_URL }}js/foundation.min.js"></script>
+  <script>
+    $(document).foundation();
+  </script>
 
 </body>
 </html>

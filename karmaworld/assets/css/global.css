@@ -24,36 +24,14 @@ p {
   font-weight: inherit;
 }
 
-.nav-list ul {
-  list-style-type: none;
-  margin: 0;
+.top-bar-section ul li > a {
+  font-family: inherit;
+  font-size: 1em;
 }
 
-.nav-list li {
-  display: inline;
-  padding: 0 5px 0 5px;
-}
-
-.mobile-nav-list ul {
-  list-style-type: none;
-  margin: 0;
-}
-
-.mobile-nav-list li {
-  font-size: 1.5em;
-  padding: 0 20px 0 10px;
-}
-
-.mobile-nav-item {
-  padding: 5px 0px 5px 0px;
-  border-bottom: 1px solid black;
-  width: 100%;
-  color: #999999;
-}
-
-#header-nav {
-  text-align: right;
-  font-size: 1.3em;
+#main-header {
+  background: #333333;
+  color: #d4d4d4;
 }
 
 #header-login-nav {
@@ -65,16 +43,13 @@ p {
 #header-login-nav ul {
   color: #d4d4d4;
   font: 0.8em 'adelle-sans';
+  list-style-type: none;
+  margin: 0;
 }
 
-#logo-container {
-  padding: 5px 5px 5px 5px;
-}
-
-#main-header {
-  background: #333333;
-  color: #d4d4d4;
-  padding: 1em 0 0.4em 0;
+#header-login-nav li {
+  display: inline;
+  padding: 0 5px 0 5px;
 }
 
 .gradient-bar
