@@ -1,6 +1,7 @@
 body {
   font-family: 'adelle-sans';
   font-weight: lighter;
+  word-wrap: break-word;
 }
 
 .museo300 {
@@ -135,7 +136,6 @@ span.table-thanks-count {
 table.dataTable {
   margin-bottom: 30px;
   border: none;
-  word-wrap: break-word;
   table-layout: fixed;
 }
 
