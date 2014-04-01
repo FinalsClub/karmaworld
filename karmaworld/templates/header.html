@@ -9,7 +9,6 @@
         <div class="large-12 columns">
           <ul>
             <li><a href="{% url 'accounts_profile' %}">{{ request.user.get_profile.get_points }} Karma Points</a></li>
-            <li><a href="{% url 'control_panel' %}">My Account</a></li>
             <li><a href="{% url 'account_logout' %}">Log Out</a></li>
           </ul>
         </div>
@@ -54,7 +53,8 @@
     <li><div class="mobile-nav-item"><a href="/">Courses</a></div></li>
     {% if request.user.is_authenticated %}
       <li><div class="mobile-nav-item">My Notes</div></li>
-      <li><div class="mobile-nav-item"><a href="{% url 'control_panel' %}">My Account</a></div></li>
+      <li><div class="mobile-nav-item"><a href="{% url 'accounts_profile' %}">Dashboard</a></div></li>
+      <li><div class="mobile-nav-item"><a href="{% url 'accounts_profile' %}#control_panel">My Account</a></div></li>
       <li><div class="mobile-nav-item"><a href="{% url 'account_logout' %}">Log Out</a></div></li>
     {% else %}
       <li><div class="mobile-nav-item"><a href="{% url 'account_login' %}">Log In</a></div></li>

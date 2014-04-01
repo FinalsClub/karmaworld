@@ -70,7 +70,7 @@
                     <i class="fa fa-thumbs-up"></i> Thank Note</button>
                 {% else %}
                   <button id="thank-button" class="modify-button"><i class="fa fa-thumbs-up"></i> Thank Note</button>
-                  <button id="thank-button-disabled" class="show-for-large-up modify-button disabled opentip hide"
+                  <button id="thank-button-disabled" class="modify-button disabled opentip hide"
                           data-ot="You've already thanked this note"
                            {% include 'partial/opentip_settings.html' %}>
                     <i class="fa fa-thumbs-up"></i> Thank Note</button>
@@ -159,49 +159,50 @@
 
     <div class="row">
       <div id="tabs" class="small-12 columns">
-        <ul>
-          <li><a href="#note_container">Note</a></li>
-        </ul>
-        <div id="note_container">
-          {% if pdf_controls %}
-            <div id="zoom-buttons" class="row show-for-medium-up">
-              <div id="outline-btn-wrapper" class="small-1 columns hide show-for-medium-up">
-                <i id="outline-btn" class="zoom-button fa fa-bars fa-2x"></i>
-              </div>
-              <div class="small-4 columns">
-                <span>Jump to page:
-                <input id="scroll-to" type="text" style="width: 3em; display: inline" /></span>
-              </div>
-              <div class="small-2 small-centered columns center">
-                <i id="minus-btn" class="zoom-button fa fa-search-minus fa-2x"></i>
-                <i id="plus-btn" class="zoom-button fa fa-search-plus fa-2x"></i>
-              </div>
-            </div>
-          {% endif %}
-
-          <div class="row">
-            <div class="small-12 small-centered columns medium-12 large-12 body_copy">
-              {% if note.static_html %}
-                <div class="note-text">
-                  {% if note.has_markdown %}
-                    <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
-                  {% else %}
-                    <iframe style="border:none; width:100%; min-height: 1000px;"
-                          id="noteframe"></iframe>
-                    <noscript>
-                      {{ note.text }}
-                    </noscript>
-                  {% endif %}
-                </div> <!-- .note-text -->
-
-              {% else %} {# note.static_html #}
-                <div class="note-error">
-                  This document's content is currently unavailable. Please try again later.
+        <dl class="tabs show-for-large-up" data-tab>
+          <dd class="active"><a href="#note_container">Note</a></dd>
+        </dl>
+        <div class="tabs-content">
+          <div id="note_container" class="content active">
+            {% if pdf_controls %}
+              <div id="zoom-buttons" class="row show-for-medium-up">
+                <div id="outline-btn-wrapper" class="small-1 columns hide show-for-medium-up">
+                  <i id="outline-btn" class="zoom-button fa fa-bars fa-2x"></i>
                 </div>
-              {% endif %} {# note.static_html #}
-            </div><!-- /body_copy -->
-          </div>
+                <div class="small-4 columns">
+                  <span>Jump to page:
+                  <input id="scroll-to" type="text" style="width: 3em; display: inline" /></span>
+                </div>
+                <div class="small-2 small-centered columns center">
+                  <i id="minus-btn" class="zoom-button fa fa-search-minus fa-2x"></i>
+                  <i id="plus-btn" class="zoom-button fa fa-search-plus fa-2x"></i>
+                </div>
+              </div>
+            {% endif %}
 
+            <div class="row">
+              <div class="small-12 small-centered columns medium-12 large-12 body_copy">
+                {% if note.static_html %}
+                  <div class="note-text">
+                    {% if note.has_markdown %}
+                      <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
+                    {% else %}
+                      <iframe style="border:none; width:100%; min-height: 1000px;"
+                            id="noteframe"></iframe>
+                      <noscript>
+                        {{ note.text }}
+                      </noscript>
+                    {% endif %}
+                  </div> <!-- .note-text -->
+
+                {% else %} {# note.static_html #}
+                  <div class="note-error">
+                    This document's content is currently unavailable. Please try again later.
+                  </div>
+                {% endif %} {# note.static_html #}
+              </div><!-- /body_copy -->
+            </div>
+          </div>
         </div><!-- /note_container -->
       </div>
     </div>

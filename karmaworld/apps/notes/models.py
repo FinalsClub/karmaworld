@@ -435,7 +435,10 @@ def update_note_counts(note_instance):
     else:
         # course exists
         note_instance.course.update_note_count()
-        note_instance.course.school.update_note_count()
+        if note_instance.course.school:
+            note_instance.course.school.update_note_count()
+        elif note_instance.course.department.school:
+            note_instance.course.department.school.update_note_count()
 
 @receiver(pre_save, sender=Note, weak=False)
 def note_pre_save_receiver(sender, **kwargs):

@@ -1,17 +1,10 @@
 {% extends "base.html" %}
 {% load url from future %}
 {% load account %}
+{% load social_account_list %}
 
 {% block pagescripts %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/dashboard.css">
-{% endblock %}
-
-{% block bodyscripts %}
-  <script>
-    $(function() {
-      $("#tabs").tabs();
-    });
-  </script>
 {% endblock %}
 
 {% block title %}
@@ -20,41 +13,20 @@
 
 {% block raw_content %}
   <section id="dashboard_content">
-    <div id="stats_container" class="hero_gradient_bar">
-      <div class="row">
-        <div class="small-10 columns small-centered center header_title">
+    <div id="stats-container">
+      <div class="row museo700">
+        <div id="user-name" class="small-12 large-3 columns">
           {% user_display user %}
-          {% if badge %}
-            <br/><span class="badge">{{ badge }}</span>
-          {% endif %}
-      </div>
         </div>
-      <div class="row">
-        <div class="small-12 medium-8 large-4 columns small-centered">
-          <div class="row">
-            <div class="small-6 columns center  stat_lead_in">
-              you've earned
-            </div>
-            <div class="small-6 columns center  stat_lead_in">
-              you've uploaded
-            </div>
-          </div>
-          <div class="row">
-            <div class="small-6 columns center  stat_number stat_earned">
-             {{ user.get_profile.get_points }}
-            </div>
-            <div class="small-6 columns  center stat_number stat_uploaded">
-              {{ user.note_set.count }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="small-6 columns center  stat_object stat_earned">
-              karma points
-            </div>
-            <div class="small-6 columns center  stat_object stat_uploaded">
-              notes
-            </div>
-          </div>
+        <div class="small-12 large-3 columns stat-container">
+          <span class="stat-count">{{ user.get_profile.get_points }}</span>
+          <br/>
+          Karma Points
+        </div>
+        <div class="small-12 large-3 columns end stat-container">
+          <span class="stat-count">{{ user.note_set.count }}</span>
+          <br/>
+          Notes Uploaded
         </div>
       </div>
 
@@ -63,40 +35,46 @@
     <div id="activity_container">
       <div class="row">
         <div id="tabs" class="small-12 columns">
-          <ul>
-            <li><a href="#activity">Karma Point Activity</a></li>
-          </ul>
-          <div id="activity">
-            {% for item in object_list %}
+          <dl class="tabs show-for-large-up" data-tab data-options="deep_linking: true">
+            <dd class="active"><a href="#activity">Karma Point Activity</a></dd>
+            <dd><a href="#control_panel">My Account</a></dd>
+          </dl>
+          <div class="tabs-content">
+            <div id="activity" class="content active">
+              {% for item in object_list %}
 
-              <div class="row">
-                <div class="small-10 columns small-centered {% cycle '' 'row_alt_on'%}">
-
-                  <div class="activity_item">
+                <div class="row  {% cycle '' 'even'%}">
+                  <div class="small-12 columns small-centered activity_item">
                     {% if 'KarmaEvent' in item.0 %}
                       {% with event=item.1 %}
                         <div class="row">
                           <div class="small-12 columns activity_timestamp">
-                            <span class="activity_date">{{ event.timestamp|date:"D b j Y" }}</span>
+                            <span class="activity_date">{{ event.timestamp|date:"l, F j, Y" }}</span>
                           </div>
-                          <div class="small-12 columns activity_details_action">
+                          <div class="small-12 columns activity_details_action museo700">
                             {% if event.points > 0 %}
-                            <span class="activity_details_points_positive">+{{ event.points }}</span>
+                              <span class="activity_details_points_positive">+{{ event.points }}</span>
                             {% else %}
-                            <span class="activity_details_points_negative">{{ event.points }}</span>
+                              <span class="activity_details_points_negative">{{ event.points }}</span>
                             {% endif %}
                             {{ event.get_message }}
                           </div>
                           {% if item.0 == 'NoteKarmaEvent' %}
-                            <div class="small-12 columns activity_details_action">
+                            <div class="small-12 columns activity_details_object">
                               <a href="{{ event.note.get_absolute_url }}" class="activity_target">{{ event.note.name }}</a>
                             </div>
                             <div class="small-12 columns activity_details_context">
-                              <a href="{{ event.note.course.get_absolute_url }}" class="course_link">{{ event.note.course.name }} // {{ event.note.course.school.name }}</a>
+                              <a href="{{ event.note.course.get_absolute_url }}" class="course_link">{{ event.note.course.name }} &bull;
+                                {% if event.note.course.school %}
+                                  {{ event.note.course.school.name }}
+                                {% else %}
+                                  {{ event.note.course.department.school.name }}
+                                {% endif %}
+                              </a>
                             </div>
                           {% endif %}
                           {% if item.0 == 'CourseKarmaEvent' %}
-                            <div class="small-12 columns activity_details_action">
+                            <div class="small-12 columns activity_details_object">
                               <a href="{{ event.course.get_absolute_url }}" class="activity_target">{{ event.course.name }}</a>
                             </div>
                             <div class="small-12 columns activity_details_context">
@@ -109,26 +87,79 @@
 
                     {% endif %}
 
-
                   </div>
+                </div>
 
+              {% endfor %}
+            </div>
+            <div id="control_panel" class="content">
+              <div class="account_settings_row">
+                <div class="row">
+                  <div class="small-12 large-2 columns account_settings_category">
+                    Name:
+                  </div>
+                  <div class="small-12 large-8 columns account_settings_value end">
+                    {{ user.get_full_name }}
+                  </div>
                 </div>
               </div>
-
-            {% endfor %}
+              <div class="account_settings_row">
+                <div class="row">
+                  <div class="small-12 large-2 columns account_settings_category">
+                    Username:
+                  </div>
+                  <div class="small-12 large-8 columns account_settings_value end">
+                    {{ user.username }}
+                  </div>
+                </div>
+              </div>
+              <div class="account_settings_row">
+                <div class="row">
+                  <div class="small-12 large-2 columns account_settings_category">
+                    Email:
+                  </div>
+                  <div class="small-12 large-8 columns account_settings_value">
+                    {{ user.email }}
+                  </div>
+                  <div class="small-12 large-8 columns account_settings_edit">
+                    <a href="{% url 'account_email' %}"><i class="fa fa-pencil"></i> Edit</a>
+                  </div>
+                </div>
+              </div>
+              <div class="account_settings_row">
+                <div class="row">
+                  <div class="small-12 large-2 columns account_settings_category">
+                    Password:
+                  </div>
+                  <div class="small-12 large-8 columns account_settings_value">
+                    ********
+                  </div>
+                  <div class="small-12 large-2 columns account_settings_edit">
+                    <a href="{% url 'account_change_password' %}"><i class="fa fa-pencil"></i> Edit</a>
+                  </div>
+                </div>
+              </div>
+              <div class="account_settings_row">
+                <div class="row">
+                  <div class="small-12 large-2 columns account_settings_category">
+                    Social accounts:
+                  </div>
+                  <div class="small-12 large-8 columns account_settings_value">
+                    {% social_account_list request.user %}
+                  </div>
+                  <div class="small-12 large-2 columns account_settings_edit">
+                    <a href="{% url 'socialaccount_connections' %}"><i class="fa fa-pencil"></i> Edit</a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="small-10 columns small-centered column_header">
-            latest activity
         </div>
       </div>
 
       {% if not object_list %}
         <div class="row">
-          <div id="no_activity" class="small-10 columns small-centered center">
+          <div id="no_activity" class="small-12 columns">
             <h4>Nothing to show here yet.</h4>
           </div>
         </div>

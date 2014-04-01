@@ -1,5 +1,6 @@
 body {
   font-family: 'adelle-sans';
+  font-weight: lighter;
 }
 
 .museo300 {
@@ -8,10 +9,19 @@ body {
 
 .museo700 {
   font-family: 'museo700';
+  font-weight: normal;
 }
 
 .adelle-sans {
   font-family: 'adelle-sans';
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'museo700';
+}
+
+p {
+  font-weight: inherit;
 }
 
 .nav-list ul {
@@ -166,10 +176,10 @@ table.dataTable div.data-table-entry {
   margin: 20px 0 20px 0;
 }
 
-table.dataTable tr.even {
+.even {
   background: #fafafa;
-  border-top: 2px solid #f0f0f0;
-  border-bottom: 2px solid #f0f0f0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 ul.ui-autocomplete {
@@ -191,3 +201,27 @@ ul.ui-autocomplete {
   border: none;
 }
 
+dl.tabs dd.active {
+  border-radius: 3px;
+}
+
+dl.tabs dd {
+  margin: 0 10px 0px 10px;
+  border: 1px solid #dfdfdf;
+  border-bottom: none;
+}
+
+dl.tabs dd,
+dl.tabs dd a {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+dl.tabs dd a {
+  padding: 5px 10px 5px 10px;
+}
+
+div.tabs-content {
+  margin-top: -1px;
+  border-top: 1px solid #dfdfdf;
+}

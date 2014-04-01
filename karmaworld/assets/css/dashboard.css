@@ -1,0 +1,61 @@
+#stats-container {
+  margin: 20px 0 20px 0;
+}
+
+#user-name {
+  font-size: 1.5em;
+}
+
+.stat-count {
+  font-size: 2.5em;
+}
+
+div.stat-container {
+  border-left: solid 1px #dfdfdf;
+}
+
+.activity_item {
+  margin: 15px 0 15px 0;
+}
+
+.activity_timestamp {
+  font-size: 0.7em;
+}
+
+.activity_details_action {
+  margin: 10px 0 5px 0;
+}
+
+.activity_details_object {
+  margin: 5px 0 5px 0;
+}
+
+.activity_details_points_positive,
+.activity_details_points_negative {
+  background: #f1592a;
+  padding: 0px 5px 0 5px;
+  border-radius: 2px;
+  color: #ffffff;
+}
+
+.account_settings_row {
+  padding: 15px 0 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.account_settings_category {
+  text-align: right;
+  font-weight: normal;
+}
+
+.account_settings_edit {
+  text-align: right;
+  font: 0.8em 'museo700';
+}
+
+@media only screen and (max-width: 40.063em) {
+  .account_settings_category,
+  .account_settings_edit {
+    text-align: left;
+  }
+} /* medium screens and down */

@@ -73,8 +73,6 @@ function writeNoteFrame(contents) {
 
 $(function() {
 
-  $("#tabs").tabs();
-
   $("#thank-button").click(function(event) {
     event.preventDefault();
 
