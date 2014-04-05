@@ -49,8 +49,7 @@ select.note-sort {
   margin-bottom: 20px;
 }
 
-ul.socialaccount_providers li,
-ul#uploaded_files li
+ul.socialaccount_providers li
 {
   display: inline;
 }

@@ -6,13 +6,13 @@
 makeFileForm = function(upFile) {
   var _form = document.getElementById('form-template').cloneNode(deep=true);
   // save the Filename to the form name field
-  $(_form.children[0].children[0].children[1]).val(upFile.filename); // replace with upFile name
+  $(_form).find('.intext').val(upFile.filename); // replace with upFile name
   _form.style.display = "inline";
   _form.id = null; // clear the unique id
   // save the FP url to the form
-  $(_form.children[0].children[3].children[0]).val(upFile.url);
+  $(_form).find('.fpurl').val(upFile.url);
   // save the mimetype to the form
-  $(_form.children[0].children[3].children[1]).val(upFile.mimetype);
+  $(_form).find('mimetype').val(upFile.mimetype);
 
   document.getElementById('forms_container').appendChild(_form);
 
