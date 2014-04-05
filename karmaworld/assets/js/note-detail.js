@@ -150,7 +150,18 @@ $(function() {
 
   // Embed the converted markdown if it is on the page, else default to the iframe
   if ($('#note-markdown').length > 0) {
-    $('#note-markdown').html(marked($('#note-markdown').data('markdown')));
+    var note_markdown = $('#note-markdown');
+    note_markdown.html(marked(note_markdown.data('markdown')));
+    note_markdown.annotator();
+    note_markdown.annotator('addPlugin', 'Store', {
+      prefix: '/ajax/annotations',
+      loadFromSearch: {
+        'uri': note_id
+      },
+      annotationData: {
+        'uri': note_id
+      }
+    });
   } else {
     $.ajax(note_contents_url, {
       type: 'GET',

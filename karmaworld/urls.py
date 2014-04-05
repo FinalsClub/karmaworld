@@ -18,7 +18,8 @@ from karmaworld.apps.courses.views import school_course_instructor_list
 from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
-from karmaworld.apps.quizzes.views import QuizView, KeywordEditView, quiz_answer
+from karmaworld.apps.quizzes.views import QuizView, KeywordEditView, quiz_answer, get_keywords, \
+    set_delete_keyword
 from karmaworld.apps.users.views import ProfileView
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
@@ -103,6 +104,9 @@ urlpatterns = patterns('',
 
     # Check if a quiz answer is correct
     url(r'^ajax/quiz/check/$', quiz_answer, name='quiz_answer'),
+
+    url(r'^ajax/annotations/annotations$', set_delete_keyword, name='set_keyword'),
+    url(r'^ajax/annotations/search/$', get_keywords, name='get_keywords'),
 
     # Valid url cases to the Note page
     # a: school/course/id

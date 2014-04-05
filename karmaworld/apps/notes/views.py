@@ -11,7 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.apps.users.models import NoteKarmaEvent
-from karmaworld.utils.ajax_increment import *
+from karmaworld.utils.ajax_utils import *
 
 import os
 
@@ -235,7 +235,8 @@ def process_downloaded_note(request_user, note):
 
 def downloaded_note(request, pk):
     """Record that somebody has flagged a note."""
-    return ajax_base(Note, request, pk, process_downloaded_note)
+    return ajax_pk_base(Note, request, pk, process_downloaded_note)
+
 
 def edit_note_tags(request, pk):
     """

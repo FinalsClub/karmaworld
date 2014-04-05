@@ -7,10 +7,12 @@
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/annotator.min.css" />
 {% endblock %}
 
 {% block pagescripts %}
   <script type="text/javascript">
+    var note_id = {{ note.id }};
     var note_thank_url = "{% url 'thank_note' note.id %}"
     var note_flag_url = "{% url 'flag_note' note.id %}"
     var edit_note_tags_url = "{% url 'edit_note_tags' note.id %}"
@@ -26,6 +28,13 @@
   <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
   <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
   <script src="{{ STATIC_URL }}js/marked.js" ></script>
+  <script src="{{ STATIC_URL }}js/annotator-full.min.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+  <script>
+    $(function() {
+      $(document).foundation('joyride', 'start');
+    });
+  </script>
 {% endblock %}
 
 {% block raw_content %}
@@ -34,7 +43,7 @@
     <div class="return-to-course show-for-large-up">
       <div class="row">
         <div class="small-12 columns">
-          <a href="{{note.course.get_absolute_url}}">
+          <a href="{{ note.course.get_absolute_url }}">
             <i class="fa fa-angle-double-left"></i> See all notes for {{ note.course.name }}
           </a>
         </div>
@@ -208,6 +217,13 @@
     </div>
 
   </section><!--/note_content-->
+
+  <ol class="joyride-list" data-joyride
+        data-options="cookie_monster: true; cookie_name: note_detail_joyride">
+    <li data-id="note-markdown" data-text="Awesome!" data-options="tip_location: top">
+      <p>You can highlight important words or phrases in this note to add definitions for them.</p>
+    </li>
+  </ol>
 
 {% endblock %}
 

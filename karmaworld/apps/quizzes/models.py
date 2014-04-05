@@ -11,10 +11,12 @@ class Keyword(models.Model):
 
     note = models.ForeignKey('notes.Note', blank=True, null=True)
 
+    ranges = models.CharField(max_length=1024, blank=True, null=True)
+
     timestamp = models.DateTimeField(default=datetime.datetime.utcnow)
 
     class Meta:
-        unique_together = ('word', 'note')
+        unique_together = ('word', 'note', 'ranges')
 
     def __unicode__(self):
         return self.word
