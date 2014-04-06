@@ -20,6 +20,10 @@
     var note_contents_url = "{{ S3_URL }}{{ note.get_relative_s3_path }}"
     var pdfControls = {% if pdf_controls %} true {% else %} false {% endif %};
     var csrf_token = "{{ csrf_token }}";
+    var annotator_js_url = "{{ STATIC_URL }}js/annotator-full.min.js";
+    var annotator_css_url = "{{ STATIC_URL }}css/annotator.min.css";
+    var setup_ajax_url = "{{ STATIC_URL }}js/setup-ajax.js";
+    var empty_js = "{{ STATIC_URL }}js/empty.js";
   </script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
 {% endblock %}

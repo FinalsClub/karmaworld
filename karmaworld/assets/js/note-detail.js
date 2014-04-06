@@ -1,18 +1,5 @@
 
 
-// resize the iframe based on internal contents on page load
-function autoResize(id){
-  var newheight;
-  var newwidth;
-
-  if(document.getElementById){
-    newheight = document.getElementById(id).contentWindow.document.body.scrollHeight;
-    newwidth = document.getElementById(id).contentWindow.document.body.scrollWidth;
-  }
-
-  document.getElementById(id).height = (newheight + 10) + "px";
-  document.getElementById(id).width= (newwidth + 5) + "px";
-}
 
 function rescalePdf(viewer, frameWidth) {
   var scaleBase = 750;
@@ -27,9 +14,8 @@ function rescalePdf(viewer, frameWidth) {
   viewer.rescale(newPdfScale);
 }
 
-function setupPdfViewer() {
-  var noteFrame = document.getElementById("noteframe")
-  var pdfViewer = noteFrame.contentWindow.pdf2htmlEX.defaultViewer;
+function setupPdfViewer(noteframe) {
+  var pdfViewer = noteframe.pdf2htmlEX.defaultViewer;
 
   $('#plus-btn').click(function (){
     pdfViewer.rescale(1.20, true, [0,0]);
@@ -42,7 +28,7 @@ function setupPdfViewer() {
   // detect if the PDF viewer wants to show an outline
   // at all
   if ($(pdfViewer.sidebar).hasClass('opened')) {
-    var body = $('body');
+    var body = $(document.body);
     // if the screen is less than 64em wide, hide the outline
     if (parseInt($(body.width()).toEm({scope: body})) < 64) {
       $(pdfViewer.sidebar).removeClass('opened');
@@ -52,7 +38,7 @@ function setupPdfViewer() {
   $('#outline-btn').click(function() {
     $(pdfViewer.sidebar).toggleClass('opened');
     // rescale the PDF to fit the available space
-    rescalePdf(pdfViewer, parseInt(noteFrame.width));
+    rescalePdf(pdfViewer, parseInt(noteframe.frameElement.clientWidth));
   });
 
   $('#scroll-to').change(function() {
@@ -61,7 +47,7 @@ function setupPdfViewer() {
   });
 
   // rescale the PDF to fit the available space
-  rescalePdf(pdfViewer, parseInt(noteFrame.width));
+  rescalePdf(pdfViewer, parseInt(noteframe.frameElement.clientWidth));
 }
 
 function writeNoteFrame(contents) {
@@ -69,6 +55,40 @@ function writeNoteFrame(contents) {
   var dstDoc = dstFrame.contentDocument || dstFrame.contentWindow.document;
   dstDoc.write(contents);
   dstDoc.close();
+}
+
+function setupAnnotator(noteElement) {
+  noteElement.annotator();
+  noteElement.annotator('addPlugin', 'Store', {
+    prefix: '/ajax/annotations',
+    loadFromSearch: {
+      'uri': note_id
+    },
+    annotationData: {
+      'uri': note_id
+    }
+  });
+}
+
+function injectRemoteScript(url, noteframe, onload) {
+  var injectScript = noteframe.document.createElement("script");
+  injectScript.src = url;
+  injectScript.onload = onload;
+  noteframe.document.head.appendChild(injectScript);
+}
+
+function injectScript(scriptText, noteframe) {
+  var injectScript = noteframe.document.createElement("script");
+  injectScript.innerHTML = scriptText;
+  noteframe.document.body.appendChild(injectScript);
+}
+
+function injectRemoteCSS(url, noteframe) {
+  var injectCSS = noteframe.document.createElement("link");
+  injectCSS.href = url;
+  injectCSS.type = 'text/css';
+  injectCSS.rel = 'stylesheet';
+  noteframe.document.head.appendChild(injectCSS);
 }
 
 $(function() {
@@ -152,16 +172,7 @@ $(function() {
   if ($('#note-markdown').length > 0) {
     var note_markdown = $('#note-markdown');
     note_markdown.html(marked(note_markdown.data('markdown')));
-    note_markdown.annotator();
-    note_markdown.annotator('addPlugin', 'Store', {
-      prefix: '/ajax/annotations',
-      loadFromSearch: {
-        'uri': note_id
-      },
-      annotationData: {
-        'uri': note_id
-      }
-    });
+    setupAnnotator(note_markdown);
   } else {
     $.ajax(note_contents_url, {
       type: 'GET',
@@ -173,10 +184,39 @@ $(function() {
       },
       success: function(data, textStatus, jqXHR) {
         writeNoteFrame(data);
-        autoResize('noteframe');
-        if (pdfControls == true) {
-          setupPdfViewer();
-        }
+
+        // run setupAnnotator in frame context
+        var noteframe = document.getElementById('noteframe').contentWindow;
+
+        injectRemoteCSS(annotator_css_url, noteframe);
+        injectScript("csrf_token = '" + csrf_token + "';", noteframe);
+
+        injectRemoteScript("http://code.jquery.com/jquery-2.1.0.min.js", noteframe,
+          function() {
+            injectRemoteScript(setup_ajax_url, noteframe);
+            injectRemoteScript(annotator_js_url, noteframe,
+              function() {
+                var js = "$(function() {   $('#page-container').annotator(); \
+                  $('#page-container').annotator('addPlugin', 'Store', { \
+                    prefix: '/ajax/annotations', \
+                    loadFromSearch: { \
+                    'uri': " + note_id + " \
+                  }, \
+                  annotationData: { \
+                    'uri': " + note_id + " \
+                  } \
+                }); })";
+                injectScript(js, noteframe);
+                if (pdfControls == true) {
+                  $(noteframe.document).ready(function() {
+                    setupPdfViewer(noteframe);
+                  });
+                }
+              });
+          });
+
+
+
       },
       error: function(data, textStatus, jqXHR) {
         writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
