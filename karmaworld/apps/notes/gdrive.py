@@ -172,8 +172,8 @@ def upload_to_gdrive(service, media, filename, extension=None, mimetype=None):
     # exponentially wait for exportLinks to be returned if missing
     while u'exportLinks' not in file_dict or \
           u'text/plain' not in file_dict[u'exportLinks']:
-        # if 31.5 seconds have passed, give up
-        if delay_exp == 5:
+        # if a bunch  seconds have passed, give up
+        if delay_exp == 7:
             raise ValueError('Google Drive failed to read the document.')
 
         # wait some seconds
