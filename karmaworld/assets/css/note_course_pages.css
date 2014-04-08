@@ -102,3 +102,7 @@ div.header-title-row {
 #plus-btn {
   cursor: pointer;
 }
+
+.keyword-form-row textarea.definition {
+  max-height: 75px;
+}

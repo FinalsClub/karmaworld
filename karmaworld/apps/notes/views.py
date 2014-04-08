@@ -2,21 +2,19 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 
-import json
 import traceback
 import logging
 
 from django.core import serializers
-from django.core.exceptions import ObjectDoesNotExist
+from django.forms.formsets import formset_factory
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
+from karmaworld.apps.quizzes.forms import KeywordForm
+from karmaworld.apps.quizzes.models import Keyword
 from karmaworld.apps.users.models import NoteKarmaEvent
 from karmaworld.utils.ajax_utils import *
 
-import os
-
-from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import DetailView, ListView
 from django.views.generic import FormView
 from django.views.generic import View
@@ -38,11 +36,30 @@ class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
     model = Note
     context_object_name = u"note" # name passed to template
+    keyword_form_class = formset_factory(KeywordForm)
+
+    def post(self, requests, *args, **kwargs):
+        formset = self.keyword_form_class(requests)
+        if formset.is_valid():
+            self.keyword_form_valid(formset)
+            self.keyword_formset = self.keyword_form_class(initial=self.get_initial_keywords())
+            return super(NoteDetailView, self).post(requests, *args, **kwargs)
+        else:
+            self.keyword_formset = formset
+            return super(NoteDetailView, self).post(requests, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.keyword_formset = self.keyword_form_class(initial=self.get_initial_keywords())
+        return super(NoteDetailView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         """ Generate custom context for the page rendering a Note
             + if pdf, set the `pdf` flag
         """
+
+        kwargs['keyword_prototype_form'] = KeywordForm
+        kwargs['keyword_formset'] = self.keyword_formset
+
         if self.object.is_pdf():
             kwargs['pdf_controls'] = True
 
@@ -60,6 +77,29 @@ class NoteDetailView(DetailView):
                 pass
 
         return super(NoteDetailView, self).get_context_data(**kwargs)
+
+    def get_initial_keywords(self):
+        existing_keywords = self.get_object().keyword_set.order_by('id')
+        initial_data = [{'keyword': keyword.word, 'definition': keyword.definition, 'id': keyword.pk}
+                        for keyword in existing_keywords]
+        return initial_data
+
+    def keyword_form_valid(self, formset):
+        for form in formset:
+            word = form['keyword'].data
+            definition = form['definition'].data
+            id = form['id'].data
+            if word == '':
+                continue
+            try:
+                keyword_object = Keyword.objects.get(id=id)
+            except (ValueError, ObjectDoesNotExist):
+                keyword_object = Keyword()
+
+            keyword_object.note = self.note
+            keyword_object.word = word
+            keyword_object.definition = definition
+            keyword_object.save()
 
 
 class NoteSaveView(FormView, SingleObjectMixin):

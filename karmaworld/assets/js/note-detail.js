@@ -91,6 +91,48 @@ function injectRemoteCSS(url, noteframe) {
   noteframe.document.head.appendChild(injectCSS);
 }
 
+function tabHandler(event) {
+  // check for:
+  // key pressed was TAB
+  // key was pressed in last row
+  if (event.which == 9) {
+    var totalForms = parseInt($('#id_form-TOTAL_FORMS').attr('value'));
+    var formIndex = parseInt($(this).closest('div.keyword-form-row').data('index'));
+    if (formIndex === totalForms-1) {
+      addForm(event);
+      event.preventDefault();
+    }
+  }
+}
+
+function addForm(event) {
+  var prototypeForm = $('#keyword-form-prototype div.keyword-form-row').clone().appendTo('#keyword-form-rows');
+  var newForm = $('.keyword-form-row:last');
+  var totalForms = $('#id_form-TOTAL_FORMS').attr('value');
+  var newIdRoot = 'id_form-' + totalForms + '-';
+  var newNameRoot = 'form-' + totalForms + '-';
+
+  newForm.data('index', totalForms);
+
+  var keywordInput = newForm.find('.keyword');
+  keywordInput.attr('id', newIdRoot + 'keyword');
+  keywordInput.attr('name', newNameRoot + 'keyword');
+  keywordInput.focus();
+
+  var definitionInput = newForm.find('.definition');
+  definitionInput.attr('id', newIdRoot + 'definition');
+  definitionInput.attr('name', newNameRoot + 'definition');
+  definitionInput.keydown(tabHandler);
+
+  var objectIdInput = newForm.find('.object-id');
+  objectIdInput.attr('id', newIdRoot + 'id');
+  objectIdInput.attr('name', newNameRoot + 'id');
+
+  $('#id_form-TOTAL_FORMS').attr('value', parseInt(totalForms)+1);
+
+  keywordInput.focus();
+}
+
 $(function() {
 
   $("#thank-button").click(function(event) {
@@ -224,6 +266,9 @@ $(function() {
     });
   }
 
-
+  $('.definition').keydown(tabHandler);
+  $('#add-row-btn').click(addForm);
 
 });
+
+
