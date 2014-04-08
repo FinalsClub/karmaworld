@@ -8,6 +8,11 @@ from karmaworld.apps.courses.admin import CourseAdmin
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.notes.admin import NoteAdmin
 from karmaworld.apps.moderation import moderator
+from karmaworld.apps.courses.models import Professor
+from karmaworld.apps.courses.admin import ProfessorAdmin
+from karmaworld.apps.courses.models import Department
+from karmaworld.apps.courses.admin import DepartmentAdmin
+
 
 
 # Create a simple action to reset flags to zero.
@@ -33,7 +38,7 @@ show_notes.short_description = "Show selected notes"
 class CourseModerator(CourseAdmin):
     date_heirarchy = 'updated_at'
     # Identify fields to display on the Change page
-    list_display = ('name', 'flags', 'school', 'created_at', 'updated_at', 'instructor_name')
+    list_display = ('name', 'flags', 'url', 'updated_at', 'department',)
     # Sort by highest number of flags first, and then by date for ties.
     ordering = ('-flags', '-updated_at')
     # Enable resetting flags
@@ -47,9 +52,30 @@ class NoteModerator(NoteAdmin):
     list_display = ('name', 'flags', 'course', 'is_hidden', 'uploaded_at', 'ip')
     # Sort by highest number of flags first, and then by date for ties
     ordering = ('-flags', '-uploaded_at')
-    # Enable resetting flags
+    # Enable resetting flagsoo
     actions = (reset_flags, hide_notes, show_notes)
 
+# Structure views of Department objects
+class DepartmentModerator(DepartmentAdmin):
+    date_heirarchy = 'uploaded_at'
+    # Identify fields to display on the Change page
+    list_display = ('name', 'school', 'url')
+    # Sort by highest number of flags first, and then by date for ties
+    ordering = ('-school', '-name')
+    # Enable resetting flags
+    actions = (reset_flags,)
+
+# Structure views of Professor objects
+class ProfessorModerator(ProfessorAdmin):
+    date_heirarchy = 'uploaded_at'
+    # Identify fields to display on the Change page
+    list_display = ('name', 'email')
+    # Sort by highest number of flags first, and then by date for ties
+    ordering = ('-name', '-email')
+    # Enable resetting flags
+    actions = (reset_flags,)
 
 moderator.site.register(Course, CourseModerator)
 moderator.site.register(Note, NoteModerator)
+moderator.site.register(Department, DepartmentModerator)
+moderator.site.register(Professor, ProfessorModerator)
