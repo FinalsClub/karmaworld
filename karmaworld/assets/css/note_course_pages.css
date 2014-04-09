@@ -106,3 +106,15 @@ div.header-title-row {
 .keyword-form-row textarea.definition {
   max-height: 75px;
 }
+
+#add-row-btn {
+  cursor: pointer;
+}
+
+.keywords-hint {
+  font-size: 0.8em;
+}
+
+.note-keyword-toggle {
+  margin: 0 0 10px 0;
+}

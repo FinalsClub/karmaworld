@@ -1,9 +1,8 @@
 
-
-
-function rescalePdf(viewer, frameWidth) {
+function rescalePdf(viewer) {
   var scaleBase = 750;
   var outlineWidth = 250;
+  var frameWidth = parseInt($('#tabs-content')[0].clientWidth);
   var pdfWidth = frameWidth;
 
   if ($(viewer.sidebar).hasClass('opened')){
@@ -14,8 +13,7 @@ function rescalePdf(viewer, frameWidth) {
   viewer.rescale(newPdfScale);
 }
 
-function setupPdfViewer(noteframe) {
-  var pdfViewer = noteframe.pdf2htmlEX.defaultViewer;
+function setupPdfViewer(noteframe, pdfViewer) {
 
   $('#plus-btn').click(function (){
     pdfViewer.rescale(1.20, true, [0,0]);
@@ -38,7 +36,7 @@ function setupPdfViewer(noteframe) {
   $('#outline-btn').click(function() {
     $(pdfViewer.sidebar).toggleClass('opened');
     // rescale the PDF to fit the available space
-    rescalePdf(pdfViewer, parseInt(noteframe.frameElement.clientWidth));
+    rescalePdf(pdfViewer);
   });
 
   $('#scroll-to').change(function() {
@@ -47,7 +45,7 @@ function setupPdfViewer(noteframe) {
   });
 
   // rescale the PDF to fit the available space
-  rescalePdf(pdfViewer, parseInt(noteframe.frameElement.clientWidth));
+  rescalePdf(pdfViewer);
 }
 
 function writeNoteFrame(contents) {
@@ -249,9 +247,11 @@ $(function() {
                   } \
                 }); })";
                 injectScript(js, noteframe);
+
                 if (pdfControls == true) {
+                  var pdfViewer = noteframe.pdf2htmlEX.defaultViewer;
                   $(noteframe.document).ready(function() {
-                    setupPdfViewer(noteframe);
+                    setupPdfViewer(noteframe, pdfViewer);
                   });
                 }
               });

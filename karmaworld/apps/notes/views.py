@@ -38,15 +38,15 @@ class NoteDetailView(DetailView):
     context_object_name = u"note" # name passed to template
     keyword_form_class = formset_factory(KeywordForm)
 
-    def post(self, requests, *args, **kwargs):
-        formset = self.keyword_form_class(requests)
+    def post(self, request, *args, **kwargs):
+        formset = self.keyword_form_class(request.POST)
         if formset.is_valid():
             self.keyword_form_valid(formset)
             self.keyword_formset = self.keyword_form_class(initial=self.get_initial_keywords())
-            return super(NoteDetailView, self).post(requests, *args, **kwargs)
+            return super(NoteDetailView, self).get(request, *args, **kwargs)
         else:
             self.keyword_formset = formset
-            return super(NoteDetailView, self).post(requests, *args, **kwargs)
+            return super(NoteDetailView, self).get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         self.keyword_formset = self.keyword_form_class(initial=self.get_initial_keywords())
@@ -96,7 +96,7 @@ class NoteDetailView(DetailView):
             except (ValueError, ObjectDoesNotExist):
                 keyword_object = Keyword()
 
-            keyword_object.note = self.note
+            keyword_object.note = self.get_object()
             keyword_object.word = word
             keyword_object.definition = definition
             keyword_object.save()
@@ -115,7 +115,6 @@ class NoteSaveView(FormView, SingleObjectMixin):
         context = {
             'object': self.get_object(),
         }
-        print "get context for NoteSaveView"
         return super(NoteSaveView, self).get_context_data(**context)
 
     def get_success_url(self):
@@ -159,15 +158,11 @@ class NoteView(View):
         return view(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        view = NoteSaveView.as_view()
+        if request.POST['action'] == 'tags-form':
+            view = NoteSaveView.as_view()
+        else:
+            view = NoteDetailView.as_view()
         return view(request, *args, **kwargs)
-
-
-class RawNoteDetailView(DetailView):
-    """ Class-based view for the raw note html for iframes """
-    template_name = u'notes/note_raw.html'
-    context_object_name = u"note"
-    model = Note
 
 
 class NoteSearchView(ListView):

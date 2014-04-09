@@ -155,7 +155,7 @@
           <div class="small-12 columns">
             <p>Edit this note's tags:
             <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"></p>
-            <button id="save_note_tags" type=button><i class="fa fa-save"></i> Save</button>
+            <button id="save_note_tags" type="submit" value="tags-form"><i class="fa fa-save"></i> Save</button>
           </div>
         </div>
       </div>
@@ -163,7 +163,7 @@
       {% if note.license %}
         <div class="row">
           <div id="note_pedigree" class="twelve columns activity_details_status">
-            {{ note.license.html|safe }} {% if note.upstream_link %}<a href="{{note.upstream_link}}" target="_blank">{{ note.upstream_link|slice:":80" }}</a>{% endif %}
+            {{ note.license.html|safe }} {% if note.upstream_link %}<a href="{{ note.upstream_link }}" target="_blank">{{ note.upstream_link|slice:":80" }}</a>{% endif %}
           </div><!-- /note_pedigree -->
         </div>
       {% endif %}
@@ -172,11 +172,11 @@
 
     <div class="row">
       <div id="tabs" class="small-12 columns">
-        <dl class="tabs show-for-large-up" data-tab>
+        <dl class="tabs show-for-large-up" data-tab data-options="deep_linking: true; scroll_to_content: false">
           <dd class="active"><a href="#note_container">Note</a></dd>
-          <dd><a href="#keywords">Keywords</a></dd>
+          <dd id="keywords-tab-button"><a href="#keywords">Keywords</a></dd>
         </dl>
-        <div class="tabs-content">
+        <div id="tabs-content" class="tabs-content">
           <div id="note_container" class="content active">
             {% if pdf_controls %}
               <div id="zoom-buttons" class="row show-for-medium-up">
@@ -197,7 +197,7 @@
             <div class="row">
               <div class="small-12 small-centered columns medium-12 large-12 body_copy">
                 {% if note.static_html %}
-                  <div class="note-text">
+                  <div id="note-content-wrapper" class="note-text">
                     {% if note.has_markdown %}
                       <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
                     {% else %}
@@ -221,7 +221,7 @@
           <div id="keywords" class="content">
             <div class="row">
               <div class="small-12 columns">
-                <form id="keyword-form" action="{% url 'keyword_edit' note.slug %}" method="post">
+                <form id="keyword-form" action="{{ note.get_absolute_url }}#keywords" method="post">
                   {% csrf_token %}
                   {{ keyword_formset.management_form }}
                   <div class="hide" id="keyword-form-prototype">
@@ -250,12 +250,17 @@
                       <hr class="hide-for-large-up" />
                     {% endfor %}
                   </div>
-                  <div id="row">
-                    <div class="small-1 columns">
-                      <i id="add-row-btn" class="fa fa-plus fa-2x"></i>
+                  <div class="row hide-for-medium-down">
+                    <div class="small-12 columns">
+                      <p class="keywords-hint">(Click <i class="fa fa-plus"></i> or press TAB in the last definition for another row)</p>
                     </div>
-                    <div class="small-10 large-11 columns center">
-                      <button type="submit" name="action">Save</button>
+                  </div>
+                  <div class="row">
+                    <div class="small-2 columns">
+                      <button type="submit" name="action" value="keyword-form">Save</button>
+                    </div>
+                    <div class="small-9 large-10 columns center">
+                      <i id="add-row-btn" class="fa fa-plus fa-2x"></i>
                     </div>
                   </div>
                 </form>
@@ -270,8 +275,11 @@
 
   <ol class="joyride-list" data-joyride
         data-options="cookie_monster: true; cookie_name: note_detail_joyride">
-    <li data-id="note-markdown" data-text="Awesome!" data-options="tip_location: top">
+    <li data-id="note-content-wrapper" data-text="Awesome!" data-options="tip_location: top">
       <p>You can highlight important words or phrases in this note to add definitions for them.</p>
+    </li>
+    <li data-id="keywords-tab-button" data-text="Awesome!" data-options="tip_location: top">
+      <p>Keywords you define will appear here, and you can define new ones here too.</p>
     </li>
   </ol>
 
