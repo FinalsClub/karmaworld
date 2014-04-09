@@ -12,7 +12,7 @@ makeFileForm = function(upFile) {
   // save the FP url to the form
   $(_form).find('.fpurl').val(upFile.url);
   // save the mimetype to the form
-  $(_form).find('mimetype').val(upFile.mimetype);
+  $(_form).find('.mimetype').val(upFile.mimetype);
 
   document.getElementById('forms_container').appendChild(_form);
 
