@@ -14,13 +14,6 @@
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/global.css">
 
-  <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
-
-  <!-- block pagescripts -->
-  {% block pagescripts %}
-  {% endblock %}
-  <!-- end block pagescripts -->
-
   <!-- block pagestyle -->
   {% block pagestyle %}
   {% endblock %}
@@ -45,6 +38,7 @@
   {% include 'footer.html' %}
   <!-- end include footer-->
 
+  <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
   <script src="//code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
   <script type="text/javascript" src="//use.typekit.net/pnc8diw.js"></script>
   <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -55,10 +49,10 @@
       $(document).foundation();
     });
   </script>
-  <!-- block bodyscripts -->
-  {% block bodyscripts %}
+  <!-- block pagescripts -->
+  {% block pagescripts %}
   {% endblock %}
-  <!-- end block bodyscripts -->
+  <!-- end block pagescripts -->
 
 </body>
 </html>

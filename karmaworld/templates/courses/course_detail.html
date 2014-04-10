@@ -12,20 +12,17 @@
     var course_edit_url = "{% url 'edit_course' course.id %}";
     var dataTable_sDom = '<"top">rt<"bottom"p><"clear">';
   </script>
+  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
+  <script src="{{ STATIC_URL }}js/course.js"></script>
+  <script src="{{ STATIC_URL }}js/course-detail.js" ></script>
+  <script src="{{ STATIC_URL }}js/note-list.js" ></script>
+  <script src="{{ STATIC_URL }}js/filepicker.js"></script>
 {% endblock %}
 
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
 {% endblock %}
-
-{% block bodyscripts %}
-  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
-  <script src="{{ STATIC_URL }}js/course.js"></script>
-  <script src="{{ STATIC_URL }}js/course-detail.js" ></script>
-  <script src="{{ STATIC_URL }}js/note-list.js" ></script>
-{% endblock %}
-
 
 {% block title %}
   Share Notes for {{ course.name }} | {{ course.school.name }}
