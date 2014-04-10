@@ -54,14 +54,10 @@ p {
   padding: 0 5px 0 5px;
 }
 
-.gradient-bar
-{
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e8e8e8)); /* Safari 4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #ffffff, #e8e8e8); /* Chrome 10+, Safari 5.1+, iOS 5+ */
-  background-image: -moz-linear-gradient(top, #ffffff, #e8e8e8); /* Firefox 3.6-15 */
-  background-image: -o-linear-gradient(top, #ffffff, #e8e8e8); /* Opera 11.10-12.00 */
-  background-image: linear-gradient(to bottom, #ffffff, #e8e8e8); /* Firefox 16+, IE10, Opera 12.50+ */
-  border-bottom: solid 1px #bdbcbd;
+#splash {
+  background-image: url('../img/banner_small.jpg');
+  background-size: cover;
+  background-position: center center;
 }
 
 #global_footer {
