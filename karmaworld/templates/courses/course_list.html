@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" media="all" href="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.min.css">
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
 {% endblock %}
 
@@ -27,10 +27,10 @@
 {% endblock %}
 
 {% block bodyscripts %}
-  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
-  <script src="{{ STATIC_URL }}js/jquery.backstretch.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
   <script>
-    $("#splash").backstretch("{{ STATIC_URL }}img/banner.jpg");
+    $("#splash").backstretch("{{ STATIC_URL }}img/banner_small.jpg");
   </script>
 {% endblock %}
 

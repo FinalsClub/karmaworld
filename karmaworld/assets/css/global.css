@@ -186,9 +186,13 @@ table.dataTable a {
 }
 
 .even {
-  background: #fafafa;
+  background-color: #fafafa !important;
   border-top: 1px solid #f0f0f0;
   border-bottom: 1px solid #f0f0f0;
+}
+
+.odd {
+  background-color: transparent !important;
 }
 
 ul.ui-autocomplete {
