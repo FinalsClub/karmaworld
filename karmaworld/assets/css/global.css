@@ -37,6 +37,7 @@ p {
 
 #header-login-nav {
   text-align: right;
+  color: #ffffff;
   background: #000000;
   padding: 3px 0 3px 0;
 }
@@ -77,7 +78,8 @@ label.inline-label
   display: inline;
 }
 
-button {
+button,
+.button {
   color: white;
   border: none;
   padding: 10px;
@@ -92,13 +94,17 @@ button.important {
 }
 
 button:hover,
-button:focus {
+button:focus,
+.button:hover,
+.button:focus {
   background: #f1592a;
 }
 
 button.disabled,
 button.disabled:hover,
-button.disabled:focus {
+button.disabled:focus
+.button.disable:hover,
+.button.disabled:focus, {
   background: #333333;
   color: #bcbdc0;
   cursor: default;
@@ -108,16 +114,37 @@ button.inline-button {
   display: inline;
 }
 
+.joyride-content-wrapper .button {
+  background-color: #008CBA;
+}
+
+a,
+a:hover,
+a:focus,
+a:visited {
+  color: #802e16;
+}
+
 a {
-  color: inherit;
   text-decoration: none;
 }
 
-a:hover {
-  color: #802e16;
+a:hover,
+a:focus {
   text-decoration: underline;
 }
 
+a.inherit-color {
+  color: inherit;
+}
+
+.inherit-color a {
+  color: inherit;
+}
+
+.underline a {
+  text-decoration: underline;
+}
 
 span.table-school {
   font-weight: bold;
@@ -152,6 +179,10 @@ table.dataTable div.table-entry-third-line {
 
 table.dataTable div.data-table-entry {
   margin: 20px 0 20px 0;
+}
+
+table.dataTable a {
+  color: inherit;
 }
 
 .even {
@@ -202,4 +233,17 @@ dl.tabs dd a {
 div.tabs-content {
   margin-top: -1px;
   border-top: 1px solid #dfdfdf;
+}
+
+div.message-container {
+  margin: 20px 0 0 0;
+}
+
+ul.socialaccount_providers {
+  list-style-type: none;
+}
+
+ul.socialaccount_providers li{
+  display: inline;
+  margin: 0 5px 0 5px;
 }

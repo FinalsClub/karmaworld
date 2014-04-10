@@ -61,10 +61,10 @@
                           </div>
                           {% if item.0 == 'NoteKarmaEvent' %}
                             <div class="small-12 columns activity_details_object">
-                              <a href="{{ event.note.get_absolute_url }}" class="activity_target">{{ event.note.name }}</a>
+                              <a href="{{ event.note.get_absolute_url }}" class="activity_target inherit-color">{{ event.note.name }}</a>
                             </div>
                             <div class="small-12 columns activity_details_context">
-                              <a href="{{ event.note.course.get_absolute_url }}" class="course_link">{{ event.note.course.name }} &bull;
+                              <a href="{{ event.note.course.get_absolute_url }}" class="course_link inherit-color">{{ event.note.course.name }} &bull;
                                 {% if event.note.course.school %}
                                   {{ event.note.course.school.name }}
                                 {% else %}
@@ -75,7 +75,7 @@
                           {% endif %}
                           {% if item.0 == 'CourseKarmaEvent' %}
                             <div class="small-12 columns activity_details_object">
-                              <a href="{{ event.course.get_absolute_url }}" class="activity_target">{{ event.course.name }}</a>
+                              <a href="{{ event.course.get_absolute_url }}" class="activity_target inherit-color">{{ event.course.name }}</a>
                             </div>
                             <div class="small-12 columns activity_details_context">
                               {{ event.course.school.name }}
@@ -122,7 +122,7 @@
                     {{ user.email }}
                   </div>
                   <div class="small-12 large-2 columns account_settings_edit">
-                    <a href="{% url 'account_email' %}"><i class="fa fa-pencil"></i> Edit</a>
+                    <a href="{% url 'account_email' %}" class="inherit-color"><i class="fa fa-pencil"></i> Edit</a>
                   </div>
                 </div>
               </div>
@@ -135,7 +135,7 @@
                     ********
                   </div>
                   <div class="small-12 large-2 columns account_settings_edit">
-                    <a href="{% url 'account_change_password' %}"><i class="fa fa-pencil"></i> Edit</a>
+                    <a href="{% url 'account_change_password' %}" class="inherit-color"><i class="fa fa-pencil"></i> Edit</a>
                   </div>
                 </div>
               </div>
@@ -148,7 +148,7 @@
                     {% social_account_list request.user %}
                   </div>
                   <div class="small-12 large-2 columns account_settings_edit">
-                    <a href="{% url 'socialaccount_connections' %}"><i class="fa fa-pencil"></i> Edit</a>
+                    <a href="{% url 'socialaccount_connections' %}" class="inherit-color"><i class="fa fa-pencil"></i> Edit</a>
                   </div>
                 </div>
               </div>

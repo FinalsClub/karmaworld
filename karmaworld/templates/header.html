@@ -8,8 +8,8 @@
       <div class="row nav-list">
         <div class="large-12 columns">
           <ul>
-            <li><a href="{% url 'accounts_profile' %}">{{ request.user.get_profile.get_points }} Karma Points</a></li>
-            <li><a href="{% url 'account_logout' %}">Log Out</a></li>
+            <li><a href="{% url 'accounts_profile' %}" class="inherit-color">{{ request.user.get_profile.get_points }} Karma Points</a></li>
+            <li><a href="{% url 'account_logout' %}" class="inherit-color">Log Out</a></li>
           </ul>
         </div>
       </div>
@@ -45,3 +45,16 @@
 
 </header><!--/global header-->
 
+{% if messages %}
+  {% for message in messages %}
+    <div class="row">
+      <div class="small-12 columns message-container">
+        <div data-alert class="alert-box radius {{ message.tags }}
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}warning{% endif %}
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}info{% endif %}">
+          {{ message }}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}
