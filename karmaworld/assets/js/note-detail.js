@@ -231,7 +231,7 @@ $(function() {
         injectRemoteCSS(annotator_css_url, noteframe);
         injectScript("csrf_token = '" + csrf_token + "';", noteframe);
 
-        injectRemoteScript("http://code.jquery.com/jquery-2.1.0.min.js", noteframe,
+        injectRemoteScript("https://code.jquery.com/jquery-2.1.0.min.js", noteframe,
           function() {
             injectRemoteScript(setup_ajax_url, noteframe);
             injectRemoteScript(annotator_js_url, noteframe,
