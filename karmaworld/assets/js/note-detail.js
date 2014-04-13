@@ -256,9 +256,6 @@ $(function() {
                 }
               });
           });
-
-
-
       },
       error: function(data, textStatus, jqXHR) {
         writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
@@ -268,6 +265,17 @@ $(function() {
 
   $('.definition').keydown(tabHandler);
   $('#add-row-btn').click(addForm);
+
+  $('#keywords-data-table').dataTable({
+    // don't provide a option for the user to change the table page length
+    'bLengthChange': false,
+    'sDom': 't<"clear">'
+  });
+
+  $('#edit-keywords-button').click(function(event) {
+    $('#keywords-data-table').toggle();
+    $('#keyword-form').toggle();
+  });
 
 });
 

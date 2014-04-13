@@ -98,9 +98,10 @@ button:focus,
 
 button.disabled,
 button.disabled:hover,
-button.disabled:focus
+button.disabled:focus,
+.button.disabled,
 .button.disable:hover,
-.button.disabled:focus, {
+.button.disabled:focus {
   background: #333333;
   color: #bcbdc0;
   cursor: default;
@@ -189,6 +190,10 @@ table.dataTable a {
 
 .odd {
   background-color: transparent !important;
+}
+
+td {
+  background-color: inherit !important;
 }
 
 ul.ui-autocomplete {

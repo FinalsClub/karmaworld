@@ -59,6 +59,7 @@ class NoteDetailView(DetailView):
 
         kwargs['keyword_prototype_form'] = KeywordForm
         kwargs['keyword_formset'] = self.keyword_formset
+        kwargs['keywords'] = Keyword.objects.filter(note=self.object)
 
         if self.object.is_pdf():
             kwargs['pdf_controls'] = True

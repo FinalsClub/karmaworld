@@ -8,6 +8,7 @@
 {% block pagestyle %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/annotator.min.css" />
+  <link rel="stylesheet" type="text/css" media="all" href="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.min.css">
 {% endblock %}
 
 {% block pagescripts %}
@@ -31,6 +32,7 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.1/marked.min.js" ></script>
   <script src="{{ STATIC_URL }}js/annotator-full.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
   <script>
     $(function() {
       $(document).foundation('joyride', 'start');
@@ -171,7 +173,7 @@
       <div id="tabs" class="small-12 columns">
         <dl class="tabs show-for-large-up" data-tab data-options="deep_linking: true; scroll_to_content: false">
           <dd class="active"><a href="#note_container">Note</a></dd>
-          <dd id="keywords-tab-button"><a href="#keywords">Keywords</a></dd>
+          <dd id="keywords-tab-button"><a href="#keywords">Key Terms & Definitions</a></dd>
         </dl>
         <div id="tabs-content" class="tabs-content">
           <div id="note_container" class="content active">
@@ -218,7 +220,25 @@
           <div id="keywords" class="content">
             <div class="row">
               <div class="small-12 columns">
-                <form id="keyword-form" action="{{ note.get_absolute_url }}#keywords" method="post">
+                <p>These key terms and definitions have been defined by KarmaNotes users.
+                You can edit them for accuracy and add more if you like.</p>
+                <p><button id="edit-keywords-button" class="museo700"><i class="fa fa-edit"></i> Edit Key Terms & Definitions</button></p>
+                <table id="keywords-data-table">
+                  <thead>
+                    <tr>
+                      <td>Key Terms</td>
+                      <td>Definitions</td>
+                    </tr>
+                  </thead>
+                  {% for keyword in keywords %}
+                    <tr>
+                      <td>{{ keyword.word }}</td>
+                      <td>{{ keyword.definition }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+
+                <form id="keyword-form" action="{{ note.get_absolute_url }}#keywords" method="post" class="hide">
                   {% csrf_token %}
                   {{ keyword_formset.management_form }}
                   <div class="hide" id="keyword-form-prototype">
