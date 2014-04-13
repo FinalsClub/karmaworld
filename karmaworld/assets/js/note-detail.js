@@ -236,8 +236,13 @@ $(function() {
             injectRemoteScript(setup_ajax_url, noteframe);
             injectRemoteScript(annotator_js_url, noteframe,
               function() {
-                var js = "$(function() {   $('#page-container').annotator(); \
-                  $('#page-container').annotator('addPlugin', 'Store', { \
+                var js = "$(function() { \
+                  var document_selector = $('body'); \
+                  if ($('#page-container').length > 0) { \
+                    document_selector = $('#page-container'); \
+                  } \
+                  document_selector.annotator(); \
+                  document_selector.annotator('addPlugin', 'Store', { \
                     prefix: '/ajax/annotations', \
                     loadFromSearch: { \
                     'uri': " + note_id + " \
