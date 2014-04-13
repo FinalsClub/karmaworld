@@ -54,12 +54,6 @@ p {
   padding: 0 5px 0 5px;
 }
 
-#splash {
-  background-image: url('../img/banner_small.jpg');
-  background-size: cover;
-  background-position: center center;
-}
-
 #global_footer {
   line-height: 1.5em;
   padding: 20px 0 20px 0;

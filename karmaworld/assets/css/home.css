@@ -1,8 +1,11 @@
 #splash {
-  padding: 10vh 5vw 10vh 5vw;
+  padding: 8% 5% 8% 5%;
   color: #ffffff;
   text-align: center;
   font-size: 3em;
+  background-image: url('../img/banner_small.jpg');
+  background-size: cover;
+  background-position: center center;
 }
 
 @media only screen and (max-width: 40.063em) {
