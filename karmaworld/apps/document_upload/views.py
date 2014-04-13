@@ -24,7 +24,7 @@ def save_fp_upload(request):
 
         # note that .save() has the side-effect of kicking of a celery processing task
         if request.user.is_authenticated():
-            raw_document.save(user=request.user)
+            raw_document.save()
         else:
             anonymous_upload_urls = request.session.get(ANONYMOUS_UPLOAD_URLS, [])
             anonymous_upload_urls.append(request.POST['fp_file'])
@@ -36,7 +36,7 @@ def save_fp_upload(request):
         r_d_f.save_m2m()
         # Proccess document after the tags are saved so that it isn't converted
         # to a note before the tags are attached to the document
-        raw_document.process_document()
+        raw_document.process_document(user=request.user)
 
         return HttpResponse({'success'})
     else:

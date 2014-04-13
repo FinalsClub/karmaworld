@@ -256,7 +256,7 @@ not generally be needed.
    On a Debian system supporting Apt, this can be done with:
 ```
     sudo apt-get install python-pip postgresql python-virtualenv nginx \
-    virtualenvwrapper git libxml2-dev p7zip-full \
+    virtualenvwrapper git libxml2-dev p7zip-full libffi-dev \
     postgresql-server-dev-9.1 libxslt1-dev \
     libmemcached-dev python-dev rabbitmq-server \
     cmake libpng-dev libjpeg-dev libgtk2.0-dev \

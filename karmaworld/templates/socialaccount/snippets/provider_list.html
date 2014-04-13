@@ -7,13 +7,13 @@
   <a title="{{brand.name}}" 
      class="socialaccount_provider {{provider.id}} {{brand.id}}" 
      href="{% provider_login_url provider.id openid=brand.openid_url process=process %}"
-     ><img src="{{STATIC_URL}}img/{{brand.name|lower}}.png"></a>
+     ><button class="inline-button">{{ brand.name }}"></button></a>
 </li>
 {% endfor %}
 {% endif %}
 <li>
   <a title="{{provider.name}}" class="socialaccount_provider {{provider.id}}" 
-     href="{% provider_login_url provider.id process=process %}"><img src="{{STATIC_URL}}img/{{provider.name|lower}}.png"></a>
+     href="{% provider_login_url provider.id process=process %}"><button class="inline-button">{{ provider.name }}</button></a>
 </li>
 {% endfor %}
 

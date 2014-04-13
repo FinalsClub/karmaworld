@@ -14,6 +14,7 @@ from djcelery import setup_loader
 from karmaworld.secret.filepicker import FILEPICKER_API_KEY as fp_api
 
 FILEPICKER_API_KEY = fp_api
+FILEPICKER_INPUT_TYPE = 'filepicker'
 
 from karmaworld.secret.static_s3 import *
 
@@ -29,7 +30,7 @@ ALLOWED_HOSTS = [
     'beta.karmanotes.org',
     'www.karmanotes.org',
     'karmanotes.org',
-    'ec2-184-73-42-39.compute-1.amazonaws.com',
+    'quiz.karmanotes.org',
 ]
 ########## END SECURITY CONFIGURATION
 

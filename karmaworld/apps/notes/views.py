@@ -2,21 +2,19 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 
-import json
 import traceback
 import logging
 
 from django.core import serializers
-from django.core.exceptions import ObjectDoesNotExist
+from django.forms.formsets import formset_factory
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
+from karmaworld.apps.quizzes.forms import KeywordForm
+from karmaworld.apps.quizzes.models import Keyword
 from karmaworld.apps.users.models import NoteKarmaEvent
-from karmaworld.utils.ajax_increment import *
+from karmaworld.utils.ajax_utils import *
 
-import os
-
-from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import DetailView, ListView
 from django.views.generic import FormView
 from django.views.generic import View
@@ -38,11 +36,31 @@ class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
     model = Note
     context_object_name = u"note" # name passed to template
+    keyword_form_class = formset_factory(KeywordForm)
+
+    def post(self, request, *args, **kwargs):
+        formset = self.keyword_form_class(request.POST)
+        if formset.is_valid():
+            self.keyword_form_valid(formset)
+            self.keyword_formset = self.keyword_form_class(initial=self.get_initial_keywords())
+            return super(NoteDetailView, self).get(request, *args, **kwargs)
+        else:
+            self.keyword_formset = formset
+            return super(NoteDetailView, self).get(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.keyword_formset = self.keyword_form_class(initial=self.get_initial_keywords())
+        return super(NoteDetailView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         """ Generate custom context for the page rendering a Note
             + if pdf, set the `pdf` flag
         """
+
+        kwargs['keyword_prototype_form'] = KeywordForm
+        kwargs['keyword_formset'] = self.keyword_formset
+        kwargs['keywords'] = Keyword.objects.filter(note=self.object)
+
         if self.object.is_pdf():
             kwargs['pdf_controls'] = True
 
@@ -61,6 +79,29 @@ class NoteDetailView(DetailView):
 
         return super(NoteDetailView, self).get_context_data(**kwargs)
 
+    def get_initial_keywords(self):
+        existing_keywords = self.get_object().keyword_set.order_by('id')
+        initial_data = [{'keyword': keyword.word, 'definition': keyword.definition, 'id': keyword.pk}
+                        for keyword in existing_keywords]
+        return initial_data
+
+    def keyword_form_valid(self, formset):
+        for form in formset:
+            word = form['keyword'].data
+            definition = form['definition'].data
+            id = form['id'].data
+            if word == '':
+                continue
+            try:
+                keyword_object = Keyword.objects.get(id=id)
+            except (ValueError, ObjectDoesNotExist):
+                keyword_object = Keyword()
+
+            keyword_object.note = self.get_object()
+            keyword_object.word = word
+            keyword_object.definition = definition
+            keyword_object.save()
+
 
 class NoteSaveView(FormView, SingleObjectMixin):
     """ Save a Note and then view the page, 
@@ -75,7 +116,6 @@ class NoteSaveView(FormView, SingleObjectMixin):
         context = {
             'object': self.get_object(),
         }
-        print "get context for NoteSaveView"
         return super(NoteSaveView, self).get_context_data(**context)
 
     def get_success_url(self):
@@ -119,15 +159,11 @@ class NoteView(View):
         return view(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        view = NoteSaveView.as_view()
+        if request.POST['action'] == 'tags-form':
+            view = NoteSaveView.as_view()
+        else:
+            view = NoteDetailView.as_view()
         return view(request, *args, **kwargs)
-
-
-class RawNoteDetailView(DetailView):
-    """ Class-based view for the raw note html for iframes """
-    template_name = u'notes/note_raw.html'
-    context_object_name = u"note"
-    model = Note
 
 
 class NoteSearchView(ListView):
@@ -235,7 +271,8 @@ def process_downloaded_note(request_user, note):
 
 def downloaded_note(request, pk):
     """Record that somebody has flagged a note."""
-    return ajax_base(Note, request, pk, process_downloaded_note)
+    return ajax_pk_base(Note, request, pk, process_downloaded_note)
+
 
 def edit_note_tags(request, pk):
     """

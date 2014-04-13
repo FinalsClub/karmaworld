@@ -18,28 +18,12 @@
   background: url(../img/team_crop.jpg);
 }
 
-#hero_image_caption_container
-{
-  position: absolute;
-  z-index: 5;
-  bottom: 20px;
-}
-
-#hero_image_caption
-{
-  font-family: "MuseoSlab-700";
-  font-size: 17px;
-  color: #FFF;
-  line-height: 150%;
-}
-
 /* COPY */
 
 #about_copy_header
 {
   padding-top: 40px;
   color: #f05a28;
-  font-family: "MuseoSlab-700";
   font-size: 38px;
 }
 
@@ -50,7 +34,6 @@
 
 #about_copy_body p
 {
-  font-family: "MuseoSlab-500";
   font-size: 17px;
   margin: 20px 0 0;
   line-height: 150%;
@@ -79,14 +62,12 @@
 
 #donate_copy_header
 {
-  font-family: "MuseoSlab-700";
   font-size: 40px;
   color: #3a3a3a;
 }
 
 #donate_copy_body
 {
-  font-family: "MuseoSlab-700";
   font-size: 20px;
   color: #3a3a3a;
   padding-top: 10px;
@@ -99,8 +80,8 @@
 
 #donate_button
 {
-  font-family: "MuseoSlab-900";
 }
+
 #amazon-donate-form {
   margin: 1em 1em 0;
 }
@@ -113,13 +94,11 @@
 #leaderboard_header
 {
   padding-top: 75px;
-  font-family: "MuseoSlab-700";
   font-size: 25px;
 }
 
 #leaderboard_copy
 {
-  font-family: "MuseoSlab-500";
   font-size: 17px;
   padding-top: 3px;
   padding-bottom: 30px;
@@ -145,20 +124,16 @@
 
 .leaderboard_rank
 {
-  font-family: "MuseoSans-900";
   font-size: 14px;
-  /*width: 20px!important;*/
   padding-top: 4px;
 }
 
 .leaderboard_school, .leaderboard_score
 {
-  font-family: "MuseoSlab-500";
   font-size: 19px;
 }
 
 .bullets li
 {
-  font-family: "MuseoSlab-500";
   font-size: 17px;
 }

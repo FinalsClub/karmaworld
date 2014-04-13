@@ -25,6 +25,12 @@ class DepartmentAdmin(reversion.VersionAdmin, admin.ModelAdmin):
     autocomplete_lookup_fields = {
         'fk': ['school']
     }
+class DepartmentAdmin(reversion.VersionAdmin, admin.ModelAdmin):
+   """ Admin handler for Department model """
+      
+
+class ProfessorAdmin(reversion.VersionAdmin, admin.ModelAdmin):
+   """ Admin handler for Professor model """
 
 admin.site.register(School)
 admin.site.register(Professor)

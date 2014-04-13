@@ -30,7 +30,3 @@ class ProfileView(TemplateView, MultipleObjectMixin):
         kwargs['badge'] = self.request.user.get_profile().get_badge()
 
         return super(ProfileView, self).get_context_data(**kwargs)
-
-class ControlView(TemplateView):
-    template_name = 'control_panel.html'
-

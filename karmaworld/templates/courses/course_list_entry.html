@@ -1,26 +1,43 @@
-<tr>
-  <td class="no-display"><!-- this spot solely for the Sort By header --></td>
-  <td class="small-8 columns large-4 slim"><span>Updated {{ course.updated_at|date:"b d, o"|capfirst }}</span></td>
-  <td class="small-4 columns large-2 large-offset-2 slim"><span>{{ course.file_count }} Notes</span></td>
-  <td class="small-4 columns large-2 large-offset-1 slim"><span>{{ course.get_popularity }} Thanks</span></td>
+<tr class="table-row">
+  <td class="hide">{{ course.updated_at|date:"U" }}</td>
+  <td class="hide">{{ course.file_count|stringformat:"010g" }}</td>
+  <td class="hide">{{ course.get_popularity|stringformat:"010g" }}</td>
 
-  <td class="small-12 large-5 columns">
-    <a href="{{ course.get_absolute_url }}">{% if course.department %}{{course.department.name}}: {% endif %}{{ course.name }}</a> 
-  </td>
-  <td class="hide-for-small large-1 column">
-    <div class="upload">
-      <a href="{{ course.get_absolute_url }}#upload-note">
-        <i
-          data-ot="Upload directly to this course"
-          data-ot-target="true"
-          data-ot-tip-joint="top center"
-          data-ot-target-joint="bottom center"
-          data-ot-background="white"
-          data-ot-border-color="black"
-          class="fa fa-arrow-circle-o-up opentip"></i>
-      </a>
+  <td class="small-12 columns">
+    <div class="data-table-entry">
+      <div class="table-entry-first-line">
+        <span class="table-school">
+          {% if course.school.name %}
+            {{ course.school.name }}
+          {% endif %}
+          {% if course.department.school.name %}
+            {{ course.department.school.name }}
+          {% endif %}
+        </span>
+        {% if course.department %}
+          &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <span class="table-department">{{ course.department.name }}</span>
+        {% endif %}
+        {% if course.instructor_name %}
+          &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <span class="table-instructor">{{ course.instructor_name }}</span>
+        {% endif %}
+        {% if couse.instructor.name %}
+          &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <span class="table-instructor">{{ course.instructor.name }}</span>
+        {% endif %}
+      </div>
+
+      <div class="table-entry-second-line museo700">
+        <span class="table-course-name"><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></span>
+      </div>
+
+      <div class="table-entry-third-line">
+        <span class="table-note-count"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;{{ course.file_count }} Notes</span>
+        <span class="table-thanks-count"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;{{ course.get_popularity }} Thanks </span>
+        <span>Updated {{ course.updated_at|date:"b d, o"|capfirst }}</span>
+      </div>
     </div>
+
   </td>
-  <td class="small-6 large-3 columns"><span class="table-font">{% if course.school %}{{ course.school.name }}{% else %}{{ course.department.school.name }}{% endif %}</span></td>
-  <td class="small-6 large-3 columns"><span class="table-font">{{ course.get_prof_names }}</span></td>
 </tr>

@@ -6,143 +6,81 @@
 {% endblock %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/search.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/data_table_list.css">
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
 {% endblock %}
 
 {% block pagescripts %}
-<script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
-<script>
-  $(document).ready(function() {
-    // load dataTable for course data
-    $('#data_table_list').dataTable({
-      // remove the default filter label
-      'oLanguage': {
-        'sSearch': '',
-      },
-      // we will set column widths explicitly
-      'bAutoWidth': false,
-      // don't provide a option for the user to change the table page length
-      'bLengthChange': false,
-      // sepcify the number of rows in a page
-      'iDisplayLength': 20,
-      // Position the filter bar at the top
-      // DIFF: do now show search bar (f)
-      'sDom': '<"top">rt<"bottom"p><"clear">',
-      // Specify options for each column
-      "aoColumnDefs": [
-        {
-          // 3rd element: notes
-          "aTargets": [ 2 ],
-          "bSortable": true,
-          "bVisible": true,
-          "mData": function ( source, type, val ) {
-            //console.log(source);
-            if (type === 'set') {
-              source.count = val;
-              // Store the computed dislay and filter values for efficiency
-              // DIFF: label name change.
-              source.count_display = val=="" ? "" : "<span>"+val+" Thanks</span>";
-              return;
-            }
-            else if (type === 'display') {
-              return source.count_display;
-            }
-            // 'sort', 'type', 'filter' and undefined all just use the integer
-            return source.count;
-          }
-        },
-        {
-          // 2nd element: date
-          "aTargets": [ 1 ],
-          "bSortable": true,
-          "bVisible": true,
-          "mData": function ( source, type, val ) {
-            //console.log(source);
-            if (type === 'set') {
-              source.date = val;
-              // DIFF: label name change.
-              source.date_display = val=="" ? "" : "<span>Uploaded "+val+"</span>";
-
-              return;
-            }
-            else if (type === 'display') {
-              return source.date_display;
-            }
-            // for types 'sort', 'type', 'filter' and undefined use raw date
-            return source.date;
-          }
-        },
-        {
-          // 1st element: "sort by" label
-          "aTargets": [ 0 ],
-          "bSortable": false,
-          "bVisible": true
-        }
-      ],
-      // Initial sorting
-      'aaSorting': [[2,'desc']]
-    });
-  });
-</script>
+  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
+  <script src="{{ STATIC_URL }}js/note-list.js"></script>
+  <script>
+    var dataTable_sDom = '<"top">rt<"bottom"><"clear">';
+  </script>
 {% endblock %}
 
-{% block content %}
+{% block raw_content %}
 <section id="results_content">
-
-  <div id="results_header" class="hero_gradient_bar">
-
-    {% if course %}
+  {% if course %}
+    <div class="return-to-course show-for-large-up">
       <div class="row">
-        <div class="twelve columns header_subhead">
-          <a href="{{ course.get_absolute_url}}">
-            <i class="fa fa-arrow-left"></i>&nbsp;back to {{ course.name }}
+        <div class="small-12 columns">
+          <a href="{{ course.get_absolute_url }}" class="inherit-color">
+            <i class="fa fa-angle-double-left"></i> See all notes for {{ course.name }}
           </a>
         </div>
       </div>
-    {% endif %}
+    </div>
+  {% endif %}
 
+  <div id="results_header">
     <div class="row">
-      <div class="small-12 columns header_subhead">
-        YOU SEARCHED FOR
+      <div class="small-12 columns search-header museo700">
+        You searched for "<strong>{{ query }}</strong>" in
+        {% if course %}
+          <strong>{{ course.name }}</strong>
+        {% else %}
+          all notes
+        {% endif %}
       </div>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="twelve columns header_title">
-        {{ query }}
+  <div id="note-search-bar" class="row">
+    <div class="small-12 large-8 columns">
+      <form class="search-notes" action="{% url 'note_search' %}" method="GET">
+        <span>
+        <input type="hidden" name="course_id" value="{{ course.id }}" />
+        {% if course %}
+          <input name="query" class="search-notes" type="text" placeholder="Search Notes in {{ course.name }}" />
+        {% else %}
+          <input name="query" class="search-notes" type="text" placeholder="Search All Notes" />
+        {% endif %}
+        </span>
+      </form>
+    </div>
+    <div class="large-4 columns show-for-large-up">
+      <div id="note-sort-wrapper">
+        Sort By
+        <select class="note-sort">
+          <option value="0">Date</option>
+          <option value="1" selected>Popularity</option>
+        </select>
       </div>
     </div>
-
-    {% if course %}
-      <div class="row">
-        <div class="small-12 columns header_subhead">
-          IN COURSE
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="twelve columns header_title">
-          {{ course.name }}
-        </div>
-      </div>
-    {% endif %}
   </div>
 
   <div id="results_container">
     <div class="row">
       {% if object_list %}
-        <div class="small-12 columns large-10 large-offset-1">
+        <div class="small-12 columns">
           <table id="data_table_list">
-            <thead><tr>
-              <th id="data-table-sort-by"> Sort by: </th>
-              <th id="data-table-date"> Date </th>
-              <th id="data-table-thank-count"> Popularity </th>
-              <th class="no-display" id="data-table-note-name"> Name </th>
-              <th class="no-display" id="data-table-tags"> Tags </th>
-              <th class="no-display" id="data-table-note-preview"> Preview </th>
-            </tr></thead>
+            <thead class="hide">
+              <tr>
+                <th id="data-table-date"> Date </th>
+                <th id="data-table-thank-count"> Popularity </th>
+                <th id="data-table-note-preview"> Preview </th>
+              </tr>
+            </thead>
             <tbody>
               {% for tuple in object_list %}
                 {% include 'notes/note_list_entry.html' with note=tuple.0 note_preview=tuple.1 %}

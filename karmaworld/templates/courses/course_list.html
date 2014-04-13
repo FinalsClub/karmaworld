@@ -6,102 +6,77 @@
 {% endblock %}
 
 {% block pagestyle %}
-<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
-<!-- <link rel="stylesheet" href="{{ STATIC_URL }}css/responsive-tables.css"> -->
-<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/data_table_list.css">
-<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" media="all" href="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
 {% endblock %}
 
 {% block pagescripts %}
-<script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
-
-<script>
-$(document).ready(function() {
-  // If there were form errors, open the form and jump to it
-  var jump_to_form = {% if course_form.errors %}true{% else%}false{% endif %};
-  if (jump_to_form) {
-    $("#add-course-form").show();
-    $('#add-course-btn').hide();
-    document.getElementById('add-course-form').scrollIntoView(true);
-  }
-
-  // load dataTable for course data
-  $('#data_table_list').dataTable({
-    // remove the default filter label
-    'oLanguage': {
-      'sSearch': '',
-    },
-    // we will set column widths explicitly
-    'bAutoWidth': false,
-    // don't provide a option for the user to change the table page length
-    'bLengthChange': false,
-    // sepcify the number of rows in a page
-    'iDisplayLength': 20,
-    // Position the filter bar at the top
-    'sDom': '<"top"f>rt<"bottom"p><"clear">', 
-    // Specify options for each column
-    "aoColumnDefs": [ 
-      {
-        // 4th element: thanks
-        "aTargets": [ 3 ],
-        "bSortable": true,
-        "bVisible": true
-      },
-      {
-        // 3rd element: notes
-        "aTargets": [ 2 ],
-        "bSortable": true,
-        "bVisible": true
-      },
-      {
-        // 2nd element: date
-        "aTargets": [ 1 ],
-        "bSortable": true,
-        "bVisible": true
-      },
-      {
-        // 1st element: "sort by" label
-        "aTargets": [ 0 ],
-        "bSortable": false,
-        "bVisible": true
-      }
-    ],
-    // Initial sorting
-    'aaSorting': [[2,'desc']]
-  });
-  $('.dataTables_filter input').attr("placeholder", "search courses");
-  // TODO: can't prepend html to .dataTables_filter input html for fontawesome search icon
-});
-</script>
+  <script>
+    // If there were form errors, open the form and jump to it
+    var jump_to_form = {% if jump_to_form %}true{% else%}false{% endif %};
+    var json_school_list = "{% url 'json_school_list' %}"
+    var json_school_course_list = "{% url 'json_school_course_list' %}"
+    var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}"
+    var csrf_token = "{{ csrf_token }}";
+    var dataTable_sDom = '<"top">rt<"bottom"p><"clear">';
+  </script>
+  <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+  <script src="{{ STATIC_URL }}js/course.js"></script>
+  <script src="{{ STATIC_URL }}js/add-course.js"></script>
+  <script src="{{ STATIC_URL }}js/course-list.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
 {% endblock %}
 
-{% block content %}
+{% block raw_content %}
 <section id="home_content">
-  <div id="page_header" class="">
-    <div id="subhead" class="row">
-      <div class="small-3 large-2 columns">
-        <img src='{{ STATIC_URL }}img/noun_project_6858.svg' alt="A depiction of books">
+  <div id="page_header">
+    <div id="splash" class="museo700">
+      <div id="splash_copy" class="row">
+        <div class="small-12 large-8 columns large-offset-2">
+          Access a growing database of <span class="note_count">{{ note_count }}</span> college lecture notes.
+        </div>
       </div>
-      <div class="small-9 large-10 columns">
-        <div class="row subhead-spacer hide-for-small"> </div>
-        <span>Access a growing database of <span style="color: #f05a28;">{{ note_count }}</span> college lecture notes</span>
+      <div class="row">
+        <div class="small-12 columns">
+          <a href="{% url 'about' %}">
+            <button id="intro-video-button">Watch the video&nbsp;&nbsp;<i class='fa fa-caret-right'></i></button>
+          </a>
+        </div>
       </div>
     </div>
   </div>
+
+  <div id="course-search-bar">
+    <div class="row">
+      <div class="large-2 columns show-for-large-up">
+        <button id="add-course-btn" class="inline-button important" data-reveal-id="add-course-form">Add a Course</button>
+      </div>
+      <div class="small-12 large-6 columns">
+        <input class="search-courses" type="text" placeholder="Search Courses" />
+      </div>
+      <div class="large-4 columns show-for-large-up">
+        <div id="course-sort-wrapper">
+          Sort By
+          <select class="course-sort">
+            <option value="0">Date</option>
+            <option value="1">Number of Notes</option>
+            <option value="2" selected>Popularity</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="small-12 columns">
       <!-- Main course table -->
       <table id="data_table_list">
-        <thead>
+        <thead class="hide">
           <tr>
-            <th id="data-table-sort-by"> Sort by: </th>
-            <th id="data-table-date"> Date </th>
-            <th id="data-table-note-count"> #Notes </th>
-            <th id="data-table-thanks"> Popularity </th>
-            <th class="no-display" id="data-table-upload"> Upload </th>
-            <th class="no-display" id="data-table-course-name"> Course Name </th>
-            <th class="no-display" id="data-table-school-name"> Institution </th>
-            <th class="no-display" id="data-table-instructor-name"> Instructor </th>
+            <th class="no-display" id="data-table-date"> Date </th>
+            <th class="no-display" id="data-table-note-count"> # Notes </th>
+            <th class="no-display" id="data-table-thanks"> Popularity </th>
+            <th class="no-display" id="data-table-upload"> Course </th>
           </tr>
         </thead>
         <tbody>
@@ -110,29 +85,12 @@ $(document).ready(function() {
         {% endfor %}
         </tbody>
       </table>
-    </div><!-- .ten columns -->
+    </div>
   </div> <!-- .row -->
 
-  <div class="row">
-    <div id="add-course-divider" class="small-10 columns small-offset-1"> <hr/> </div>
-  </div>
-
-  <div class="row">
-    <div class="small-12 columns large-10 large-offset-1">
-      <div id="add-course-btn">
-        <i class="fa fa-arrow-circle-o-up"></i> add a course
-      </div>
-        {% include 'partial/add_course.html' %}
-    </div><!-- .ten columns -->
-  </div> <!-- .row -->
-
-  <div class="row">
-    <div class="small-10 columns small-offset-1"> <hr/> </div>
-  </div>
+  {% include 'partial/add_course.html' %}
 
 </section> <!-- #results_content -->
 
 {% endblock %}
 
-{% block bodyscripts %}
-{% endblock bodyscripts %}

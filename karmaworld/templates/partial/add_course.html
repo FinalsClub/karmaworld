@@ -1,16 +1,9 @@
 {% load url from future %}
-<script>
-  var json_school_course_list = "{% url 'json_school_course_list' %}"
-  var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}"
-  var csrf_token = "{{ csrf_token }}";
-</script>
-<script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
-<script src="{{ STATIC_URL }}js/course.js"></script>
-<script src="{{ STATIC_URL }}js/add-course.js"></script>
-{{ course_form.media }}
-<link href="{{ STATIC_URL }}css/add_course.css" type="text/css" media="all" rel="stylesheet" />
 
-<section id="add-course-form">
+{{ course_form.media }}
+
+<section id="add-course-form" class="reveal-modal" data-reveal>
+  <a class="close-reveal-modal">&#215;</a>
   <form method="POST" action="{% url 'home' %}">
   {% csrf_token %}
 
@@ -25,6 +18,7 @@
     {% endif %}
 
     {{ course_form.as_p|safe }}
+
 
     <div class="row">
       <div class="small-4 large-8 columns small-centered text-center">

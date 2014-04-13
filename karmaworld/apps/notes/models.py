@@ -109,17 +109,14 @@ class Document(models.Model):
                     'data-fp-multiple': 'true', 
                     'data-fp-folders': 'true',
                     'data-fp-button-class':
-                      'add-note-btn small-10 columns large-4',
-                    'data-fp-button-text':
-                      mark_safe("<i class='fa fa-arrow-circle-o-up'></i> add notes"),
-                    'data-fp-drag-class':
-                      'dragdrop show-for-medium-up large-7 columns',
-                    'data-fp-drag-text': 'Drop Some Knowledge',
+                      'inline-button important add-note-btn',
+                    'data-fp-button-text': 'Add Notes',
                     'data-fp-extensions':
                       '.pdf,.doc,.docx,.txt,.html,.rtf,.odt,.png,.jpg,.jpeg,.ppt,.pptx',
                     'data-fp-store-location': 'S3',
                     'data-fp-policy': fp_policy,
                     'data-fp-signature': fp_signature,
+                    'type': 'filepicker',
                     'onchange': "got_file(event)",
                 },
                 # FileField settings
@@ -327,7 +324,10 @@ class Note(Document):
         """
         if self.slug is not None:
             # return a url ending in slug
-            return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.slug])
+            if self.course.school:
+                return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.slug])
+            else:
+                return reverse('note_detail', args=[self.course.department.school.slug, self.course.slug, self.slug])
         else:
             # return a url ending in id
             return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.id])
@@ -435,7 +435,10 @@ def update_note_counts(note_instance):
     else:
         # course exists
         note_instance.course.update_note_count()
-        note_instance.course.school.update_note_count()
+        if note_instance.course.school:
+            note_instance.course.school.update_note_count()
+        elif note_instance.course.department.school:
+            note_instance.course.department.school.update_note_count()
 
 @receiver(pre_save, sender=Note, weak=False)
 def note_pre_save_receiver(sender, **kwargs):

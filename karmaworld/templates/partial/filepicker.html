@@ -2,13 +2,8 @@
 {% load socialaccount %}
 {{ file_upload_form.media }}
 <section id=filepicker-form class="extend-form">
-  <div class="row" id="filepicker_row">
-    <div class="small-8 small-offset-1 columns large-10">
-       {{ file_upload_form.as_p }}
-    </div>
-  </div> <!--.row -->
   <div class="row" >
-    <div class="small-10 small-offset-1 columns">
+    <div class="small-12 columns">
       <div id="forms_container">
       </div>
       <div id="success" class="hide">
@@ -20,12 +15,13 @@
             We'd love to have you sign up so you can <strong>claim the <span id="thank-points"></span> karma points
             you just got.</strong> With a KarmaNotes account,
             you can build a reputation by continuing to upload great notes.
-            <a href="">Want to share again?</a></p>
+            Refresh to share more notes.</p>
           <div class="socialaccount_ballot">
+            <p>Sign up with:</p>
             <ul class="socialaccount_providers">
               {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+              <li><a href="{{ signup_url }}"> or a traditional account</a></li>
             </ul>
-            <a href="{{ signup_url }}">Sign up for a traditional account</a>
           </div>
         {% else %}
           <p>It will take a minute for your notes to appear. This page will refresh soon so you
@@ -36,15 +32,15 @@
       </div>
     </div>
 
-    <div id="form-template" class="row" style="display:none">
+    <div id="form-template" class="hide">
       <form class="inline-form" method="POST" action="{% url 'upload_post' %}">
         <div class="small-11 large-6 columns">
-          <legend>Title of Note <small class="form">* Required</small></legend>
+          <label for="id_name">Title of Note <small class="form">* Required</small></label>
           <input type="text" class="intext" id="id_name" name="name"
                 placeholder="">
         </div>
         <div class="small-12 large-5 columns">
-          <legend>Tags (comma seperated)</legend>
+          <label for="id_tags">Tags (comma seperated)</label>
           <input type="text" id="id_tags" name="tags" class="taggit-tags"
                 placeholder="shakespeare, econ, physics">
         </div>
@@ -59,15 +55,15 @@
           {% csrf_token %}
           <input type="text" class="csrf" value='{{ csrf_token }}'>
         </div>
-        <div class="show-for-medium-up columns large-1 end">
-          <i class="fa fa-times-circle awesome-action remove" id="icon-remove-sign"></i>
+        <div class="show-for-medium-up columns medium-1 large-1 end">
+          <i class="fa fa-times-circle fa-lg awesome-action remove" id="icon-remove-sign"></i>
         </div>
       </form>
     </div>
   </div>
   <div class="small-8 small-offset-3 columns large-2">
     <div id="save-btn" class="hide">
-      <i id="save-btn-icon" class="fa fa-save"></i> Save
+      <button class="inline-button"><i id="save-btn-icon" class="fa fa-save"></i> Save</button>
     </div>
   </div>
 
@@ -79,7 +75,5 @@
       var user_is_authenicated = false;
     {% endif %}
   </script>
-  <script src="{{ STATIC_URL }}js/filepicker.js"></script>
-
 
 </section>
