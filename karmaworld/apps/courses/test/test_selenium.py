@@ -129,6 +129,8 @@ HONEYPOT_FIELD_OPTIONS = (
     FieldAction(HONEYPOT_FIELD_NAME, '', autocomplete=False, error_expected=False),
 )
 
+FIRST_AUTOCOMPLETE_XPATH = "//ul[contains(@style,'display: block')]/li[contains(@class,'ui-menu-item')][1]"
+
 
 class DynamicTestCasesType(type):
     """Borrowed from
@@ -162,6 +164,7 @@ class AddCourseTest(LiveServerTestCase):
     def setUpClass(cls):
         cls.driver = webdriver.Firefox()
         cls.driver.implicitly_wait(3)
+        cls.driver.maximize_window()
         cls.wait = WebDriverWait(cls.driver, 10)
         super(AddCourseTest, cls).setUpClass()
 
@@ -187,11 +190,9 @@ class AddCourseTest(LiveServerTestCase):
         the first item in the autocomplete menu that appears."""
         input = self.driver.find_element_by_name(name)
         input.send_keys(keys)
-        self.wait.until(EC.element_to_be_clickable(
-            (By.XPATH, "//ul[contains(@style,'display: block')]/li[contains(@class,'ui-menu-item')][1]")))
-        input.send_keys(Keys.DOWN)
-        autocomplete_menu_item = self.driver.find_element_by_id("ui-active-menuitem")
-        autocomplete_menu_item.click()
+
+        self.wait.until(EC.element_to_be_clickable((By.XPATH, FIRST_AUTOCOMPLETE_XPATH)))
+        self.driver.find_element_by_xpath(FIRST_AUTOCOMPLETE_XPATH).click()
 
     @staticmethod
     def flatten_actions(actions):
@@ -208,7 +209,6 @@ class AddCourseTest(LiveServerTestCase):
         """Fill out the Add Course form with the given actions."""
         add_course_button = self.driver.find_element_by_id("add-course-btn")
         add_course_button.click()
-        self.driver.execute_script("javascript:window.scrollBy(0,200)")
 
         for action in AddCourseTest.flatten_actions(field_actions):
             if action.autocomplete:
