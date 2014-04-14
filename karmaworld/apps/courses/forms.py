@@ -34,9 +34,9 @@ class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
 
     # first argument is ajax channel name, defined in models as LookupChannel.
     name = AutoCompleteSelectField('professor_object_by_name', help_text='',
-        label="Professor's name",
+        label=mark_safe('Professor\'s name <span class="required-field">(required)</span>'),
         # allows creating a new Professor on the fly
-        required=False,
+        required=True,
         widget=AutoCompleteSelectWidget('professor_object_by_name', attrs={'class': 'small-6 columns'}))
     email = AutoCompleteSelectField('professor_object_by_email', help_text='',
         label="Professor's email address",

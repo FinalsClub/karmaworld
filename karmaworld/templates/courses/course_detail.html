@@ -44,7 +44,11 @@
           {% if course.instructor_name %}
             <span id="course-header-instructor">{{ course.instructor_name }}</span>
           {% else %}
-            <span id="course-header-instructor">{{ course.instructor.name }}</span>
+            <span id="course-header-instructor">
+              {% for prof in course.professor.all %}
+                {{ prof.name }}{% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </span>
           {% endif %}
         </div>
       </div>
