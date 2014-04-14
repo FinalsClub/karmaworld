@@ -76,7 +76,7 @@ class School(models.Model):
         return (self.usde_id,)
 
     def __unicode__(self):
-        return u'School {0}: {1}'.format(self.usde_id, self.name)
+        return self.name
 
     def save(self, *args, **kwargs):
         """ Save school and generate a slug if one doesn't exist """
@@ -135,7 +135,7 @@ class Department(models.Model):
         unique_together = ('name', 'school',)
 
     def __unicode__(self):
-        return u'Department: {0} at {1}'.format(self.name, unicode(self.school))
+        return self.name
 
     def natural_key(self):
         """
@@ -198,7 +198,7 @@ class Professor(models.Model):
         unique_together = ('name', 'email',)
 
     def __unicode__(self):
-        return u'Professor: {0} ({1})'.format(self.name, self.email)
+        return self.name
 
     def natural_key(self):
         """
