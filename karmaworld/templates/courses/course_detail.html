@@ -34,9 +34,18 @@
     <div id="course-header">
       <div class="row header-byline">
         <div class="small-12 columns">
-          <span id="course-header-school">{{ course.school.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          {% if course.school %}
+            <span id="course-header-school">{{ course.school.name }}</span>
+          {% else %}
+            <span id="course-header-school">{{ course.department.school.name }}</span>
+          {% endif %}
+          &nbsp;&nbsp;&bull;&nbsp;&nbsp;
           {% if course.department %}<span class="course-header-department">{{ course.department.name }}</span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;{% endif %}
-          <span id="course-header-instructor">{{ course.instructor_name }}</span>
+          {% if course.instructor_name %}
+            <span id="course-header-instructor">{{ course.instructor_name }}</span>
+          {% else %}
+            <span id="course-header-instructor">{{ course.instructor.name }}</span>
+          {% endif %}
         </div>
       </div>
 
@@ -170,21 +179,25 @@
     <div id="course_container">
       <div class="row">
         <div class="small-12 columns">
-          <!-- Main course table -->
-          <table id="data_table_list">
-            <thead class="hide">
-              <tr>
-                <th class="no-display" id="data-table-date"> Date </th>
-                <th class="no-display" id="data-table-thanks"> Popularity </th>
-                <th class="no-display" id="data-table-note"> Note </th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for note in note_set %}
-                {% include 'notes/note_list_entry.html' with note=note %}
-              {% endfor %}
-            </tbody>
-          </table>
+          {% if not note_set %}
+            <p>This course has no notes yet.</p>
+          {% else %}
+            <!-- Main course table -->
+            <table id="data_table_list">
+              <thead class="hide">
+                <tr>
+                  <th class="no-display" id="data-table-date"> Date </th>
+                  <th class="no-display" id="data-table-thanks"> Popularity </th>
+                  <th class="no-display" id="data-table-note"> Note </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for note in note_set %}
+                  {% include 'notes/note_list_entry.html' with note=note %}
+                {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
         </div>
       </div> <!-- .row -->
 
