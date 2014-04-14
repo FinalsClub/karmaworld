@@ -13,40 +13,81 @@
     {% if course_form.non_field_errors %}
       <div class="row">
         <div class="small-12 columns">
-          <ul>{% for error in course_form.non_field_errors %}
+          <ul class="validation_error">{% for error in course_form.non_field_errors %}
             <li><label class="validation_error">{{ error }}</label></li>
           {% endfor %}</ul>
         </div>
       </div>
     {% endif %}
 
-
-    <div class="row">
-      {% for form in course_form.get_forms.itervalues %}
-        {% for hidden in form.hidden_fields %}
-          {{ hidden }}
-        {% endfor %}
-        {% for field in form.visible_fields %}
-            <div class="small-6 columns add-course-field">
-              {{ field.errors|safe }}
-              <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-              {{ field }}
-            </div>
-        {% endfor %}
-      {% endfor %}
-
-      {% for hidden in course_form.hidden_fields %}
+    {% for form in course_form.get_forms.itervalues %}
+      {% for hidden in form.hidden_fields %}
         {{ hidden }}
       {% endfor %}
-      {% for field in course_form.visible_fields %}
-        <div class="small-6 columns end add-course-field">
+    {% endfor %}
+    {% for hidden in course_form.hidden_fields %}
+      {{ hidden }}
+    {% endfor %}
+    <div class="row">
+      <div class="small-6 columns add-course-field">
+        {% with course_form.get_forms.department.school as field %}
           {{ field.errors|safe }}
           <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
           {{ field }}
-        </div>
-      {% endfor %}
+        {% endwith %}
+      </div>
+      <div class="small-6 columns add-course-field">
+        {% with course_form.get_forms.department.name as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
     </div>
 
+    <div class="row">
+      <div class="small-6 columns add-course-field">
+        {% with course_form.get_forms.professor.name as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+      <div class="small-6 columns add-course-field">
+        {% with course_form.get_forms.professor.email as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="small-6 columns add-course-field">
+        {% with course_form.name as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+      <div class="small-6 columns add-course-field">
+        {% with course_form.url as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="small-12 columns add-course-field">
+        {% with course_form.instruction_url as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+    </div>
 
     <div class="row">
       <div class="small-4 large-8 columns small-centered text-center">
