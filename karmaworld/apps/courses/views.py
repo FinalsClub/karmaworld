@@ -4,7 +4,6 @@
 """ Views for the KarmaNotes Courses app """
 
 import json
-g
 from django.conf import settings
 from django.core import serializers
 from django.core.exceptions import MultipleObjectsReturned
@@ -51,6 +50,7 @@ class CourseListView(View):
             ret = self.get(request, *args, **kwargs)
             # Replace blank form with invalid form.
             ret.context_data['course_form'] = badform
+            ret.context_data['jump_to_form'] = True
         return ret
 
 

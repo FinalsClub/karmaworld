@@ -101,7 +101,7 @@ class DependentModelForm(ModelForm):
         self.dependent_modelforms_data = {}
         super(DependentModelForm, self).__init__(*args, **kwargs)
 
-    def _get_forms(self):
+    def get_forms(self):
         """ Memoize dependent form objects. """
         # Determine if there is data.
         with_data = True if self.data else False
@@ -128,7 +128,7 @@ class DependentModelForm(ModelForm):
             selfmedia = superself.media
 
         # search through each dependent form for media
-        for modelform in self._get_forms().itervalues():
+        for modelform in self.get_forms().itervalues():
             if inspect.ismethod(modelform.media):
                 media = modelform.media()
             else:
@@ -148,7 +148,7 @@ class DependentModelForm(ModelForm):
         """ Check all subforms for validity and then this form. """
         all_valid = True
         # Perform validation and error checking for each ModelForm.
-        for attribute, modelform in self._get_forms().iteritems():
+        for attribute, modelform in self.get_forms().iteritems():
             if not modelform.is_valid():
                 all_valid = False
 
@@ -172,7 +172,7 @@ class DependentModelForm(ModelForm):
             return
 
         # create foreign model object and associate it internally here
-        for attribute, modelform in self._get_forms().iteritems():
+        for attribute, modelform in self.get_forms().iteritems():
             # handle ManyToMany versus ForeignKey
             if not is_m2m(self, attribute):
                 # Handle Foreign Key, assign object directly to attribute
@@ -185,7 +185,7 @@ class DependentModelForm(ModelForm):
         # Check for and update any M2M model_fields
         if hasattr(self.instance, 'pk') and self.instance.pk:
             # objects were created during commit. associate M2M now.
-            for attribute, modelform in self._get_forms().iteritems():
+            for attribute, modelform in self.get_forms().iteritems():
                 # handle ManyToMany versus ForeignKey
                 if is_m2m(self, attribute):
                     # use add() to create association between models.
@@ -200,7 +200,7 @@ class DependentModelForm(ModelForm):
                 # call "super"
                 old_save_m2m()
                 # associate M2M objects with self instance
-                for attribute, modelform in self._get_forms().iteritems():
+                for attribute, modelform in self.get_forms().iteritems():
                     # ManyToMany contract test.
                     # use add() to create association between models.
                     objattr = getattr(instance, attribute, None)
@@ -217,7 +217,7 @@ class DependentModelForm(ModelForm):
         """ Render dependent forms prior to rendering this form. """
         html = ''
         # render each form
-        for modelform in self._get_forms().itervalues():
+        for modelform in self.get_forms().itervalues():
             html += getattr(modelform, method)(*args, **kwargs)
         # render this form
         supermethod = getattr(super(DependentModelForm, self), method)

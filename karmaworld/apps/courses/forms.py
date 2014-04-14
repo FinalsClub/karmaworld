@@ -124,7 +124,7 @@ class CourseForm(NiceErrorModelForm, DependentModelForm):
         # insert honeypot into a random order on the form.
         idx = random.randint(0, len(self.fields))
         self.fields.insert(idx, settings.HONEYPOT_FIELD_NAME,
-            CharField(required=False, label=settings.HONEYPOT_LABEL)
+            CharField(required=False, label=mark_safe(settings.HONEYPOT_LABEL))
         )
 
     class Meta:

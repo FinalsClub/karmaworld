@@ -13,10 +13,7 @@
 {% block pagescripts %}
   <script>
     // If there were form errors, open the form and jump to it
-    var jump_to_form = {% if jump_to_form %}true{% else%}false{% endif %};
-    var json_school_list = "{% url 'json_school_list' %}"
-    var json_school_course_list = "{% url 'json_school_course_list' %}"
-    var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}"
+    var jump_to_form = {% if jump_to_form %} true {% else%} false {% endif %};
     var csrf_token = "{{ csrf_token }}";
     var dataTable_sDom = '<"top">rt<"bottom"p><"clear">';
   </script>
