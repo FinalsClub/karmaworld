@@ -32,9 +32,9 @@
       </div>
     </div>
 
-    <div id="form-template" class="hide">
+    <div id="form-template" class="hide form-template">
       <form class="inline-form" method="POST" action="{% url 'upload_post' %}">
-        <div class="small-11 large-6 columns">
+        <div class="small-12 large-6 columns">
           <label for="id_name">Title of Note <small class="form">* Required</small></label>
           <input type="text" class="intext" id="id_name" name="name"
                 placeholder="">
@@ -44,8 +44,11 @@
           <input type="text" id="id_tags" name="tags" class="taggit-tags"
                 placeholder="shakespeare, econ, physics">
         </div>
-        <div class="show-for-small columns small-1 end">
-          <i class="fa fa-times-circle awesome-action remove"></i>
+        <div class="columns small-12 end hide-for-large-up note-upload-remove-button">
+          <i class="fa fa-times-circle fa-lg awesome-action remove"></i> Remove
+        </div>
+        <div class="columns large-1 end hide-for-medium-down note-upload-remove-button">
+          <i class="fa fa-times-circle fa-lg awesome-action remove"></i>
         </div>
         <div class="hidden-fields" style="display:none;">
           <input type="text" id="id_fpfile" name="fpfile" class="fpurl">
@@ -54,9 +57,6 @@
             class="course_id">
           {% csrf_token %}
           <input type="text" class="csrf" value='{{ csrf_token }}'>
-        </div>
-        <div class="show-for-medium-up columns medium-1 large-1 end">
-          <i class="fa fa-times-circle fa-lg awesome-action remove" id="icon-remove-sign"></i>
         </div>
       </form>
     </div>
