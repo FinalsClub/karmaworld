@@ -63,3 +63,7 @@ label.validation_error {
   color: #F04124;
 }
 
+#add-course-btn {
+  width: 100%
+}
+

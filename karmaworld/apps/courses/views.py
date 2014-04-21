@@ -23,7 +23,7 @@ from karmaworld.apps.notes.models import Note
 from karmaworld.apps.users.models import CourseKarmaEvent
 from karmaworld.apps.notes.forms import FileUploadForm
 from karmaworld.utils import ajax_increment, format_session_increment_field
-
+from django.contrib import messages
 
 FLAG_FIELD = 'flags'
 USER_PROFILE_FLAGS_FIELD = 'flagged_courses'
@@ -51,6 +51,8 @@ class CourseListView(View):
             # Replace blank form with invalid form.
             ret.context_data['course_form'] = badform
             ret.context_data['jump_to_form'] = True
+        else:
+            messages.add_message(request, messages.SUCCESS, 'You\'ve just created this course. Nice!')
         return ret
 
 

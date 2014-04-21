@@ -29,14 +29,14 @@
       {{ hidden }}
     {% endfor %}
     <div class="row">
-      <div class="small-6 columns add-course-field">
+      <div class="small-12 large-6 columns add-course-field">
         {% with course_form.get_forms.department.school as field %}
           {{ field.errors|safe }}
           <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
           {{ field }}
         {% endwith %}
       </div>
-      <div class="small-6 columns add-course-field">
+      <div class="small-12 large-6 columns add-course-field">
         {% with course_form.get_forms.department.name as field %}
           {{ field.errors|safe }}
           <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
@@ -46,14 +46,14 @@
     </div>
 
     <div class="row">
-      <div class="small-6 columns add-course-field">
+      <div class="small-12 large-6 columns add-course-field">
         {% with course_form.get_forms.professor.name as field %}
           {{ field.errors|safe }}
           <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
           {{ field }}
         {% endwith %}
       </div>
-      <div class="small-6 columns add-course-field">
+      <div class="small-12 large-6 columns add-course-field">
         {% with course_form.get_forms.professor.email as field %}
           {{ field.errors|safe }}
           <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
@@ -63,14 +63,14 @@
     </div>
 
     <div class="row">
-      <div class="small-6 columns add-course-field">
+      <div class="small-12 large-6 columns add-course-field">
         {% with course_form.name as field %}
           {{ field.errors|safe }}
           <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
           {{ field }}
         {% endwith %}
       </div>
-      <div class="small-6 columns add-course-field">
+      <div class="small-12 large-6 columns add-course-field">
         {% with course_form.url as field %}
           {{ field.errors|safe }}
           <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
@@ -90,7 +90,7 @@
     </div>
 
     <div class="row">
-      <div class="small-4 large-8 columns small-centered text-center">
+      <div class="small-12 columns small-centered text-center">
         <button id="save-btn" type="submit">
           <i class="fa fa-save"></i> Save
         </button>

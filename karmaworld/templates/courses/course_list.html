@@ -17,11 +17,11 @@
     var csrf_token = "{{ csrf_token }}";
     var dataTable_sDom = '<"top">rt<"bottom"p><"clear">';
   </script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
   <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
   <script src="{{ STATIC_URL }}js/course.js"></script>
   <script src="{{ STATIC_URL }}js/add-course.js"></script>
   <script src="{{ STATIC_URL }}js/course-list.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
 {% endblock %}
 
 {% block raw_content %}
@@ -45,11 +45,11 @@
 
   <div id="course-search-bar">
     <div class="row">
-      <div class="large-2 columns show-for-large-up">
+      <div class="small-12 large-2 columns">
         <button id="add-course-btn" class="inline-button important" data-reveal-id="add-course-form">Add a Course</button>
       </div>
       <div class="small-12 large-6 columns">
-        <input class="search-courses" type="text" placeholder="Search Courses" />
+        <input class="search-courses" type="text" placeholder="Search Courses and Schools" />
       </div>
       <div class="large-4 columns show-for-large-up">
         <div id="course-sort-wrapper">
