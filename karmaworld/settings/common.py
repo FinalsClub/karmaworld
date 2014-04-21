@@ -392,6 +392,11 @@ HONEYPOT_ERROR = "You did not follow directions."
 ########## END HONEYPOT CONFIGURATION
 
 
+SOUTH_MIGRATION_MODULES = {
+    'taggit': 'taggit.south_migrations',
+}
+
+
 ########## TESTING CONFIGURATION
 TESTING = 'test' in sys.argv
 ########## END TESTING CONFIGURATION
