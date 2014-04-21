@@ -36,8 +36,7 @@ class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
     name = AutoCompleteSelectField('professor_object_by_name', help_text='',
         label=mark_safe('Professor\'s name <span class="required-field">(required)</span>'),
         # allows creating a new Professor on the fly
-        required=True,
-        widget=AutoCompleteSelectWidget('professor_object_by_name', attrs={'class': 'small-6 columns'}))
+        required=False)
     email = AutoCompleteSelectField('professor_object_by_email', help_text='',
         label="Professor's email address",
         # allows creating a new Professor on the fly
@@ -48,7 +47,7 @@ class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
         # order the fields
         fields = ('name', 'email')
 
-    def _clean_distinct_field(self, field, *args, **kwargs):
+    def _clean_distinct_field(self, field, value_required=False, *args, **kwargs):
         """
         Check to see if Professor model is found before grabbing the field.
         Ensure that if Professor was already found, the new field corresponds.
@@ -62,6 +61,8 @@ class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
             oldprof = self.instance
         # Extract the field value, possibly replacing self.instance
         value = self._clean_field(field, *args, **kwargs)
+        if value_required and not value:
+            raise ValidationError('This field is required.')
         if oldprof and not value:
             # This field was not supplied, but another one determined the prof.
             # Grab field from prof model object.
@@ -69,10 +70,11 @@ class ProfessorForm(NiceErrorModelForm, ACFieldModelForm):
         if oldprof and self.instance != oldprof:
             # Two different Professor objects have been found across fields.
             raise ValidationError('It looks like two or more different Professors have been autocompleted.')
+
         return value
 
     def clean_name(self, *args, **kwargs):
-        return self._clean_distinct_field('name', *args, **kwargs)
+        return self._clean_distinct_field('name', value_required=True, *args, **kwargs)
 
     def clean_email(self, *args, **kwargs):
         return self._clean_distinct_field('email', *args, **kwargs)

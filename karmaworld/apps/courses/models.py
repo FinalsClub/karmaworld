@@ -176,7 +176,7 @@ class ProfessorManager(models.Manager):
         """
         Return a Professor defined by name and email address.
         """
-        return self.get(name=name,email=email)
+        return self.get(name=name, email=email)
 
 
 class Professor(models.Model):
@@ -187,7 +187,7 @@ class Professor(models.Model):
 
     name  = models.CharField(max_length=255, verbose_name="Professor's name")
     email = models.EmailField(blank=True, null=True,
-        verbose_name="Professor's Email")
+                              verbose_name="Professor's Email")
 
     class Meta:
         """
