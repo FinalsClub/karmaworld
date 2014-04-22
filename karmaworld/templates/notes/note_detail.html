@@ -65,7 +65,7 @@
             {{ note.course.school.name }}
           {% endif %}
           &nbsp;&nbsp;
-          <span style="display: inline;"><span class="show-for-large-up"><i class="fa fa-thumbs-up"></i> <span id="thank-number">{{ note.thanks }}</span> Thanks</span></span>
+          <span style="display: inline;"><span class="show-for-large-up"><i class="fa fa-thumbs-up"></i> <span id="thank-number">{{ note.thanks }}</span> Thank{{ note.thanks|pluralize }}</span></span>
         </div>
       </div>
 
@@ -171,12 +171,18 @@
 
     <div class="row">
       <div id="tabs" class="small-12 columns">
-        <dl class="tabs show-for-large-up" data-tab data-options="deep_linking: true; scroll_to_content: false">
-          <dd class="active"><a href="#note_container">Note</a></dd>
-          <dd id="keywords-tab-button"><a href="#keywords">Key Terms & Definitions</a></dd>
+        <dl class="tabs show-for-large-up">
+          <dd id="note-tab-button" class="{% if show_note_container %}active{% endif %}">
+            <a href="{{ note.get_absolute_url }}">Note</a>
+          </dd>
+          <dd id="keywords-tab-button" class="{% if show_keywords %}active{% endif %}">
+            <a href="{{ note.get_absolute_keywords_url }}">Key Terms & Definitions</a>
+          </dd>
         </dl>
-        <div id="tabs-content" class="tabs-content">
-          <div id="note_container" class="content active">
+        <div class="tabs-content">
+        </div>
+        {% if show_note_container %}
+          <div id="note_container" class="">
             {% if pdf_controls %}
               <div id="zoom-buttons" class="row show-for-medium-up">
                 <div id="outline-btn-wrapper" class="small-1 columns hide show-for-medium-up">
@@ -216,7 +222,8 @@
               </div><!-- /body_copy -->
             </div>
           </div><!-- /note_container -->
-
+        {% endif %}
+        {% if show_keywords %}
           <div id="keywords" class="content">
             <div class="row">
               <div class="small-12 columns">
@@ -238,7 +245,7 @@
                   {% endfor %}
                 </table>
 
-                <form id="keyword-form" action="{{ note.get_absolute_url }}#keywords" method="post" class="hide">
+                <form id="keyword-form" action="{{ note.get_absolute_keywords_url }}" method="post" class="hide">
                   {% csrf_token %}
                   {{ keyword_formset.management_form }}
                   <div class="hide" id="keyword-form-prototype">
@@ -283,8 +290,8 @@
                 </form>
               </div>
             </div>
-          </div>
-        </div>
+          </div> <!-- keywords -->
+        {% endif %}
       </div>
     </div>
 

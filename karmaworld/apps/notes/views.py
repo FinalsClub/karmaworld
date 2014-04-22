@@ -32,75 +32,39 @@ FLAG_FIELD = 'flags'
 USER_PROFILE_FLAGS_FIELD = 'flagged_notes'
 
 
+def note_page_context_helper(note, request, context):
+    if note.is_pdf():
+        context['pdf_controls'] = True
+
+    if request.user.is_authenticated():
+        try:
+            request.user.get_profile().thanked_notes.get(pk=note.pk)
+            context['already_thanked'] = True
+        except ObjectDoesNotExist:
+            pass
+
+        try:
+            request.user.get_profile().flagged_notes.get(pk=note.pk)
+            context['already_flagged'] = True
+        except ObjectDoesNotExist:
+            pass
+
+
 class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
     model = Note
     context_object_name = u"note" # name passed to template
-    keyword_form_class = formset_factory(KeywordForm)
-
-    def post(self, request, *args, **kwargs):
-        formset = self.keyword_form_class(request.POST)
-        if formset.is_valid():
-            self.keyword_form_valid(formset)
-            self.keyword_formset = self.keyword_form_class(initial=self.get_initial_keywords())
-            return super(NoteDetailView, self).get(request, *args, **kwargs)
-        else:
-            self.keyword_formset = formset
-            return super(NoteDetailView, self).get(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        self.keyword_formset = self.keyword_form_class(initial=self.get_initial_keywords())
-        return super(NoteDetailView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         """ Generate custom context for the page rendering a Note
             + if pdf, set the `pdf` flag
         """
 
-        kwargs['keyword_prototype_form'] = KeywordForm
-        kwargs['keyword_formset'] = self.keyword_formset
-        kwargs['keywords'] = Keyword.objects.filter(note=self.object)
+        kwargs['show_note_container'] = True
 
-        if self.object.is_pdf():
-            kwargs['pdf_controls'] = True
-
-        if self.request.user.is_authenticated():
-            try:
-                self.request.user.get_profile().thanked_notes.get(pk=self.object.pk)
-                kwargs['already_thanked'] = True
-            except ObjectDoesNotExist:
-                pass
-
-            try:
-                self.request.user.get_profile().flagged_notes.get(pk=self.object.pk)
-                kwargs['already_flagged'] = True
-            except ObjectDoesNotExist:
-                pass
+        note_page_context_helper(self.object, self.request, kwargs)
 
         return super(NoteDetailView, self).get_context_data(**kwargs)
-
-    def get_initial_keywords(self):
-        existing_keywords = self.get_object().keyword_set.order_by('id')
-        initial_data = [{'keyword': keyword.word, 'definition': keyword.definition, 'id': keyword.pk}
-                        for keyword in existing_keywords]
-        return initial_data
-
-    def keyword_form_valid(self, formset):
-        for form in formset:
-            word = form['keyword'].data
-            definition = form['definition'].data
-            id = form['id'].data
-            if word == '':
-                continue
-            try:
-                keyword_object = Keyword.objects.get(id=id)
-            except (ValueError, ObjectDoesNotExist):
-                keyword_object = Keyword()
-
-            keyword_object.note = self.get_object()
-            keyword_object.word = word
-            keyword_object.definition = definition
-            keyword_object.save()
 
 
 class NoteSaveView(FormView, SingleObjectMixin):
@@ -159,11 +123,68 @@ class NoteView(View):
         return view(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        if request.POST['action'] == 'tags-form':
-            view = NoteSaveView.as_view()
-        else:
-            view = NoteDetailView.as_view()
+        view = NoteSaveView.as_view()
         return view(request, *args, **kwargs)
+
+
+class NoteKeywordsView(FormView, SingleObjectMixin):
+    """ Class-based view for the note html page """
+    model = Note
+    context_object_name = u"note" # name passed to template
+    form_class = formset_factory(KeywordForm)
+    template_name = 'notes/note_detail.html'
+
+    def get_object(self, queryset=None):
+        return Note.objects.get(slug=self.kwargs['slug'])
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        formset = self.form_class(request.POST)
+        if formset.is_valid():
+            self.keyword_form_valid(formset)
+            self.keyword_formset = self.form_class(initial=self.get_initial_keywords())
+            return super(NoteKeywordsView, self).get(request, *args, **kwargs)
+        else:
+            self.keyword_formset = formset
+            return super(NoteKeywordsView, self).get(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.keyword_formset = self.form_class(initial=self.get_initial_keywords())
+        return super(NoteKeywordsView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        kwargs['keyword_prototype_form'] = KeywordForm
+        kwargs['keyword_formset'] = self.keyword_formset
+        kwargs['keywords'] = Keyword.objects.filter(note=self.get_object())
+        kwargs['show_keywords'] = True
+
+        note_page_context_helper(self.get_object(), self.request, kwargs)
+
+        return super(NoteKeywordsView, self).get_context_data(**kwargs)
+
+    def get_initial_keywords(self):
+        existing_keywords = self.get_object().keyword_set.order_by('id')
+        initial_data = [{'keyword': keyword.word, 'definition': keyword.definition, 'id': keyword.pk}
+                        for keyword in existing_keywords]
+        return initial_data
+
+    def keyword_form_valid(self, formset):
+        for form in formset:
+            word = form['keyword'].data
+            definition = form['definition'].data
+            id = form['id'].data
+            if word == '':
+                continue
+            try:
+                keyword_object = Keyword.objects.get(id=id)
+            except (ValueError, ObjectDoesNotExist):
+                keyword_object = Keyword()
+
+            keyword_object.note = self.get_object()
+            keyword_object.word = word
+            keyword_object.definition = definition
+            keyword_object.save()
 
 
 class NoteSearchView(ListView):

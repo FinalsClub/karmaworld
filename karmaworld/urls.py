@@ -14,11 +14,12 @@ from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
-from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags
+from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags, \
+    NoteKeywordsView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
-from karmaworld.apps.quizzes.views import QuizView, KeywordEditView, quiz_answer, get_keywords, \
-    set_delete_keyword
+from karmaworld.apps.quizzes.views import QuizView, KeywordEditView, quiz_answer, get_keywords_annotator, \
+    set_delete_keyword_annotator, get_keywords_datatables
 from karmaworld.apps.users.views import ProfileView
 
 from ajax_select import urls as ajax_select_urls
@@ -101,8 +102,9 @@ urlpatterns = patterns('',
     # Check if a quiz answer is correct
     url(r'^ajax/quiz/check/$', quiz_answer, name='quiz_answer'),
 
-    url(r'^ajax/annotations/annotations$', set_delete_keyword, name='set_keyword'),
-    url(r'^ajax/annotations/search/$', get_keywords, name='get_keywords'),
+    url(r'^ajax/annotations/annotations$', set_delete_keyword_annotator, name='set_keyword'),
+    url(r'^ajax/annotations/search/$', get_keywords_annotator, name='get_keywords'),
+
 
     # Valid url cases to the Note page
     # a: school/course/id
@@ -114,6 +116,8 @@ urlpatterns = patterns('',
     # note file by note.slug
     url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'$',
         NoteView.as_view(), name='note_detail'),
+    url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'/keywords/$',
+        NoteKeywordsView.as_view(), name='note_keywords'),
 
     # Quizzes
     url(r'^quiz/(?P<pk>[\d]+)/$',

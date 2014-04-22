@@ -160,15 +160,40 @@ def process_set_delete_keyword(request):
                                     mimetype="application/json")
 
 
-def set_delete_keyword(request):
+def set_delete_keyword_annotator(request):
     return ajax_base(request, process_set_delete_keyword, ('POST', 'PUT', 'DELETE'))
 
 
-def get_keywords(request):
+def get_keywords_annotator(request):
     annotation_uri = request.GET['uri']
 
     try:
         keywords = Keyword.objects.filter(note_id=annotation_uri).exclude(ranges=None)
+        keywords_data = {
+            'total': len(keywords),
+            'rows': []
+        }
+        for keyword in keywords:
+            keyword_data = {
+                'quote': keyword.word,
+                'text': keyword.definition,
+                'ranges': json.loads(keyword.ranges),
+                'created': keyword.timestamp.isoformat(),
+            }
+            keywords_data['rows'].append(keyword_data)
+
+        return HttpResponse(json.dumps(keywords_data), mimetype='application/json')
+
+    except ObjectDoesNotExist, e:
+        return HttpResponseNotFound(json.dumps({'status': 'fail', 'message': e.message}),
+                                    mimetype="application/json")
+
+
+def get_keywords_datatables(request):
+    annotation_uri = request.GET['uri']
+
+    try:
+        keywords = Keyword.objects.filter(note_id=annotation_uri)
         keywords_data = {
             'total': len(keywords),
             'rows': []
