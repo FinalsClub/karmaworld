@@ -3,9 +3,20 @@
   color: #ffffff;
   text-align: center;
   font-size: 3em;
-  background-image: url('../img/banner_small.jpg');
   background-size: cover;
   background-position: center center;
+}
+
+@media only screen and (max-width: 500px) {
+  #splash {
+    background-image: url('../img/banner_small.jpg');
+  }
+}
+
+@media only screen and (min-width: 501px) {
+  #splash {
+    background-image: url('../img/banner_large.jpg');
+  }
 }
 
 @media only screen and (max-width: 40.063em) {
