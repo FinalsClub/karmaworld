@@ -85,6 +85,16 @@ def collect_static():
 
 	virtenv_exec('{0}/manage.py collectstatic --noinput'.format(env.code_root))
 
+####### Compress Static Files
+@task
+def compress_static():
+	"""
+	Compress static files
+	"""
+
+	virtenv_exec('{0}/manage.py compress'.format(env.code_root))
+
+
 ####### Run Dev Server
 @task
 def dev_server():
@@ -297,6 +307,7 @@ def deploy():
     update_code()
     update_reqs()
     syncdb()
+    compress_static()
     collect_static()
     restart_supervisord()
 ########## END COMMANDS
