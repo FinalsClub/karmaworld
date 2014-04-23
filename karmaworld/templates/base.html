@@ -1,4 +1,5 @@
 {% load url from future %}
+{% load compress %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -7,12 +8,17 @@
   <title>KarmaNotes -- {% block title %}{% endblock %}{% block head_title %}{% endblock %}</title>
 	
   <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/fontface/fontface.css">
-  <link rel="stylesheet" type="text/css" media="all" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.2.2/css/foundation.min.css">
-  <link rel="stylesheet" type="text/css" media="all" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-  <link rel="stylesheet" href="{{ STATIC_URL }}css/vendor/opentip.css">
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/global.css">
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/fontface/fontface.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/foundation.min.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/font-awesome-4.0.3/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/opentip.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/global.css">
+  {% endcompress %}
+  {% compress js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/modernizr.js"></script>
+  {% endcompress %}
 
   <!-- block pagestyle -->
   {% block pagestyle %}
@@ -38,12 +44,20 @@
   {% include 'footer.html' %}
   <!-- end include footer-->
 
-  <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
-  <script src="//code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+  {% compress js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-2.1.0.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.10.4.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/fastclick.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/opentip-jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.joyride.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.tab.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.alert.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.topbar.js"></script>
+  {% endcompress %}
+
   <script type="text/javascript" src="//use.typekit.net/pnc8diw.js"></script>
   <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-  <script src="{{ STATIC_URL }}js/opentip-jquery-excanvas.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.2.2/js/foundation.min.js"></script>
   <script>
     $(function() {
       $(document).foundation();

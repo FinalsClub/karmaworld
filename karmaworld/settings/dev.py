@@ -3,7 +3,6 @@
 # Copyright (C) 2012  FinalsClub Foundation
 """Development settings and globals."""
 
-
 from os.path import join, normpath
 from S3 import CallingFormat
 
@@ -86,11 +85,15 @@ MIDDLEWARE_CLASSES += (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
-
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False # Don't interrput our redirects!
 }
 ########## END TOOLBAR CONFIGURATION
+
+########## COMPRESSION CONFIGURATION
+COMPRESS_ENABLED = False
+########## END COMPRESSION CONFIGURATION
+
 
 ########## TESTING CONFIGURATION
 # Use django-nose to test our app, see https://github.com/jbalogh/django-nose
