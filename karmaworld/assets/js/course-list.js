@@ -40,14 +40,24 @@ $(function() {
     dataTable.fnFilter($(this).val());
   });
 
+  function sortDirection(col) {
+    if (col == 3) {
+      return 'asc';
+    } else {
+      return 'desc';
+    }
+  }
+
   // wire up sort chooser
   $('select.course-sort').change(function() {
-    dataTable.fnSort([[$(this).val(), 'desc']]);
+    var sortCol = $(this).val();
+    dataTable.fnSort([[sortCol, sortDirection(sortCol)]]);
   });
 
   // sort by current value of sort chooser, since
   // the browser may change this from our default
-  dataTable.fnSort([[$('select.course-sort').val(), 'desc']]);
+  var sortCol = $('select.course-sort').val();
+  dataTable.fnSort([[sortCol, sortDirection(sortCol)]]);
 
 });
 
