@@ -392,9 +392,15 @@ HONEYPOT_ERROR = "You did not follow directions."
 ########## END HONEYPOT CONFIGURATION
 
 
+########## SOUTH CONFIGURATION
 SOUTH_MIGRATION_MODULES = {
     'taggit': 'taggit.south_migrations',
 }
+########## END SOUTH CONFIGURATION
+
+########## AJAX SELECTS CONFIGURATION
+AJAX_SELECT_BOOTSTRAP = False
+########## END AJAX SELECTS CONFIGURATION
 
 
 ########## TESTING CONFIGURATION
