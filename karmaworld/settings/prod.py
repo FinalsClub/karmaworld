@@ -161,7 +161,7 @@ COMPRESS_CSS_FILTERS += [
 COMPRESS_JS_FILTERS += [
     'compressor.filters.closure.ClosureCompilerFilter',
 ]
-COMPRESS_CLOSURE_COMPILER_BINARY = 'java -jar compiler.jar'
+COMPRESS_CLOSURE_COMPILER_BINARY = 'java -jar /usr/bin/compiler.jar'
 
 ########## END COMPRESSION CONFIGURATION
 
