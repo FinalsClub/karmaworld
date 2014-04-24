@@ -9,11 +9,13 @@
 	
   <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico">
   {% compress css %}
-    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/fontface/fontface.css">
-    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/foundation.min.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/fontface.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/foundation.css">
     <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/font-awesome.css">
     <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/opentip.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}ajax_select/css/ajax_select.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/jquery.dataTables.css">
     <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/global.css">
   {% endcompress %}
   {% compress js %}
@@ -49,11 +51,16 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.10.4.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/fastclick.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/opentip-jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.joyride.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.tab.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.alert.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.topbar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/foundation.reveal.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}ajax_select/js/ajax_select.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}ajax_select_cascade/js/ajax_select_cascade.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
   {% endcompress %}
 
   <script type="text/javascript" src="//use.typekit.net/pnc8diw.js"></script>

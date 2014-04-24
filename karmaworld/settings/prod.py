@@ -154,13 +154,15 @@ COMPRESS_STORAGE = DEFAULT_FILE_STORAGE
 
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_CSS_FILTERS
 COMPRESS_CSS_FILTERS += [
-    'compressor.filters.cssmin.CSSMinFilter',
+    'compressor.filters.css_default.CssAbsoluteFilter',
 ]
 
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_JS_FILTERS
 COMPRESS_JS_FILTERS += [
-    'compressor.filters.jsmin.JSMinFilter',
+    'compressor.filters.closure.ClosureCompilerFilter',
 ]
+COMPRESS_CLOSURE_COMPILER_BINARY = 'closure'
+
 ########## END COMPRESSION CONFIGURATION
 
 

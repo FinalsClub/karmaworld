@@ -2,9 +2,12 @@
 {% load url from future %}
 {% load account %}
 {% load social_account_list %}
+{% load compress %}
 
 {% block pagescripts %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/dashboard.css">
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/dashboard.css">
+  {% endcompress %}
 {% endblock %}
 
 {% block title %}

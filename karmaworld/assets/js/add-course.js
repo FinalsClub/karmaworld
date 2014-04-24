@@ -41,9 +41,9 @@ $(function() {
           if (data['status'] === 'success') {
             response($.map(data['schools'], function(item) {
               return {
-                  value: item.name,
-                  real_value: item.id,
-                  label: item.name,
+                  'value': item.name,
+                  'real_value': item.id,
+                  'label': item.name
               };
             }));
           } else {

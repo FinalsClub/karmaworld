@@ -11,8 +11,8 @@ window.KARMAWORLD.Course = {
             if (data['status'] === 'success') {
               response($.map(data['courses'], function(item) {
                 return {
-                    value: item.name,
-                    label: item.name,
+                    'value': item.name,
+                    'label': item.name
                 };
               }));
             }
@@ -39,9 +39,9 @@ window.KARMAWORLD.Course = {
               // Fill in the autocomplete entries
               response($.map(data['instructors'], function(item) {
                 return {
-                    value: item.name,
-                    label: item.name,
-                    url:   item.url
+                    'value': item.name,
+                    'label': item.name,
+                    'url':   item.url
                 };
               }));
             }

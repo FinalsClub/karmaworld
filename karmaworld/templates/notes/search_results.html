@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load compress %}
 
 {% block title %}
   Search Results
 {% endblock %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
+  {% endcompress %}
 {% endblock %}
 
 {% block pagescripts %}
-  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
-  <script src="{{ STATIC_URL }}js/note-list.js"></script>
+  {% compress js %}
+    <script src="{{ STATIC_URL }}js/note-list.js"></script>
+  {% endcompress %}
   <script>
     var dataTable_sDom = '<"top">rt<"bottom"><"clear">';
   </script>

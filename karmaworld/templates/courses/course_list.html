@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load compress %}
 
 {% block title %}
   Share College Course Notes
 {% endblock %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/home.css">
+  {% endcompress %}
 {% endblock %}
 
 {% block pagescripts %}
@@ -17,79 +19,80 @@
     var csrf_token = "{{ csrf_token }}";
     var dataTable_sDom = '<"top">rt<"bottom"p><"clear">';
   </script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
-  <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
-  <script src="{{ STATIC_URL }}js/course.js"></script>
-  <script src="{{ STATIC_URL }}js/add-course.js"></script>
-  <script src="{{ STATIC_URL }}js/course-list.js"></script>
+  {% compress js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/course.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/add-course.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/course-list.js"></script>
+  {% endcompress %}
 {% endblock %}
 
 {% block raw_content %}
-<section id="home_content">
-  <div id="page_header">
-    <div id="splash" class="museo700">
-      <div id="splash_copy" class="row">
-        <div class="small-12 large-8 columns large-offset-2">
-          Access a growing database of <span class="note_count">{{ note_count }}</span> college lecture notes.
+  <section id="home_content">
+    <div id="page_header">
+      <div id="splash" class="museo700">
+        <div id="splash_copy" class="row">
+          <div class="small-12 large-8 columns large-offset-2">
+            Access a growing database of <span class="note_count">{{ note_count }}</span> college lecture notes.
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <a href="{% url 'about' %}">
+              <button id="intro-video-button">Watch the video&nbsp;&nbsp;<i class='fa fa-caret-right'></i></button>
+            </a>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div id="course-search-bar">
       <div class="row">
-        <div class="small-12 columns">
-          <a href="{% url 'about' %}">
-            <button id="intro-video-button">Watch the video&nbsp;&nbsp;<i class='fa fa-caret-right'></i></button>
-          </a>
+        <div class="small-12 large-2 columns">
+          <button id="add-course-btn" class="inline-button important" data-reveal-id="add-course-form">Add a Course</button>
+        </div>
+        <div class="small-12 large-6 columns">
+          <input class="search-courses" type="text" placeholder="Search Courses and Schools" />
+        </div>
+        <div class="large-4 columns show-for-large-up">
+          <div id="course-sort-wrapper">
+            Sort By
+            <select class="course-sort">
+              <option value="0">Date</option>
+              <option value="1">Number of Notes</option>
+              <option value="2" selected>Popularity</option>
+              <option value="3">School</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="course-search-bar">
     <div class="row">
-      <div class="small-12 large-2 columns">
-        <button id="add-course-btn" class="inline-button important" data-reveal-id="add-course-form">Add a Course</button>
+      <div class="small-12 columns">
+        <!-- Main course table -->
+        <table id="data_table_list">
+          <thead class="hide">
+            <tr>
+              <th class="no-display" id="data-table-date">Date</th>
+              <th class="no-display" id="data-table-note-count"># Notes</th>
+              <th class="no-display" id="data-table-thanks">Popularity</th>
+              <th class="no-display" id="data-table-school">School</th>
+              <th class="no-display" id="data-table-course">Course</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for course in course_list %}
+            {% include 'courses/course_list_entry.html' %}
+          {% endfor %}
+          </tbody>
+        </table>
       </div>
-      <div class="small-12 large-6 columns">
-        <input class="search-courses" type="text" placeholder="Search Courses and Schools" />
-      </div>
-      <div class="large-4 columns show-for-large-up">
-        <div id="course-sort-wrapper">
-          Sort By
-          <select class="course-sort">
-            <option value="0">Date</option>
-            <option value="1">Number of Notes</option>
-            <option value="2" selected>Popularity</option>
-            <option value="3">School</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
+    </div> <!-- .row -->
 
-  <div class="row">
-    <div class="small-12 columns">
-      <!-- Main course table -->
-      <table id="data_table_list">
-        <thead class="hide">
-          <tr>
-            <th class="no-display" id="data-table-date">Date</th>
-            <th class="no-display" id="data-table-note-count"># Notes</th>
-            <th class="no-display" id="data-table-thanks">Popularity</th>
-            <th class="no-display" id="data-table-school">School</th>
-            <th class="no-display" id="data-table-course">Course</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for course in course_list %}
-          {% include 'courses/course_list_entry.html' %}
-        {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div> <!-- .row -->
+    {% include 'partial/add_course.html' %}
 
-  {% include 'partial/add_course.html' %}
-
-</section> <!-- #results_content -->
+  </section> <!-- #results_content -->
 
 {% endblock %}
 

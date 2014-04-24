@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load compress %}
 
 {% block title %}
   {{ note.name }}
 {% endblock %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
-  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/annotator.min.css" />
-  <link rel="stylesheet" type="text/css" media="all" href="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.min.css">
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/annotator.min.css" />
+  {% endcompress %}
 {% endblock %}
 
 {% block pagescripts %}
@@ -26,13 +28,13 @@
     var setup_ajax_url = "{{ STATIC_URL }}js/setup-ajax.js";
     var empty_js = "{{ STATIC_URL }}js/empty.js";
   </script>
-  <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
-  <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
-  <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.1/marked.min.js" ></script>
-  <script src="{{ STATIC_URL }}js/annotator-full.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+  {% compress js %}
+    <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+    <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
+    <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
+    <script src="{{ STATIC_URL }}js/marked.js" ></script>
+    <script src="{{ STATIC_URL }}js/annotator-full.min.js"></script>
+  {% endcompress %}
   <script>
     $(function() {
       $(document).foundation('joyride', 'start');

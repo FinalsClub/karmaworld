@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% load url from future %}
 {% load humanize %}
+{% load compress %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/about.css">
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/about.css">
+  {% endcompress %}
 {% endblock %}
 
 {% block title %}

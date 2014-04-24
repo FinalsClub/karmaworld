@@ -6,8 +6,11 @@
  * -------------------------- */
 @font-face {
   font-family: 'FontAwesome';
-  src: url('../fonts/fontawesome-webfont.eot?v=4.0.3');
-  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.0.3') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff?v=4.0.3') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.0.3') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.0.3#fontawesomeregular') format('svg');
+  src: url('//karma-prod.s3.amazonaws.com/css/fonts/fontawesome-webfont.eot?v=4.0.3');
+  src: url('//karma-prod.s3.amazonaws.com/css/fonts/fontawesome-webfont.eot?#iefix&v=4.0.3') format('embedded-opentype'),
+    url('//karma-prod.s3.amazonaws.com/css/fonts/fontawesome-webfont.woff?v=4.0.3') format('woff'),
+    url('//karma-prod.s3.amazonaws.com/css/fonts/fontawesome-webfont.ttf?v=4.0.3') format('truetype'),
+    url('//karma-prod.s3.amazonaws.com/css/fonts/fontawesome-webfont.svg?v=4.0.3#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }

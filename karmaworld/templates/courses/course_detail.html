@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% load url from future %}
-
+{% load compress %}
 
 {% block pagescripts %}
-  <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
   <script>
     var json_school_course_list = "{% url 'json_school_course_list' %}";
     var json_school_course_instructor_list = "{% url 'json_school_course_instructor_list' %}";
@@ -12,16 +11,19 @@
     var course_edit_url = "{% url 'edit_course' course.id %}";
     var dataTable_sDom = '<"top">rt<"bottom"p><"clear">';
   </script>
-  <script src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
-  <script src="{{ STATIC_URL }}js/course.js"></script>
-  <script src="{{ STATIC_URL }}js/course-detail.js" ></script>
-  <script src="{{ STATIC_URL }}js/note-list.js" ></script>
-  <script src="{{ STATIC_URL }}js/filepicker.js"></script>
+  {% compress js %}
+    <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+    <script src="{{ STATIC_URL }}js/course.js"></script>
+    <script src="{{ STATIC_URL }}js/course-detail.js" ></script>
+    <script src="{{ STATIC_URL }}js/note-list.js" ></script>
+    <script src="{{ STATIC_URL }}js/filepicker.js"></script>
+  {% endcompress %}
 {% endblock %}
 
 {% block pagestyle %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datatables-css/jquery.dataTables.css">
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
+  {% endcompress %}
 {% endblock %}
 
 {% block title %}

@@ -9,13 +9,13 @@
 
 @media only screen and (max-width: 500px) {
   #splash {
-    background-image: url('../img/banner_small.jpg');
+    background-image: url('//karma-prod.s3.amazonaws.com/img/banner_small.jpg');
   }
 }
 
 @media only screen and (min-width: 501px) {
   #splash {
-    background-image: url('../img/banner_large.jpg');
+    background-image: url('//karma-prod.s3.amazonaws.com/img/banner_large.jpg');
   }
 }
 
