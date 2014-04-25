@@ -60,6 +60,9 @@ class CourseListSubView(ListView):
     """ Lists all courses. Called by CourseListView. """
     model = Course
 
+    def get_queryset(self):
+        return Course.objects.all().select_related('note_set', 'school', 'department', 'department__school')
+
     def get_context_data(self, **kwargs):
         """ Add the CourseForm to ListView context """
         # get the original context
