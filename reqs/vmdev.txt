@@ -1,5 +1,6 @@
 -r prod.txt
 django-debug-toolbar
+django-debug-toolbar-template-timings
 ipython==0.13.1
 ipdb==0.7
 django-extensions==1.0.3 # some extra debugging tools for manage.py
