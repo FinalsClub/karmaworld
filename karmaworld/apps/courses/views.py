@@ -10,6 +10,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
 
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.views.decorators.cache import cache_page
 from django.views.generic import View
 from django.views.generic import DetailView
 from django.views.generic import TemplateView
@@ -36,7 +37,11 @@ class CourseListView(View):
     """
 
     def get(self, request, *args, **kwargs):
-        return CourseListSubView.as_view()(request, *args, **kwargs)
+        if request.user.is_authenticated():
+            return CourseListSubView.as_view()(request, *args, **kwargs)
+        # Cache the homepage for non-authenicated users
+        else:
+            return cache_page(CourseListSubView.as_view(), 60 * 60)(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         ret = CourseAddFormView.as_view()(request, *args, **kwargs)
