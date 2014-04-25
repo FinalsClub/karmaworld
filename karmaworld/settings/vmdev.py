@@ -156,10 +156,15 @@ COMPRESS_OFFLINE = True
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_STORAGE
 COMPRESS_STORAGE = DEFAULT_FILE_STORAGE
 
+# Make sure that django-compressor serves from CloudFront
+AWS_S3_CUSTOM_DOMAIN = CLOUDFRONT_DOMAIN
+
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_CSS_FILTERS
 COMPRESS_CSS_FILTERS += [
-    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.datauri.CssDataUriFilter',
+    'compressor.filters.cssmin.CSSMinFilter',
 ]
+COMPRESS_DATA_URI_MAX_SIZE = 5120
 
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_JS_FILTERS
 COMPRESS_JS_FILTERS += [
@@ -229,3 +234,6 @@ MIDDLEWARE_CLASSES += (
 )
 ########## END PROFILING CONFIGURATION
 
+########## STATIC CONFIGURATION
+STATIC_URL = CLOUDFRONT_URL
+########## END STATIC CONFIGURATION

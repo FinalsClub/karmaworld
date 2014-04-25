@@ -138,7 +138,7 @@ AWS_HEADERS = {
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 # S3_URL comes from karmaworld.secret.static_s3
-STATIC_URL = S3_URL
+STATIC_URL = CLOUDFRONT_URL
 ########## END STORAGE CONFIGURATION
 
 ########## SSL FORWARDING CONFIGURATION
@@ -152,10 +152,15 @@ COMPRESS_OFFLINE = True
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_STORAGE
 COMPRESS_STORAGE = DEFAULT_FILE_STORAGE
 
+# Make sure that django-compressor serves from CloudFront
+AWS_S3_CUSTOM_DOMAIN = CLOUDFRONT_DOMAIN
+
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_CSS_FILTERS
 COMPRESS_CSS_FILTERS += [
-    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.datauri.CssDataUriFilter',
+    'compressor.filters.cssmin.CSSMinFilter',
 ]
+COMPRESS_DATA_URI_MAX_SIZE = 5120
 
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_JS_FILTERS
 COMPRESS_JS_FILTERS += [
