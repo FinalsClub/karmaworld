@@ -144,7 +144,7 @@ AWS_HEADERS = {
 }
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = CLOUDFRONT_URL + '/' + AWS_LOCATION + '/'
+STATIC_URL = CLOUDFRONT_URL + AWS_LOCATION + '/'
 ########## END STORAGE CONFIGURATION
 
 
