@@ -2,8 +2,6 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 """ Production settings and globals. """
-
-
 from os import environ
 from datetime import timedelta
 from S3 import CallingFormat
@@ -127,6 +125,11 @@ INSTALLED_APPS += (
 # DEFAULT_FILE_STORAGE comes from karmaworld.secret.static_s3
 STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
 
+# Put static files in the folder 'static' in our S3 bucket.
+# This is so they have the same path as they do when served
+# locally for development.
+AWS_LOCATION = 'static'
+
 # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
 AWS_CALLING_FORMAT = CallingFormat.SUBDOMAIN
 
@@ -139,7 +142,7 @@ AWS_HEADERS = {
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 # S3_URL comes from karmaworld.secret.static_s3
-STATIC_URL = CLOUDFRONT_URL
+STATIC_URL = CLOUDFRONT_URL + '/' + AWS_LOCATION + '/'
 ########## END STORAGE CONFIGURATION
 
 ########## SSL FORWARDING CONFIGURATION

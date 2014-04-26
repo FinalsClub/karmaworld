@@ -131,6 +131,10 @@ STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
 # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
 AWS_CALLING_FORMAT = CallingFormat.SUBDOMAIN
 
+# Put static files in the folder 'static' in our S3 bucket.
+# This is so they have the same path as they do when served
+# locally for development.
+AWS_LOCATION = 'static'
 
 # AWS cache settings, don't change unless you know what you're doing:
 AWS_EXPIREY = 60 * 60 * 24 * 7
@@ -140,7 +144,7 @@ AWS_HEADERS = {
 }
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = S3_URL
+STATIC_URL = CLOUDFRONT_URL + '/' + AWS_LOCATION + '/'
 ########## END STORAGE CONFIGURATION
 
 

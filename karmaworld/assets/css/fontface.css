@@ -2,22 +2,22 @@
 
 @font-face {
     font-family: 'museo700';
-    src: url('//karma-prod.s3.amazonaws.com/css/fonts/museo700-regular-webfont.eot');
-    src: url('//karma-prod.s3.amazonaws.com/css/fonts/museo700-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('//karma-prod.s3.amazonaws.com/css/fonts/museo700-regular-webfont.woff') format('woff'),
-         url('//karma-prod.s3.amazonaws.com/css/fonts/museo700-regular-webfont.ttf') format('truetype'),
-         url('//karma-prod.s3.amazonaws.com/css/fonts/museo700-regular-webfont.svg#museo700') format('svg');
+    src: url('/static/css/fonts/museo700-regular-webfont.eot');
+    src: url('/static/css/fonts/museo700-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/css/fonts/museo700-regular-webfont.woff') format('woff'),
+         url('/static/css/fonts/museo700-regular-webfont.ttf') format('truetype'),
+         url('/static/css/fonts/museo700-regular-webfont.svg#museo700') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'museo300';
-    src: url('//karma-prod.s3.amazonaws.com/css/fonts/museo300-regular-webfont.eot');
-    src: url('//karma-prod.s3.amazonaws.com/css/fonts/museo300-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('//karma-prod.s3.amazonaws.com/css/fonts/museo300-regular-webfont.woff') format('woff'),
-         url('//karma-prod.s3.amazonaws.com/css/fonts/museo300-regular-webfont.ttf') format('truetype'),
-         url('//karma-prod.s3.amazonaws.com/css/fonts/museo300-regular-webfont.svg#museo300') format('svg');
+    src: url('/static/css/fonts/museo300-regular-webfont.eot');
+    src: url('/static/css/fonts/museo300-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/css/fonts/museo300-regular-webfont.woff') format('woff'),
+         url('/static/css/fonts/museo300-regular-webfont.ttf') format('truetype'),
+         url('/static/css/fonts/museo300-regular-webfont.svg#museo300') format('svg');
     font-weight: normal;
     font-style: normal;
 }
