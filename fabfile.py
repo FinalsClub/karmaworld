@@ -201,6 +201,12 @@ def restart_gunicorn():
     """
     supervisorctl('restart', 'gunicorn')
 
+@task
+def flush_memcache():
+    """
+    Clear everything cached in memcached
+    """
+    virtenv_exec('echo "flush_all" | nc localhost 11211')
 
 ####### Update Requirements
 @task
@@ -292,9 +298,11 @@ def first_deploy():
     check_secrets()
     install_reqs()
     syncdb()
+    compress_static()
     collect_static()
     fetch_usde()
     import_usde()
+    flush_memcache()
     start_supervisord()
     print "You should run `manage.py createsuperuser` in the virtual environment"
 
@@ -309,5 +317,6 @@ def deploy():
     syncdb()
     compress_static()
     collect_static()
+    flush_memcache()
     restart_supervisord()
 ########## END COMMANDS
