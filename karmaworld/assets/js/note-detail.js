@@ -2,7 +2,7 @@
 function rescalePdf(viewer) {
   var scaleBase = 750;
   var outlineWidth = 250;
-  var frameWidth = parseInt($('#tabs-content')[0].clientWidth);
+  var frameWidth = parseInt($('#note_container')[0].clientWidth);
   var pdfWidth = frameWidth;
 
   if ($(viewer.sidebar).hasClass('opened')){
