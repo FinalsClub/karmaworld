@@ -2,6 +2,7 @@ body {
   font-family: 'adelle-sans';
   font-weight: lighter;
   word-wrap: break-word;
+  background: #333333;
 }
 
 .museo300 {
@@ -30,6 +31,11 @@ p {
   font-size: 1em;
 }
 
+#content-container {
+  background: #ffffff;
+  padding-bottom: 10px;
+}
+
 #main-header {
   background: #333333;
   color: #d4d4d4;
@@ -56,11 +62,13 @@ p {
 
 #global_footer {
   line-height: 1.5em;
-  padding: 20px 0 20px 0;
-  margin-top: 20px;
-  background: #333333;
   color: #d4d4d4;
   font-size: 0.8em;
+  padding: 20px 0 20px 0;
+}
+
+.footer-row {
+  margin-bottom: 10px;
 }
 
 label.inline-label
@@ -176,6 +184,10 @@ table.dataTable a {
   color: inherit;
 }
 
+.dataTables_paginate {
+  float: left;
+}
+
 .even {
   background-color: #fafafa !important;
   border-top: 1px solid #f0f0f0;
@@ -232,10 +244,6 @@ dl.tabs dd a {
 div.tabs-content {
   margin-top: -1px;
   border-top: 1px solid #dfdfdf;
-}
-
-div.message-container {
-  margin: 20px 0 0 0;
 }
 
 ul.socialaccount_providers {

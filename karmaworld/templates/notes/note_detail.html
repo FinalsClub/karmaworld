@@ -101,19 +101,19 @@
                   <button id="flag-button-disabled" class="modify-button disabled opentip"
                           data-ot="You've already reported this note"
                            {% include 'partial/opentip_settings.html' %}>
-                    <i class="fa fa-thumbs-up"></i> Report Note</button>
+                    <i class="fa fa-flag"></i> Report Note</button>
                 {% else %}
-                  <button id="flag-button" class="modify-button"><i class="fa fa-thumbs-up"></i> Report Note</button>
+                  <button id="flag-button" class="modify-button"><i class="fa fa-flag"></i> Report Note</button>
                   <button id="flag-button-disabled" class="modify-button disabled opentip hide"
                           data-ot="You've already reported this note"
                            {% include 'partial/opentip_settings.html' %}>
-                    <i class="fa fa-thumbs-up"></i> Report Note</button>
+                    <i class="fa fa-flag"></i> Report Note</button>
                 {% endif %}
               {% else %}
                 <button id="flag-button-disabled" class="modify-button disabled opentip"
                           data-ot="Log in to report this note"
                            {% include 'partial/opentip_settings.html' %}>
-                    <i class="fa fa-thumbs-up"></i> Report Note</button>
+                    <i class="fa fa-flag"></i> Report Note</button>
               {% endif %}
 
               {% if user.is_authenticated %}

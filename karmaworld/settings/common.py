@@ -292,6 +292,7 @@ SOCIALACCOUNT_AUTO_SIGNUP = False
 ACCOUNT_USER_DISPLAY = 'karmaworld.apps.users.models.user_display_name'
 ACCOUNT_SIGNUP_FORM_CLASS = 'karmaworld.apps.users.forms.SignupForm'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+LOGIN_REDIRECT_URL = '/'
 
 AUTH_PROFILE_MODULE = 'users.UserProfile'
 
