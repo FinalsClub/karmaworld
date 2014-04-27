@@ -10,7 +10,7 @@ class SignupForm(forms.Form):
     last_name  = forms.CharField(max_length=255, required=False, label='Family name')
     email      = forms.EmailField(label='Email address')
 
-    def save(self, user):
+    def signup(self, request, user):
         user.username   = self.cleaned_data['username']
         user.first_name = self.cleaned_data['first_name']
         user.last_name  = self.cleaned_data['last_name']
