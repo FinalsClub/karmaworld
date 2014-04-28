@@ -36,9 +36,18 @@
     <script src="{{ STATIC_URL }}js/annotator-full.min.js"></script>
   {% endcompress %}
   <script>
-    $(function() {
-      $(document).foundation('joyride', 'start');
-    });
+    {% if show_note_container %}
+      $(function() {
+        $(document).foundation('joyride', 'start');
+        initNoteContentPage();
+      });
+    {% endif %}
+
+    {% if show_keywords %}
+      $(function() {
+        initNoteKeywordsPage();
+      });
+    {% endif %}
   </script>
 {% endblock %}
 

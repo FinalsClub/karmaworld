@@ -82,7 +82,8 @@ div#note_header {
 }
 
 div.header-title-row {
-  margin: 10px 0 10px 0;
+  margin: 0 0 10px 0;
+  line-height: 1.5;
 }
 
 .header-title {

@@ -131,7 +131,7 @@ function addForm(event) {
   keywordInput.focus();
 }
 
-$(function() {
+function initNoteContentPage() {
 
   $("#thank-button").click(function(event) {
     event.preventDefault();
@@ -273,7 +273,9 @@ $(function() {
       }
     });
   }
+}
 
+function initNoteKeywordsPage() {
   $('.definition').keydown(tabHandler);
   $('#add-row-btn').click(addForm);
 
@@ -288,6 +290,6 @@ $(function() {
     $('#keyword-form').toggle();
   });
 
-});
+}
 
 
