@@ -26,7 +26,7 @@
     var annotator_js_url = "{{ STATIC_URL }}js/annotator-full.min.js";
     var annotator_css_url = "{{ STATIC_URL }}css/annotator.min.css";
     var setup_ajax_url = "{{ STATIC_URL }}js/setup-ajax.js";
-    var empty_js = "{{ STATIC_URL }}js/empty.js";
+    var note_edit_url = "{% url 'edit_note' note.id %}";
   </script>
   {% compress js %}
     <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
@@ -129,10 +129,18 @@
                   <i class="fa fa-download"></i> Download Note</button>
               {% endif %}
 
-              {% if user.get_profile.can_edit_items %}
+              {% if user.get_profile.can_edit_items and note.user != user %}
                 <button id="edit-note-tags" class="modify-button" data-reveal-id="note-tag-dialog">
                   <i class="fa fa-pencil-square-o"></i> Edit Tags
                 </button>
+              {% endif %}
+
+              {% if note.user == request.user %}
+                <button id="edit-button" data-reveal-id="note-edit-dialog" class="modify-button"> <i class="fa fa-edit"></i> Edit This Note</button>&nbsp;&nbsp;
+              {% endif %}
+
+              {% if note.license %}
+                {{ note.license.html|safe }} {% if note.upstream_link %}<a href="{{ note.upstream_link }}" target="_blank">{{ note.upstream_link|slice:":80" }}</a>{% endif %}
               {% endif %}
             </span>
           </span>
@@ -144,7 +152,9 @@
           <strong>Tags: </strong>
           <span class="tags">
             {% for tag in note.tags.all %}
-              <span class="tag-span">{{ tag.name }}</span>
+              <span class="tag-span">
+                {{ tag.name }}{% if not forloop.last %}, {% endif %}
+              </span>
             {% endfor %}
           </span>
         </div><!-- /note_tags -->
@@ -154,20 +164,52 @@
         <a class="close-reveal-modal">&#215;</a>
         <div class="row">
           <div class="small-12 columns">
-            <p>Edit this note's tags:
-            <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"></p>
+            <h3>Edit this note's tags</h3>
+            <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
             <button id="save_note_tags" type="submit" value="tags-form"><i class="fa fa-save"></i> Save</button>
           </div>
         </div>
       </div>
 
-      {% if note.license %}
+      <div id="note-edit-dialog" class="reveal-modal" data-reveal>
+        <a class="close-reveal-modal">&#215;</a>
         <div class="row">
-          <div id="note_pedigree" class="twelve columns activity_details_status">
-            {{ note.license.html|safe }} {% if note.upstream_link %}<a href="{{ note.upstream_link }}" target="_blank">{{ note.upstream_link|slice:":80" }}</a>{% endif %}
-          </div><!-- /note_pedigree -->
+          <div class="small-8 columns">
+            <h3>Edit Your Note</h3>
+          </div>
+          <div class="small-4 columns text-right">
+            <form method="POST" action="{% url 'note_delete' %}">
+              {% csrf_token %}
+              {{ note_delete_form }}
+              <button id="delete-note-button" type="submit" class="scary"><i class="fa fa-trash-o"></i> Delete Note</button>
+            </form>
+          </div>
         </div>
-      {% endif %}
+        <div class="row">
+          <form method="POST" action="{{ note.get_absolute_url }}">
+            {% csrf_token %}
+            <div class="small-12 large-6 columns">
+              {% with note_edit_form.name as field %}
+                {{ field.errors|safe }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {{ field }}
+                <p>{{ field.help_text }}</p>
+              {% endwith %}
+            </div>
+            <div class="small-12 large-6 columns">
+              {% with note_edit_form.tags as field %}
+                {{ field.errors|safe }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {{ field }}
+                <p>{{ field.help_text }}</p>
+              {% endwith %}
+            </div>
+            <div class="small-12 columns text-center">
+              <button type="submit"><i class="fa fa-save"></i> Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
     </div><!-- /note header -->
 

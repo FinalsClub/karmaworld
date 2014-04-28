@@ -208,6 +208,12 @@ $(function() {
     };
   });
 
+  $('#delete-note-button').click(function (event) {
+    if (!confirm("Are you sure you want to delete this note?")) {
+      event.preventDefault();
+    }
+  });
+
   // Embed the converted markdown if it is on the page, else default to the iframe
   if ($('#note-markdown').length > 0) {
     var note_markdown = $('#note-markdown');

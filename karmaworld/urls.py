@@ -15,7 +15,7 @@ from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
 from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags, \
-    NoteKeywordsView
+    NoteKeywordsView, edit_note, NoteDeleteView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
 from karmaworld.apps.quizzes.views import QuizView, KeywordEditView, quiz_answer, get_keywords_annotator, \
@@ -98,6 +98,7 @@ urlpatterns = patterns('',
     url(r'^ajax/course/flag/(?P<pk>[\d]+)/$', flag_course, name='flag_course'),
     # Ajax endpoint to edit a course
     url(r'^ajax/course/edit/(?P<pk>[\d]+)/$', edit_course, name='edit_course'),
+    url(r'^ajax/note/edit/(?P<pk>[\d]+)/$', edit_note, name='edit_note'),
 
     # Check if a quiz answer is correct
     url(r'^ajax/quiz/check/$', quiz_answer, name='quiz_answer'),
@@ -118,6 +119,8 @@ urlpatterns = patterns('',
         NoteView.as_view(), name='note_detail'),
     url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'/keywords/$',
         NoteKeywordsView.as_view(), name='note_keywords'),
+
+    url(r'note/delete/$', NoteDeleteView.as_view(), name='note_delete'),
 
     # Quizzes
     url(r'^quiz/(?P<pk>[\d]+)/$',

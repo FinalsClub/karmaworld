@@ -4,8 +4,10 @@
 
 import traceback
 import logging
+from django.contrib import messages
 
 from django.core import serializers
+from django.core.exceptions import ValidationError
 from django.forms.formsets import formset_factory
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
@@ -21,7 +23,7 @@ from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 
 from karmaworld.apps.notes.models import Note
-from karmaworld.apps.notes.forms import NoteForm
+from karmaworld.apps.notes.forms import NoteForm, NoteDeleteForm
 
 
 logger = logging.getLogger(__name__)
@@ -33,6 +35,16 @@ USER_PROFILE_FLAGS_FIELD = 'flagged_notes'
 
 
 def note_page_context_helper(note, request, context):
+
+    if request.method == 'POST':
+        context['note_edit_form'] = NoteForm(request.POST)
+    else:
+        tags_string = ','.join([str(tag) for tag in note.tags.all()])
+        context['note_edit_form'] = NoteForm(initial={'name': note.name,
+                                                      'tags': tags_string})
+
+    context['note_delete_form'] = NoteDeleteForm(initial={'note': note.id})
+
     if note.is_pdf():
         context['pdf_controls'] = True
 
@@ -76,32 +88,29 @@ class NoteSaveView(FormView, SingleObjectMixin):
     model = Note
     template_name = 'notes/note_detail.html'
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.user != request.user:
+            raise ValidationError("Only the owner of a note can edit it.")
+        return super(NoteSaveView, self).post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
     def get_context_data(self, **kwargs):
         context = {
             'object': self.get_object(),
         }
         return super(NoteSaveView, self).get_context_data(**context)
 
-    def get_success_url(self):
-        """ On form submission success, redirect to what url """
-        #TODO: redirect to note slug if possible (auto-slugify)
-        return u'/{school_slug}/{course_slug}?url=/{school_slug}/{course_slug}/{pk}&name={name}&thankyou'.format(
-                school_slug=self.object.course.school.slug,
-                course_slug=self.object.course.slug,
-                pk=self.object.pk,
-                name=self.object.name
-            )
-
     def form_valid(self, form):
         """ Actions to take if the submitted form is valid
             namely, saving the new data to the existing note object
         """
-        self.object = self.get_object()
         if len(form.cleaned_data['name'].strip()) > 0:
             self.object.name = form.cleaned_data['name']
-        self.object.year = form.cleaned_data['year']
         # use *arg expansion to pass tags a list of tags
-        self.object.tags.add(*form.cleaned_data['tags'])
+        self.object.tags.set(*form.cleaned_data['tags'])
         # User has submitted this form, so set the SHOW flag
         self.object.is_hidden = False
         self.object.save()
@@ -125,6 +134,22 @@ class NoteView(View):
     def post(self, request, *args, **kwargs):
         view = NoteSaveView.as_view()
         return view(request, *args, **kwargs)
+
+
+class NoteDeleteView(FormView):
+    form_class = NoteDeleteForm
+
+    def form_valid(self, form):
+        self.note = Note.objects.get(id=form.cleaned_data['note'])
+        self.note.is_hidden = True
+        self.note.save()
+
+        messages.success(self.request, 'The note "{0}" was deleted successfully.'.format(self.note.name))
+
+        return super(FormView, self).form_valid(form)
+
+    def get_success_url(self):
+        return self.note.course.get_absolute_url()
 
 
 class NoteKeywordsView(FormView, SingleObjectMixin):
@@ -254,6 +279,34 @@ class NoteSearchView(ListView):
             kwargs['prev_page'] = int(self.request.GET['page']) - 1
 
         return super(NoteSearchView, self).get_context_data(**kwargs)
+
+
+def handle_edit_note(request):
+    course = Course.objects.get(pk=pk)
+    original_name = course.name
+    course_form = CourseForm(request.POST or None, instance=course)
+
+    if course_form.is_valid():
+        course_form.save()
+
+        course_json = serializers.serialize('json', [course,])
+        resp = json.loads(course_json)[0]
+
+        if (course.name != original_name):
+            course.set_slug()
+            resp['fields']['new_url'] = course.get_absolute_url()
+
+        return HttpResponse(json.dumps(resp), mimetype="application/json")
+    else:
+        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Validation error',
+                                      'errors': course_form.errors}),
+                                      mimetype="application/json")
+
+def edit_note(request, pk):
+    """
+    Saves the edited note metadata
+    """
+    ajax_base(request, edit_note, ['POST'])
 
 
 def process_note_thank_events(request_user, note):

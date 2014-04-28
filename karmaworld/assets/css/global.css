@@ -113,6 +113,10 @@ button.inline-button {
   display: inline;
 }
 
+button.scary {
+  background-color: #F12A2A;
+}
+
 .joyride-content-wrapper .button {
   background-color: #008CBA;
 }
