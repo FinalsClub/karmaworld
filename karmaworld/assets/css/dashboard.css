@@ -16,6 +16,10 @@
 
 div.stat-container {
   border-left: solid 1px #dfdfdf;
+  width: 200px;
+  float: left;
+  padding: 0 10px 0 20px;
+  margin: 5px 0 5px 0;
 }
 
 .activity_item {

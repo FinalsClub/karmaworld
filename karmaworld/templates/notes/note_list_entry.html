@@ -1,8 +1,8 @@
-<tr>
+<tr class="table-row">
   <td class="hide">{{ note.uploaded_at|date:"U" }}</td>
   <td class="hide">{{ note.thanks|stringformat:"010g" }}</td>
 
-  <td>
+  <td class="data-table-entry-wrapper">
     <div class="data-table-entry">
       <div class="note-date adelle-sans">{{ note.uploaded_at|date:"l, F j, Y" }}</div>
       <div class="note-name-line">
@@ -20,7 +20,7 @@
       {% else %}
         <div class="note-text show-for-large-up">{{ note.text|slice:":500" }} &hellip;</div>
       {% endif %}
-      <div class="note-tags">
+      <div class="note-tags show-for-large-up">
         {% if note.tags.count > 0 %}
           <span class="activity_details_context"><strong>Tags:</strong>
             {% for tag in note.tags.all %}

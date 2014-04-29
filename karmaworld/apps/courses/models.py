@@ -316,7 +316,7 @@ class Course(models.Model):
         # loaded into memory. In that case, we avoid making any more database
         # queries.
         sum = 0
-        for note in self.note_set:
+        for note in self.note_set.all():
             sum += note.thanks
         return sum
 

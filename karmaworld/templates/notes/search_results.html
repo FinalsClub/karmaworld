@@ -49,23 +49,27 @@
   </div>
 
   <div id="note-search-bar" class="row">
-    <div class="small-12 large-8 columns">
+    <div class="small-12 columns">
       <form class="search-notes" action="{% url 'note_search' %}" method="GET">
         <span>
         <input type="hidden" name="course_id" value="{{ course.id }}" />
         {% if course %}
-          <input name="query" class="search-notes" type="text" placeholder="Search Notes in {{ course.name }}" />
+          <input name="query" class="search" type="text" placeholder="Search Notes in {{ course.name }}" />
         {% else %}
-          <input name="query" class="search-notes" type="text" placeholder="Search All Notes" />
+          <input name="query" class="search" type="text" placeholder="Search All Notes" />
         {% endif %}
+        <button type="submit" class="search-icon"><i class="fa fa-search inline"></i></button>
         </span>
       </form>
     </div>
-    <div class="large-4 columns show-for-large-up">
-      <div id="note-sort-wrapper">
-        Sort By
+  </div>
+
+  <div class="row filter-options show-for-large-up">
+    <div class="large-3 columns end">
+      <div class="sort-label">Sort By</div>
+      <div class="select-wrapper">
         <select class="note-sort">
-          <option value="0">Date</option>
+          <option value="0">Date Added</option>
           <option value="1" selected>Popularity</option>
         </select>
       </div>

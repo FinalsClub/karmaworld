@@ -77,6 +77,15 @@ class CourseListSubView(ListView):
         # get the course form for the form at the bottom of the homepage
         context['course_form'] = CourseForm()
 
+        schools = set()
+        for course in self.object_list:
+            if course.school:
+                schools.add(course.school)
+            elif course.department.school:
+                schools.add(course.department.school)
+
+        context['schools'] = sorted(list(schools), key=lambda x: x.name)
+
         # Include settings constants for honeypot
         for key in ('HONEYPOT_FIELD_NAME', 'HONEYPOT_VALUE'):
             context[key] = getattr(settings, key)

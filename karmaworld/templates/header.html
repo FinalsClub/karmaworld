@@ -3,17 +3,19 @@
 
 <header id="global-header">
 
-  <div id="header-login-nav" class="show-for-large-up">
-    {% if request.user.is_authenticated %}
-      <div class="row nav-list">
-        <div class="large-12 columns">
-          <ul>
+  <div id="header-login-nav" class="show-for-medium-up">
+    <div class="row nav-list">
+      <div class="large-12 columns">
+        <ul>
+          {% if request.user.is_authenticated %}
             <li><a href="{% url 'accounts_profile' %}" class="inherit-color">{{ request.user.get_profile.get_points }} Karma Points</a></li>
             <li><a href="{% url 'account_logout' %}" class="inherit-color">Log Out</a></li>
-          </ul>
-        </div>
+          {% else %}
+            <li><a href="{% url 'account_login' %}" class="inherit-color">Log In</a></li>
+          {% endif %}
+        </ul>
       </div>
-    {% endif %}
+    </div>
   </div>
 
 
@@ -21,7 +23,7 @@
     <nav id="main-header" class="top-bar" data-topbar>
       <ul class="title-area">
         <li class="name">
-          <h1 class="museo700"><a href="/"><img src="{{ STATIC_URL }}img/global_header_logo.png" alt="KarmaNotes" /></a></h1>
+          <h1 class="museo700"><a href="/"><img src="{{ STATIC_URL }}img/karmanotes_logo_small.png" alt="KarmaNotes" /></a></h1>
         </li>
         <li class="toggle-topbar menu-icon">
           <a href="#">Menu</a>
@@ -35,7 +37,6 @@
             <li class="hide-for-large-up"><a href="{% url 'accounts_profile' %}#control_panel">My Account</a></li>
             <li class="hide-for-large-up"><a href="{% url 'account_logout' %}">Log Out</a></li>
           {% else %}
-            <li><a href="{% url 'account_login' %}">Log In</a></li>
             <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
           {% endif %}
         </ul>

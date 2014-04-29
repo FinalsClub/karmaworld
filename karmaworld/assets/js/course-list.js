@@ -40,24 +40,26 @@ $(function() {
     dataTable.fnFilter($(this).val());
   });
 
-  function sortDirection(col) {
-    if (col == 3) {
-      return 'asc';
-    } else {
-      return 'desc';
-    }
-  }
-
   // wire up sort chooser
-  $('select.course-sort').change(function() {
+  $('#sort-by').change(function() {
     var sortCol = $(this).val();
-    dataTable.fnSort([[sortCol, sortDirection(sortCol)]]);
+    dataTable.fnSort([[sortCol, 'desc']]);
   });
 
   // sort by current value of sort chooser, since
   // the browser may change this from our default
-  var sortCol = $('select.course-sort').val();
-  dataTable.fnSort([[sortCol, sortDirection(sortCol)]]);
+  var sortCol = $('#sort-by').val();
+  dataTable.fnSort([[sortCol, 'desc']]);
+
+  // filter by chosen school
+  $('#school-filter').change(function() {
+    var schoolName = $(this).val();
+    if (schoolName === 'ALL') {
+      dataTable.fnFilter('');
+    } else {
+      dataTable.fnFilter(schoolName);
+    }
+  });
 
 });
 

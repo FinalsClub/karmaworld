@@ -224,7 +224,7 @@
 
     <div class="row">
       <div id="tabs" class="small-12 columns">
-        <dl class="tabs show-for-large-up">
+        <dl class="tabs">
           <dd id="note-tab-button" class="{% if show_note_container %}active{% endif %}">
             <a href="{{ note.get_absolute_url }}">Note</a>
           </dd>
@@ -280,7 +280,7 @@
           <div id="keywords" class="content">
             <div class="row">
               <div class="small-12 columns">
-                <p>These key terms and definitions have been defined by KarmaNotes users.
+                <p id="keyword-intro">These key terms and definitions have been defined by KarmaNotes users.
                 You can edit them for accuracy and add more if you like.</p>
                 <p><button id="edit-keywords-button" class="museo700"><i class="fa fa-edit"></i> Edit Key Terms & Definitions</button></p>
                 <table id="keywords-data-table">

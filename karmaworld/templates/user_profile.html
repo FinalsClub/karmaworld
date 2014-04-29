@@ -18,18 +18,20 @@
   <section id="dashboard_content">
     <div id="stats-container">
       <div class="row museo700">
-        <div id="user-name" class="small-12 large-3 columns">
-          {% user_display user %}
-        </div>
-        <div class="small-12 large-3 columns stat-container">
-          <span class="stat-count">{{ user.get_profile.get_points }}</span>
-          <br/>
-          Karma Points
-        </div>
-        <div class="small-12 large-3 columns end stat-container">
-          <span class="stat-count">{{ user.note_set.count }}</span>
-          <br/>
-          Notes Uploaded
+        <div class="small-12 columns">
+          <div id="user-name" class="stat-container">
+            {% user_display user %}
+          </div>
+          <div class="stat-container">
+            <span class="stat-count">{{ user.get_profile.get_points }}</span>
+            <br/>
+            Karma Points
+          </div>
+          <div class="stat-container">
+            <span class="stat-count">{{ user.note_set.count }}</span>
+            <br/>
+            Notes Uploaded
+          </div>
         </div>
       </div>
 

@@ -39,7 +39,7 @@
         <div class="row">
           <div class="small-12 columns">
             <a href="{% url 'about' %}">
-              <button id="intro-video-button">Watch the video&nbsp;&nbsp;<i class='fa fa-caret-right'></i></button>
+              <button id="intro-video-button">Watch the video&nbsp;&nbsp;<i class='fa fa-caret-right fa-lg'></i></button>
             </a>
           </div>
         </div>
@@ -48,22 +48,36 @@
 
     <div id="course-search-bar">
       <div class="row">
-        <div class="small-12 large-2 columns">
-          <button id="add-course-btn" class="inline-button important" data-reveal-id="add-course-form">Add a Course</button>
+        <div class="small-12 large-3 columns">
+          <button id="add-course-btn" class="inline-button important museo700" data-reveal-id="add-course-form">Add a Course</button>
         </div>
-        <div class="small-12 large-6 columns">
-          <input class="search-courses" type="text" placeholder="Search Courses and Schools" />
+        <div class="small-12 large-9 columns">
+          <span><input class="search adelle-sans" type="text" placeholder="Search Courses and Schools" />
+          <i class="fa fa-search inline search-icon"></i></span>
         </div>
-        <div class="large-4 columns show-for-large-up">
-          <div id="course-sort-wrapper">
-            Sort By
-            <select class="course-sort">
-              <option value="0">Date</option>
-              <option value="1">Number of Notes</option>
-              <option value="2" selected>Popularity</option>
-              <option value="3">School</option>
-            </select>
-          </div>
+      </div>
+    </div>
+
+    <div class="row filter-options show-for-large-up">
+      <div class="large-3 columns">
+        <div class="sort-label">Sort By</div>
+        <div class="select-wrapper">
+          <select id="sort-by">
+            <option value="0">Date Added</option>
+            <option value="1">Number of Notes</option>
+            <option value="2" selected>Popularity</option>
+          </select>
+        </div>
+      </div>
+      <div class="large-3 columns show-for-large-up end">
+        <div class="sort-label">School</div>
+        <div class="select-wrapper">
+          <select id="school-filter">
+            <option value="ALL" selected>All Schools</option>
+            {% for school in schools %}
+              <option value="{{ school.name }}">{{ school.name }}</option>
+            {% endfor %}
+          </select>
         </div>
       </div>
     </div>
