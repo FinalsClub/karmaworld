@@ -16,7 +16,7 @@ from karmaworld.apps.quizzes.models import Keyword
 from karmaworld.apps.users.models import NoteKarmaEvent
 from karmaworld.utils.ajax_utils import *
 
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.generic import DetailView, ListView
 from django.views.generic import FormView
 from django.views.generic import View
@@ -164,6 +164,9 @@ class NoteKeywordsView(FormView, SingleObjectMixin):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if not self.request.user.is_authenticated():
+            raise ValidationError("Only authenticated users may set keywords.")
+
         formset = self.form_class(request.POST)
         if formset.is_valid():
             self.keyword_form_valid(formset)

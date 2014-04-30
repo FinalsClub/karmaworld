@@ -150,6 +150,10 @@ def process_set_delete_keyword(request):
     definition = annotator_data['text']
     ranges = json.dumps(annotator_data['ranges'])
 
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden(json.dumps({'status': 'fail', 'message': "Only authenticated users may set keywords"}),
+                                     mimetype="application/json")
+
     try:
         if request.method in ('POST', 'PUT'):
             set_keyword(annotation_uri, keyword, definition, ranges)

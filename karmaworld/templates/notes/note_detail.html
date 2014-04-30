@@ -27,6 +27,7 @@
     var annotator_css_url = "{{ STATIC_URL }}css/annotator.min.css";
     var setup_ajax_url = "{{ STATIC_URL }}js/setup-ajax.js";
     var note_edit_url = "{% url 'edit_note' note.id %}";
+    var user_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
   </script>
   {% compress js %}
     <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
@@ -280,9 +281,13 @@
           <div id="keywords" class="content">
             <div class="row">
               <div class="small-12 columns">
-                <p id="keyword-intro">These key terms and definitions have been defined by KarmaNotes users.
-                You can edit them for accuracy and add more if you like.</p>
-                <p><button id="edit-keywords-button" class="museo700"><i class="fa fa-edit"></i> Edit Key Terms & Definitions</button></p>
+                {% if user.is_authenticated %}
+                  <p id="keyword-intro">These key terms and definitions have been defined by KarmaNotes users.
+                  You can edit them for accuracy and add more if you like.</p>
+                  <p><button id="edit-keywords-button" class="museo700"><i class="fa fa-edit"></i> Edit Key Terms & Definitions</button></p>
+                {% else %}
+                  <p id="keyword-intro">These key terms and definitions have been defined by KarmaNotes users.</p>
+                {% endif %}
                 <table id="keywords-data-table">
                   <thead>
                     <tr>

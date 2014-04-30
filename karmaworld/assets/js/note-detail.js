@@ -55,8 +55,8 @@ function writeNoteFrame(contents) {
   dstDoc.close();
 }
 
-function setupAnnotator(noteElement) {
-  noteElement.annotator();
+function setupAnnotator(noteElement, readOnly) {
+  noteElement.annotator({readOnly: readOnly});
   noteElement.annotator('addPlugin', 'Store', {
     prefix: '/ajax/annotations',
     loadFromSearch: {
@@ -218,7 +218,7 @@ function initNoteContentPage() {
   if ($('#note-markdown').length > 0) {
     var note_markdown = $('#note-markdown');
     note_markdown.html(marked(note_markdown.data('markdown')));
-    setupAnnotator(note_markdown);
+    setupAnnotator(note_markdown, !user_authenticated);
   } else {
     $.ajax(note_contents_url, {
       type: 'GET',
@@ -247,7 +247,7 @@ function initNoteContentPage() {
                   if ($('#page-container').length > 0) { \
                     document_selector = $('#page-container'); \
                   } \
-                  document_selector.annotator(); \
+                  document_selector.annotator({readOnly: " + !user_authenticated + "}); \
                   document_selector.annotator('addPlugin', 'Store', { \
                     prefix: '/ajax/annotations', \
                     loadFromSearch: { \
