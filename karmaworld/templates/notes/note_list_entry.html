@@ -1,6 +1,7 @@
 <tr class="table-row">
   <td class="hide">{{ note.uploaded_at|date:"U" }}</td>
   <td class="hide">{{ note.thanks|stringformat:"010g" }}</td>
+  <td class="hide">{{ note.category }}</td>
 
   <td class="data-table-entry-wrapper">
     <div class="data-table-entry">
@@ -20,13 +21,17 @@
       {% else %}
         <div class="note-text show-for-large-up">{{ note.text|slice:":500" }} &hellip;</div>
       {% endif %}
+      <div class="note-category show-for-large-up">
+        {% if note.category %}
+          <em>{{ note.get_category_display }}</em>
+        {% endif %}
+      </div>
       <div class="note-tags show-for-large-up">
         {% if note.tags.count > 0 %}
-          <span class="activity_details_context"><strong>Tags:</strong>
-            {% for tag in note.tags.all %}
-              {{ tag.name }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-          </span>
+          <strong>Tags:</strong>
+          {% for tag in note.tags.all %}
+            {{ tag.name }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
         {% endif %}
       </div>
     </div>

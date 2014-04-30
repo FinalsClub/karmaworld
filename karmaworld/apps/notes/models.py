@@ -64,7 +64,20 @@ class Document(models.Model):
     tags            = TaggableManager(blank=True)
     name            = models.CharField(max_length=255, blank=True, null=True)
     slug            = models.SlugField(max_length=255, unique=True)
-    
+
+    LECTURE_NOTES = 'LECTURE_NOTES'
+    STUDY_GUIDE = 'STUDY_GUIDE'
+    SYLLABUS = 'SYLLABUS'
+    ASSIGNMENT = 'ASSIGNMENT'
+    OTHER = 'OTHER'
+    NOTE_CATEGORIES = (
+        (LECTURE_NOTES, 'Lecture Notes'),
+        (STUDY_GUIDE, 'Study Guide'),
+        (SYLLABUS, 'Syllabus'),
+        (ASSIGNMENT, 'Assignment'),
+        (OTHER, 'Other'),
+    )
+    category = models.CharField(max_length=50, choices=NOTE_CATEGORIES, blank=True, null=True)
 
     # license if different from default
     license         = models.ForeignKey(License, blank=True, null=True)

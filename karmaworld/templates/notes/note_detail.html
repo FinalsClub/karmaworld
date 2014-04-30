@@ -157,6 +157,14 @@
         </div>
       </div>
 
+      {% if note.category %}
+      <div id="note-category" class="row show-for-large-up">
+        <div class="small-12 columns">
+          <em>{{ note.get_category_display }}</em>
+        </div>
+      </div>
+      {% endif %}
+
       <div id="note-tags" class="row show-for-large-up">
         <div class="small-12 columns">
           <strong>Tags: </strong>

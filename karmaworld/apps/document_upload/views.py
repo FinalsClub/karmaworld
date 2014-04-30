@@ -22,7 +22,6 @@ def save_fp_upload(request):
         raw_document.ip = request.META['REMOTE_ADDR']
         raw_document.uploaded_at = datetime.datetime.utcnow()
 
-        # note that .save() has the side-effect of kicking of a celery processing task
         if request.user.is_authenticated():
             raw_document.save()
         else:

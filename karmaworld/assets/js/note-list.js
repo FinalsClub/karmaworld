@@ -9,21 +9,6 @@ $(function() {
     'iDisplayLength': 20,
     // Position the filter bar at the top
     'sDom': dataTable_sDom,
-    // Specify options for each column
-    "aoColumnDefs": [
-      {
-        // 2nd element: thanks
-        "aTargets": [ 1 ],
-        "bSortable": true,
-        "bVisible": true
-      },
-      {
-        // 1st element: date
-        "aTargets": [ 0 ],
-        "bSortable": true,
-        "bVisible": true
-      }
-    ],
     // Initial sorting
     'aaSorting': [[1,'desc']]
   });
@@ -37,5 +22,15 @@ $(function() {
     // sort by current value of sort chooser, since
     // the browser may change this from our default
     dataTable.fnSort([[$('select.note-sort').val(), 'desc']]);
+
+    $('select.note-category').change(function() {
+      var category = $(this).val();
+      if (category === 'ALL') {
+        dataTable.fnFilter('');
+      } else {
+        dataTable.fnFilter(category);
+      }
+    });
+
   }
 });

@@ -116,6 +116,7 @@ class CourseDetailView(DetailView):
 
         # For the Filepicker Partial template
         kwargs['file_upload_form'] = FileUploadForm()
+        kwargs['note_categories'] = Note.NOTE_CATEGORIES
 
         if self.request.user.is_authenticated():
             try:

@@ -50,6 +50,7 @@ $(function(){
         name = $(el).find('.intext').val();
         fp_file = $(el).find('.fpurl').val();
         tags = $(el).find('.taggit-tags').val();
+        category = $(el).find('.category').val();
         course = $(el).find('.course_id').val();
         csrf = $(el).find('.csrf').val();
         email = $('#id_email').val();
@@ -59,6 +60,7 @@ $(function(){
           'name': name,
           'fp_file': fp_file,
           'tags': tags,
+          'category': category,
           'course': course,
           'csrfmiddlewaretoken': csrf,
           'mimetype': mimetype,

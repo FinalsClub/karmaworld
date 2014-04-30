@@ -9,4 +9,4 @@ from karmaworld.apps.document_upload.models import RawDocument
 class RawDocumentForm(ModelForm):
     class Meta:
         model = RawDocument
-        fields = ('name', 'tags', 'course', 'fp_file', 'mimetype')
+        fields = ('name', 'tags', 'course', 'fp_file', 'mimetype', 'category')
