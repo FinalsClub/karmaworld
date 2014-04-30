@@ -255,24 +255,17 @@
 
             <div class="row">
               <div class="small-12 small-centered columns medium-12 large-12 body_copy">
-                {% if note.static_html %}
-                  <div id="note-content-wrapper" class="note-text">
-                    {% if note.has_markdown %}
-                      <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
-                    {% else %}
-                      <iframe style="border:none; width:100%; min-height: 1000px;"
-                            id="noteframe"></iframe>
-                      <noscript>
-                        {{ note.text }}
-                      </noscript>
-                    {% endif %}
-                  </div> <!-- .note-text -->
-
-                {% else %} {# note.static_html #}
-                  <div class="note-error">
-                    This document's content is currently unavailable. Please try again later.
-                  </div>
-                {% endif %} {# note.static_html #}
+                <div id="note-content-wrapper" class="note-text">
+                  {% if note.has_markdown %}
+                    <span id="note-markdown" data-markdown="{{note.notemarkdown.markdown}}"></span>
+                  {% else %}
+                    <iframe style="border:none; width:100%; min-height: 1000px;"
+                          id="noteframe"></iframe>
+                    <noscript>
+                      {{ note.text }}
+                    </noscript>
+                  {% endif %}
+                </div> <!-- .note-text -->
               </div><!-- /body_copy -->
             </div>
           </div><!-- /note_container -->

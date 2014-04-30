@@ -42,7 +42,6 @@ class TestNotes(TestCase):
         self.note = Note()
         self.note.course = self.course
         self.note.name = u"Lecture notes concerning the use of therefore ∴"
-        self.note.file_type = 'doc'
         self.note.uploaded_at = self.now
         self.note.text = "This is the plaintext version of a note. It's pretty cool. Alpaca."
         self.note.save()
