@@ -38,6 +38,7 @@
             <li class="hide-for-large-up"><a href="{% url 'account_logout' %}">Log Out</a></li>
           {% else %}
             <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+            <li class="hide-for-large-up"><a href="{% url 'account_login' %}">Log In</a></li>
           {% endif %}
         </ul>
       </section>

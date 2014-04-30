@@ -81,7 +81,7 @@ class CourseListSubView(ListView):
         for course in self.object_list:
             if course.school:
                 schools.add(course.school)
-            elif course.department.school:
+            elif course.department and course.department.school:
                 schools.add(course.department.school)
 
         context['schools'] = sorted(list(schools), key=lambda x: x.name)
