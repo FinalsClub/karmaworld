@@ -8,7 +8,6 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
 
-from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.views import AboutView, flag_course, edit_course
 from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.courses.views import CourseListView
@@ -18,11 +17,8 @@ from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, fl
     NoteKeywordsView, edit_note, NoteDeleteView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
-from karmaworld.apps.quizzes.views import QuizView, KeywordEditView, quiz_answer, get_keywords_annotator, \
-    set_delete_keyword_annotator, get_keywords_datatables
+from karmaworld.apps.quizzes.views import set_delete_keyword_annotator, get_keywords_annotator
 from karmaworld.apps.users.views import ProfileView
-
-from ajax_select import urls as ajax_select_urls
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 admin.autodiscover()
@@ -41,7 +37,6 @@ SLUG = r'(?P<{0}slug>[-A-Za-z0-9_]+)'
         NoteView.as_view(), name='note_detail_pk'),
 """
 
-# See: https://docs.djangoproject.com/en/dev/topics/http/urls/
 urlpatterns = patterns('',
     ## Administrative URLpatterns
     # Admin panel and documentation:
@@ -100,9 +95,6 @@ urlpatterns = patterns('',
     url(r'^ajax/course/edit/(?P<pk>[\d]+)/$', edit_course, name='edit_course'),
     url(r'^ajax/note/edit/(?P<pk>[\d]+)/$', edit_note, name='edit_note'),
 
-    # Check if a quiz answer is correct
-    url(r'^ajax/quiz/check/$', quiz_answer, name='quiz_answer'),
-
     url(r'^ajax/annotations/annotations$', set_delete_keyword_annotator, name='set_keyword'),
     url(r'^ajax/annotations/search/$', get_keywords_annotator, name='get_keywords'),
 
@@ -121,12 +113,6 @@ urlpatterns = patterns('',
         NoteKeywordsView.as_view(), name='note_keywords'),
 
     url(r'note/delete/$', NoteDeleteView.as_view(), name='note_delete'),
-
-    # Quizzes
-    url(r'^quiz/(?P<pk>[\d]+)/$',
-        QuizView.as_view(), name='quiz'),
-    url(r'^keywords/' + SLUG.format('') + '/$',
-        KeywordEditView.as_view(), name='keyword_edit'),
 
     url(r'^$', CourseListView.as_view(), name='home'),
 )
