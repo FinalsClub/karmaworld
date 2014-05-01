@@ -292,8 +292,7 @@ def nltk_download():
     """
     Initialize corpa used by NLTK
     """
-    virtenv_exec('python -c "import nltk\n'
-                 'nltk.download(\'maxent_treebank_pos_tagger\')'"")
+    virtenv_exec('{0}/manage.py nltk_download'.format(env.code_root))
 
 @task
 def first_deploy():
