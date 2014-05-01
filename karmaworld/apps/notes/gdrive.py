@@ -33,24 +33,6 @@ PDF_MIMETYPE = 'application/pdf'
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
 
 
-def extract_file_details(fileobj):
-    details = None
-    year = None
-
-    fileobj.open()
-    filebuf = fileobj.read()
-    with magic.Magic() as m:
-        details = m.id_buffer(filebuf)
-    fileobj.close()
-
-    result = re.search(r'Create Time/Date:[^,]+(?P<year>\d{4})', details)
-    if result:
-        if 'year' in result.groupdict():
-            year = result.groupdict()['year']
-
-    return {'year': year}
-
-
 def build_api_service():
     """
     Build and returns a Drive service object authorized with the service
@@ -256,9 +238,6 @@ def convert_raw_document(raw_document, user=None):
         note_markdown = NoteMarkdown(note=note, markdown=markdown)
         note_markdown.save()
 
-    note_details = extract_file_details(fp_file)
-    if 'year' in note_details and note_details['year']:
-        note.year = note_details['year']
 
     # If we know the user who uploaded this,
     # associate them with the note

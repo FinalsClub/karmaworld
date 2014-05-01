@@ -169,11 +169,15 @@
         <div class="small-12 columns">
           <strong>Tags: </strong>
           <span class="tags">
-            {% for tag in note.tags.all %}
-              <span class="tag-span">
-                {{ tag.name }}{% if not forloop.last %}, {% endif %}
-              </span>
-            {% endfor %}
+            {% if note.tags.all %}
+              {% for tag in note.tags.all %}
+                <span class="tag-span">
+                  {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                </span>
+              {% endfor %}
+            {% else %}
+              <em class="light">(none defined yet)</em>
+            {% endif %}
           </span>
         </div><!-- /note_tags -->
       </div>
@@ -299,7 +303,13 @@
                   {% for keyword in keywords %}
                     <tr>
                       <td>{{ keyword.word }}</td>
-                      <td>{{ keyword.definition }}</td>
+                      <td>
+                        {% if keyword.definition %}
+                          {{ keyword.definition }}
+                        {% else %}
+                          <em class="light">(not defined yet)</em>
+                        {% endif %}
+                      </td>
                     </tr>
                   {% endfor %}
                 </table>

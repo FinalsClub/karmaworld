@@ -351,3 +351,7 @@ button.search-icon {
   border-bottom: 1px solid #a9a9a9;
 }
 
+.light {
+  opacity: 0.8;
+  font-size: 0.8em;
+}
