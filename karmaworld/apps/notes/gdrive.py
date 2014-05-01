@@ -9,6 +9,8 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from karmaworld.apps.notes.models import UserUploadMapping
 from karmaworld.apps.notes.models import NoteMarkdown
+from karmaworld.apps.quizzes.find_keywords import find_keywords
+from karmaworld.apps.quizzes.models import Keyword
 from karmaworld.apps.users.models import NoteKarmaEvent
 import os
 import subprocess
@@ -238,6 +240,10 @@ def convert_raw_document(raw_document, user=None):
         note_markdown = NoteMarkdown(note=note, markdown=markdown)
         note_markdown.save()
 
+    # Guess some keywords from the note text
+    keywords = find_keywords(note.text)
+    for word in keywords:
+        Keyword.objects.create(word=word, note=note)
 
     # If we know the user who uploaded this,
     # associate them with the note

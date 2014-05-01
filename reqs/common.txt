@@ -27,3 +27,6 @@ git+https://github.com/btbonval/django-ajax-selects-cascade.git
 psycopg2
 git+https://github.com/Soaa-/django-nested-inlines.git
 pyth
+http://python-graph.googlecode.com/files/python-graph-core-1.8.2.tar.gz
+nltk
+numpy
