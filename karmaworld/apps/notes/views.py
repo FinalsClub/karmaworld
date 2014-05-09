@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.forms.formsets import formset_factory
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
+from karmaworld.apps.quizzes.create_quiz import quiz_from_keywords
 from karmaworld.apps.quizzes.find_keywords import find_keywords
 from karmaworld.apps.quizzes.forms import KeywordForm
 from karmaworld.apps.quizzes.models import Keyword
@@ -18,7 +19,7 @@ from karmaworld.apps.users.models import NoteKarmaEvent
 from karmaworld.utils.ajax_utils import *
 
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic import FormView
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
@@ -67,6 +68,7 @@ class NoteDetailView(DetailView):
     """ Class-based view for the note html page """
     model = Note
     context_object_name = u"note" # name passed to template
+    template_name = 'notes/note_base.html'
 
     def get_context_data(self, **kwargs):
         """ Generate custom context for the page rendering a Note
@@ -87,7 +89,7 @@ class NoteSaveView(FormView, SingleObjectMixin):
     """
     form_class = NoteForm
     model = Note
-    template_name = 'notes/note_detail.html'
+    template_name = 'notes/note_base.html'
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -158,7 +160,7 @@ class NoteKeywordsView(FormView, SingleObjectMixin):
     model = Note
     context_object_name = u"note" # name passed to template
     form_class = formset_factory(KeywordForm)
-    template_name = 'notes/note_detail.html'
+    template_name = 'notes/note_base.html'
 
     def get_object(self, queryset=None):
         return Note.objects.get(slug=self.kwargs['slug'])
@@ -214,6 +216,21 @@ class NoteKeywordsView(FormView, SingleObjectMixin):
             keyword_object.word = word
             keyword_object.definition = definition
             keyword_object.save()
+
+
+class NoteQuizView(TemplateView):
+    template_name = 'notes/note_base.html'
+
+    def get_context_data(self, **kwargs):
+        note = Note.objects.get(slug=self.kwargs['slug'])
+
+        note_page_context_helper(note, self.request, kwargs)
+
+        kwargs['note'] = note
+        kwargs['questions'] = quiz_from_keywords(note)
+        kwargs['show_quiz'] = True
+
+        return super(NoteQuizView, self).get_context_data(**kwargs)
 
 
 class NoteSearchView(ListView):

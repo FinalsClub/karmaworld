@@ -292,4 +292,33 @@ function initNoteKeywordsPage() {
 
 }
 
+function markQuestionCorrect(question) {
+  question.find('.quiz-question').addClass('correct');
+  question.find('.quiz-question').removeClass('incorrect');
+  question.find('.correct-label').show();
+  question.find('.incorrect-label').hide();
+}
+
+function markQuestionIncorrect(question) {
+  question.find('.quiz-question').addClass('incorrect');
+  question.find('.quiz-question').removeClass('correct');
+  question.find('.incorrect-label').show();
+  question.find('.correct-label').hide();
+}
+
+function initQuizPage() {
+  $('#check-answers-button').click(function() {
+    $('.quiz-question-wrapper').each(function() {
+      var choice = $(this).find('input:checked');
+      if (choice.length) {
+        console.log(choice);
+        if (choice.data('correct') == true) {
+          markQuestionCorrect($(this));
+        } else {
+          markQuestionIncorrect($(this));
+        }
+      }
+    });
+  });
+}
 

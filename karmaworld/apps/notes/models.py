@@ -315,6 +315,19 @@ class Note(Document):
             # return a url ending in id
             return reverse('note_keywords', args=[self.course.school.slug, self.course.slug, self.id])
 
+    def get_absolute_quiz_url(self):
+        """ Resolve note url, use 'note' route and slug if slug
+            otherwise use note.id
+        """
+        if self.slug is not None:
+            # return a url ending in slug
+            if self.course.school:
+                return reverse('note_quiz', args=[self.course.school.slug, self.course.slug, self.slug])
+            else:
+                return reverse('note_quiz', args=[self.course.department.school.slug, self.course.slug, self.slug])
+        else:
+            # return a url ending in id
+            return reverse('note_quiz', args=[self.course.school.slug, self.course.slug, self.id])
 
     def filter_html(self, html):
         """

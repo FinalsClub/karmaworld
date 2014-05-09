@@ -133,11 +133,63 @@ button.add-note-btn {
   padding: 5px;
 }
 
-#keyword-intro {
+#keyword-intro,
+#quiz-intro {
   font-size: 0.8em;
+}
+
+#quiz-intro {
+  margin-bottom: 10px;
 }
 
 #note-category {
   margin-bottom: 10px;
+}
+
+.quiz-question {
+  margin-bottom: 20px;
+}
+
+.quiz-question-inner {
+  padding: 10px 0 10px 0;
+}
+
+.question-text {
+  margin: 0 0 10px 0;
+}
+
+.quiz-question input[type="radio"]:checked+label {
+  font-weight: bold;
+}
+
+.correct {
+  background-color: #e5ffdc;
+}
+
+.incorrect {
+  background-color: #ffdcdc;
+}
+
+.correct-label,
+.incorrect-label {
+  padding-left: 0;
+}
+
+.correct-label-inner,
+.incorrect-label-inner {
+  color: #ffffff;
+  font-weight: bold;
+  padding: 5px 10px 5px 10px;
+  font-size: 0.8em;
+  width: intrinsic;			/* Safari/WebKit uses a non-standard name */
+  width: -moz-max-content;	/* Firefox/Gecko */
+}
+
+.correct-label-inner {
+  background-color: #4f7342;
+}
+
+.incorrect-label-inner {
+  background-color: #740b00;
 }
 

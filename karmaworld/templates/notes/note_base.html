@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load compress %}
+
+{% block title %}
+  {{ note.name }}
+{% endblock %}
+
+{% block pagestyle %}
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/annotator.min.css" />
+  {% endcompress %}
+{% endblock %}
+
+{% block pagescripts %}
+  <script type="text/javascript">
+    var note_id = {{ note.id }};
+    var note_thank_url = "{% url 'thank_note' note.id %}"
+    var note_flag_url = "{% url 'flag_note' note.id %}"
+    var edit_note_tags_url = "{% url 'edit_note_tags' note.id %}"
+    var note_downloaded_url = "{% url 'downloaded_note' note.id %}"
+    var note_contents_url = "{{ S3_URL }}{{ note.get_relative_s3_path }}"
+    var pdfControls = {% if pdf_controls %} true {% else %} false {% endif %};
+    var csrf_token = "{{ csrf_token }}";
+    var annotator_js_url = "{{ STATIC_URL }}js/annotator-full.min.js";
+    var annotator_css_url = "{{ STATIC_URL }}css/annotator.min.css";
+    var setup_ajax_url = "{{ STATIC_URL }}js/setup-ajax.js";
+    var note_edit_url = "{% url 'edit_note' note.id %}";
+    var user_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+  </script>
+  {% compress js %}
+    <script src="{{ STATIC_URL }}js/setup-ajax.js"></script>
+    <script src="{{ STATIC_URL }}js/note-detail.js" ></script>
+    <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
+    <script src="{{ STATIC_URL }}js/marked.js" ></script>
+    <script src="{{ STATIC_URL }}js/annotator-full.min.js"></script>
+  {% endcompress %}
+  <script>
+    {% if show_note_container %}
+      $(function() {
+        $(document).foundation('joyride', 'start');
+        initNoteContentPage();
+      });
+    {% endif %}
+
+    {% if show_keywords %}
+      $(function() {
+        initNoteKeywordsPage();
+      });
+    {% endif %}
+
+    {% if show_quiz %}
+      $(function() {
+        initQuizPage();
+      });
+    {% endif %}
+  </script>
+{% endblock %}
+
+{% block raw_content %}
+  <section id="note_content">
+
+    <div class="return-to-course show-for-large-up">
+      <div class="row">
+        <div class="small-12 columns">
+          <a href="{{ note.course.get_absolute_url }}" class="inherit-color">
+            <i class="fa fa-angle-double-left"></i> See all notes for {{ note.course.name }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="note_header">
+
+      <div class="row header-byline">
+        <div class="small-12 columns">
+          <strong>Lecture note for {{ note.course.name }} </strong>
+          at
+          {% if note.course.department.school %}
+            {{ note.course.department.school.name }}
+          {% else %}
+            {{ note.course.school.name }}
+          {% endif %}
+          &nbsp;&nbsp;
+          <span style="display: inline;"><span class="show-for-large-up"><i class="fa fa-thumbs-up"></i> <span id="thank-number">{{ note.thanks }}</span> Thank{{ note.thanks|pluralize }}</span></span>
+        </div>
+      </div>
+
+      <div class="row museo700">
+        <div class="small-12 columns header-title-row">
+          <span class="header-title">{{ note.name }} </span>
+          <span style="display: inline;">
+            <span class="show-for-large-up">
+              {% if user.is_authenticated %}
+                {% if already_thanked %}
+                  <button id="thank-button-disabled" class="modify-button disabled opentip"
+                          data-ot="You've already thanked this note"
+                           {% include 'partial/opentip_settings.html' %}>
+                    <i class="fa fa-thumbs-up"></i> Thank Note</button>
+                {% else %}
+                  <button id="thank-button" class="modify-button"><i class="fa fa-thumbs-up"></i> Thank Note</button>
+                  <button id="thank-button-disabled" class="modify-button disabled opentip hide"
+                          data-ot="You've already thanked this note"
+                           {% include 'partial/opentip_settings.html' %}>
+                    <i class="fa fa-thumbs-up"></i> Thank Note</button>
+                {% endif %}
+              {% else %}
+                <button id="thank-button-disabled" class="modify-button disabled opentip"
+                          data-ot="Log in to thank this note"
+                           {% include 'partial/opentip_settings.html' %}>
+                    <i class="fa fa-thumbs-up"></i> Thank Note</button>
+              {% endif %}
+
+              {% if user.is_authenticated %}
+                {% if already_flagged %}
+                  <button id="flag-button-disabled" class="modify-button disabled opentip"
+                          data-ot="You've already reported this note"
+                           {% include 'partial/opentip_settings.html' %}>
+                    <i class="fa fa-flag"></i> Report Note</button>
+                {% else %}
+                  <button id="flag-button" class="modify-button"><i class="fa fa-flag"></i> Report Note</button>
+                  <button id="flag-button-disabled" class="modify-button disabled opentip hide"
+                          data-ot="You've already reported this note"
+                           {% include 'partial/opentip_settings.html' %}>
+                    <i class="fa fa-flag"></i> Report Note</button>
+                {% endif %}
+              {% else %}
+                <button id="flag-button-disabled" class="modify-button disabled opentip"
+                          data-ot="Log in to report this note"
+                           {% include 'partial/opentip_settings.html' %}>
+                    <i class="fa fa-flag"></i> Report Note</button>
+              {% endif %}
+
+              {% if user.is_authenticated %}
+                <a href="{{ note.get_fp_url }}">
+                  <button id="note-download-button" class="modify-button opentip"
+                          data-ot="It costs 2 karma points to download a note"
+                          {% include 'partial/opentip_settings.html' %}>
+                    <i class="fa fa-download"></i> Download Note</button></a>
+              {% else %}
+                <button id="note-download-button-disabled" class="modify-button disabled opentip"
+                          data-ot="Log in to download this note"
+                           {% include 'partial/opentip_settings.html' %}>
+                  <i class="fa fa-download"></i> Download Note</button>
+              {% endif %}
+
+              {% if user.get_profile.can_edit_items and note.user != user %}
+                <button id="edit-note-tags" class="modify-button" data-reveal-id="note-tag-dialog">
+                  <i class="fa fa-pencil-square-o"></i> Edit Tags
+                </button>
+              {% endif %}
+
+              {% if note.user == request.user %}
+                <button id="edit-button" data-reveal-id="note-edit-dialog" class="modify-button"> <i class="fa fa-edit"></i> Edit This Note</button>&nbsp;&nbsp;
+              {% endif %}
+
+              {% if note.license %}
+                {{ note.license.html|safe }} {% if note.upstream_link %}<a href="{{ note.upstream_link }}" target="_blank">{{ note.upstream_link|slice:":80" }}</a>{% endif %}
+              {% endif %}
+            </span>
+          </span>
+        </div>
+      </div>
+
+      {% if note.category %}
+      <div id="note-category" class="row show-for-large-up">
+        <div class="small-12 columns">
+          <em>{{ note.get_category_display }}</em>
+        </div>
+      </div>
+      {% endif %}
+
+      <div id="note-tags" class="row show-for-large-up">
+        <div class="small-12 columns">
+          <strong>Tags: </strong>
+          <span class="tags">
+            {% if note.tags.all %}
+              {% for tag in note.tags.all %}
+                <span class="tag-span">
+                  {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                </span>
+              {% endfor %}
+            {% else %}
+              <em class="light">(none defined yet)</em>
+            {% endif %}
+          </span>
+        </div><!-- /note_tags -->
+      </div>
+
+      <div id="note-tag-dialog" class="reveal-modal" data-reveal>
+        <a class="close-reveal-modal">&#215;</a>
+        <div class="row">
+          <div class="small-12 columns">
+            <h3>Edit this note's tags</h3>
+            <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+            <button id="save_note_tags" type="submit" value="tags-form"><i class="fa fa-save"></i> Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="note-edit-dialog" class="reveal-modal" data-reveal>
+        <a class="close-reveal-modal">&#215;</a>
+        <div class="row">
+          <div class="small-8 columns">
+            <h3>Edit Your Note</h3>
+          </div>
+          <div class="small-4 columns text-right">
+            <form method="POST" action="{% url 'note_delete' %}">
+              {% csrf_token %}
+              {{ note_delete_form }}
+              <button id="delete-note-button" type="submit" class="scary"><i class="fa fa-trash-o"></i> Delete Note</button>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <form method="POST" action="{{ note.get_absolute_url }}">
+            {% csrf_token %}
+            <div class="small-12 large-6 columns">
+              {% with note_edit_form.name as field %}
+                {{ field.errors|safe }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {{ field }}
+                <p>{{ field.help_text }}</p>
+              {% endwith %}
+            </div>
+            <div class="small-12 large-6 columns">
+              {% with note_edit_form.tags as field %}
+                {{ field.errors|safe }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {{ field }}
+                <p>{{ field.help_text }}</p>
+              {% endwith %}
+            </div>
+            <div class="small-12 columns text-center">
+              <button type="submit"><i class="fa fa-save"></i> Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div><!-- /note header -->
+
+    <div class="row">
+      <div id="tabs" class="small-12 columns">
+        <dl class="tabs">
+          <dd id="note-tab-button" class="{% if show_note_container %}active{% endif %}">
+            <a href="{{ note.get_absolute_url }}">Note</a>
+          </dd>
+          <dd id="keywords-tab-button" class="{% if show_keywords %}active{% endif %}">
+            <a href="{{ note.get_absolute_keywords_url }}">Key Terms & Definitions</a>
+          </dd>
+          <dd id="quiz-tab-button" class="{% if show_quiz %}active{% endif %}">
+            <a href="{{ note.get_absolute_quiz_url }}">Quiz Questions</a>
+          </dd>
+        </dl>
+        <div class="tabs-content">
+        </div>
+        {% if show_note_container %}
+          {% include 'notes/note_detail.html' %}
+        {% endif %}
+        {% if show_keywords %}
+          {% include 'notes/note_keywords.html' %}
+        {% endif %}
+        {% if show_quiz %}
+          {% include 'notes/note_quiz.html' %}
+        {% endif %}
+      </div>
+    </div>
+
+  </section><!--/note_content-->
+
+  <ol class="joyride-list" data-joyride
+        data-options="cookie_monster: true; cookie_name: note_detail_joyride">
+    <li data-id="note-content-wrapper" data-text="Awesome!" data-options="tip_location: top">
+      <p>You can highlight important words or phrases in this note to add definitions for them.</p>
+    </li>
+    <li data-id="keywords-tab-button" data-text="Awesome!" data-options="tip_location: top">
+      <p>Keywords you define will appear here, and you can define new ones here too.</p>
+    </li>
+  </ol>
+
+{% endblock %}
+
+

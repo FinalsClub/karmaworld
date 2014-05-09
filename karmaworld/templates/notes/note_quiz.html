@@ -1,0 +1,74 @@
+<div id="quiz" class="content">
+  <div class="row">
+    <div class="small-12 columns">
+      <div id="quiz-intro">
+        {% if questions %}
+          These quiz questions have been randomly generated from the keywords and definitions associated
+          with this note. Refresh to get different questions.
+        {% else %}
+          No keywords with definitions have been supplied, so we can't generate any quiz questions.
+          Provide some key terms with their definitions, and we'll create questions based on them.
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% for question in questions %}
+    <div class="quiz-question-wrapper">
+      <div class="row">
+        <div class="small-12 columns correct-label hide">
+          <div class="correct-label-inner">Correct</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-12 columns incorrect-label hide">
+          <div class="incorrect-label-inner">Incorrect</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-12 columns quiz-question">
+          <div class="quiz-question-inner">
+            <div class="question-text"><strong>{{ forloop.counter }}. {{ question.question_text }}</strong></div>
+            {% if question.question_type == 'MultipleChoiceQuestion' %}
+              {% for choice in question.choices %}
+                <div class="question-choices">
+                  <input type="radio"
+                         name="group_{{ forloop.parentloop.counter0 }}"
+                         id="choice_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}"
+                         value="choice_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}"
+                         data-correct="{% if choice.correct %}true{% else %}false{% endif %}" />
+                  <label for="choice_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">{{ choice.text }}</label>
+                </div>
+              {% endfor %}
+            {% endif %}
+            {% if question.question_type == 'TrueFalseQuestion' %}
+              <div class="question-choices">
+                <input type="radio"
+                       name="group_{{ forloop.counter0 }}"
+                       id="choice_{{ forloop.counter0 }}_true"
+                       value="choice_{{ forloop.counter0 }}_true"
+                       data-correct="{% if question.true %}true{% else %}false{% endif %}" />
+                <label for="choice_{{ forloop.counter0 }}_true">True</label>
+              </div>
+              <div class="question-choices">
+                <input type="radio"
+                       name="group_{{ forloop.counter0 }}"
+                       id="choice_{{ forloop.counter0 }}_false"
+                       value="choice_{{ forloop.counter0 }}_false"
+                       data-correct="{% if question.false %}true{% else %}false{% endif %}" />
+                <label for="choice_{{ forloop.counter0 }}_false">False</label>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="row">
+    <div class="small-12 columns">
+      <button id="check-answers-button">Check Answers</button>
+    </div>
+  </div>
+
+</div>

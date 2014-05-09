@@ -36,7 +36,7 @@ $(function() {
   });
 
   // wire up search box
-  $('input.search-courses').keyup(function() {
+  $('#search-courses').keyup(function() {
     dataTable.fnFilter($(this).val());
   });
 

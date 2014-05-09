@@ -14,7 +14,7 @@ from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
 from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags, \
-    NoteKeywordsView, edit_note, NoteDeleteView
+    NoteKeywordsView, NoteQuizView, edit_note, NoteDeleteView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
 from karmaworld.apps.quizzes.views import set_delete_keyword_annotator, get_keywords_annotator
@@ -111,6 +111,8 @@ urlpatterns = patterns('',
         NoteView.as_view(), name='note_detail'),
     url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'/keywords/$',
         NoteKeywordsView.as_view(), name='note_keywords'),
+    url(r'^note/' + SLUG.format('school_') + '/' + SLUG.format('course_') +'/'+ SLUG.format('') +'/quiz/$',
+        NoteQuizView.as_view(), name='note_quiz'),
 
     url(r'note/delete/$', NoteDeleteView.as_view(), name='note_delete'),
 
