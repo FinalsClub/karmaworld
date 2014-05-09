@@ -12,7 +12,6 @@ from django.forms.formsets import formset_factory
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.apps.quizzes.create_quiz import quiz_from_keywords
-from karmaworld.apps.quizzes.find_keywords import find_keywords
 from karmaworld.apps.quizzes.forms import KeywordForm
 from karmaworld.apps.quizzes.models import Keyword
 from karmaworld.apps.users.models import NoteKarmaEvent
