@@ -355,3 +355,26 @@ button.search-icon {
   opacity: 0.8;
   font-size: 0.8em;
 }
+
+
+#add-course-form p {
+  margin: 0 0 0 0;
+}
+
+#add-course-form .results_on_deck {
+  margin-top: -10px;
+}
+
+.required-field {
+  opacity: 0.5;
+}
+
+ul.validation_error {
+  margin: 0 0 0 0;
+  list-style-type: none;
+}
+
+label.validation_error {
+  color: #F04124;
+}
+

@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.forms.formsets import formset_factory
+from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.apps.quizzes.create_quiz import quiz_from_keywords
@@ -300,34 +301,6 @@ class NoteSearchView(ListView):
             kwargs['prev_page'] = int(self.request.GET['page']) - 1
 
         return super(NoteSearchView, self).get_context_data(**kwargs)
-
-
-def handle_edit_note(request):
-    course = Course.objects.get(pk=pk)
-    original_name = course.name
-    course_form = CourseForm(request.POST or None, instance=course)
-
-    if course_form.is_valid():
-        course_form.save()
-
-        course_json = serializers.serialize('json', [course,])
-        resp = json.loads(course_json)[0]
-
-        if (course.name != original_name):
-            course.set_slug()
-            resp['fields']['new_url'] = course.get_absolute_url()
-
-        return HttpResponse(json.dumps(resp), mimetype="application/json")
-    else:
-        return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Validation error',
-                                      'errors': course_form.errors}),
-                                      mimetype="application/json")
-
-def edit_note(request, pk):
-    """
-    Saves the edited note metadata
-    """
-    ajax_base(request, edit_note, ['POST'])
 
 
 def process_note_thank_events(request_user, note):

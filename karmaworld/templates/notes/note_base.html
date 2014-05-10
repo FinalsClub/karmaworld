@@ -26,7 +26,6 @@
     var annotator_js_url = "{{ STATIC_URL }}js/annotator-full.min.js";
     var annotator_css_url = "{{ STATIC_URL }}css/annotator.min.css";
     var setup_ajax_url = "{{ STATIC_URL }}js/setup-ajax.js";
-    var note_edit_url = "{% url 'edit_note' note.id %}";
     var user_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
   </script>
   {% compress js %}

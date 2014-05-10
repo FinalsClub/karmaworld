@@ -1,0 +1,82 @@
+{% load url from future %}
+
+<section id="edit-course-form" class="reveal-modal" data-reveal>
+  <a class="close-reveal-modal">&#215;</a>
+
+  <h2>Edit this course KarmaNotes</h2>
+
+  <form method="POST" action="">
+    {% csrf_token %}
+
+    {% if course_form.non_field_errors %}
+      <div class="row">
+        <div class="small-12 columns">
+          <ul class="validation_error">{% for error in course_form.non_field_errors %}
+            <li><label class="validation_error">{{ error }}</label></li>
+          {% endfor %}</ul>
+        </div>
+      </div>
+    {% endif %}
+
+    {% for form in course_form.get_forms.itervalues %}
+      {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
+    {% endfor %}
+    {% for hidden in course_form.hidden_fields %}
+      {{ hidden }}
+    {% endfor %}
+    <div class="row">
+      <div class="small-12 large-6 columns add-course-field">
+        {% with course_form.get_forms.professor.name as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+      <div class="small-12 large-6 columns add-course-field">
+        {% with course_form.get_forms.professor.email as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="small-12 large-6 columns add-course-field">
+        {% with course_form.name as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+      <div class="small-12 large-6 columns add-course-field">
+        {% with course_form.url as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="small-12 columns add-course-field">
+        {% with course_form.instruction_url as field %}
+          {{ field.errors|safe }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+        {% endwith %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="small-12 columns small-centered text-center">
+        <button id="save-btn" type="submit">
+          <i class="fa fa-save"></i> Save
+        </button>
+      </div>
+    </div>
+
+  </form>
+</section>

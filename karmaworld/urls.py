@@ -14,7 +14,7 @@ from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_course_list
 from karmaworld.apps.courses.views import school_course_instructor_list
 from karmaworld.apps.notes.views import NoteView, thank_note, NoteSearchView, flag_note, downloaded_note, edit_note_tags, \
-    NoteKeywordsView, NoteQuizView, edit_note, NoteDeleteView
+    NoteKeywordsView, NoteQuizView, NoteDeleteView
 from karmaworld.apps.moderation import moderator
 from karmaworld.apps.document_upload.views import save_fp_upload
 from karmaworld.apps.quizzes.views import set_delete_keyword_annotator, get_keywords_annotator
@@ -93,7 +93,6 @@ urlpatterns = patterns('',
     url(r'^ajax/course/flag/(?P<pk>[\d]+)/$', flag_course, name='flag_course'),
     # Ajax endpoint to edit a course
     url(r'^ajax/course/edit/(?P<pk>[\d]+)/$', edit_course, name='edit_course'),
-    url(r'^ajax/note/edit/(?P<pk>[\d]+)/$', edit_note, name='edit_note'),
 
     url(r'^ajax/annotations/annotations$', set_delete_keyword_annotator, name='set_keyword'),
     url(r'^ajax/annotations/search/$', get_keywords_annotator, name='get_keywords'),

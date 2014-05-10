@@ -65,9 +65,11 @@
           <span style="display: inline;">
             <span class="show-for-large-up">
               {% if user.is_authenticated %}
+                {% comment %}
                 {% if user.get_profile.can_edit_items %}
                   <button id="edit-button" data-reveal-id="edit-course-form" class="modify-button"> <i class="fa fa-edit"></i> Edit this course</button>&nbsp;&nbsp;
                 {% endif %}
+                {% endcomment %}
 
                 {% if already_flagged %}
                   <i class="fa fa-flag"></i> You have reported this course as inappropriate
@@ -95,61 +97,11 @@
 
     </div><!-- /course_header -->
 
+    {% comment %}
     {% if user.get_profile.can_edit_items %}
-      <section id="edit-course-form" class="reveal-modal" data-reveal>
-        <a class="close-reveal-modal">&#215;</a>
-        <form>
-          {% csrf_token %}
-
-          <div class="row">
-            <div id="course_form_errors" class="small-12 columns">
-              {{ course_form.non_field_errors }}
-            </div>
-          </div>
-
-          <div class="row hide">
-            <div class="small-12 columns">
-              <label for="id_school">School</label>
-              <div>
-                <input id="id_school" value="{{ course.school.id }}" name="school" type='hidden'/>
-              </div>
-            </div>
-          </div> <!-- .row -->
-
-          <div class="row">
-            <div class="small-12 columns">
-              <label for="id_name">Course Name:</label>
-              <input id="id_name" class="" type="text" name="name" maxlength="255" value="{{ course.name }}"/>
-            </div>
-          </div> <!-- .row -->
-
-          <div class="row">
-            <div class="small-12 columns large-6">
-              <label for="id_instructor_name">Instructor Name:</label>
-              <input id="id_instructor_name" class="" type="text" name="instructor_name" maxlength="75" value="{{ course.instructor_name }}"/>
-            </div>
-
-            <div class="small-12 columns large-6">
-              <label for="id_instructor_email">Instructor Email:</label>
-              <input id="id_instructor_email" class="" type="text" name="instructor_email" maxlength="75" value="{{ course.instructor_email }}"/>
-            </div>
-          </div> <!-- .row -->
-
-          <div class="row">
-            <div class="small-12 columns">
-              <label for="id_url">Course url:</label>
-              <input id="id_url" class="" type="text" name="url" maxlength="255" value="{{ course.url }}"/>
-            </div>
-          </div> <!-- .row -->
-
-          <div class="row">
-            <div class="small-4 large-8 columns small-centered text-center">
-              <button id="edit-save-btn" type=button><i class="fa fa-save"></i> Save</button>
-            </div>
-          </div>
-        </form>
-      </section>
+      {% include 'partial/edit_course.html' %}
     {% endif %}
+    {% endcomment %}
 
     <div id="note-search-bar" class="row">
       <div class="small-12 large-3 columns">
