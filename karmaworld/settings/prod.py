@@ -107,6 +107,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'tweet_note',
         'schedule': timedelta(minutes=60),
     },
+    'check-mturk-results': {
+        'task': 'get_extract_keywords_results',
+        'schedule': timedelta(minutes=20),
+    },
 }
 
 CELERY_TIMEZONE = 'UTC'

@@ -288,13 +288,6 @@ def import_usde():
     virtenv_exec('{0}/manage.py sanitize_usde_schools'.format(env.code_root))
 
 @task
-def nltk_download():
-    """
-    Initialize corpa used by NLTK
-    """
-    virtenv_exec('{0}/manage.py nltk_download'.format(env.code_root))
-
-@task
 def first_deploy():
     """
     Sets up and deploys the project for the first time.
@@ -307,7 +300,6 @@ def first_deploy():
     syncdb()
     compress_static()
     collect_static()
-    nltk_download()
     fetch_usde()
     import_usde()
     flush_memcache()
@@ -325,7 +317,6 @@ def deploy():
     syncdb()
     compress_static()
     collect_static()
-    nltk_download()
     flush_memcache()
     restart_supervisord()
 ########## END COMMANDS

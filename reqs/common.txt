@@ -19,7 +19,7 @@ gdshortener
 git+https://github.com/flaptor/indextank-py.git
 git+https://github.com/jhilker/html2text.git
 django-allauth
-boto==2.6.0
+boto
 django-storages==1.1.4
 django-reversion
 django-ajax-selects

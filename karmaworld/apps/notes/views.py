@@ -14,6 +14,7 @@ from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.apps.quizzes.create_quiz import quiz_from_keywords
 from karmaworld.apps.quizzes.forms import KeywordForm
 from karmaworld.apps.quizzes.models import Keyword
+from karmaworld.apps.quizzes.tasks import submit_extract_keywords_hit, get_extract_keywords_results
 from karmaworld.apps.users.models import NoteKarmaEvent
 from karmaworld.utils.ajax_utils import *
 
@@ -333,6 +334,11 @@ def process_note_thank_events(request_user, note):
     # Give points to the person who uploaded this note
     if note.user != request_user and note.user:
         NoteKarmaEvent.create_event(note.user, note, NoteKarmaEvent.THANKS)
+
+    # If note thanks exceeds a threshold, create a Mechanical
+    # Turk task to get some keywords for it
+    if note.thanks == 3:
+        submit_extract_keywords_hit(note)
 
 
 def thank_note(request, pk):
