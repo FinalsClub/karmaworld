@@ -58,8 +58,13 @@ def tweet_string(note):
     # 57 characters
     short_note = note.name[:57]
 
-    if note.course.school.hashtag:
-        return short_url + " #" + note.course.school.hashtag + " " + \
+    if note.course.school:
+        school = note.course.school
+    else:
+        school = note.course.department.school
+
+    if school.hashtag:
+        return short_url + " #" + school.hashtag + " " + \
         short_course + ": " + \
         short_note
     else:
