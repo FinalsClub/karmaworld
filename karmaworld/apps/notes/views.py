@@ -311,7 +311,7 @@ def process_note_thank_events(request_user, note):
     # If note thanks exceeds a threshold, create a Mechanical
     # Turk task to get some keywords for it
     if note.thanks == 3:
-        submit_extract_keywords_hit(note)
+        submit_extract_keywords_hit.delay(note)
 
 
 def thank_note(request, pk):
