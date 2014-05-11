@@ -31,7 +31,7 @@ HIT_OVERVIEW_TEMPLATE = \
         'http://{domain}{link}</a></strong></p>'
 HIT_KEYWORDS = 'writing, summary, keywords'
 HIT_DURATION = 60 * 60 * 24 * 7
-HIT_REWARD = 1.0
+HIT_REWARD = 0.92
 HIT_PERCENT_APPROVED_REQUIREMENT = PercentAssignmentsApprovedRequirement(comparator='GreaterThan', integer_value=95)
 HIT_QUALIFICATION = Qualifications(requirements=[HIT_PERCENT_APPROVED_REQUIREMENT])
 
