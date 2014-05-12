@@ -26,3 +26,4 @@ django-ajax-selects
 git+https://github.com/btbonval/django-ajax-selects-cascade.git
 psycopg2
 pyth
+querystring_parser

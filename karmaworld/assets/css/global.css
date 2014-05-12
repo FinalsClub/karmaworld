@@ -193,7 +193,8 @@ span.table-thanks-count {
   margin-right: 15px;
 }
 
-.table-course-name {
+.table-course-name-wrapper,
+.table-note-name {
   font-size: 1.8em;
   margin-right: 10px;
 }
@@ -222,7 +223,7 @@ table.dataTable a {
   color: inherit;
 }
 
-.dataTables_paginate {
+#data_table_list_paginate {
   float: left;
 }
 

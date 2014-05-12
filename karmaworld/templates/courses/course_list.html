@@ -18,6 +18,7 @@
     var jump_to_form = {% if jump_to_form %} true {% else%} false {% endif %};
     var csrf_token = "{{ csrf_token }}";
     var dataTable_sDom = '<"top">rt<"bottom"p><"clear">';
+    var course_list_ajax_url = "{% url 'course_list_ajax' %}";
   </script>
   {% compress js %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/setup-ajax.js"></script>
@@ -63,9 +64,9 @@
         <div class="sort-label">Sort By</div>
         <div class="select-wrapper">
           <select id="sort-by">
-            <option value="0">Date Added</option>
-            <option value="1">Number of Notes</option>
-            <option value="2" selected>Popularity</option>
+            <option value="1">Date Added</option>
+            <option value="2">Number of Notes</option>
+            <option value="3" selected>Popularity</option>
           </select>
         </div>
       </div>
@@ -82,24 +83,38 @@
       </div>
     </div>
 
+    <div id="data-table-entry-prototype">
+      <div class="data-table-entry hide">
+        <div class="table-entry-first-line">
+          <span class="table-school"></span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <span class="table-department"></span>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <span class="table-instructor"></span>
+        </div>
+
+        <div class="table-entry-second-line museo700">
+          <span class="table-course-name-wrapper"><a class="table-course-link"><span class="table-course-name"></span></a></span>
+        </div>
+
+        <div class="table-entry-third-line">
+          <span class="table-note-count"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;<span class="file-count"></span> Notes</span>
+          <span class="table-thanks-count"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;<span class="thanks-count"></span> Thanks </span>
+          <span>Updated <span class="updated-at"></span></span>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="small-12 columns">
         <!-- Main course table -->
         <table id="data_table_list">
           <thead class="hide">
             <tr>
+              <th class="no-display" id="data-table-course">Course</th>
               <th class="no-display" id="data-table-date">Date</th>
               <th class="no-display" id="data-table-note-count"># Notes</th>
               <th class="no-display" id="data-table-thanks">Popularity</th>
-              <th class="no-display" id="data-table-school">School</th>
-              <th class="no-display" id="data-table-course">Course</th>
             </tr>
           </thead>
-          <tbody>
-          {% for course in course_list %}
-            {% include 'courses/course_list_entry.html' %}
-          {% endfor %}
-          </tbody>
         </table>
       </div>
     </div> <!-- .row -->

@@ -2,7 +2,12 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 """ Views for the KarmaNotes Courses app """
+import calendar
+from time import strftime
+from django.db.models import Q
+from django.utils.html import escape
 
+from querystring_parser import parser as querystring_parser
 import json
 from django.conf import settings
 from django.core import serializers
@@ -23,7 +28,7 @@ from karmaworld.apps.courses.forms import CourseForm
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.users.models import CourseKarmaEvent
 from karmaworld.apps.notes.forms import FileUploadForm
-from karmaworld.utils import ajax_increment, format_session_increment_field
+from karmaworld.utils import ajax_increment, format_session_increment_field, ajax_base
 from django.contrib import messages
 
 FLAG_FIELD = 'flags'
@@ -242,6 +247,89 @@ def process_course_flag_events(request_user, course):
 def flag_course(request, pk):
     """Record that somebody has flagged a note."""
     return ajax_increment(Course, request, pk, FLAG_FIELD, USER_PROFILE_FLAGS_FIELD, process_course_flag_events)
+
+
+def course_json(course):
+    course_data = {
+        'school': course.school.name if course.school else course.department.school.name,
+        'department': course.department.name if course.department else None,
+        'instructor': course.instructor_name if course.instructor_name else ', '.join([p.name for p in course.professor.all()]),
+        'name': course.name,
+        'link': course.get_absolute_url(),
+        'file_count': course.file_count,
+        'popularity': course.thank_count,
+        'updated_at': strftime('%B %d, %Y', course.updated_at.utctimetuple())
+    }
+
+    # Prevent XSS attacks
+    for k in course_data:
+        course_data[k] = escape(course_data[k])
+
+    return course_data
+
+
+def course_list_ajax_handler(request):
+    request_dict = querystring_parser.parse(request.GET.urlencode())
+    draw = int(request_dict['draw'])
+    start = request_dict['start']
+    length = request_dict['length']
+    search = request_dict.get('search', None)
+
+    objects = Course.objects.all()
+
+    if search and search['value']:
+        objects = objects.filter(Q(name__icontains=search['value']) |
+                                 Q(school__name__icontains=search['value']) |
+                                 Q(department__school__name__icontains=search['value']))
+
+    order_fields = []
+    for order_index in request_dict['order']:
+        order_field = None
+        order = request_dict['order'][order_index]
+        if order['column'] == 1:
+            order_field = 'updated_at'
+        elif order['column'] == 2:
+            order_field = 'file_count'
+        elif order['column'] == 3:
+            order_field = 'thank_count'
+
+        if order['dir'] == 'desc':
+            order_field = '-' + order_field
+
+        if order_field:
+            order_fields.append(order_field)
+
+    objects = objects.order_by(*order_fields)
+
+    displayRecords = objects.count()
+
+    if start > 0:
+        objects = objects[start:]
+
+    objects = objects[:length]
+
+    row_data = [
+        [
+            course_json(course),
+            calendar.timegm(course.updated_at.timetuple()),
+            course.file_count,
+            course.thank_count,
+            course.school.name if course.school else course.department.school.name,
+        ] for course in objects
+    ]
+
+    response_dict = {
+        'draw': draw,
+        'recordsTotal': Course.objects.count(),
+        'recordsFiltered': displayRecords,
+        'data': row_data
+    }
+
+    return HttpResponse(json.dumps(response_dict), mimetype='application/json')
+
+
+def course_list_ajax(request):
+    return ajax_base(request, course_list_ajax_handler, ['GET'])
 
 
 def edit_course(request, pk):

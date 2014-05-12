@@ -431,6 +431,7 @@ def update_note_counts(note_instance):
         pass
     else:
         # course exists
+        note_instance.course.update_thank_count()
         note_instance.course.update_note_count()
         if note_instance.course.school:
             note_instance.course.school.update_note_count()
@@ -456,8 +457,8 @@ def note_save_receiver(sender, **kwargs):
         return
     note = kwargs['instance']
 
-    if kwargs['created']:
-        update_note_counts(note)
+
+    update_note_counts(note)
 
     try:
         index = SearchIndex()

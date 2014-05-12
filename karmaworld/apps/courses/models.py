@@ -247,6 +247,7 @@ class Course(models.Model):
     # (vistigial)
     school      = models.ForeignKey(School, null=True, blank=True)
     file_count  = models.IntegerField(default=0)
+    thank_count = models.IntegerField(default=0)
 
     desc        = models.TextField(max_length=511, blank=True, null=True)
     url         = models.URLField(max_length=511, blank=True, null=True,
@@ -310,15 +311,13 @@ class Course(models.Model):
         self.file_count = self.note_set.count()
         self.save()
 
-    def get_popularity(self):
-        """ Aggregate popularity of notes contained within. """
-        # This is optimized for the case where note_set has already been
-        # loaded into memory. In that case, we avoid making any more database
-        # queries.
-        sum = 0
-        for note in self.note_set.all():
-            sum += note.thanks
-        return sum
+
+    def update_thank_count(self):
+        """ Update the thank_count by summing the note_set
+        """
+        self.thank_count = sum([note.thanks for note in self.note_set.all()])
+        self.save()
+
 
     def get_prof_names(self):
         """ Comma separated list of professor names. """

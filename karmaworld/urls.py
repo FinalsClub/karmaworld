@@ -8,7 +8,7 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
 
-from karmaworld.apps.courses.views import AboutView, flag_course, edit_course
+from karmaworld.apps.courses.views import AboutView, flag_course, edit_course, course_list_ajax
 from karmaworld.apps.courses.views import CourseDetailView
 from karmaworld.apps.courses.views import CourseListView
 from karmaworld.apps.courses.views import school_course_list
@@ -81,6 +81,7 @@ urlpatterns = patterns('',
         CourseDetailView.as_view(), name='course_detail'),
 
     ## Note Model
+    url(r'^ajax/courses/$', course_list_ajax, name='course_list_ajax'),
     # Ajax endpoint to thank a note
     url(r'^ajax/note/thank/(?P<pk>[\d]+)/$', thank_note, name='thank_note'),
     # Ajax endpoint to flag a note
