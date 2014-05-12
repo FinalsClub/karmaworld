@@ -32,7 +32,7 @@ $(function() {
         'class': 'small-12 columns data-table-entry-wrapper' },
       { 'name': 'date', 'orderable': true, 'searchable': false, 'visible': false },
       { 'name': 'note_count', 'orderable': true, 'searchable': false, 'visible': false },
-      { 'name': 'popularity', 'orderable': true, 'searchable': false, 'visible': false },
+      { 'name': 'popularity', 'orderable': true, 'searchable': false, 'visible': false }
     ],
     'createdRow': function(row, data, index) {
       $(row).addClass('table-row');
