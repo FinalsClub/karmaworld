@@ -277,6 +277,11 @@
     <li data-id="keywords-tab-button" data-text="Awesome!" data-options="tip_location: top">
       <p>Keywords you define will appear here, and you can define new ones here too.</p>
     </li>
+    {% if note.thanks < 3 %}
+      <li data-id="thank-number" data-text="Awesome!" data-options="tip_location: top">
+        <p>Keywords and quizzes are automatically generated when a note gets {{ note.total_thanks_for_mturk }} thanks. This note needs {{ note.remaining_thanks_for_mturk }} more!</p>
+      </li>
+    {% endif %}
   </ol>
 
 {% endblock %}

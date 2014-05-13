@@ -14,8 +14,8 @@ from karmaworld.apps.quizzes.models import Keyword
 
 logger = get_task_logger(__name__)
 
-HIT_TITLE = 'Choose keywords and descriptions from course notes'
-HIT_DESCRIPTION = "Read students' course notes on Karmanotes.org and " \
+HIT_TITLE = 'Help people learn by finding keywords in college course notes'
+HIT_DESCRIPTION = "Read students' course notes on KarmaNotes.org and " \
                   "identify 10 keywords along with descriptions of them"
 HIT_OVERVIEW_TEMPLATE = \
         '<p>Go to the page at KarmaNotes.org by clicking the link provided below. ' \

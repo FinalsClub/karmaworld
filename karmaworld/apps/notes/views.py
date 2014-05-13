@@ -25,7 +25,7 @@ from django.views.generic import FormView
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 
-from karmaworld.apps.notes.models import Note
+from karmaworld.apps.notes.models import Note, KEYWORD_MTURK_THRESHOLD
 from karmaworld.apps.notes.forms import NoteForm, NoteDeleteForm
 
 
@@ -206,8 +206,12 @@ class NoteKeywordsView(FormView, SingleObjectMixin):
             word = form['keyword'].data
             definition = form['definition'].data
             id = form['id'].data
-            if word == '':
-                continue
+            if not word and not definition:
+                try:
+                    keyword_object = Keyword.objects.get(id=id)
+                    keyword_object.delete()
+                except (ValueError, ObjectDoesNotExist):
+                    pass
             try:
                 keyword_object = Keyword.objects.get(id=id)
             except (ValueError, ObjectDoesNotExist):
@@ -310,7 +314,7 @@ def process_note_thank_events(request_user, note):
 
     # If note thanks exceeds a threshold, create a Mechanical
     # Turk task to get some keywords for it
-    if note.thanks == 3:
+    if note.thanks == KEYWORD_MTURK_THRESHOLD:
         submit_extract_keywords_hit.delay(note)
 
 

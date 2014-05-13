@@ -41,6 +41,7 @@ from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
 
 ANONYMOUS_UPLOAD_URLS = 'anonymous_upload_urls'
+KEYWORD_MTURK_THRESHOLD = 3
 
 logger = logging.getLogger(__name__)
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
@@ -286,6 +287,12 @@ class Note(Document):
         key = default_storage.bucket.get_key(filepath)
         key.set_contents_from_string(html, headers=s3_upload_headers)
         key.set_xml_acl(all_read_xml_acl)
+
+    def remaining_thanks_for_mturk(self):
+        return KEYWORD_MTURK_THRESHOLD - self.thanks
+
+    def total_thanks_for_mturk(self):
+        return KEYWORD_MTURK_THRESHOLD
 
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug

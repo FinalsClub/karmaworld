@@ -14,7 +14,7 @@ class MultipleChoiceQuestion(BaseQuizQuestion):
         self.choices = choices
 
     def __unicode__(self):
-        return "Multiple choice: {0}: {1}".format(self.question_text, ", ".join(map(str, self.choices)))
+        return u"Multiple choice: {0}: {1}".format(self.question_text, ", ".join(map(str, self.choices)))
 
     def __str__(self):
         return unicode(self)
@@ -38,28 +38,13 @@ class MultipleChoiceOption(object):
         return str(self)
 
 
-class FlashCardQuestion(BaseQuizQuestion):
-    def __init__(self, keyword_side, definition_side):
-        self.keyword_side = keyword_side
-        self.definition_side = definition_side
-
-    def __unicode__(self):
-        return "Flash card: {0} / {1}".format(self.keyword_side, self.definition_side)
-
-    def __str__(self):
-        return unicode(self)
-
-    def __repr__(self):
-        return str(self)
-
-
 class TrueFalseQuestion(BaseQuizQuestion):
     def __init__(self, question_text, true):
         self.question_text = question_text
         self.true = true
 
     def __unicode__(self):
-        return "True or false: {0}".format(self.question_text)
+        return u"True or false: {0}".format(self.question_text)
 
     def __str__(self):
         return unicode(self)
@@ -88,7 +73,7 @@ def _create_keyword_multiple_choice(keyword, keywords):
                        text=other_keyword.word,
                        correct=False))
 
-    question_text = 'Pick the keyword to match "{d}"'.format(d=keyword.definition)
+    question_text = u'Pick the keyword to match "{d}"'.format(d=keyword.definition)
 
     return MultipleChoiceQuestion(question_text, choices)
 
@@ -101,7 +86,7 @@ def _create_definition_multiple_choice(keyword, keywords):
                        text=other_keyword.definition,
                        correct=False))
 
-    question_text = 'Pick the definition to match "{w}"'.format(w=keyword.word)
+    question_text = u'Pick the definition to match "{w}"'.format(w=keyword.word)
 
     return MultipleChoiceQuestion(question_text, choices)
 
@@ -115,19 +100,18 @@ def _create_keyword_definition_true_false(keyword, keywords):
         other_keyword = random.choice(keywords.exclude(id=keyword.id))
         definition = other_keyword.definition
 
-    question_text = 'The keyword "{w}" matches the definition "{d}"'. \
+    question_text = u'The keyword "{w}" matches the definition "{d}"'. \
         format(w=keyword.word, d=definition)
 
     return TrueFalseQuestion(question_text, true)
 
 
-def _create_keyword_flashcard_blank(keyword):
-    return FlashCardQuestion(keyword.definition, keyword.word)
-
-
 def quiz_from_keywords(note):
     keywords = Keyword.objects.filter(note=note)
     questions = []
+
+    if len(keywords) < 4:
+        return []
 
     for keyword in keywords:
         if keyword.word and keyword.definition:
