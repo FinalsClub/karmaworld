@@ -302,7 +302,6 @@ def first_deploy():
     collect_static()
     fetch_usde()
     import_usde()
-    flush_memcache()
     start_supervisord()
     print "You should run `manage.py createsuperuser` in the virtual environment"
 
@@ -317,6 +316,5 @@ def deploy():
     syncdb()
     compress_static()
     collect_static()
-    flush_memcache()
     restart_supervisord()
 ########## END COMMANDS

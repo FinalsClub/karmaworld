@@ -42,11 +42,7 @@ class CourseListView(View):
     """
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
-            return CourseListSubView.as_view()(request, *args, **kwargs)
-        # Cache the homepage for non-authenicated users
-        else:
-            return cache_page(CourseListSubView.as_view(), 60 * 60)(request, *args, **kwargs)
+        return CourseListSubView.as_view()(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         ret = CourseAddFormView.as_view()(request, *args, **kwargs)
