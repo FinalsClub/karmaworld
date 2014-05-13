@@ -128,8 +128,9 @@ def get_extract_keywords_results():
     for hit in reviewable_hits:
         try:
             note_id = connection.get_hit(hit.HITId)[0].RequesterAnnotation
-        except AttributeError:
-            logger.error('HIT {0} does not have a RequesterAnnotation, '
+            note_id = int(note_id)
+        except (AttributeError, ValueError):
+            logger.error('HIT {0} does not have a valid RequesterAnnotation, '
                          'so we cannot determine which note it references'.format(hit.HITId))
             return
 
