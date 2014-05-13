@@ -17,5 +17,5 @@ class Keyword(models.Model):
         unique_together = ('word', 'note', 'ranges')
 
     def __unicode__(self):
-        return self.word
+        return u"{w}: {d}".format(w=self.word, d=self.definition)
 

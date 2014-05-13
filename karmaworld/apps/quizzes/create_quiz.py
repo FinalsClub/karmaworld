@@ -1,3 +1,4 @@
+from copy import copy
 import random
 from karmaworld.apps.quizzes.models import Keyword
 
@@ -107,7 +108,7 @@ def _create_keyword_definition_true_false(keyword, keywords):
 
 
 def quiz_from_keywords(note):
-    keywords = Keyword.objects.filter(note=note)
+    keywords = Keyword.objects.filter(note=note).exclude(word__iexact='').exclude(definition__iexact='')
     questions = []
 
     if len(keywords) < 4:
