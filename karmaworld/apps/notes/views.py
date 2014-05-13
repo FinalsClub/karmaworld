@@ -206,21 +206,25 @@ class NoteKeywordsView(FormView, SingleObjectMixin):
             word = form['keyword'].data
             definition = form['definition'].data
             id = form['id'].data
-            if not word and not definition:
+            # If the user has deleted an existing keyword
+            if not word and not definition and id:
                 try:
                     keyword_object = Keyword.objects.get(id=id)
                     keyword_object.delete()
                 except (ValueError, ObjectDoesNotExist):
                     pass
-            try:
-                keyword_object = Keyword.objects.get(id=id)
-            except (ValueError, ObjectDoesNotExist):
-                keyword_object = Keyword()
 
-            keyword_object.note = self.get_object()
-            keyword_object.word = word
-            keyword_object.definition = definition
-            keyword_object.save()
+            # otherwise get or create a keyword
+            elif word or definition:
+                try:
+                    keyword_object = Keyword.objects.get(id=id)
+                except (ValueError, ObjectDoesNotExist):
+                    keyword_object = Keyword()
+
+                keyword_object.note = self.get_object()
+                keyword_object.word = word
+                keyword_object.definition = definition
+                keyword_object.save()
 
 
 class NoteQuizView(TemplateView):

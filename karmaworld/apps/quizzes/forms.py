@@ -6,7 +6,7 @@ from django.forms import TextInput, Textarea, HiddenInput, Form, CharField, Inte
 
 class KeywordForm(Form):
     keyword = CharField(widget=TextInput(attrs={'placeholder': 'Keyword', 'class': 'keyword'}),
-                        required=True)
+                        required=False)
     definition = CharField(widget=Textarea(attrs={'placeholder': 'Definition', 'class': 'definition'}),
                            required=False)
     id = IntegerField(widget=HiddenInput(attrs={'class': 'object-id'}), required=False)
