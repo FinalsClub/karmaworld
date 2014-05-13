@@ -323,7 +323,7 @@ input.search {
   font-family: 'adelle-sans';
   font-weight: lighter;
   border-radius: 3px 0 0 3px;
-  width: calc(100% - 40px);
+  width: calc(100% - 41px);
   height: 40px;
   margin-right: 0;
 }
