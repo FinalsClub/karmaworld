@@ -62,36 +62,31 @@ class CourseListView(View):
         return ret
 
 
-class CourseListSubView(ListView):
+class CourseListSubView(TemplateView):
     """ Lists all courses. Called by CourseListView. """
-    model = Course
-
-    def get_queryset(self):
-        return Course.objects.all().select_related('note_set', 'school', 'department', 'department__school')
+    template_name = 'courses/course_list.html'
 
     def get_context_data(self, **kwargs):
         """ Add the CourseForm to ListView context """
-        # get the original context
-        context = super(CourseListSubView, self).get_context_data(**kwargs)
         # get the total number of notes
-        context['note_count'] = Note.objects.count()
+        kwargs['note_count'] = Note.objects.count()
         # get the course form for the form at the bottom of the homepage
-        context['course_form'] = CourseForm()
+        kwargs['course_form'] = CourseForm()
 
         schools = set()
-        for course in self.object_list:
+        for course in Course.objects.all().select_related('school', 'department', 'department__school'):
             if course.school:
                 schools.add(course.school)
             elif course.department and course.department.school:
                 schools.add(course.department.school)
 
-        context['schools'] = sorted(list(schools), key=lambda x: x.name)
+        kwargs['schools'] = sorted(list(schools), key=lambda x: x.name)
 
         # Include settings constants for honeypot
         for key in ('HONEYPOT_FIELD_NAME', 'HONEYPOT_VALUE'):
-            context[key] = getattr(settings, key)
+            kwargs[key] = getattr(settings, key)
 
-        return context
+        return kwargs
 
 
 class CourseAddFormView(CreateView):
