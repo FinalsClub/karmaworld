@@ -220,6 +220,7 @@ class NoteKeywordsView(FormView, SingleObjectMixin):
                     keyword_object = Keyword.objects.get(id=id)
                 except (ValueError, ObjectDoesNotExist):
                     keyword_object = Keyword()
+                    NoteKarmaEvent.create_event(self.request.user, self.get_object(), NoteKarmaEvent.CREATED_KEYWORD)
 
                 keyword_object.note = self.get_object()
                 keyword_object.word = word
