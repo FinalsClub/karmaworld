@@ -28,6 +28,7 @@ psycopg2
 pyth
 querystring_parser
 gunicorn
+dj-static
 dj-database-url
 mock
 cssmin==0.1.4
