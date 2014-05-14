@@ -136,6 +136,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ########## END SSL FORWARDING CONFIGURATION
 
 ########## COMPRESSION CONFIGURATION
+COMPRESS_ENABLED = True
+
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_OFFLINE
 COMPRESS_OFFLINE = True
 
