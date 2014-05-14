@@ -311,13 +311,29 @@ function initQuizPage() {
     $('.quiz-question-wrapper').each(function() {
       var choice = $(this).find('input:checked');
       if (choice.length) {
-        console.log(choice);
         if (choice.data('correct') == true) {
           markQuestionCorrect($(this));
         } else {
           markQuestionIncorrect($(this));
         }
       }
+
+      var matching_correct = false;
+      var options_selected = $(this).find('option:selected');
+      if (options_selected.length > 0) {
+        matching_correct = true
+      }
+      options_selected.each(function() {
+        if ($(this).data('correct') == false) {
+          matching_correct = false;
+        }
+      });
+      if (matching_correct) {
+        markQuestionCorrect($(this));
+      } else {
+        markQuestionIncorrect($(this));
+      }
+
     });
   });
 }

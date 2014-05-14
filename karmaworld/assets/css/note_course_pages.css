@@ -193,3 +193,30 @@ button.add-note-btn {
   background-color: #740b00;
 }
 
+.matching-select-wrapper {
+  width: 40px;
+  margin: 0;
+  display: inline-block;
+}
+
+.matching-select {
+  width: 80px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.matching-select option {
+  font-weight: bold;
+}
+
+.matching-select-label {
+  display: inline-block;
+  margin: 0 0 0 5px;
+  padding: 0;
+  vertical-align: top;
+  font-weight: bold;
+}
+
+.matching-choice {
+  margin: 0 0 15px 0;
+}

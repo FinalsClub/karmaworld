@@ -54,13 +54,35 @@ class TrueFalseQuestion(BaseQuizQuestion):
         return str(self)
 
 
+class MatchingQuestion(BaseQuizQuestion):
+    def __init__(self, question_text, left_column, right_column, left_right_mapping):
+        self.question_text = question_text
+        self.left_column = left_column
+        self.right_column = right_column
+        self.left_right_mapping = left_right_mapping
+
+    def rows(self):
+        return zip(self.left_column, self.right_column)
+
+    def __unicode__(self):
+        return u"Matching question: {0} / {1}".format(self.left_column, self.right_column)
+
+    def __str__(self):
+        return unicode(self)
+
+    def __repr__(self):
+        return str(self)
+
+
 KEYWORD_MULTIPLE_CHOICE = 1
 DEFINITION_MULTIPLE_CHOICE = 2
 KEYWORD_DEFINITION_TRUE_FALSE = 3
+KEYWORD_DEFINITION_MATCHING = 4
 GENERATED_QUESTION_TYPE = (
     KEYWORD_MULTIPLE_CHOICE,
     DEFINITION_MULTIPLE_CHOICE,
     KEYWORD_DEFINITION_TRUE_FALSE,
+    KEYWORD_DEFINITION_MATCHING,
 )
 
 MULTIPLE_CHOICE_CHOICES = 4
@@ -107,6 +129,22 @@ def _create_keyword_definition_true_false(keyword, keywords):
     return TrueFalseQuestion(question_text, true)
 
 
+def _create_keyword_definition_matching(keyword, keywords):
+    question_keywords = [keyword]
+    question_keywords.extend(random.sample(keywords.exclude(id=keyword.id), MULTIPLE_CHOICE_CHOICES - 1))
+
+    answer_mapping = {k.word: k.definition for k in question_keywords}
+    word_column = [k.word for k in question_keywords]
+    random.shuffle(word_column)
+    definition_column = [k.definition for k in question_keywords]
+    random.shuffle(definition_column)
+
+    question_text = u'Match the words with their definitions'
+
+    return MatchingQuestion(question_text, left_column=word_column,
+                            right_column=definition_column, left_right_mapping=answer_mapping)
+
+
 def quiz_from_keywords(note):
     keywords = Keyword.objects.filter(note=note).exclude(word__iexact='').exclude(definition__iexact='')
     questions = []
@@ -126,6 +164,9 @@ def quiz_from_keywords(note):
 
             elif question_type is KEYWORD_DEFINITION_TRUE_FALSE:
                 questions.append(_create_keyword_definition_true_false(keyword, keywords))
+
+            elif question_type is KEYWORD_DEFINITION_MATCHING:
+                questions.append(_create_keyword_definition_matching(keyword, keywords))
 
     return questions
 

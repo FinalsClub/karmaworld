@@ -1,3 +1,5 @@
+{% load notes %}
+
 <div id="quiz" class="content">
   <div class="row">
     <div class="small-12 columns">
@@ -58,6 +60,39 @@
                        data-correct="{% if question.false %}true{% else %}false{% endif %}" />
                 <label for="choice_{{ forloop.counter0 }}_false">False</label>
               </div>
+            {% endif %}
+            {% if question.question_type == 'MatchingQuestion' %}
+              {% for row in question.rows %}
+                <div class="question-choices row">
+                  <div class="small-6 columns">
+                    {% with left_row=row.0 %}
+                      <div class="matching-choice">
+                        <div class="select-wrapper matching-select-wrapper inline">
+                          <select class="inline matching-select" id="group_{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">
+                            {% for right_row in question.right_column %}
+                              <option {% if question.left_right_mapping|keyvalue:left_row == right_row %}
+                                        data-correct="true"
+                                      {% else %}
+                                        data-correct="false"
+                                      {% endif %}>
+                                {{ forloop.counter0|ordinal_letter }}
+                              </option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                        <label class="matching-select-label" for="group_{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">{{ left_row }}</label>
+                      </div>
+                    {% endwith %}
+                  </div>
+                  <div class="small-6 columns">
+                    {% with right_row=row.1 %}
+                      <div class="matching-choice">
+                        <strong>{{ forloop.counter0|ordinal_letter }}.</strong> {{ right_row }}
+                      </div>
+                    {% endwith %}
+                  </div>
+                </div>
+              {% endfor %}
             {% endif %}
           </div>
         </div>
