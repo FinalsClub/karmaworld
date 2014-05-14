@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
+import base64
 
 import datetime
 import logging
@@ -26,13 +27,14 @@ from apiclient.discovery import build
 from apiclient.http import MediaInMemoryUpload
 from oauth2client.client import SignedJwtAssertionCredentials
 
-import karmaworld.secret.drive as drive
-
 logger = logging.getLogger(__name__)
 
 PDF_MIMETYPE = 'application/pdf'
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
 
+GOOGLE_CLIENT_SECRETS = os.environ['GOOGLE_CLIENT_SECRETS']
+GOOGLE_SERVICE_KEY_BASE64 = os.environ['GOOGLE_SERVICE_KEY_BASE64']
+GOOGLE_USER = os.environ['GOOGLE_USER']
 
 def build_api_service():
     """
@@ -47,16 +49,13 @@ def build_api_service():
     """
 
     # Extract the service address from the client secret
-    with open(drive.CLIENT_SECRET, 'r') as fp:
-        service_user = json.load(fp)['web']['client_email']
+    service_user = json.loads(GOOGLE_CLIENT_SECRETS)['web']['client_email']
 
     # Pull in the service's p12 private key.
-    with open(drive.SERVICE_KEY, 'rb') as p12:
-        # Use the private key to auth as the service user for access to the
-        # Google Drive of the GOOGLE_USER
-        credentials = SignedJwtAssertionCredentials(service_user, p12.read(),
+    p12 = base64.decodestring(GOOGLE_SERVICE_KEY_BASE64)
+    credentials = SignedJwtAssertionCredentials(service_user, p12,
                                scope='https://www.googleapis.com/auth/drive',
-                               sub=drive.GOOGLE_USER)
+                               sub=GOOGLE_USER)
 
     return build('drive', 'v2', http=credentials.authorize(httplib2.Http()))
 

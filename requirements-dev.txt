@@ -1,4 +1,4 @@
--r prod.txt
+django-kombu==0.9.4
 django-debug-toolbar
 django-debug-toolbar-template-timings
 ipython==0.13.1

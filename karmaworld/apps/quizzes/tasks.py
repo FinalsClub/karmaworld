@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2013  FinalsClub Foundation
+import os
 from boto.mturk.qualification import PercentAssignmentsApprovedRequirement, Qualifications
 from boto.mturk.question import Overview, FormattedContent, QuestionContent, Question, FreeTextAnswer, QuestionForm, \
     AnswerSpecification
@@ -11,6 +12,7 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 from karmaworld.apps.notes.models import Note
 from karmaworld.apps.quizzes.models import Keyword
+from django.conf import settings
 
 logger = get_task_logger(__name__)
 
@@ -67,12 +69,12 @@ def submit_extract_keywords_hit(note):
     choose keywords and definitions from the given note."""
 
     try:
-        from karmaworld.secret.mturk import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, MTURK_HOST
-    except ImportError:
+        MTURK_HOST = os.environ['MTURK_HOST']
+    except:
         logger.warn('Could not find Mechanical Turk secrets, not running submit_extract_keywords_hit')
         return
 
-    connection = MTurkConnection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
+    connection = MTurkConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY,
                                  host=MTURK_HOST)
 
     overview = Overview()

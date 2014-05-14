@@ -6,18 +6,17 @@ import json
 import os.path
 import requests
 
-from apps.notes.models import Note
-from apps.notes.gdrive import convert_raw_document
-from apps.courses.models import Course
-from apps.courses.models import School
-from apps.courses.models import Professor
-from apps.courses.models import Department
-from apps.courses.models import ProfessorTaught
-from apps.courses.models import ProfessorAffiliation
-from apps.licenses.models import License
-from apps.document_upload.models import RawDocument
+from karmaworld.apps.notes.models import Note
+from karmaworld.apps.notes.gdrive import convert_raw_document
+from karmaworld.apps.courses.models import Course
+from karmaworld.apps.courses.models import School
+from karmaworld.apps.courses.models import Professor
+from karmaworld.apps.courses.models import Department
+from karmaworld.apps.licenses.models import License
+from karmaworld.apps.document_upload.models import RawDocument
 from django.core.management.base import BaseCommand
-from karmaworld.secret.filepicker import FILEPICKER_API_KEY
+
+FILEPICKER_API_KEY = os.environ['FILEPICKER_API_KEY']
 
 class Command(BaseCommand):
     args = 'directory containing json files from mit-ocw-scraper'

@@ -3,17 +3,15 @@
 # Copyright (C) 2012  FinalsClub Foundation
 """ Common settings and globals. """
 from datetime import timedelta
+from os.path import dirname, abspath, basename, normpath, join
 import sys
-from os.path import abspath, basename, dirname, join, normpath
+import os
 from sys import path
 from djcelery import setup_loader
 import dj_database_url
-from karmaworld.secret.filepicker import FILEPICKER_API_KEY as fp_api
 
-FILEPICKER_API_KEY = fp_api
+FILEPICKER_API_KEY = os.environ['FILEPICKER_API_KEY']
 FILEPICKER_INPUT_TYPE = 'filepicker'
-
-from karmaworld.secret.static_s3 import *
 
 SERIALIZATION_MODULES = {'json-pretty': 'karmaworld.apps.serializers.json_pretty'}
 
@@ -22,12 +20,7 @@ SERIALIZATION_MODULES = {'json-pretty': 'karmaworld.apps.serializers.json_pretty
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-ALLOWED_HOSTS
 # The hosts that this server runs from.
 ALLOWED_HOSTS = [
-    '127.0.0.1', # for dev systems / VMs, but should be safe enough
-    'localhost', # for dev systems / VMs, but should be safe enough
-    'beta.karmanotes.org',
-    'www.karmanotes.org',
-    'karmanotes.org',
-    'quiz.karmanotes.org',
+    '*'
 ]
 ########## END SECURITY CONFIGURATION
 
@@ -115,6 +108,14 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
+
+S3_URL = '//%s.s3.amazonaws.com/' % os.environ.get('AWS_STORAGE_BUCKET_NAME')
+DEFAULT_FILE_STORAGE = os.environ['DEFAULT_FILE_STORAGE']
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+
 ########## END STATIC FILE CONFIGURATION
 
 

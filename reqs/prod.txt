@@ -1,5 +1,0 @@
--r common.txt
-cssmin==0.1.4
-pylibmc==1.2.3
-jsmin==2.0.2
-amqplib==1.0.2

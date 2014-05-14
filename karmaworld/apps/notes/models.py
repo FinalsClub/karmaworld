@@ -20,7 +20,6 @@ from django.db.models import SET_NULL
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from karmaworld.apps.users.models import NoteKarmaEvent, GenericKarmaEvent
-from karmaworld.secret.filepicker import FILEPICKER_API_KEY
 from karmaworld.utils.filepicker import encode_fp_policy, sign_fp_policy
 import os
 import time
@@ -39,6 +38,8 @@ from karmaworld.apps.courses.models import Course
 from karmaworld.apps.licenses.models import License
 from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
+
+FILEPICKER_API_KEY = os.environ['FILEPICKER_API_KEY']
 
 ANONYMOUS_UPLOAD_URLS = 'anonymous_upload_urls'
 KEYWORD_MTURK_THRESHOLD = 3

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2014  FinalsClub Foundation
+import os
 import time
 import json
 
@@ -10,7 +11,8 @@ from django.utils.text import slugify
 from karmaworld.apps.notes.models import Note
 from karmaworld.utils.filepicker import sign_fp_policy, encode_fp_policy
 import requests
-from karmaworld.secret.filepicker import FILEPICKER_API_KEY
+
+FILEPICKER_API_KEY = os.environ['FILEPICKER_API_KEY']
 
 
 class Command(BaseCommand):

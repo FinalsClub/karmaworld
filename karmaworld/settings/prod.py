@@ -10,9 +10,9 @@ from common import *
 
 try:
     # Include email is settings are there
-    from karmaworld.secret.email import SMTP_HOST
-    from karmaworld.secret.email import SMTP_USERNAME
-    from karmaworld.secret.email import SMTP_PASSWORD
+    SMTP_HOST = os.environ['SMTP_HOST']
+    SMTP_USERNAME = os.environ['SMTP_USERNAME']
+    SMTP_PASSWORD = os.environ['SMTP_PASSWORD']
     EMAIL = True
 except:
     EMAIL = False
@@ -128,7 +128,7 @@ AWS_HEADERS = {
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 # S3_URL comes from karmaworld.secret.static_s3
-STATIC_URL = CLOUDFRONT_URL + AWS_LOCATION + '/'
+STATIC_URL = os.environ.get('CLOUDFRONT_URL') + AWS_LOCATION + '/'
 ########## END STORAGE CONFIGURATION
 
 ########## SSL FORWARDING CONFIGURATION
@@ -140,10 +140,10 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 COMPRESS_OFFLINE = True
 
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_STORAGE
-COMPRESS_STORAGE = DEFAULT_FILE_STORAGE
+COMPRESS_STORAGE = os.environ.get('DEFAULT_FILE_STORAGE')
 
 # Make sure that django-compressor serves from CloudFront
-AWS_S3_CUSTOM_DOMAIN = CLOUDFRONT_DOMAIN
+AWS_S3_CUSTOM_DOMAIN = os.environ.get('CLOUDFRONT_DOMAIN')
 
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_CSS_FILTERS
 COMPRESS_CSS_FILTERS += [

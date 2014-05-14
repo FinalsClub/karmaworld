@@ -3,13 +3,13 @@
 # Copyright (C) 2013  FinalsClub Foundation
 
 import calendar
+import os
 import time
 import uuid
 from django.core.exceptions import ImproperlyConfigured
 
 import indextank.client as itc
 from django.conf import settings
-import karmaworld.secret.indexden as secret
 
 import logging
 
@@ -20,6 +20,8 @@ MOCK_MODE = settings.TESTING
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
+INDEXDEN_INDEX = os.environ['INDEXDEN_INDEX']
+INDEXDEN_PRIVATE_URL = os.environ['INDEXDEN_PRIVATE_URL']
 
 class SearchResult(object):
     """The result of making a query into IndexDen.
@@ -57,7 +59,7 @@ class SearchIndex(object):
     __metaclass__ = Singleton
 
     def __init__(self):
-        self.index_name = secret.INDEX
+        self.index_name = INDEXDEN_INDEX
 
         # If we're in production mode,
         # or if we're in testing mode with indexing
@@ -66,7 +68,7 @@ class SearchIndex(object):
         if MOCK_MODE:
             return
 
-        self.api_client = itc.ApiClient(secret.PRIVATE_URL)
+        self.api_client = itc.ApiClient(INDEXDEN_PRIVATE_URL)
         if not self.api_client.get_index(self.index_name).exists():
             time.sleep(5)
             self.api_client.create_index(self.index_name, {'public_search': False})
