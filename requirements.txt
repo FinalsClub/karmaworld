@@ -12,7 +12,7 @@ git+https://github.com/btbonval/django-filepicker.git
 filemagic==1.6
 requests
 beautifulsoup4
-#cffi # here to make buildpack install libffi
+cryptography # here to make buildpack install libffi
 #pyopenssl
 python-twitter
 gdshortener
@@ -25,6 +25,7 @@ django-reversion
 django-ajax-selects
 git+https://github.com/btbonval/django-ajax-selects-cascade.git
 psycopg2
+pylibmc
 pyth
 querystring_parser
 gunicorn
