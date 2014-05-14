@@ -69,3 +69,7 @@ confs/accreditation.csv
 runserver_ssl
 stunnel
 
+# Heroku
+.env
+
+

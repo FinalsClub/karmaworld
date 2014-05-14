@@ -14,7 +14,7 @@ framework.
 
 """
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "karmaworld.settings.dev")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "karmaworld.settings.prod")
 
 from dj_static import Cling
 import djcelery
