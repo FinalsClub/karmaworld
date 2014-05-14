@@ -13,7 +13,7 @@ filemagic==1.6
 requests
 beautifulsoup4
 cryptography # here to make buildpack install libffi
-#pyopenssl
+pyopenssl
 python-twitter
 gdshortener
 git+https://github.com/flaptor/indextank-py.git
