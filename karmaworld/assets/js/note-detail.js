@@ -318,22 +318,21 @@ function initQuizPage() {
         }
       }
 
-      var matching_correct = false;
+
       var options_selected = $(this).find('option:selected');
       if (options_selected.length > 0) {
-        matching_correct = true
-      }
-      options_selected.each(function() {
-        if ($(this).data('correct') == false) {
-          matching_correct = false;
+        var matching_correct = true;
+        options_selected.each(function() {
+          if ($(this).data('correct') == false) {
+            matching_correct = false;
+          }
+        });
+        if (matching_correct) {
+          markQuestionCorrect($(this));
+        } else {
+          markQuestionIncorrect($(this));
         }
-      });
-      if (matching_correct) {
-        markQuestionCorrect($(this));
-      } else {
-        markQuestionIncorrect($(this));
       }
-
     });
   });
 }

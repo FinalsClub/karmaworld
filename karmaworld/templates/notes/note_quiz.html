@@ -57,7 +57,7 @@
                        name="group_{{ forloop.counter0 }}"
                        id="choice_{{ forloop.counter0 }}_false"
                        value="choice_{{ forloop.counter0 }}_false"
-                       data-correct="{% if question.false %}true{% else %}false{% endif %}" />
+                       data-correct="{% if question.true %}false{% else %}true{% endif %}" />
                 <label for="choice_{{ forloop.counter0 }}_false">False</label>
               </div>
             {% endif %}
