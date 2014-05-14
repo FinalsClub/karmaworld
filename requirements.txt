@@ -12,8 +12,8 @@ git+https://github.com/btbonval/django-filepicker.git
 filemagic==1.6
 requests
 beautifulsoup4
-cffi # here to make buildpack install libffi
-pyopenssl
+#cffi # here to make buildpack install libffi
+#pyopenssl
 python-twitter
 gdshortener
 git+https://github.com/flaptor/indextank-py.git
