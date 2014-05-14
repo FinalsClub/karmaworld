@@ -3,7 +3,6 @@ django-celery==3.0.21
 django-compressor==1.2
 Fabric==1.5.3
 South==0.8.4
-supervisor==3.0b1
 oauth2client==1.0
 urllib3==1.5
 google-api-python-client==1.0
@@ -13,6 +12,7 @@ git+https://github.com/btbonval/django-filepicker.git
 filemagic==1.6
 requests
 beautifulsoup4
+cryptography # here to make buildpack install libffi
 pyopenssl
 python-twitter
 gdshortener
@@ -31,8 +31,6 @@ gunicorn
 dj-database-url
 django-kombu==0.9.4
 django-debug-toolbar
-django-debug-toolbar-template-timings
-ipython==0.13.1
 ipdb==0.7
 django-extensions==1.0.3 # some extra debugging tools for manage.py
 # Testing requirements
@@ -41,6 +39,4 @@ coverage==3.6
 selenium==2.38.4
 mock
 cssmin==0.1.4
-pylibmc==1.2.3
-jsmin==2.0.2
 amqplib==1.0.2
