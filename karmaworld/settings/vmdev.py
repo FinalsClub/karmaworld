@@ -2,20 +2,13 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 """ Production settings and globals. """
-
-
 from os import environ
 from datetime import timedelta
 from S3 import CallingFormat
 
 from common import *
 
-
 from karmaworld.secret.static_s3 import *
-
-from karmaworld.secret.db_settings import PROD_DB_NAME
-from karmaworld.secret.db_settings import PROD_DB_USERNAME
-from karmaworld.secret.db_settings import PROD_DB_PASSWORD
 
 try:
     # Include email is settings are there

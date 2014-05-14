@@ -24,20 +24,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ########## END EMAIL CONFIGURATION
 
 
-########## DATABASE CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'karmanotes',
-        'USER': 'djkarma',
-        'PASSWORD': 'karma',
-        'HOST': 'localhost',
-        'PORT': '',  # Set to empty string for default. Not used with sqlite3.
-    }
-}
-########## END DATABASE CONFIGURATION
-
 ########## STATIC CONFIG
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
@@ -76,6 +62,8 @@ INSTALLED_APPS += (
     'django_extensions',
     'django_nose',
 )
+
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.versions.VersionsPanel',

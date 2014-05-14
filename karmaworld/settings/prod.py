@@ -8,10 +8,6 @@ from S3 import CallingFormat
 
 from common import *
 
-from karmaworld.secret.db_settings import PROD_DB_NAME
-from karmaworld.secret.db_settings import PROD_DB_USERNAME
-from karmaworld.secret.db_settings import PROD_DB_PASSWORD
-
 try:
     # Include email is settings are there
     from karmaworld.secret.email import SMTP_HOST
@@ -49,20 +45,6 @@ if EMAIL:
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#server-email
     SERVER_EMAIL = EMAIL_HOST_USER
 ########## END EMAIL CONFIGURATION
-
-
-########## DATABASE CONFIGURATION
-DATABASES = {
-    'default': {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': PROD_DB_NAME,
-    'USER': PROD_DB_USERNAME,
-    'PASSWORD': PROD_DB_PASSWORD,
-    'HOST': '',
-    'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
-########## END DATABASE CONFIGURATION
 
 
 ########## CACHE CONFIGURATION

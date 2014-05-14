@@ -2,15 +2,12 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 """ Common settings and globals. """
-
-
 from datetime import timedelta
 import sys
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
-
 from djcelery import setup_loader
-
+import dj_database_url
 from karmaworld.secret.filepicker import FILEPICKER_API_KEY as fp_api
 
 FILEPICKER_API_KEY = fp_api
@@ -74,16 +71,7 @@ MANAGERS = ADMINS
 
 ########## DATABASE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
+DATABASES = {'default': dj_database_url.config()}
 ########## END DATABASE CONFIGURATION
 
 
