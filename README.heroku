@@ -1,0 +1,18 @@
+Checkout the karmanotes repository locally.
+
+Create Heroku app from either the web interface or the CLI. See Heroku documentation for more information.
+
+From the settings page for the Heroku app, find the Git URL and copy it.
+
+Install the Heroku CLI. Make sure to configure the Heroku CLI tool with `heroku login`.
+
+In the karmanotes repository:
+`git remote add my-heroku-dev git@heroku.com:<your-project-name>.git`
+
+Create a Heroku database either from the web interface or the CLI. Look for the Dev Plan (its free). Once created, keep track of its connection settings for the configuration step.
+
+Configure the application by copying `${project_root}/.env.example` to `${project_root}/.env` and edit it appropriately for all external dependencies.
+
+Push the configuration to Heroku by running the handy script. `python export_env_to_heroku.py`
+
+Push the app to Heroku with git. `git push my-heroku-dev master`
