@@ -13,7 +13,7 @@ v3.0 of the karmanotes.org website from the FinalsClub Foundation
 
 KarmaNotes is an online database of college lecture notes.  KarmaNotes empowers college students to participate in the free exchange of knowledge. 
 
-# Pre-Installation
+# Pre-Installation 
 
 ## Code
 
