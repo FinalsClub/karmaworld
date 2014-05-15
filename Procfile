@@ -1,2 +1,3 @@
 web: gunicorn karmaworld.wsgi
-celery: python manage.py celery worker --pidfile=/tmp/celeryd.pid -l info
+celery-worker: python manage.py celery worker --pidfile=/tmp/celeryd.pid -l info
+celery-beat: python manage.py celery beat --pidfile=/tmp/beat.pid -l info
