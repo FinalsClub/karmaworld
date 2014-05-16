@@ -225,6 +225,7 @@ class NoteKeywordsView(FormView, SingleObjectMixin):
                 keyword_object.note = self.get_object()
                 keyword_object.word = word
                 keyword_object.definition = definition
+                keyword_object.unreviewed = False
                 keyword_object.save()
 
 

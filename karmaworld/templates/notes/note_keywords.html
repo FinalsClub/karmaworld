@@ -4,7 +4,7 @@
     <div class="small-12 columns">
       {% if user.is_authenticated %}
         <p id="keyword-intro">These key terms and definitions have been defined by KarmaNotes users.
-        You can edit them for accuracy and add more if you like.</p>
+        You can edit them for accuracy and add more if you like.  Red rows indicate unreviewed entries.</p>
         <p><button id="edit-keywords-button" class="museo700"><i class="fa fa-edit"></i> Edit Key Terms & Definitions</button></p>
       {% else %}
         <p id="keyword-intro">These key terms and definitions have been defined by KarmaNotes users.</p>
@@ -17,7 +17,7 @@
           </tr>
         </thead>
         {% for keyword in keywords %}
-          <tr>
+          <tr {% if keyword.unreviewed %}class="unreviewed"{% endif %}>
             <td>{{ keyword.word }}</td>
             <td>
               {% if keyword.definition %}

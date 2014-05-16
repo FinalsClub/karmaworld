@@ -170,6 +170,10 @@ button.add-note-btn {
   background-color: #ffdcdc;
 }
 
+tr.unreviewed {
+  background-color: #ffdcdc !important;
+}
+
 .correct-label,
 .incorrect-label {
   padding-left: 0;
