@@ -118,16 +118,17 @@ def submit_extract_keywords_hit(note):
 def get_extract_keywords_results():
 
     try:
-        from karmaworld.secret.mturk import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, MTURK_HOST
+        MTURK_HOST = os.environ['MTURK_HOST']
     except ImportError:
         logger.warn('Could not find Mechanical Turk secrets, not running get_extract_keywords_results')
         return
 
-    connection = MTurkConnection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
+    connection = MTurkConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY,
                                  host=MTURK_HOST)
 
     reviewable_hits = connection.get_reviewable_hits(page_size=100)
     for hit in reviewable_hits:
+        logger.info('Found HIT {0}'.format(hit.HITId))
         try:
             note_id = connection.get_hit(hit.HITId)[0].RequesterAnnotation
             note_id = int(note_id)
