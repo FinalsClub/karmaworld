@@ -8,6 +8,7 @@ from django.contrib.admin import ModelAdmin
 from django.http import HttpResponse
 from karmaworld.apps.users.models import UserProfile, NoteKarmaEvent, CourseKarmaEvent, GenericKarmaEvent
 
+
 def user_export(modeladmin, request, queryset):
     f = StringIO.StringIO()
     writer = csv.writer(f, dialect='excel')
