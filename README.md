@@ -43,62 +43,132 @@ directory underneath that (`{project_root}/karmaworld`) alongside files like
 Notice: This software makes use of external third party services which require
 accounts to access the service APIs. Without these third parties available,
 this software may require considerable overhaul. These services have
-API keys that you must provide to KarmaNotes as environment variables. The
-best way to do this is by using a `.env` file. Copy `.env.example` to `.env`
-and populate the fields as required.
+API keys, credentials, and other information that you must provide to KarmaNotes
+as environment variables. The best way to persist these environment variables is
+by using a `.env` file. Copy `.env.example` to `.env` and populate the fields as
+required.
 
-### Filepicker
-This software uses [Filepicker.io](https://www.inkfilepicker.com/) for uploading
-files. This requires an account with Filepicker.
+### Heroku
+This project has chosen to use [Heroku](www.heroku.com) to host the Django and
+celery software. While not a hard requirement, the more up-to-date parts of this
+documentation will operate assuming Heroku is in use.
 
-Filepicker requires an additional third party file hosting site where it may
-send uploaded files. For this project, we have used Amazon S3.
-
-Your Filepicker API key must be provided in `FILEPICKER_API_KEY` and your
-secret in `FILEPICKER_SECRET`.
+See README.heroku for more information.
 
 ### Amazon S3
+The instructions for creating an [S3](http://aws.amazon.com/s3/) bucket may be
+[found on Amazon.](http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html)
 
-#### for Filepicker
-This software uses [Amazon S3](http://aws.amazon.com/s3/) as a third party file
-hosting site. The primary use case is a destination for Filepicker files. The
-software won't directly need any S3 information for this use case; it will be
-provided directly to Filepicker.
+Two, separate buckets will be needed in production: one for static file hosting
+and one as a communication bus with Filepicker.
 
-#### for Static File hosting
-A secondary use case for S3 is hosting static files. The software will need to
-update static files on the S3 bucket. In this case, the software will need the
-S3 bucket name, access key, and secret key.
+This software uses S3 to store files which are sent to or received 
+from Filepicker. Filepicker will need to know the S3 bucket name, access key,
+and secret key.
 
-The code assumes S3 is used for static files in a production environment. To
-obviate the need for hosting static files through S3 (noting that it still might
-be necessary for Filepicker), a workaround was explained [in this Github ticket](https://github.com/FinalsClub/karmaworld/issues/192#issuecomment-30193617).
+Filepicker users can only make use of an S3 bucket with a paid account. For
+development purposes, no Filepicker S3 bucket is needed. Skip all references to
+the Filepicker S3 bucket in the development case.
 
-That workaround is repeated here. Make the following changes to
-`{project_root}/karmaworld/settings/prod.py`:
+The software will not need to know the S3 credentials for the Filepicker
+bucket, because the software will upload files to the Filepicker S3 bucket
+through Filepicker's API and it will link to or download files from the
+Filepicker S3 bucket through Filepicker's URLs. This will be covered in the
+Filepicker section below.
 
-1. comment out everything about static_s3 from imports
-2. comment out storages from the `INSTALLED_APPS`
-3. change `STATIC_URL` to `'/assets/'`
-4. comment out the entire storages section (save for part of `INSTALLED_APPS` and `STATIC_URL`)
-5. add this to the nginx config:
+This software uses S3 for hosting static files. The software will need to
+update static files on the S3 bucket. As such, the software will need the
+S3 bucket name, access key, and secret key via the environment variables. This
+is described in subsections below.
 
-    location /assets/ {
-        root /var/www/karmaworld/karmaworld/;
-    }
-    
-### IndexDen
-KarmaNotes uses IndexDen to create a searchable index of all the notes
-in the system. Create an free IndexDen account at [their homepage](http://indexden.com/).
-You will be given a private URL that accesses your IndexDen account.
-Set the environment variable INDEXDEN_PRIVATE_URL to your private URL and
-INDEXDEN_INDEX to the name
-of the index you want KarmaNotes to use. The index will be created automatically when
-KarmaNotes is run if it doesn't already exist. For example,
-```
-INDEXDEN_PRIVATE_URL='http://:secretsecret@secret.api.indexden.com'
-INDEXDEN_INDEX='karmanotes_something_something'
-```
+To support static hosting, `DEFAULT_FILE_STORAGE` should be set to
+`'storages.backends.s3boto.S3BotoStorage'`, unless there is a compelling reason
+to change it.
+
+There are three ways to setup access to the S3 buckets depending upon speed
+and security. The more secure, the slower it will be to setup.
+
+#### insecure S3 access
+For quick and dirty insecure S3 access, create a single group and a single user
+with full access to all buckets. Full access to all buckets is insecure!
+
+Create an 
+[Amazon IAM group](http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_CreatingAndListingGroups.html)
+with full access to the S3 bucket. Select the "Amazon S3 Full Accesss" Policy
+Template.
+
+Create an
+[Amazon IAM user](http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_SettingUpUser.html).
+Copy the credentials into the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+environment variables. Be sure to write down the access information, as it
+will only be shown once.
+
+#### secure S3 access
+For secure S3 access, two users will be needed. One with access to the
+Filepicker bucket and one with access to the static hosting bucket.
+
+Note: this might need to be modified to prevent creation and deletion of
+buckets?
+
+Create an 
+[Amazon IAM group](http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_CreatingAndListingGroups.html)
+with full access to the S3 bucket. The quick way is to select the
+"Amazon S3 Full Accesss" Policy Template and replace `"Resource": "*"` with 
+`"Resource": "arn:aws:s3:::<static_bucket_name>"`.
+
+Create an
+[Amazon IAM user](http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_SettingUpUser.html).
+Copy the credentials into the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+environment variables. Be sure to write down the access information, as it
+will only be shown once.
+
+Ensure the created user is a member of the group with access to the S3
+static files bucket.
+
+Repeat the process again, creating a group for the Filepicker bucket and
+creating a user with access to that group. These credentials will be passed
+on to Filepicker.
+
+#### somewhat secure S3 access
+Create two groups as described in the `secure S3 access` section above.
+
+Create a single user, save the credentials as described in the
+`insecure S3 access` section above, and pass the credentials on to Filepicker.
+
+Add the single user to both groups.
+
+This is less secure because if your web server or Filepicker get compromised
+(so there are two points for potential failure), the single compromised
+user has full access to both buckets.
+
+### Amazon Cloudfront CDN
+[Cloudfront CDN](http://aws.amazon.com/cloudfront/) assists static file hosting.
+
+Follow
+[Amazon's instructions](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html)
+to host static files out of the appropriate S3 bucket. Note that Django's static
+file upload process has been modified to mark static files as publicly
+assessible.
+
+In the settings for the Cloudfront Distribution, copy the "Domain Name" from
+General settings as a host URL (`//foo.cloudfront.net/`) and paste the URL into
+both the `CLOUDFRONT_URL` environment variable and the `CLOUDFRONT_DOMAIN`
+environment_variable (used for the Boto `AWS_S3_CUSTOM_DOMAIN` setting, an
+explanation is [here](https://coderwall.com/p/8kjr3q)).
+
+### Amazon Mechanical Turk
+Mechanical turk is employed to generate human feedback from uploaded notes.
+This service is helpful for generating flash cards and quizzes.
+
+
+This service might be optional and it might cause unexpected charges when
+deployed.  If the required environment variable is not found, then no errors will occur and no mechanical turk tasks will be created, avoiding any unexpected
+costs.
+
+The `MTURK_HOST` environment variable is almost certainly
+`"mechanicalturk.amazonaws.com"`.
+
+The code will create and publish HITs on your behalf.
 
 ### Google Drive
 This software uses [Google Drive](https://developers.google.com/drive/) to
@@ -108,11 +178,55 @@ A Google Drive service account with access to the Google Drive is required.
 This may be done with a Google Apps account with administrative privileges, or ask
 your business sysadmin.
 
-These are the instructions to create a Google Drive service account:
-https://developers.google.com/drive/delegation
+Follow [Google's instructions](https://developers.google.com/drive/delegation)
+to create a Google Drive service account.
 
-When completed, set the environment variables `GOOGLE_CLIENT_SECRETS`,
-`GOOGLE_USER`, and `GOOGLE_SERVICE_KEY_BASE64`.
+Convert the p12 file into a Base64 encoded string for the
+`GOOGLE_SERVICE_KEY_BASE64` environment variable. There are many ways to do
+this. If Python is available, the
+[binascii library](https://docs.python.org/2/library/binascii.html#binascii.b2a_base64)
+makes this very easy:
+
+        import binascii
+        with open('file.p12', 'r') as f:
+            print binascii.b2a_base64(f.read)
+
+Copy the contents of `client_secret_*.apps.googleusercontent.com.json` into the
+`GOOGLE_CLIENT_SECRETS` environment variable.
+
+### Filepicker
+This software uses [Filepicker.io](https://www.inkfilepicker.com/) for uploading
+files. This requires an account with Filepicker.
+
+Filepicker can use an additional third party file hosting site where it may
+send uploaded files. This project, in production, uses Amazon S3 as the third
+party. See the Amazon S3 section above for more information.  
+
+Create a new App with Web SDK and provide the Heroku App URL for the
+Application's URL. You'll be given an API Key for the App. Paste this into the
+`FILEPICKER_API_KEY` environment variable.
+
+Find the 'App Security' button on the left hand side of the web site. Make sure
+'Use Security' is enabled. Generate a new secret key. Paste this key into the
+`FILEPICKER_SECRET` environment variable.
+
+If you have an upgraded plan, you can configure Filepicker to have access to
+your Filepicker S3 bucket. Click 'Amazon S3' on the left hand side menu and
+supply the credentials for the user with access to the Filepicker S3 bucket.
+
+### IndexDen
+KarmaNotes uses IndexDen to create a searchable index of all the notes in the
+system. Create an free IndexDen account at
+[their homepage](http://indexden.com/). You will be given a private URL that
+accesses your IndexDen account. This URL is visible on your dashboard (you
+might need to scroll down).
+
+Set the `INDEXDEN_PRIVATE_URL` environment variable to your private URL.
+
+Set the `INDEXDEN_INDEX` environment variable to the name of the index you want
+to use for KarmaNotes. The index will be created automatically when KarmaNotes
+is run if it doesn't already exist. It may be created through the GUI if
+desired.
 
 ### Twitter
 
@@ -125,12 +239,15 @@ access token key and secret are needed by the software.
 If the required environment variables are not found, then no errors will occur
 and no tweets will be posted.
 
-To set this up, create a new Twitter application at https://dev.twitter.com/apps/new.
-Make sure this application has read/write access. Generate an access token. Go to your
-OAuth settings, and grab the "Consumer key", "Consumer secret", "Access token", and
-"Access token secret". Set these to the variables `TWITTER_CONSUMER_KEY`,
-`TWITTER_CONSUMER_SECRET`, `TWITTER_ACCESS_TOKEN_KEY`, `TWITTER_ACCESS_TOKEN_SECRET`
+To set this up,
+[create a new Twitter application](https://dev.twitter.com/apps/new).
+Use your Heroku App URL for the website field. Leave the Callback field blank.
 
+Make sure this application has read/write access. Generate an access token. Go
+to your OAuth settings, and grab the "Consumer key", "Consumer secret",
+"Access token", and "Access token secret". Paste these, respectively, into the
+environment variables `TWITTER_CONSUMER_KEY`, `TWITTER_CONSUMER_SECRET`,
+`TWITTER_ACCESS_TOKEN_KEY`, `TWITTER_ACCESS_TOKEN_SECRET`.
 
 ### SSL Certificate
 
