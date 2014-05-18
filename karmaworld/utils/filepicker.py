@@ -5,7 +5,7 @@ import base64
 from hashlib import sha256
 import os
 
-FILEPCIKER_SECRET = os.environ['FILEPCIKER_SECRET']
+FILEPICKER_SECRET = os.environ['FILEPICKER_SECRET']
 
 def encode_fp_policy(policy):
     """ Return URL-safe Base64 encoded JSON Filepicker policy. """
@@ -25,6 +25,6 @@ def sign_fp_policy(policy):
     """ Return a signature appropriate for the given encoded policy. """
     # https://developers.inkfilepicker.com/docs/security/#signPolicy
     # hash it up, bra!
-    engine = hmac.new(FILEPCIKER_SECRET, digestmod=sha256)
+    engine = hmac.new(FILEPICKER_SECRET, digestmod=sha256)
     engine.update(policy)
     return engine.hexdigest()
