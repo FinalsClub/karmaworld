@@ -128,7 +128,7 @@ AWS_HEADERS = {
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 # S3_URL comes from karmaworld.secret.static_s3
-STATIC_URL = os.environ.get('CLOUDFRONT_URL') + AWS_LOCATION + '/'
+STATIC_URL = '//' + os.environ['CLOUDFRONT_DOMAIN'] + '/' + AWS_LOCATION + '/'
 ########## END STORAGE CONFIGURATION
 
 ########## SSL FORWARDING CONFIGURATION
