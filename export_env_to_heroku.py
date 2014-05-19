@@ -16,4 +16,4 @@ def export_env(filename='.env'):
 
 if __name__ == '__main__':
     import sys
-    sys.exit(export_env('.env.example'))
+    sys.exit(export_env('.env'))
