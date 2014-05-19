@@ -151,18 +151,15 @@ file upload process has been modified to mark static files as publicly
 assessible.
 
 In the settings for the Cloudfront Distribution, copy the "Domain Name" from
-General settings as a host URL (`//foo.cloudfront.net/`) and paste the URL into
-both the `CLOUDFRONT_URL` environment variable and the `CLOUDFRONT_DOMAIN`
-environment_variable (used for the Boto `AWS_S3_CUSTOM_DOMAIN` setting, an
-explanation is [here](https://coderwall.com/p/8kjr3q)).
+General settings and set `CLOUDFRONT_DOMAIN` to it. For example, `abcdefghij.cloudfront.net`.
 
 ### Amazon Mechanical Turk
 Mechanical turk is employed to generate human feedback from uploaded notes.
 This service is helpful for generating flash cards and quizzes.
 
-
-This service might be optional and it might cause unexpected charges when
-deployed.  If the required environment variable is not found, then no errors will occur and no mechanical turk tasks will be created, avoiding any unexpected
+This service is optional and it might cause unexpected charges when
+deployed.  If the required environment variable is not found,
+then no errors will occur and no mechanical turk tasks will be created, avoiding any unexpected
 costs.
 
 The `MTURK_HOST` environment variable is almost certainly
@@ -254,18 +251,14 @@ environment variables `TWITTER_CONSUMER_KEY`, `TWITTER_CONSUMER_SECRET`,
 If you wish to host your system publicly, you'll need an SSL certificate
 signed by a proper authority.
 
-If you are working on local system for development, a self signed certificate
-will suffice. There are plenty of resources available for learning how to
-create one, so that will not be detailed here. Note that the Vagrant file will
-automatically generated a self signed certificate within the virtual machine.
-
-The certificate should be installed using nginx.
+Follow [Heroku's SSL setup](https://devcenter.heroku.com/articles/ssl-endpoint)
+to get SSL running on your server.
 
 # Local Install
 
 KarmaNotes is a Heroku application. Download the [Heroku toolbelt](https://toolbelt.heroku.com/).
 
-To run KarmaNotes locally, do `foreman start`. Before your first run, there are
+Before your running it for the first time, there are
 a few setup steps:
   1. `virtualenv venv`
   1. `source venv/bin/activate`
@@ -277,13 +270,22 @@ a few setup steps:
   1. `foreman run python manage.py import_usde _csv ./schools.csv`
   1. `foreman run python manage.py sanitize_usde_schools`
 
+To run KarmaNotes locally, make sure you are inside your
+virtual environment (`source venv/bin/activate`) and run `foreman start`.
+Press ctrl-C to kill foreman. Foreman will run Django's runserver command.
+If you wish to have more control over how this is done, you can do
+`foreman run python manage.py runserver <options>`. For running any other
+`manage.py` commands, you should also precede them with `foreman run` like just shown.
+This simply ensures that the environment variables from `.env` are present.
 
 # Heroku Install
 
 KarmaNotes is a Heroku application. Download the [Heroku toolbelt](https://toolbelt.heroku.com/).
 
 To run KarmaNotes on Heroku, do `heroku create` and `git push heroku master` as typical
-for a Heroku application. This will deploy KarmaNotes to Heroku with a supporting buildpack.
+for a Heroku application. Set your the variable `BUILDPACK_URL` to
+`https://github.com/charlesconnell/heroku-buildpack-karmanotes` to use a buildpack designed
+to support KarmaNotes.
 
 You will need to import the US Department of Education's list of accredited schools.
    1. Fetch USDE schools with
