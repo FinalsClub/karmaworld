@@ -150,7 +150,7 @@
                 </button>
               {% endif %}
 
-              {% if note.user == request.user %}
+              {% if note.user == request.user or user.is_staff %}
                 <button id="edit-button" data-reveal-id="note-edit-dialog" class="modify-button"> <i class="fa fa-edit"></i> Edit This Note</button>&nbsp;&nbsp;
               {% endif %}
 
