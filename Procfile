@@ -1,2 +1,2 @@
-web: gunicorn karmaworld.wsgi
+web: newrelic-admin run-program gunicorn karmaworld.wsgi
 celerywrapper: sh celerywrapper.sh

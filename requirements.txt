@@ -35,3 +35,4 @@ mock
 cssmin==0.1.4
 amqplib==1.0.2
 django-sslify>=0.2
+newrelic
