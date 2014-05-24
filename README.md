@@ -254,6 +254,9 @@ signed by a proper authority.
 Follow [Heroku's SSL setup](https://devcenter.heroku.com/articles/ssl-endpoint)
 to get SSL running on your server.
 
+You may set the `SSL_REDIRECT` environment variable to `true` to make KarmaNotes
+redirect insecure connections to secure ones.
+
 # Local Install
 
 KarmaNotes is a Heroku application. Download the [Heroku toolbelt](https://toolbelt.heroku.com/).

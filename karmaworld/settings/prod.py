@@ -8,28 +8,20 @@ from S3 import CallingFormat
 
 from common import *
 
+########## EMAIL CONFIGURATION
 try:
     # Include email is settings are there
-    SMTP_HOST = os.environ['SMTP_HOST']
-    SMTP_USERNAME = os.environ['SMTP_USERNAME']
-    SMTP_PASSWORD = os.environ['SMTP_PASSWORD']
-    EMAIL = True
-except:
-    EMAIL = False
+    # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host
+    EMAIL_HOST = os.environ['SMTP_HOST']
 
-########## EMAIL CONFIGURATION
-if EMAIL:
+    # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host-user
+    EMAIL_HOST_USER = os.environ['SMTP_USERNAME']
+
+    # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host-password
+    EMAIL_HOST_PASSWORD = os.environ['SMTP_PASSWORD']
+
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    
-    # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host
-    EMAIL_HOST = environ.get('EMAIL_HOST', SMTP_HOST)
-    
-    # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host-password
-    EMAIL_HOST_PASSWORD = environ.get('EMAIL_HOST_PASSWORD', SMTP_PASSWORD)
-    
-    # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host-user
-    EMAIL_HOST_USER = environ.get('EMAIL_HOST_USER', SMTP_USERNAME)
     
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-port
     EMAIL_PORT = environ.get('EMAIL_PORT', 587)
@@ -44,6 +36,11 @@ if EMAIL:
     
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#server-email
     SERVER_EMAIL = EMAIL_HOST_USER
+
+    EMAIL = True
+
+except:
+    EMAIL = False
 ########## END EMAIL CONFIGURATION
 
 
@@ -105,7 +102,6 @@ CELERY_TIMEZONE = 'UTC'
 INSTALLED_APPS += (
     'storages',
     'gunicorn',
-    'sslify',
 )
 
 # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
@@ -134,9 +130,12 @@ STATIC_URL = '//' + os.environ['CLOUDFRONT_DOMAIN'] + '/' + AWS_LOCATION + '/'
 
 ########## SSL FORWARDING CONFIGURATION
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-MIDDLEWARE_CLASSES = (
-    'sslify.middleware.SSLifyMiddleware',
-) + MIDDLEWARE_CLASSES
+
+if os.environ.get('SSL_REDIRECT', False) == 'true':
+    INSTALLED_APPS += ('sslify',)
+    MIDDLEWARE_CLASSES = (
+        'sslify.middleware.SSLifyMiddleware',
+    ) + MIDDLEWARE_CLASSES
 ########## END SSL FORWARDING CONFIGURATION
 
 ########## COMPRESSION CONFIGURATION
