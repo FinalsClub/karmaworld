@@ -326,6 +326,8 @@ CELERY_TASK_RESULT_EXPIRES = timedelta(minutes=30)
 
 # See: http://celery.github.com/celery/django/
 setup_loader()
+
+CELERY_DEFAULT_QUEUE = os.environ['CELERY_QUEUE_NAME']
 ########## END CELERY CONFIGURATION
 
 
