@@ -19,3 +19,11 @@ class Keyword(models.Model):
     def __unicode__(self):
         return u"{w}: {d}".format(w=self.word, d=self.definition)
 
+
+class HIT(models.Model):
+    HITId = models.CharField(max_length=100, unique=True, null=False)
+    note = models.ForeignKey(to='notes.Note', null=False)
+    processed = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return u'{i}: {p}'.format(i=self.HITId, p='processed' if self.processed else 'unprocessed')

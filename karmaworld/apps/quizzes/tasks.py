@@ -11,7 +11,7 @@ from boto.mturk.connection import MTurkConnection
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 from karmaworld.apps.notes.models import Note
-from karmaworld.apps.quizzes.models import Keyword
+from karmaworld.apps.quizzes.models import Keyword, HIT
 from django.conf import settings
 
 logger = get_task_logger(__name__)
@@ -133,11 +133,14 @@ def submit_extract_keywords_hit(note):
                                        is_required=False)
         question_form.append(definition_question)
 
-    connection.create_hit(questions=question_form, max_assignments=1,
+    hit = connection.create_hit(questions=question_form, max_assignments=1,
                           title=title, description=HIT_DESCRIPTION,
                           keywords=HIT_KEYWORDS, duration=HIT_DURATION,
                           reward=HIT_REWARD, qualifications=HIT_QUALIFICATION,
-                          annotation=str(note.id))
+                          annotation=str(note.id))[0]
+
+    HIT.objects.create(HITId=hit.HITId, note=note, processed=False)
+
 
 
 @task(name='get_extract_keywords_results')
@@ -152,27 +155,13 @@ def get_extract_keywords_results():
     connection = MTurkConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY,
                                  host=MTURK_HOST)
 
-    reviewable_hits = connection.get_reviewable_hits(status='Reviewable', page_size=100,
-                                                     sort_by='CreationTime', sort_direction='Descending')
-    for hit in reviewable_hits:
-        logger.info('Found HIT {0}'.format(hit.HITId))
-        try:
-            note_id = connection.get_hit(hit.HITId)[0].RequesterAnnotation
-            note_id = int(note_id)
-        except (AttributeError, ValueError):
-            logger.error('HIT {0} does not have a valid RequesterAnnotation, '
-                         'so we cannot determine which note it references'.format(hit.HITId))
-            return
-
-        try:
-            note = Note.objects.get(id=note_id)
-        except ObjectDoesNotExist:
-            logger.error('Could not find note {0} which was referenced by HIT {1}'.format(note_id, hit.HITId))
-            return
+    for hit_object in HIT.objects.filter(processed=False):
+        logger.info('Found unprocessed HIT {0}'.format(hit_object.HITId))
 
         answers = {}
-        assignments = [a for a in connection.get_assignments(hit.HITId) if a.AssignmentStatus == 'Approved']
+        assignments = [a for a in connection.get_assignments(hit_object.HITId) if a.AssignmentStatus == 'Approved']
         for assignment in assignments:
+            logger.info('Found approved assignment for HIT {0}'.format(hit_object.HITId))
             for question_form_answer in assignment.answers[0]:
                 answers[question_form_answer.qid] = question_form_answer.fields[0]
 
@@ -183,6 +172,11 @@ def get_extract_keywords_results():
                 keyword = answers[keyword_qid]
                 definition = answers[definition_qid]
                 if keyword:
-                    Keyword.objects.create(word=keyword, definition=definition, note=note, unreviewed=True)
+                    Keyword.objects.create(word=keyword, definition=definition, note=hit_object.note, unreviewed=True)
             except KeyError:
                 pass
+
+        if assignments:
+            logger.info('Done processing HIT {0}'.format(hit_object.HITId))
+            hit_object.processed = True
+            hit_object.save()
