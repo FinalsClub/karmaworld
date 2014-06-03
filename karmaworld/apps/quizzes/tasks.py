@@ -186,7 +186,3 @@ def get_extract_keywords_results():
                     Keyword.objects.create(word=keyword, definition=definition, note=note, unreviewed=True)
             except KeyError:
                 pass
-
-        for assignment in assignments:
-            connection.approve_assignment(assignment.AssignmentId)
-
