@@ -18,7 +18,7 @@ logger = get_task_logger(__name__)
 
 HIT_TITLE_TEMPLATE = 'Get paid to learn {course} at {school}'
 HIT_DESCRIPTION = "Read students' course notes on KarmaNotes.org and " \
-                  "identify 10 keywords along with descriptions of them"
+                  "identify 10 or more keywords along with descriptions of them"
 HIT_OVERVIEW_TEMPLATE = \
         '<p>KarmaNotes.org is a non-profit organization dedicated to free and open education. ' \
         'We need your help to identify keywords and definitions in college student lecture notes. ' \
@@ -29,7 +29,7 @@ HIT_OVERVIEW_TEMPLATE = \
         '<p>In the notes below, please find keywords and definitions like the example above.</p>' \
         '<p>Notes link: <strong><a href="http://{domain}{link}">' \
         'http://{domain}{link}</a></strong></p>' \
-        '<p>In these notes, please find key words and definitions within these student notes. ' \
+        '<p>In these notes, please find 10 to 20 key words and definitions within these student notes. ' \
         'With your help, we will generate free and open flashcards and quizzes to help ' \
         'students study.  Together we can open education, one lecture at a time.</p>'
 HIT_KEYWORDS = 'writing, summary, keywords'
@@ -49,6 +49,16 @@ KEYWORD_FIELDS = [
     ('keyword08', 'Keyword 8'),
     ('keyword09', 'Keyword 9'),
     ('keyword10', 'Keyword 10'),
+    ('keyword11', 'Keyword 11'),
+    ('keyword12', 'Keyword 12'),
+    ('keyword13', 'Keyword 13'),
+    ('keyword14', 'Keyword 14'),
+    ('keyword15', 'Keyword 15'),
+    ('keyword16', 'Keyword 16'),
+    ('keyword17', 'Keyword 17'),
+    ('keyword18', 'Keyword 18'),
+    ('keyword19', 'Keyword 19'),
+    ('keyword20', 'Keyword 20'),
 ]
 
 DEFINITION_FIELDS = [
@@ -62,9 +72,19 @@ DEFINITION_FIELDS = [
     ('definition08', 'Definition 8'),
     ('definition09', 'Definition 9'),
     ('definition10', 'Definition 10'),
+    ('definition11', 'Definition 11'),
+    ('definition12', 'Definition 12'),
+    ('definition13', 'Definition 13'),
+    ('definition14', 'Definition 14'),
+    ('definition15', 'Definition 15'),
+    ('definition16', 'Definition 16'),
+    ('definition17', 'Definition 17'),
+    ('definition18', 'Definition 18'),
+    ('definition19', 'Definition 19'),
+    ('definition20', 'Definition 20'),
 ]
 
-@task()
+@task(name='submit_extract_keywords_hit')
 def submit_extract_keywords_hit(note):
     """Create a Mechanical Turk HIT that asks a worker to
     choose keywords and definitions from the given note."""
@@ -102,7 +122,7 @@ def submit_extract_keywords_hit(note):
         keyword_question = Question(identifier=KEYWORD_FIELDS[i][0],
                                     content=keyword_content,
                                     answer_spec=AnswerSpecification(keyword_fta),
-                                    is_required=True)
+                                    is_required=True if i <= 10 else False)
         question_form.append(keyword_question)
 
         definition_content = QuestionContent()
@@ -132,7 +152,8 @@ def get_extract_keywords_results():
     connection = MTurkConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY,
                                  host=MTURK_HOST)
 
-    reviewable_hits = connection.get_reviewable_hits(page_size=100)
+    reviewable_hits = connection.get_reviewable_hits(status='Reviewable', page_size=100,
+                                                     sort_by='CreationTime', sort_direction='Descending')
     for hit in reviewable_hits:
         logger.info('Found HIT {0}'.format(hit.HITId))
         try:
@@ -150,7 +171,7 @@ def get_extract_keywords_results():
             return
 
         answers = {}
-        assignments = [a for a in connection.get_assignments(hit.HITId) if a.AssignmentStatus == 'Submitted']
+        assignments = [a for a in connection.get_assignments(hit.HITId) if a.AssignmentStatus == 'Approved']
         for assignment in assignments:
             for question_form_answer in assignment.answers[0]:
                 answers[question_form_answer.qid] = question_form_answer.fields[0]
@@ -161,11 +182,11 @@ def get_extract_keywords_results():
             try:
                 keyword = answers[keyword_qid]
                 definition = answers[definition_qid]
-                Keyword.objects.create(word=keyword, definition=definition, note=note, unreviewed=True)
+                if keyword:
+                    Keyword.objects.create(word=keyword, definition=definition, note=note, unreviewed=True)
             except KeyError:
                 pass
 
         for assignment in assignments:
             connection.approve_assignment(assignment.AssignmentId)
 
-        connection.dispose_hit(hit.HITId)
