@@ -190,7 +190,7 @@ def get_extract_keywords_results():
             hit_object.save()
 
 
-EMAIL_HIT_TITLE_TEMPLATE = 'Identify fields in an email'
+EMAIL_HIT_TITLE = 'Identify fields in an email'
 EMAIL_HIT_DESCRIPTION = "Read an email about a college course and pull out information " \
                         "about that course."
 EMAIL_HIT_OVERVIEW_TEMPLATE = \
@@ -200,23 +200,28 @@ EMAIL_HIT_OVERVIEW_TEMPLATE = \
         'We need your help to convert this into a format ' \
         'our system can understand. See the email printed below, and fill out as much information ' \
         'about the course as you are able. You may need to look at the documents attached to the email, ' \
-        'which are linked to below it.</p> ' \
-        '<p>Subject: {subject}</p> ' \
+        'which are linked to below.</p><br/>' \
+        '<p>Email Subject: {subject}</p> ' \
+        '<p>Email Body:</p>' \
         '<pre>{body}</pre>'
-EMAIL_HIT_ATTACHMENT_OVERVIEW_TEMPLATE = '<p>The follow document was attached to the email. View it and fill out \
-                                         as much information as you can about it. <a href="{link}">{name}</a></p>'
+EMAIL_HIT_ATTACHMENT_OVERVIEW_TEMPLATE = '<p>The following document was attached to the email. ' \
+                                         'View it and fill out as much information as you can about it: ' \
+                                         '<a href="{link}"><strong>{name}</strong></a></p>'
 EMAIL_HIT_KEYWORDS = 'email, copying, reading, writing'
 EMAIL_HIT_DURATION = 60 * 60 * 24 * 7
 EMAIL_HIT_REWARD = 0.10
 EMAIL_HIT_PERCENT_APPROVED_REQUIREMENT = PercentAssignmentsApprovedRequirement(comparator='GreaterThan', integer_value=95)
 EMAIL_HIT_QUALIFICATION = Qualifications(requirements=[KEYWORDS_HIT_PERCENT_APPROVED_REQUIREMENT])
 
+COURSE_SPAM_QID = 'course_spam'
 COURSE_NAME_QID = 'course_name'
 INSTRUCTOR_NAMES_QID = 'instructor_names'
 SCHOOL_NAME_QID = 'school_name'
 DEPARTMENT_NAME_QID = 'department_name'
-CATEGORY_QID = 'category'
-TAGS_QID = 'tags'
+
+NOTE_CATEGORY_QID_TEMPLATE = 'note_category_'
+NOTE_TITLE_QID_TEMPLATE = 'note_title_'
+
 NOTE_CATEGORIES_FOR_MTURK = [(c[1], c[0]) for c in Document.NOTE_CATEGORIES]
 
 FP_POLICY_JSON_READ_WRITE = '{{"expiry": {0}, "call": ["store","read","stat"]}}'
@@ -235,16 +240,20 @@ CONTENT_DISPOSITION_REGEX = r'filename="(?P<filename>.+)"'
 @task(name='check_notes_mailbox')
 def check_notes_mailbox():
     try:
-        user = os.environ['NOTES_MAILBOX_USERNAME']
-        password = os.environ['NOTES_MAILBOX_PASSWORD']
-        filepicker_api_key = os.environ['FILEPICKER_API_KEY']
+        MAILBOX_USER = os.environ['NOTES_MAILBOX_USERNAME']
+        MAILBOX_PASSWORD = os.environ['NOTES_MAILBOX_PASSWORD']
+        FILEPICKER_API_KEY = os.environ['FILEPICKER_API_KEY']
+        MTURK_HOST = os.environ['MTURK_HOST']
     except:
         logger.warn('Could not find notes mailbox secrets, not running check_notes_mailbox')
         return
 
+    connection = MTurkConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY,
+                                 host=MTURK_HOST)
+
     mailbox = poplib.POP3_SSL('pop.gmail.com', 995)
-    mailbox.user(user)
-    mailbox.pass_(password)
+    mailbox.user(MAILBOX_USER)
+    mailbox.pass_(MAILBOX_PASSWORD)
     numMessages = len(mailbox.list()[1])
     for i in range(numMessages):
         # construct message object from raw message
@@ -277,14 +286,14 @@ def check_notes_mailbox():
                 # Upload attachment to filepicker
                 resp = requests.post('https://www.filepicker.io/api/store/S3?key={key}&policy={policy}&' \
                                      'signature={signature}&mimetype={mimetype}&filename={filename}'
-                                     .format(key=filepicker_api_key, policy=FP_POLICY_READ_WRITE,
+                                     .format(key=FILEPICKER_API_KEY, policy=FP_POLICY_READ_WRITE,
                                              signature=FP_SIGNATURE_READ_WRITE, mimetype=attachment_mimetype,
                                              filename=attachment_filename),
                                       data=attachment_data)
 
                 if resp.status_code == 200:
                     url = json.loads(resp.text)['url']
-                    url = url + '?policy={policy}&signature={signature}'\
+                    url = url + '?policy={policy}&amp;signature={signature}'\
                         .format(policy=FP_POLICY_READ, signature=FP_SIGNATURE_READ)
                     attachments.append((url, attachment_filename))
                 else:
@@ -296,14 +305,26 @@ def check_notes_mailbox():
         overview.append(FormattedContent(
             EMAIL_HIT_OVERVIEW_TEMPLATE.format(subject=message_subject, body=message_body, attachments='')))
 
+        single_line_answer = FreeTextAnswer()
+        single_line_answer.num_lines = 1
+
         question_form = QuestionForm()
         question_form.append(overview)
+
+        course_spam_content = QuestionContent()
+        course_spam_content.append_field('Title', 'Does the email contain course notes (check attachments below)?')
+        answer = SelectionAnswer(style='dropdown', selections=[('No', 'no'), ('Yes', 'yes')])
+        course_spam = Question(identifier=COURSE_SPAM_QID,
+                               content=course_spam_content,
+                               answer_spec=AnswerSpecification(answer),
+                               is_required=True)
+        question_form.append(course_spam)
 
         course_name_content = QuestionContent()
         course_name_content.append_field('Title', 'Course Name')
         course_name = Question(identifier=COURSE_NAME_QID,
                                content=course_name_content,
-                               answer_spec=AnswerSpecification(FreeTextAnswer()),
+                               answer_spec=AnswerSpecification(single_line_answer),
                                is_required=True)
         question_form.append(course_name)
 
@@ -311,7 +332,7 @@ def check_notes_mailbox():
         instructor_names_content.append_field('Title', 'Instructor Name(s)')
         instructor_names = Question(identifier=INSTRUCTOR_NAMES_QID,
                                     content=instructor_names_content,
-                                    answer_spec=AnswerSpecification(FreeTextAnswer()),
+                                    answer_spec=AnswerSpecification(single_line_answer),
                                     is_required=False)
         question_form.append(instructor_names)
 
@@ -319,7 +340,7 @@ def check_notes_mailbox():
         school_name_content.append_field('Title', 'School Name')
         school_name = Question(identifier=SCHOOL_NAME_QID,
                                content=school_name_content,
-                               answer_spec=AnswerSpecification(FreeTextAnswer()),
+                               answer_spec=AnswerSpecification(single_line_answer),
                                is_required=True)
         question_form.append(school_name)
 
@@ -327,31 +348,38 @@ def check_notes_mailbox():
         department_name_content.append_field('Title', 'Department Name')
         department_name = Question(identifier=DEPARTMENT_NAME_QID,
                                    content=department_name_content,
-                                   answer_spec=AnswerSpecification(FreeTextAnswer()),
+                                   answer_spec=AnswerSpecification(single_line_answer),
                                    is_required=False)
         question_form.append(department_name)
 
-        for attachment in attachments:
+        for i in range(len(attachments)):
             overview = Overview()
             overview.append(FormattedContent(
-                EMAIL_HIT_ATTACHMENT_OVERVIEW_TEMPLATE.format(link=attachment[0], name=attachment[1])))
+                EMAIL_HIT_ATTACHMENT_OVERVIEW_TEMPLATE.format(link=attachments[i][0], name=attachments[i][1])))
 
-            category_content = QuestionContent()
-            category_content.append_field('Title', 'Note Title')
-            category = Question(identifier=NOTE_TITLE_QID,
-                                content=category_content,
-                                answer_spec=AnswerSpecification(FreeTextAnswer()),
-                                is_required=True)
-            question_form.append(category)
+            question_form.append(overview)
 
+            note_title_content = QuestionContent()
+            note_title_content.append_field('Title', 'Note Title')
+            note_title = Question(identifier=NOTE_TITLE_QID_TEMPLATE + str(i),
+                                  content=note_title_content,
+                                  answer_spec=AnswerSpecification(single_line_answer),
+                                  is_required=True)
+            question_form.append(note_title)
 
-            category_content = QuestionContent()
-            category_content.append_field('Title', 'Note Category')
+            note_category_content = QuestionContent()
+            note_category_content.append_field('Title', 'Note Category')
             answer = SelectionAnswer(style='dropdown', selections=NOTE_CATEGORIES_FOR_MTURK)
-            category = Question(identifier=CATEGORY_QID,
-                                content=category_content,
-                                answer_spec=AnswerSpecification(answer),
-                                is_required=True)
-            question_form.append(category)
+            note_category = Question(identifier=NOTE_CATEGORY_QID_TEMPLATE + str(i),
+                                     content=note_category_content,
+                                     answer_spec=AnswerSpecification(answer),
+                                     is_required=True)
+            question_form.append(note_category)
 
 
+        hit = connection.create_hit(questions=question_form, max_assignments=1,
+                      title=EMAIL_HIT_TITLE, description=EMAIL_HIT_DESCRIPTION,
+                      keywords=EMAIL_HIT_KEYWORDS, duration=EMAIL_HIT_DURATION,
+                      reward=EMAIL_HIT_REWARD, qualifications=EMAIL_HIT_QUALIFICATION)[0]
+
+    #mailbox.quit()
