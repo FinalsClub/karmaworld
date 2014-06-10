@@ -17,7 +17,7 @@ from celery.utils.log import get_task_logger
 from boto.mturk.connection import MTurkConnection
 from django.contrib.sites.models import Site
 from karmaworld.apps.notes.models import Document
-from karmaworld.apps.quizzes.models import Keyword, HIT
+from karmaworld.apps.quizzes.models import Keyword, HIT, EmailParsingHIT
 from django.conf import settings
 import requests
 
@@ -381,5 +381,10 @@ def check_notes_mailbox():
                       title=EMAIL_HIT_TITLE, description=EMAIL_HIT_DESCRIPTION,
                       keywords=EMAIL_HIT_KEYWORDS, duration=EMAIL_HIT_DURATION,
                       reward=EMAIL_HIT_REWARD, qualifications=EMAIL_HIT_QUALIFICATION)[0]
+
+        hit_object = EmailParsingHIT(HITId=hit.HITId, processed=False)
+        for attachment in attachments:
+            #fields = ('name', 'tags', 'course', 'fp_file', 'mimetype', 'category')
+            document = Document.objects.create(name=)
 
     #mailbox.quit()

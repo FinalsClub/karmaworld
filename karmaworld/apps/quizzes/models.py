@@ -22,8 +22,22 @@ class Keyword(models.Model):
 
 class HIT(models.Model):
     HITId = models.CharField(max_length=100, unique=True, null=False)
-    note = models.ForeignKey(to='notes.Note', null=False)
     processed = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+
+class KeywordExtractionHIT(HIT):
+    note = models.ForeignKey(to='notes.Note', null=False)
 
     def __unicode__(self):
         return u'{i}: {p}'.format(i=self.HITId, p='processed' if self.processed else 'unprocessed')
+
+
+class EmailParsingHIT(HIT):
+    documents = models.ManyToManyField(to='notes.Note', null=False)
+
+    def __unicode__(self):
+        return u'{i}: {p}'.format(i=self.HITId, p='processed' if self.processed else 'unprocessed')
+
