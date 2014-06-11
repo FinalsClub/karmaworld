@@ -295,8 +295,8 @@ KarmaNotes is a Heroku application. Download the [Heroku toolbelt](https://toolb
 
 To run KarmaNotes on Heroku, do `heroku create` and `git push heroku master` as typical
 for a Heroku application. Set your the variable `BUILDPACK_URL` to
-`https://github.com/charlesconnell/heroku-buildpack-karmanotes` to use a buildpack designed
-to support KarmaNotes.
+`https://github.com/FinalsClub/heroku-buildpack-karmanotes` to use a buildpack
+designed to support KarmaNotes.
 
 You will need to import the US Department of Education's list of accredited schools.
    1. Fetch USDE schools with

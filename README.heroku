@@ -1,6 +1,8 @@
 Checkout the karmanotes repository locally.
 
-Create Heroku app from either the web interface or the CLI. See Heroku documentation for more information.
+Create Heroku app from either the web interface or the CLI. See Heroku
+documentation for more information at 
+`https://devcenter.heroku.com/articles/getting-started-with-django`
 
 From the settings page for the Heroku app, find the Git URL and copy it.
 
@@ -9,7 +11,12 @@ Install the Heroku CLI. Make sure to configure the Heroku CLI tool with `heroku 
 In the karmanotes repository:
 `git remote add my-heroku-dev git@heroku.com:<your-project-name>.git`
 
-Create a Heroku database either from the web interface or the CLI. Look for the Dev Plan (its free). Once created, keep track of its connection settings for the configuration step.
+Create a Heroku database either from the web interface or the CLI by adding
+a Postgres Add-On to the Heroku App. Look for the Dev Plan (its free). Once
+created, click through the add-on until the connection settings are found
+for the app's database. Keep track of URL in the connection settings for the
+configuration step. It'll be pasted into the `DATABASE_URL` environment
+variable.
 
 Configure the application by copying `${project_root}/.env.example` to `${project_root}/.env` and edit it appropriately for all external dependencies.
 
