@@ -382,9 +382,5 @@ def check_notes_mailbox():
                       keywords=EMAIL_HIT_KEYWORDS, duration=EMAIL_HIT_DURATION,
                       reward=EMAIL_HIT_REWARD, qualifications=EMAIL_HIT_QUALIFICATION)[0]
 
-        hit_object = EmailParsingHIT(HITId=hit.HITId, processed=False)
-        for attachment in attachments:
-            #fields = ('name', 'tags', 'course', 'fp_file', 'mimetype', 'category')
-            document = Document.objects.create(name=)
 
     #mailbox.quit()
