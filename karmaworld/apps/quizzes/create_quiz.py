@@ -98,6 +98,8 @@ def _create_keyword_multiple_choice(keyword, keywords):
 
     question_text = u'Pick the keyword to match "{d}"'.format(d=keyword.definition)
 
+    random.shuffle(choices)
+
     return MultipleChoiceQuestion(question_text, choices)
 
 
@@ -110,6 +112,8 @@ def _create_definition_multiple_choice(keyword, keywords):
                        correct=False))
 
     question_text = u'Pick the definition to match "{w}"'.format(w=keyword.word)
+
+    random.shuffle(choices)
 
     return MultipleChoiceQuestion(question_text, choices)
 
