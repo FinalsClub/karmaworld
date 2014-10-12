@@ -85,6 +85,7 @@ class DepartmentForm(NiceErrorModelForm, ACFieldModelForm):
     # first argument is ajax channel name, defined in models as LookupChannel.
     school = AutoCompleteSelectField('school_object_by_name',
                                      help_text='',
+                                     plugin_options={'minLength': 3},
                                      label=mark_safe('School <span class="required-field">(required)</span>'))
     # first argument is ajax channel name, defined in models as LookupChannel.
     name = AutoCompleteDependentSelectField(
