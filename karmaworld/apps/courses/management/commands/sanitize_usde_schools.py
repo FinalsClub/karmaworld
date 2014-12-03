@@ -26,6 +26,10 @@ RESTRICTED_WORDS = [
                 'careers',
                 'adults',
                 'hospital',
+                'barber',
+                'cosmetic',
+                'therapeutics',
+                'adult',
                 'childcare']
 
 
