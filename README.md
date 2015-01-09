@@ -55,13 +55,18 @@ documentation will operate assuming Heroku is in use.
 
 See README.heroku for more information.
 
+
 ### Celery Queue
 Celery uses the Apache Message Queueing Protocol for passing messages to its workers.
-We recommend using Heroku's CloudAMQP add-on, getting your own CloudAMQP account, or
+
+For production, we recommend using Heroku's CloudAMQP add-on, getting your own CloudAMQP account, or
 running a queueing system on your own. The `CLOUDAMQP_URL` environment variable must be set correctly
 for KarmaNotes to be able to use Celery. The `CELERY_QUEUE_NAME` environment variable
 must be set to the name of the queue you wish to use. Settings this to something unique
 allows multiple instances of KarmaNotes (or some other software) to share the same queueing server.
+
+For development on localhost, `RabbitMQ` is the default for `djcelery` and is well supported. Ensure
+`RabbitMQ` is installed for local development.
 
 ### Amazon S3
 The instructions for creating an [S3](http://aws.amazon.com/s3/) bucket may be
