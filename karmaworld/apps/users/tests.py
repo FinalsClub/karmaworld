@@ -134,6 +134,20 @@ class TestUsers(TestCase):
         except ObjectDoesNotExist:
             self.fail("Karma event not created")
 
+    def test_download_own_note_karma(self):
+        """No karma change for downloading your own note"""
+        downloaded_note(self.request1, self.note.pk)
+        try:
+            NoteKarmaEvent.objects.get(event_type=NoteKarmaEvent.DOWNLOADED_NOTE, user=self.user1)
+            self.fail("Karma debited for downloading own note, but shouldn't have been.")
+        except ObjectDoesNotExist:
+            pass
+        try:
+            NoteKarmaEvent.objects.get(event_type=NoteKarmaEvent.HAD_NOTE_DOWNLOADED, user=self.user1)
+            self.fail("Karma given for downloading own note, but shouldn't have been.")
+        except ObjectDoesNotExist:
+            pass
+
     def test_email_confirm_karma(self):
         class FakeEmailAddress:
             user = self.user1
