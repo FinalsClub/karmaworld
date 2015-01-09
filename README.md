@@ -280,8 +280,12 @@ a few setup steps:
   1. `foreman run python manage.py syncdb --migrate --noinput`
   1. `foreman run python manage.py createsuperuser`
   1. `foreman run python manage.py fetch_usde_csv ./schools.csv`
-  1. `foreman run python manage.py import_usde _csv ./schools.csv`
+  1. `foreman run python manage.py import_usde_csv ./schools.csv`
   1. `foreman run python manage.py sanitize_usde_schools`
+
+* `fetch_usde_csv` downloads school records and stores them to `./schools.csv`. This file name
+        and location is arbitrary. As long as the same file is passed into `import_usde_csv` for
+        reading, everything should be fine.
 
 ## Run
 
