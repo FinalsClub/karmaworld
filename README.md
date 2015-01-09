@@ -265,7 +265,9 @@ to get SSL running on your server.
 You may set the `SSL_REDIRECT` environment variable to `true` to make KarmaNotes
 redirect insecure connections to secure ones.
 
-# Local Install
+# Local
+
+## Install
 
 KarmaNotes is a Heroku application. Download the [Heroku toolbelt](https://toolbelt.heroku.com/).
 
@@ -281,8 +283,18 @@ a few setup steps:
   1. `foreman run python manage.py import_usde _csv ./schools.csv`
   1. `foreman run python manage.py sanitize_usde_schools`
 
+## Run
+
+Ensure environment variables are available to `foreman` by copying `.env.example`
+to `.env` and update those variables as appropriate for your local system.
+
 To run KarmaNotes locally, make sure you are inside your
 virtual environment (`source venv/bin/activate`) and run `foreman start`.
+
+`foreman` will load the `.env` file and manage running all processes in a way
+that is similar to that of Heroku. This allows better consistency with local,
+staging, and production deployments.
+
 Press ctrl-C to kill foreman. Foreman will run Django's runserver command.
 If you wish to have more control over how this is done, you can do
 `foreman run python manage.py runserver <options>`. For running any other
