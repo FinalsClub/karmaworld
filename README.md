@@ -284,8 +284,11 @@ a few setup steps:
   1. `foreman run python manage.py sanitize_usde_schools`
 
 * `fetch_usde_csv` downloads school records and stores them to `./schools.csv`. This file name
-        and location is arbitrary. As long as the same file is passed into `import_usde_csv` for
-        reading, everything should be fine.
+     and location is arbitrary. As long as the same file is passed into `import_usde_csv` for
+     reading, everything should be fine.
+
+* `fetching_usde_csv` requires `7zip` to be installed for processing compressed
+     archives. On Debian-based systems, this entails `apt-get install p7zip-full`
 
 ## Run
 
@@ -318,7 +321,7 @@ You will need to import the US Department of Education's list of accredited scho
    1. Fetch USDE schools with
       `heroku run python manage.py fetch_usde_csv ./schools.csv`
    1. Upload the schools into the database with
-      `heroku run python /manage.py import_usde _csv ./schools.csv`
+      `heroku run python /manage.py import_usde_csv ./schools.csv`
    1. Clean up redundant information with
       `heroku run python /manage.py sanitize_usde_schools`
 
