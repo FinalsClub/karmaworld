@@ -93,6 +93,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'get_extract_keywords_results',
         'schedule': timedelta(minutes=20),
     },
+    'update-scoreboard': {
+        'task': 'fix_note_counts',
+        'schedule': timedelta(days=1),
+    },
 }
 
 CELERY_TIMEZONE = 'UTC'
