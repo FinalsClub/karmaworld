@@ -92,9 +92,14 @@ class School(models.Model):
         """ Update the School.file_count by summing the
             contained course.file_count
         """
-        self.file_count = sum([course.file_count for course in self.course_set.all()])
+        # find all courses without a department
+        course_list = list(self.course_set.all())
+        # find all courses with a department
+        for department in self.department_set.all():
+            for course in department.course_set.all():
+                course_list.append(course)
+        self.file_count = sum([course.file_count for course in course_list])
         self.save()
-
 
 @register_channel_name('school_object_by_name')
 class SchoolLookup(AnonLookupChannel):
