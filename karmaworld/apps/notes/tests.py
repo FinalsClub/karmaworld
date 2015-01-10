@@ -1,22 +1,13 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
-"""
-"""
-import karmaworld.secret.indexden as secret
-
 import datetime
 from django.test import TestCase
 from karmaworld.apps.notes.search import SearchIndex
 
-from karmaworld.apps.notes.models import Note
+from karmaworld.apps.notes.models import Note, NoteMarkdown
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
-
-# Tell SearchIndex to put its entries
-# in a separate index
-secret.testing = True
-
 
 class TestNotes(TestCase):
 
@@ -65,7 +56,7 @@ class TestNotes(TestCase):
         self.note.save()
         self.assertEqual(self.note.slug, expected)
 
-    expected_url_prefix = u'/marshall-college/archaeology-101/'
+    expected_url_prefix = u'/note/marshall-college/archaeology-101/'
     expected_slug = u'lecture-notes-concerning-the-use-of-therefore'
     expected = expected_url_prefix + expected_slug
 
@@ -78,3 +69,33 @@ class TestNotes(TestCase):
         self.note.slug = None
         url = self.expected_url_prefix + str(self.note.id)
         self.assertEqual(self.note.get_absolute_url(), url)
+
+    def test_note_markdown_rendering(self):
+        rich = NoteMarkdown(note=self.note,
+            markdown="""# This is fun\n[oh](http://yeah.com)""")
+        rich.save()
+        self.assertEquals(rich.html,
+                """<h1>This is fun</h1>\n<p><a href="http://yeah.com">oh</a></p>""")
+
+    def test_note_rich_text_sanitization(self):
+        rich = NoteMarkdown(note=self.note, html="""
+            <script>unsafe</script>
+            <h1 class='obtrusive'>Something</h1>
+            <h2>OK</h2>
+            &amp;
+            &rdquo;
+            <a href='javascript:alert("Oh no")'>This stuff</a>
+            <a href='http://google.com'>That guy</a>
+        """)
+
+        rich.save()
+        self.assertEquals(rich.html, u"""
+            unsafe
+            <h1>Something</h1>
+            <h2>OK</h2>
+            &amp;
+            \u201d
+            <a>This stuff</a>
+            <a href="http://google.com">That guy</a>
+        """)
+

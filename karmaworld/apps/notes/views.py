@@ -43,8 +43,13 @@ def note_page_context_helper(note, request, context):
         context['note_edit_form'] = NoteForm(request.POST)
     else:
         tags_string = ','.join([str(tag) for tag in note.tags.all()])
-        context['note_edit_form'] = NoteForm(initial={'name': note.name,
-                                                      'tags': tags_string})
+        initial = {"name": note.name, "tags": tags_string}
+        try:
+            initial["html"] = note.notemarkdown.html
+        except NoteMarkdown.DoesNotExist:
+            pass
+        print initial
+        context['note_edit_form'] = NoteForm(initial=initial)
 
     context['note_delete_form'] = NoteDeleteForm(initial={'note': note.id})
 
@@ -106,6 +111,22 @@ class NoteSaveView(FormView, SingleObjectMixin):
             'object': self.get_object(),
         }
         return super(NoteSaveView, self).get_context_data(**context)
+
+    def get_form_kwargs(self):
+        """
+        Include related notemarkdown.html in form.
+        """
+        kwargs = {"initial": self.get_initial()}
+        try:
+            kwargs["initial"]["html"] = self.object.notemarkdown.html
+        except NoteMarkdown.DoesNotExist:
+            pass
+        if self.request.method in ("POST", "PUT"):
+            kwargs.update({
+                "data": self.request.POST,
+                "files": self.request.FILES,
+            })
+        return kwargs
 
     def form_valid(self, form):
         """ Actions to take if the submitted form is valid

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="/toolbar.css" />
+</head>
+<body>
+
+  <div id="test-toolbar" class='wysihtml5-toolbar'>
+    <a data-wysihtml5-command="bold">bold</a>
+    <a data-wysihtml5-command="italic">italic</a>
+    <a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1">H1</a>
+    <a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p">P</a>
+  </div>
+  <textarea id="test" role="wysihtml5-rich-text">This is my <b>rich</b> text.</textarea>
+  <script src="/wysihtml-0.4.17/dist/wysihtml5x-toolbar.min.js"></script>
+  <script src="/wysihtml-0.4.17/parser_rules/advanced_and_extended.js"></script>
+  <script src="/init.js"></script>
+
+</body>
+</html>

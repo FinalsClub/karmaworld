@@ -10,6 +10,7 @@
   {% compress css %}
     <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
     <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/annotator.min.css" />
+    {{ note_edit_form.media.css }}
   {% endcompress %}
 {% endblock %}
 
@@ -34,6 +35,7 @@
     <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
     <script src="{{ STATIC_URL }}js/marked.js" ></script>
     <script src="{{ STATIC_URL }}js/annotator-full.min.js"></script>
+    {{ note_edit_form.media.js }}
   {% endcompress %}
   <script>
     {% if show_note_container %}
@@ -54,6 +56,18 @@
         initQuizPage();
       });
     {% endif %}
+  </script>
+  <script type="text/javascript">
+    // wysihtml5 doesn't init correctly in a hidden div.  So we remove it every
+    // time before showing it in the modal.
+
+    // This event will be renamed "open.fndtn.reveal" in future foundation:
+    // http://foundation.zurb.com/docs/components/reveal.html#event-bindings
+    $(document).on("open", "#note-edit-dialog", function() {
+        $(".wysihtml5-sandbox, .wysihtml5-toolbar").remove();
+        $("[role='wysihtml5-rich-text']").show();
+        initWysihtml5(document.querySelector("[role='wysihtml5-rich-text']"));
+    });
   </script>
 {% endblock %}
 
@@ -225,6 +239,14 @@
             </div>
             <div class="small-12 large-6 columns">
               {% with note_edit_form.tags as field %}
+                {{ field.errors|safe }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {{ field }}
+                <p>{{ field.help_text }}</p>
+              {% endwith %}
+            </div>
+            <div class="small-12 columns">
+              {% with note_edit_form.html as field %}
                 {{ field.errors|safe }}
                 <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
                 {{ field }}

@@ -33,6 +33,9 @@ from django.utils.text import slugify
 import django_filepicker
 from bs4 import BeautifulSoup as BS
 from taggit.managers import TaggableManager
+import bleach
+import bleach_whitelist
+import markdown
 
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.licenses.models import License
@@ -426,6 +429,20 @@ class Note(Document):
 class NoteMarkdown(models.Model):
     note     = models.OneToOneField(Note, primary_key=True)
     markdown = models.TextField(blank=True, null=True)
+    html     = models.TextField(blank=True, null=True)
+
+    @classmethod
+    def sanitize(cls, html):
+        return bleach.clean(html,
+                bleach_whitelist.markdown_tags,
+                bleach_whitelist.markdown_attrs,
+                strip=True)
+
+    def save(self, *args, **kwargs):
+        if self.markdown and not self.html:
+            self.html = markdown.markdown(self.markdown)
+        self.html = NoteMarkdown.sanitize(self.html)
+        super(NoteMarkdown, self).save(*args, **kwargs)
 
 auto_add_check_unique_together(Note)
 

@@ -1,0 +1,16 @@
+{% load wysihtml5 %}
+<div id="{{ attrs.id }}-toolbar">
+  {% toolbar_button "bold" %}
+  {% toolbar_button "italic" %}
+  {% toolbar_button "formatBlock" "header" "H1" "h1" %}
+  {% toolbar_button "formatBlock" "paragraph" "Paragraph" "p" %}
+  {% toolbar_button "insertUnorderedList" "list-ul" "Unordered list" %}
+  {% toolbar_button "insertOrderedList" "list-ol" "Ordered list" %}
+  {% toolbar_button "createLink" "link" "Link" %}
+  {% toolbar_button "removeLink" "unlink" "Unlink" %}
+  <div data-wysihtml5-dialog="createLink" style="display: none;">
+    Link: <input data-wysihtml5-dialog-field="href" value="http://">
+    <a data-wysihtml5-dialog-action="save" class='button'>OK</a>&nbsp;<a data-wysihtml5-dialog-action="cancel" class='button secondary'>Cancel</a>
+  </div>
+</div>
+<textarea id="{{ attrs.id }}" name="{{ name }}" role='wysihtml5-rich-text' rows=10 cols=40>{{ value|safe }}</textarea>

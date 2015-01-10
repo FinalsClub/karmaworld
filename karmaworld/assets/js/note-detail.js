@@ -50,9 +50,11 @@ function setupPdfViewer(noteframe, pdfViewer) {
 
 function writeNoteFrame(contents) {
   var dstFrame = document.getElementById('noteframe');
-  var dstDoc = dstFrame.contentDocument || dstFrame.contentWindow.document;
-  dstDoc.write(contents);
-  dstDoc.close();
+  if (dstFrame) {
+    var dstDoc = dstFrame.contentDocument || dstFrame.contentWindow.document;
+    dstDoc.write(contents);
+    dstDoc.close();
+  }
 }
 
 function setupAnnotator(noteElement, readOnly) {
@@ -232,7 +234,11 @@ function initNoteContentPage() {
         writeNoteFrame(data);
 
         // run setupAnnotator in frame context
-        var noteframe = document.getElementById('noteframe').contentWindow;
+        var parentFrame = document.getElementById('noteframe');
+        if (!parentFrame) {
+          return;
+        }
+        var noteframe = parentFrame.contentWindow;
 
         injectRemoteCSS(annotator_css_url, noteframe);
         injectScript("csrf_token = '" + csrf_token + "';", noteframe);

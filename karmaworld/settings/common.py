@@ -248,6 +248,7 @@ LOCAL_APPS = (
     'karmaworld.apps.moderation',
     'karmaworld.apps.licenses',
     'karmaworld.apps.quizzes',
+    'karmaworld.apps.wysihtml5',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
