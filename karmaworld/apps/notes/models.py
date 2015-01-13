@@ -299,7 +299,7 @@ class Note(Document):
         """ Resolve note url, use 'note' route and slug if slug
             otherwise use note.id
         """
-        if self.slug is not None:
+        if self.slug:
             # return a url ending in slug
             if self.course.school:
                 return reverse('note_detail', args=[self.course.school.slug, self.course.slug, self.slug])
