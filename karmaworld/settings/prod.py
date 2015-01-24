@@ -69,10 +69,13 @@ BROKER_TRANSPORT = 'amqplib'
 # connections total.
 #
 # See: http://docs.celeryproject.org/en/latest/configuration.html#broker-pool-limit
-BROKER_POOL_LIMIT = 1
+# See: https://github.com/FinalsClub/karmaworld/issues/392
+# See: http://stackoverflow.com/questions/23249850/celery-cloudamqp-creates-new-connection-for-each-task
+# Basically, the broker pool causes too many connections!
+BROKER_POOL_LIMIT = 0
 
 # See: http://docs.celeryproject.org/en/latest/configuration.html#broker-connection-max-retries
-BROKER_CONNECTION_MAX_RETRIES = 0
+#BROKER_CONNECTION_MAX_RETRIES = 0
 
 # See: http://docs.celeryproject.org/en/latest/configuration.html#broker-url
 BROKER_URL = environ.get('RABBITMQ_URL') or environ.get('CLOUDAMQP_URL')
