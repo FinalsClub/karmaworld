@@ -240,7 +240,7 @@ def convert_raw_document(raw_document, user=None):
 
     # If we know the user who uploaded this,
     # associate them with the note
-    if user:
+    if user and not user.is_anonymous():
         note.user = user
         NoteKarmaEvent.create_event(user, note, NoteKarmaEvent.UPLOAD)
     else:
