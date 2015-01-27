@@ -17,7 +17,7 @@ from celery.utils.log import get_task_logger
 from boto.mturk.connection import MTurkConnection
 from django.contrib.sites.models import Site
 from karmaworld.apps.notes.models import Document
-from karmaworld.apps.quizzes.models import Keyword, HIT, EmailParsingHIT
+from karmaworld.apps.quizzes.models import Keyword, KeywordExtractionHIT, EmailParsingHIT
 from django.conf import settings
 import requests
 
@@ -147,7 +147,7 @@ def submit_extract_keywords_hit(note):
                           reward=KEYWORDS_HIT_REWARD, qualifications=KEYWORDS_HIT_QUALIFICATION,
                           annotation=str(note.id))[0]
 
-    HIT.objects.create(HITId=hit.HITId, note=note, processed=False)
+    KeywordExtractionHIT.objects.create(HITId=hit.HITId, note=note, processed=False)
 
 
 
@@ -163,7 +163,7 @@ def get_extract_keywords_results():
     connection = MTurkConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY,
                                  host=MTURK_HOST)
 
-    for hit_object in HIT.objects.filter(processed=False):
+    for hit_object in KeywordExtractionHIT.objects.filter(processed=False):
         logger.info('Found unprocessed HIT {0}'.format(hit_object.HITId))
 
         answers = {}
