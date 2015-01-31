@@ -13,6 +13,23 @@ from karmaworld.apps.notes.models import Note, NoteMarkdown
 class NoteForm(ModelForm):
     html = CharField(widget=RichTextEditor)
 
+    def save(self, *args, **kwargs):
+        # TODO: use transaction.atomic for this when we switch to Django 1.6+
+        instance = super(NoteForm, self).save(*args, **kwargs)
+        instance.tags.set(*self.cleaned_data['tags'])
+        if instance.is_hidden:
+            instance.is_hidden = False
+            instance.save()
+        if self.cleaned_data.get('html'):
+            try:
+                note_markdown = instance.notemarkdown
+            except NoteMarkdown.DoesNotExist:
+                note_markdown = NoteMarkdown(note=instance)
+            note_markdown.html = self.cleaned_data['html']
+            note_markdown.full_clean()
+            note_markdown.save()
+        return instance
+
     class Meta:
         model = Note
         fields = ('name', 'tags', 'html')

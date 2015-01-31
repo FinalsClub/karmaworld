@@ -11,6 +11,7 @@ from cStringIO import StringIO
 from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand
 from karmaworld.apps.notes.models import Note
+from karmaworld.apps.notes import sanitizer
 
 class Command(BaseCommand):
     args = 'none'
@@ -26,6 +27,7 @@ class Command(BaseCommand):
                 continue
 
             # grab the html from inside the note and process it
-            html = note.filter_html(note.html)
+            html = sanitizer.sanitize_html(note.html, note.get_canonical_url())
+            html = sanitizer.sanitizer.set_canonical_rel(note.get_canonical_url())
             # push clean HTML to S3
             note.send_to_s3(html)

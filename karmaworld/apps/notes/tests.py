@@ -6,6 +6,7 @@ from django.test import TestCase
 from karmaworld.apps.notes.search import SearchIndex
 
 from karmaworld.apps.notes.models import Note, NoteMarkdown
+from karmaworld.apps.notes import sanitizer
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.courses.models import School
 
@@ -74,8 +75,8 @@ class TestNotes(TestCase):
         rich = NoteMarkdown(note=self.note,
             markdown="""# This is fun\n[oh](http://yeah.com)""")
         rich.save()
-        self.assertEquals(rich.html,
-                """<h1>This is fun</h1>\n<p><a href="http://yeah.com">oh</a></p>""")
+        self.assertHTMLEqual(rich.html,
+                """<h1>This is fun</h1>\n<p><a href="http://yeah.com" rel="nofollow" target="_blank">oh</a></p>""")
 
     def test_note_rich_text_sanitization(self):
         rich = NoteMarkdown(note=self.note, html="""
@@ -89,13 +90,39 @@ class TestNotes(TestCase):
         """)
 
         rich.save()
-        self.assertEquals(rich.html, u"""
+        self.assertHTMLEqual(rich.html, u"""
             unsafe
             <h1>Something</h1>
             <h2>OK</h2>
             &amp;
             \u201d
             <a>This stuff</a>
-            <a href="http://google.com">That guy</a>
+            <a href="http://google.com" target="_blank" rel="nofollow">That guy</a>
         """)
 
+class TestSanitizer(TestCase):
+    def test_clean(self):
+        dirty = """
+            <script>unsafe</script>
+            <h1 class='obtrusive'>Something</h1>
+            <h2>OK</h2>
+            &amp;
+            &rdquo;
+            <a href='javascript:alert("Oh no")'>This stuff</a>
+            <a href='http://google.com'>That guy</a>
+        """
+
+        self.assertHTMLEqual(sanitizer.sanitize_html(dirty), u"""
+            unsafe
+            <h1>Something</h1>
+            <h2>OK</h2>
+            &amp;
+            \u201d
+            <a>This stuff</a>
+            <a href="http://google.com" target="_blank" rel="nofollow">That guy</a>
+        """)
+
+    def test_canonical_rel(self):
+        html = """<h1>Hey there!</h1>"""
+        canonicalized = sanitizer.set_canonical_rel(html, "http://example.com")
+        self.assertHTMLEqual(canonicalized, """<html><head><link rel='canonical' href='http://example.com'></head><body><h1>Hey there!</h1></body></html>""")

@@ -63,15 +63,29 @@
 
     // This event will be renamed "open.fndtn.reveal" in future foundation:
     // http://foundation.zurb.com/docs/components/reveal.html#event-bindings
-    $(document).on("open", "#note-edit-dialog", function() {
-        $(".wysihtml5-sandbox, .wysihtml5-toolbar").remove();
-        $("[role='wysihtml5-rich-text']").show();
-        initWysihtml5(document.querySelector("[role='wysihtml5-rich-text']"));
+    $(document).on("open", "#note-edit-dialog", function(event) {
+        var scope = $(event.currentTarget);
+        // Remove iframe.
+        $(".wysihtml5-sandbox", scope).remove();
+        // Unbind toolbar events by cloning it.
+        var toolbar = $(".wysihtml5-toolbar", scope);
+        var toolbarClone = toolbar.clone();
+        toolbar.replaceWith(toolbarClone);
+        // Unbind textarea events by cloning it.
+        var textarea = $("[role='wysihtml5-rich-text']", scope);
+        var textareaClone = textarea.clone();
+        var val = textarea.val(); // textarea value isn't copied with clone.
+        textarea.replaceWith(textareaClone);
+        textareaClone.val(val);
+        textareaClone.show();
+        // Reinitialize
+        initWysihtml5(textareaClone[0]);
     });
   </script>
 {% endblock %}
 
 {% block raw_content %}
+
   <section id="note_content">
 
     <div class="return-to-course show-for-large-up">
@@ -164,7 +178,7 @@
                 </button>
               {% endif %}
 
-              {% if note.user == request.user or user.is_staff %}
+              {% if note.user == user or user.is_staff %}
                 <button id="edit-button" data-reveal-id="note-edit-dialog" class="modify-button"> <i class="fa fa-edit"></i> Edit This Note</button>&nbsp;&nbsp;
               {% endif %}
 

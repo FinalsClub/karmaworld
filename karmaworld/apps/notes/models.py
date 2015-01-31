@@ -31,12 +31,10 @@ from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.utils.text import slugify
 import django_filepicker
-from bs4 import BeautifulSoup as BS
 from taggit.managers import TaggableManager
-import bleach
-import bleach_whitelist
 import markdown
 
+from karmaworld.apps.notes.sanitizer import sanitize_html
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.licenses.models import License
 from karmaworld.apps.notes.search import SearchIndex
@@ -298,6 +296,11 @@ class Note(Document):
     def total_thanks_for_mturk(self):
         return KEYWORD_MTURK_THRESHOLD
 
+    def get_canonical_url(self):
+        return "http://{0}{1}".format(
+            Site.objects.get_current().domain,
+            self.get_absolute_url())
+
     def get_absolute_url(self):
         """ Resolve note url, use 'note' route and slug if slug
             otherwise use note.id
@@ -340,74 +343,6 @@ class Note(Document):
             # return a url ending in id
             return reverse('note_quiz', args=[self.course.school.slug, self.course.slug, self.id])
 
-    def filter_html(self, html):
-        """
-        Apply all sanitizing filters to HTML.
-        Takes in HTML string and outputs HTML string.
-        """
-        # Fun fact: This could be made into a static method.
-        if not html or not len(html):
-            # if there was no HTML, return an empty string
-            return ''
-
-        soup = BS(html)
-        # Iterate through filters, applying all to the soup object.
-        for soupfilter in (
-            self.sanitize_anchor_html,
-            self.set_canonical_link,
-        ):
-            soup = soupfilter(soup)
-        return str(soup)
-
-    def sanitize_anchor_html(self, soup):
-        """
-        Filter the given BeautifulSoup obj by adding target=_blank to all
-        anchor tags.
-        Returns BeautifulSoup obj.
-        """
-        # Fun fact: This could be made into a static method.
-        # Find all a tags in the HTML
-        a_tags = soup.find_all('a')
-        if not a_tags or not len(a_tags):
-            # nothing to process.
-            return soup
-
-        # build a tag sanitizer
-        def set_attribute_target(tag):
-            tag['target'] = '_blank'
-        # set all anchors to have target="_blank"
-        map(set_attribute_target, a_tags)
-
-        # return filtered soup
-        return soup
-
-    @staticmethod
-    def canonical_link_predicate(tag):
-        return tag.name == u'link' and \
-            tag.has_attr('rel') and \
-            u'canonical' in tag['rel']
-
-    def set_canonical_link(self, soup):
-        """
-        Filter the given BeautifulSoup obj by adding
-        <link rel="canonical" href="note.get_absolute_url" />
-        to the document head.
-        Returns BeautifulSoup obj.
-        """
-        domain = Site.objects.all()[0].domain
-        note_full_href = 'http://' + domain + self.get_absolute_url()
-        canonical_tags = soup.find_all(self.canonical_link_predicate)
-        if canonical_tags:
-            for tag in canonical_tags:
-                tag['href'] = note_full_href
-        else:
-            new_tag = soup.new_tag('link', rel='canonical', href=note_full_href)
-            head = soup.find('head')
-            head.append(new_tag)
-
-        # return filtered soup
-        return soup
-
     def _update_parent_updated_at(self):
         """ update the parent Course.updated_at model
             with the latest uploaded_at """
@@ -431,17 +366,10 @@ class NoteMarkdown(models.Model):
     markdown = models.TextField(blank=True, null=True)
     html     = models.TextField(blank=True, null=True)
 
-    @classmethod
-    def sanitize(cls, html):
-        return bleach.clean(html,
-                bleach_whitelist.markdown_tags,
-                bleach_whitelist.markdown_attrs,
-                strip=True)
-
     def save(self, *args, **kwargs):
         if self.markdown and not self.html:
             self.html = markdown.markdown(self.markdown)
-        self.html = NoteMarkdown.sanitize(self.html)
+        self.html = sanitize_html(self.html)
         super(NoteMarkdown, self).save(*args, **kwargs)
 
 auto_add_check_unique_together(Note)

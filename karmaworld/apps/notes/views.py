@@ -21,11 +21,11 @@ from karmaworld.utils.ajax_utils import *
 
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.generic import DetailView, ListView, TemplateView
-from django.views.generic import FormView
+from django.views.generic import UpdateView, FormView
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 
-from karmaworld.apps.notes.models import Note, KEYWORD_MTURK_THRESHOLD
+from karmaworld.apps.notes.models import Note, NoteMarkdown, KEYWORD_MTURK_THRESHOLD
 from karmaworld.apps.notes.forms import NoteForm, NoteDeleteForm
 
 
@@ -35,7 +35,6 @@ THANKS_FIELD = 'thanks'
 USER_PROFILE_THANKS_FIELD = 'thanked_notes'
 FLAG_FIELD = 'flags'
 USER_PROFILE_FLAGS_FIELD = 'flagged_notes'
-
 
 def note_page_context_helper(note, request, context):
 
@@ -69,96 +68,41 @@ def note_page_context_helper(note, request, context):
         except ObjectDoesNotExist:
             pass
 
-
-class NoteDetailView(DetailView):
-    """ Class-based view for the note html page """
-    model = Note
-    context_object_name = u"note" # name passed to template
-    template_name = 'notes/note_base.html'
-
-    def get_context_data(self, **kwargs):
-        """ Generate custom context for the page rendering a Note
-            + if pdf, set the `pdf` flag
-        """
-
-        kwargs['show_note_container'] = True
-
-        note_page_context_helper(self.object, self.request, kwargs)
-
-        return super(NoteDetailView, self).get_context_data(**kwargs)
-
-
-class NoteSaveView(FormView, SingleObjectMixin):
-    """ Save a Note and then view the page, 
-        behaves the same as NoteDetailView, except for saving the
-        NoteForm ModelForm
-    """
+class NoteView(UpdateView):
     form_class = NoteForm
     model = Note
-    template_name = 'notes/note_base.html'
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.user != request.user:
-            raise ValidationError("Only the owner of a note can edit it.")
-        return super(NoteSaveView, self).post(request, *args, **kwargs)
+    context_object_name = "note"
+    template_name = "notes/note_base.html"
 
     def get_success_url(self):
         return self.object.get_absolute_url()
 
     def get_context_data(self, **kwargs):
-        context = {
-            'object': self.get_object(),
-        }
-        return super(NoteSaveView, self).get_context_data(**context)
+        context = super(NoteView, self).get_context_data(**kwargs)
+        context['show_note_container'] = True
+        context['pdf_controls'] = self.object.is_pdf()
+        u = self.request.user
+        context['already_thanked'] = (
+            u.is_authenticated() and 
+            u.get_profile().thanked_notes.filter(pk=self.object.pk).exists()
+        )
+        context['already_flagged'] = (
+            u.is_authenticated() and
+            u.get_profile().flagged_notes.filter(pk=self.object.pk).exists()
+        )
+        context['note_delete_form'] = NoteDeleteForm(initial={'note': self.object.id})
+        context['note_edit_form'] = context.get('form')
+        print context
+        return context
 
-    def get_form_kwargs(self):
-        """
-        Include related notemarkdown.html in form.
-        """
-        kwargs = {"initial": self.get_initial()}
+    def get_initial(self, **kwargs):
+        initial = super(NoteView, self).get_initial()
         try:
-            kwargs["initial"]["html"] = self.object.notemarkdown.html
+            initial["html"] = self.object.notemarkdown.html
         except NoteMarkdown.DoesNotExist:
             pass
-        if self.request.method in ("POST", "PUT"):
-            kwargs.update({
-                "data": self.request.POST,
-                "files": self.request.FILES,
-            })
-        return kwargs
-
-    def form_valid(self, form):
-        """ Actions to take if the submitted form is valid
-            namely, saving the new data to the existing note object
-        """
-        if len(form.cleaned_data['name'].strip()) > 0:
-            self.object.name = form.cleaned_data['name']
-        # use *arg expansion to pass tags a list of tags
-        self.object.tags.set(*form.cleaned_data['tags'])
-        # User has submitted this form, so set the SHOW flag
-        self.object.is_hidden = False
-        self.object.save()
-        return super(NoteSaveView, self).form_valid(form)
-
-    def form_invalid(self, form):
-        """ Do stuff when the form is invalid !!! TODO """
-        # TODO: implement def form_invalid for returning a form with input and error
-        print "running form_invalid"
-        print form
-        print form.errors
-
-
-class NoteView(View):
-    """ Notes superclass that wraps http methods """
-
-    def get(self, request, *args, **kwargs):
-        view = NoteDetailView.as_view()
-        return view(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        view = NoteSaveView.as_view()
-        return view(request, *args, **kwargs)
+        initial["tags"] = ",".join([unicode(tag) for tag in self.object.tags.all()])
+        return initial
 
 
 class NoteDeleteView(FormView):
@@ -166,10 +110,14 @@ class NoteDeleteView(FormView):
 
     def form_valid(self, form):
         self.note = Note.objects.get(id=form.cleaned_data['note'])
-        self.note.is_hidden = True
-        self.note.save()
-
-        messages.success(self.request, 'The note "{0}" was deleted successfully.'.format(self.note.name))
+        u = self.request.user
+        # Ensure that the requesting user has permission to delete.
+        if (u.is_authenticated() and u.id == note.user_id) or u.is_staff:
+            self.note.is_hidden = True
+            self.note.save()
+            messages.success(self.request, 'The note "{0}" was deleted successfully.'.format(self.note.name))
+        else:
+            messages.error(self.request, 'Permission denied.')
 
         return super(FormView, self).form_valid(form)
 

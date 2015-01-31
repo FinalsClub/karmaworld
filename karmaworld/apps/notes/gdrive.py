@@ -10,6 +10,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from karmaworld.apps.notes.models import UserUploadMapping
 from karmaworld.apps.notes.models import NoteMarkdown
+from karmaworld.apps.notes import sanitizer
 from karmaworld.apps.quizzes.models import Keyword
 from karmaworld.apps.users.models import NoteKarmaEvent
 import os
@@ -221,7 +222,8 @@ def convert_raw_document(raw_document, user=None):
         html = content_dict['html']
         convert_to_markdown = True
     # cleanup the HTML
-    html = note.filter_html(html)
+    html = sanitizer.sanitize_html(html)
+    html = sanitizer.set_canonical_rel(note.get_canonical_url())
 
     # upload the HTML file to static host if it is not already there
     note.send_to_s3(html, do_save=False)

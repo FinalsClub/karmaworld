@@ -23,7 +23,6 @@ def toolbar_button(command, icon=None, alt=None, value=None, classes="button sec
         alt=alt,
         classes=classes
     ))
-    print button
     return button
 
 
