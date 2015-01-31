@@ -76,5 +76,9 @@ $(function() {
     }
   });
 
+  // ensure that upon reload, any previous selection is used
+  // (make a reload look like a change for triggering the above code)
+  $('#school-filter').trigger('change');
+
 });
 
