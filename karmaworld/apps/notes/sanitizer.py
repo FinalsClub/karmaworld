@@ -7,12 +7,9 @@ def _canonical_link_predicate(tag):
         tag.has_attr('rel') and \
         u'canonical' in tag['rel']
 
-def sanitize_html(raw_html, canonical_rel=None):
+def sanitize_html(raw_html):
     """
-    Arguments:
-
-    unclean: raw html to be cleaned
-    canonical_rel: optional fully qualified URL to set as canonical link.
+    Sanitize the given raw_html.
     """
     # Strip tags to the few that we like
     clean = bleach.clean(raw_html,
@@ -27,14 +24,19 @@ def sanitize_html(raw_html, canonical_rel=None):
     ])
     return clean
 
-def set_canonical_rel(raw_html, canonical_rel):
+def set_canonical_rel(raw_html, href):
+    """
+    Add or update <link rel='canonical'...> in the given html to the given
+    href. Note that this has the side effect of appending html/head/body tags
+    to the given html fragment if it doesn't already have them.
+    """
     soup = BeautifulSoup(raw_html)
     canonical_tags = soup.find_all(_canonical_link_predicate)
     if canonical_tags:
         for tag in canonical_tags:
-            tag['href'] = canonical_rel
+            tag['href'] = href
     else:
-        new_tag = soup.new_tag('link', rel='canonical', href=canonical_rel)
+        new_tag = soup.new_tag('link', rel='canonical', href=href)
         head = soup.find('head')
         head.append(new_tag)
     return unicode(soup)
