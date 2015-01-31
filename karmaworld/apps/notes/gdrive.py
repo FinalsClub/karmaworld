@@ -210,6 +210,7 @@ def convert_raw_document(raw_document, user=None):
 
     # Cache the uploaded file's URL
     note.gdrive_url = file_dict['alternateLink']
+    note.text = content_dict['text']
 
     # Extract HTML from the appropriate place
     html = ''
@@ -220,25 +221,9 @@ def convert_raw_document(raw_document, user=None):
         html = pdf2html(content_dict['pdf'])
     elif 'html' in content_dict and content_dict['html']:
         html = content_dict['html']
-        convert_to_markdown = True
-    # cleanup the HTML
-    html = sanitizer.sanitize_html(html)
-    html = sanitizer.set_canonical_rel(note.get_canonical_url())
 
-    # upload the HTML file to static host if it is not already there
-    note.send_to_s3(html, do_save=False)
-
-    note.text = content_dict['text']
-
-    if convert_to_markdown:
-        h = html2text.HTML2Text()
-        h.google_doc = True
-        h.escape_snob = True
-        h.unicode_snob = True
-        markdown = h.handle(html.decode('utf8', 'ignore'))
-
-        note_markdown = NoteMarkdown(note=note, markdown=markdown)
-        note_markdown.save()
+    if html:
+        NoteMarkdown.objects.create(note=note, html=html)
 
     # If we know the user who uploaded this,
     # associate them with the note

@@ -91,7 +91,6 @@ class TestNotes(TestCase):
 
         rich.save()
         self.assertHTMLEqual(rich.html, u"""
-            unsafe
             <h1>Something</h1>
             <h2>OK</h2>
             &amp;
@@ -104,25 +103,39 @@ class TestSanitizer(TestCase):
     def test_clean(self):
         dirty = """
             <script>unsafe</script>
+            <style>html {background-color: pink !important;}</style>
             <h1 class='obtrusive'>Something</h1>
             <h2>OK</h2>
             &amp;
             &rdquo;
             <a href='javascript:alert("Oh no")'>This stuff</a>
             <a href='http://google.com'>That guy</a>
+            <section>
+              <h3>This should show up</h3>
+            </section>
         """
 
         self.assertHTMLEqual(sanitizer.sanitize_html(dirty), u"""
-            unsafe
             <h1>Something</h1>
             <h2>OK</h2>
             &amp;
             \u201d
             <a>This stuff</a>
             <a href="http://google.com" target="_blank" rel="nofollow">That guy</a>
+            <h3>This should show up</h3>
         """)
 
     def test_canonical_rel(self):
         html = """<h1>Hey there!</h1>"""
         canonicalized = sanitizer.set_canonical_rel(html, "http://example.com")
         self.assertHTMLEqual(canonicalized, """<html><head><link rel='canonical' href='http://example.com'></head><body><h1>Hey there!</h1></body></html>""")
+
+    def test_data_uri(self):
+        #html = '<img src="/this.gif">'
+        #self.assertHTMLEqual(sanitizer.sanitize_html(html), "nothing")
+
+        html = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==">'
+        self.assertHTMLEqual(sanitizer.sanitize_html(html), html)
+
+        html = '<img src="data:application/pdf;base64,blergh">'
+        self.assertHTMLEqual(sanitizer.sanitize_html(html), "<img/>")

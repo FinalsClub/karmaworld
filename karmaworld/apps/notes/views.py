@@ -47,7 +47,6 @@ def note_page_context_helper(note, request, context):
             initial["html"] = note.notemarkdown.html
         except NoteMarkdown.DoesNotExist:
             pass
-        print initial
         context['note_edit_form'] = NoteForm(initial=initial)
 
     context['note_delete_form'] = NoteDeleteForm(initial={'note': note.id})
@@ -92,7 +91,6 @@ class NoteView(UpdateView):
         )
         context['note_delete_form'] = NoteDeleteForm(initial={'note': self.object.id})
         context['note_edit_form'] = context.get('form')
-        print context
         return context
 
     def get_initial(self, **kwargs):
