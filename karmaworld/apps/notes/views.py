@@ -110,7 +110,7 @@ class NoteDeleteView(FormView):
         self.note = Note.objects.get(id=form.cleaned_data['note'])
         u = self.request.user
         # Ensure that the requesting user has permission to delete.
-        if (u.is_authenticated() and u.id == note.user_id) or u.is_staff:
+        if (u.is_authenticated() and u.id == self.note.user_id) or u.is_staff:
             self.note.is_hidden = True
             self.note.save()
             messages.success(self.request, 'The note "{0}" was deleted successfully.'.format(self.note.name))

@@ -8,9 +8,16 @@
   {% toolbar_button "insertOrderedList" "list-ol" "Ordered list" %}
   {% toolbar_button "createLink" "link" "Link" %}
   {% toolbar_button "removeLink" "unlink" "Unlink" %}
+  {% toolbar_button "insertImage" "image" "Image" %}
   <div data-wysihtml5-dialog="createLink" style="display: none;">
     Link: <input data-wysihtml5-dialog-field="href" value="http://">
-    <a data-wysihtml5-dialog-action="save" class='button'>OK</a>&nbsp;<a data-wysihtml5-dialog-action="cancel" class='button secondary'>Cancel</a>
+    <a data-wysihtml5-dialog-action="save" class='button'>OK</a>&nbsp;
+    <a data-wysihtml5-dialog-action="cancel" class='button secondary'>Cancel</a>
+  </div>
+  <div data-wysihtml5-dialog="insertImage" style="display: none;">
+    Image: <input data-wysihtml5-dialog-field="src" value="http://">
+    <a data-wysihtml5-dialog-action="save" class='button'>OK</a>&nbsp;<a data-wysihtml5-dial
+    <a data-wysihtml5-dialog-action="cancel" class='button secondary'>Cancel</a>
   </div>
 </div>
 <textarea id="{{ attrs.id }}" name="{{ name }}" role='wysihtml5-rich-text' rows=10 cols=40>{{ value|safe }}</textarea>

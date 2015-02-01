@@ -223,6 +223,7 @@ def convert_raw_document(raw_document, user=None):
         html = content_dict['html']
 
     if html:
+        html = sanitizer.data_uris_to_s3(html)
         NoteMarkdown.objects.create(note=note, html=html)
 
     # If we know the user who uploaded this,

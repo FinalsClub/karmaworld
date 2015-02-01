@@ -3,7 +3,13 @@ function initWysihtml5(element) {
     toolbar: element.id + "-toolbar",
     parserRules: wysihtml5ParserRules
   });
-  editor.on("change", function() { element.value = editor.value; });
+  editor.on("load", function() {
+  });
+  editor.on("change", function() {
+    console.log("EDITOR", editor.value);
+    element.value = editor.value;
+    console.log("ELEMENT", element.value);
+  });
   return editor;
 }
 

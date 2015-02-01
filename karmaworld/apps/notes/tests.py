@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
+import re
 import datetime
 from django.test import TestCase
+from bs4 import BeautifulSoup
 from karmaworld.apps.notes.search import SearchIndex
 
 from karmaworld.apps.notes.models import Note, NoteMarkdown
@@ -131,11 +133,20 @@ class TestSanitizer(TestCase):
         self.assertHTMLEqual(canonicalized, """<html><head><link rel='canonical' href='http://example.com'></head><body><h1>Hey there!</h1></body></html>""")
 
     def test_data_uri(self):
-        #html = '<img src="/this.gif">'
-        #self.assertHTMLEqual(sanitizer.sanitize_html(html), "nothing")
-
+        # Strip out all data URIs.
         html = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==">'
-        self.assertHTMLEqual(sanitizer.sanitize_html(html), html)
+        self.assertHTMLEqual(sanitizer.sanitize_html(html), "<img/>")
 
+        # Strip out non-image data URI's
         html = '<img src="data:application/pdf;base64,blergh">'
         self.assertHTMLEqual(sanitizer.sanitize_html(html), "<img/>")
+
+class TestDataUriToS3(TestCase):
+    def test_data_uri(self):
+        html = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==">'
+        s3ified = sanitizer.data_uris_to_s3(html)
+        soup = BeautifulSoup(s3ified)
+        print s3ified
+        regex = r'^https?://.*$'
+        self.assertTrue(bool(re.match(regex, soup.img['src'])),
+                "{} does not match {}".format(s3ified, regex))

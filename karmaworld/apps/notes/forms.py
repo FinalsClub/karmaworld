@@ -15,6 +15,7 @@ class NoteForm(ModelForm):
 
     def save(self, *args, **kwargs):
         # TODO: use transaction.atomic for this when we switch to Django 1.6+
+        print self.cleaned_data
         instance = super(NoteForm, self).save(*args, **kwargs)
         instance.tags.set(*self.cleaned_data['tags'])
         if instance.is_hidden:
