@@ -68,6 +68,19 @@ allows multiple instances of KarmaNotes (or some other software) to share the sa
 For development on localhost, `RabbitMQ` is the default for `djcelery` and is well supported. Ensure
 `RabbitMQ` is installed for local development.
 
+### Postgresql RDBMS
+
+PostgreSQL is not necessarily required; other RDBMS could probably be fit into
+place. However, the code was largely written assuming PostgreSQL will be used.
+Change to another system with the caveat that it might take some work.
+
+There are many cloud providers which provide PostgreSQL databases. Heroku has
+an add-on for providing a PostgreSQL database. Ensure something like this
+is made available and installed to the app.
+
+For local development, ensure a PostgreSQL is running on localhost or is
+otherwise accessible.
+
 ### Amazon S3
 The instructions for creating an [S3](http://aws.amazon.com/s3/) bucket may be
 [found on Amazon.](http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html)
@@ -272,15 +285,23 @@ redirect insecure connections to secure ones.
 
 # Local
 
+## Configuring foreman
+
+KarmaNotes is a Heroku application and makes use of a Procfie. To use the
+Procfile locally, we recommend using `foreman`. To install `foreman` and other
+Heroku tools, install the [Heroku toolbelt](https://toolbelt.heroku.com/).
+
+Ensure environment variables are available to `foreman` by copying
+`.env.example` to `.env` and update those variables as appropriate for your
+local system.
+
 ## Install
 
-KarmaNotes is a Heroku application. Download the [Heroku toolbelt](https://toolbelt.heroku.com/).
-
-Before your running it for the first time, there are
-a few setup steps:
   1. `virtualenv venv`
   1. `source venv/bin/activate`
   1. `pip install -r requirements.txt`
+    * on Debian systems, some packages are required for pip to succeed:
+    * `apt-get install python-dev libpython-dev python-psycopg2 libmemcached-devlibffi-dev libssl-dev postgresql-server-dev-X.Y`
   1. `pip install -r requirements-dev.txt`
   1. `foreman run python manage.py syncdb --migrate --noinput`
   1. `foreman run python manage.py createsuperuser`
@@ -297,15 +318,16 @@ a few setup steps:
 
 ## Run
 
-Ensure environment variables are available to `foreman` by copying `.env.example`
-to `.env` and update those variables as appropriate for your local system.
+Make sure you are inside your virtual environment (`source venv/bin/activate`).
 
-To run KarmaNotes locally, make sure you are inside your
-virtual environment (`source venv/bin/activate`) and run `foreman start`.
+If the code has changed or this is the first run, make sure any modified static
+files get compressed with `foreman run python manage.py compress`. Static files
+then need to be uploaded correctly with `foreman run python manage.py
+collectstatic`.
 
-`foreman` will load the `.env` file and manage running all processes in a way
-that is similar to that of Heroku. This allows better consistency with local,
-staging, and production deployments.
+Run `foreman start`.  `foreman` will load the `.env` file and manage running all
+processes in a way that is similar to that of Heroku. This allows better
+consistency with local, staging, and production deployments.
 
 Press ctrl-C to kill foreman. Foreman will run Django's runserver command.
 If you wish to have more control over how this is done, you can do
