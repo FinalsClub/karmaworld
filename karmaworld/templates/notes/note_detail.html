@@ -1,13 +1,6 @@
 <div id="note_container" class="">
   {% if pdf_controls %}
     <div id="zoom-buttons" class="row show-for-medium-up">
-      <div id="outline-btn-wrapper" class="small-1 columns hide show-for-medium-up">
-        <i id="outline-btn" class="zoom-button fa fa-bars fa-2x"></i>
-      </div>
-      <div class="small-4 columns">
-        <span>Jump to page:
-        <input id="scroll-to" type="text" style="width: 3em; display: inline" /></span>
-      </div>
       <div class="small-2 small-centered columns center">
         <i id="minus-btn" class="zoom-button fa fa-search-minus fa-2x"></i>
         <i id="plus-btn" class="zoom-button fa fa-search-plus fa-2x"></i>
@@ -19,15 +12,9 @@
     <div class="small-12 small-centered columns medium-12 large-12 body_copy">
       <div id="note-content-wrapper" class="note-text">
         {% if note.has_markdown %}
-          <div class='note-html'>
+          <div class='note-html' id='note-html'>
             {{ note.notemarkdown.html|safe }}
           </div>
-        {% else %}
-          <iframe style="border:none; width:100%; min-height: 1000px;"
-                id="noteframe"></iframe>
-          <noscript>
-            {{ note.text }}
-          </noscript>
         {% endif %}
       </div> <!-- .note-text -->
     </div><!-- /body_copy -->

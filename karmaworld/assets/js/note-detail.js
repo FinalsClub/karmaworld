@@ -1,96 +1,3 @@
-
-function rescalePdf(viewer) {
-  var scaleBase = 750;
-  var outlineWidth = 250;
-  var frameWidth = parseInt($('#note_container')[0].clientWidth);
-  var pdfWidth = frameWidth;
-
-  if ($(viewer.sidebar).hasClass('opened')){
-    pdfWidth = pdfWidth - 250;
-  }
-
-  var newPdfScale = pdfWidth / scaleBase;
-  viewer.rescale(newPdfScale);
-}
-
-function setupPdfViewer(noteframe, pdfViewer) {
-
-  $('#plus-btn').click(function (){
-    pdfViewer.rescale(1.20, true, [0,0]);
-  });
-
-  $('#minus-btn').click(function (){
-    pdfViewer.rescale(0.80, true, [0,0]);
-  });
-
-  // detect if the PDF viewer wants to show an outline
-  // at all
-  if ($(pdfViewer.sidebar).hasClass('opened')) {
-    var body = $(document.body);
-    // if the screen is less than 64em wide, hide the outline
-    if (parseInt($(body.width()).toEm({scope: body})) < 64) {
-      $(pdfViewer.sidebar).removeClass('opened');
-    }
-  }
-
-  $('#outline-btn').click(function() {
-    $(pdfViewer.sidebar).toggleClass('opened');
-    // rescale the PDF to fit the available space
-    rescalePdf(pdfViewer);
-  });
-
-  $('#scroll-to').change(function() {
-    page = parseInt($(this).val());
-    pdfViewer.scroll_to(page, [0,0]);
-  });
-
-  // rescale the PDF to fit the available space
-  rescalePdf(pdfViewer);
-}
-
-function writeNoteFrame(contents) {
-  var dstFrame = document.getElementById('noteframe');
-  if (dstFrame) {
-    var dstDoc = dstFrame.contentDocument || dstFrame.contentWindow.document;
-    dstDoc.write(contents);
-    dstDoc.close();
-  }
-}
-
-function setupAnnotator(noteElement, readOnly) {
-  noteElement.annotator({readOnly: readOnly});
-  noteElement.annotator('addPlugin', 'Store', {
-    prefix: '/ajax/annotations',
-    loadFromSearch: {
-      'uri': note_id
-    },
-    annotationData: {
-      'uri': note_id
-    }
-  });
-}
-
-function injectRemoteScript(url, noteframe, onload) {
-  var injectScript = noteframe.document.createElement("script");
-  injectScript.src = url;
-  injectScript.onload = onload;
-  noteframe.document.head.appendChild(injectScript);
-}
-
-function injectScript(scriptText, noteframe) {
-  var injectScript = noteframe.document.createElement("script");
-  injectScript.innerHTML = scriptText;
-  noteframe.document.body.appendChild(injectScript);
-}
-
-function injectRemoteCSS(url, noteframe) {
-  var injectCSS = noteframe.document.createElement("link");
-  injectCSS.href = url;
-  injectCSS.type = 'text/css';
-  injectCSS.rel = 'stylesheet';
-  noteframe.document.head.appendChild(injectCSS);
-}
-
 function tabHandler(event) {
   // check for:
   // key pressed was TAB
@@ -131,6 +38,32 @@ function addForm(event) {
   $('#id_form-TOTAL_FORMS').attr('value', parseInt(totalForms)+1);
 
   keywordInput.focus();
+}
+
+/**
+ * Scale the html given by the selector by the factor.
+ * @param {string|jQuery|dom} container - Selector to scale
+ * @param {Number} factorDelta - Amount to change the current scaling factor by
+ * (e.g. 1.1, 0.9, 2.0).
+ */
+function scaleHTML(container, factorDelta) {
+  var el = $(container);
+  var currentFactor = parseFloat(el.attr("data-scale-factor") || 1);
+  var factor = currentFactor * factorDelta;
+  
+  var parent = el.parent()
+  var origHeight = parent.height() / currentFactor;
+  var destHeight = origHeight * factor;
+  // Set the new parent height
+  parent.height(destHeight);
+
+  el.attr("data-scale-factor", factor);
+  var matrix = "matrix(" + factor + ", 0, 0, " + factor + ", " +
+                       "0," + ((destHeight - origHeight) * 0.5) + ")";
+  el.css("-webkit-transform", matrix);
+  el.css("-moz-transform", matrix);
+  el.css("-ms-transform", matrix);
+  el.css("transform", matrix);
 }
 
 function initNoteContentPage() {
@@ -216,69 +149,16 @@ function initNoteContentPage() {
     }
   });
 
-  // Embed the converted markdown if it is on the page, else default to the iframe
-  if ($('#note-markdown').length > 0) {
-    var note_markdown = $('#note-markdown');
-    note_markdown.html(marked(note_markdown.data('markdown')));
-    setupAnnotator(note_markdown, !user_authenticated);
-  } else {
-    $.ajax(note_contents_url, {
-      type: 'GET',
-      xhrFields: {
-        onprogress: function (progress) {
-          var percentage = Math.floor((progress.loaded / progress.total) * 100);
-          writeNoteFrame("<h3 style='text-align: center'>" + percentage + "%</h3>");
-        }
-      },
-      success: function(data, textStatus, jqXHR) {
-        writeNoteFrame(data);
+  $("#note-html").annotator({
+    readOnly: false
+  }).annotator('addPlugin', 'Store', {
+    prefix: '/ajax/annotations',
+    loadFromSearch: { 'uri': note_id },
+    annotationData: { 'uri': note_id }
+  });
 
-        // run setupAnnotator in frame context
-        var parentFrame = document.getElementById('noteframe');
-        if (!parentFrame) {
-          return;
-        }
-        var noteframe = parentFrame.contentWindow;
-
-        injectRemoteCSS(annotator_css_url, noteframe);
-        injectScript("csrf_token = '" + csrf_token + "';", noteframe);
-
-        injectRemoteScript("https://code.jquery.com/jquery-2.1.0.min.js", noteframe,
-          function() {
-            injectRemoteScript(setup_ajax_url, noteframe);
-            injectRemoteScript(annotator_js_url, noteframe,
-              function() {
-                var js = "$(function() { \
-                  var document_selector = $('body'); \
-                  if ($('#page-container').length > 0) { \
-                    document_selector = $('#page-container'); \
-                  } \
-                  document_selector.annotator({readOnly: " + !user_authenticated + "}); \
-                  document_selector.annotator('addPlugin', 'Store', { \
-                    prefix: '/ajax/annotations', \
-                    loadFromSearch: { \
-                    'uri': " + note_id + " \
-                  }, \
-                  annotationData: { \
-                    'uri': " + note_id + " \
-                  } \
-                }); })";
-                injectScript(js, noteframe);
-
-                if (pdfControls == true) {
-                  var pdfViewer = noteframe.pdf2htmlEX.defaultViewer;
-                  $(noteframe.document).ready(function() {
-                    setupPdfViewer(noteframe, pdfViewer);
-                  });
-                }
-              });
-          });
-      },
-      error: function(data, textStatus, jqXHR) {
-        writeNoteFrame("<h3 style='text-align: center'>Sorry, your note could not be retrieved.</h3>");
-      }
-    });
-  }
+  $("#plus-btn").click(function() { scaleHTML("#note-html", 1.1); });
+  $("#minus-btn").click(function() { scaleHTML("#note-html", 1 / 1.1); });
 }
 
 function initNoteKeywordsPage() {

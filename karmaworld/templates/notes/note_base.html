@@ -57,31 +57,33 @@
       });
     {% endif %}
   </script>
-  <script type="text/javascript">
-    // wysihtml5 doesn't init correctly in a hidden div.  So we remove it every
-    // time before showing it in the modal.
+  {% if note.is_editable %}
+    <script type="text/javascript">
+      // wysihtml5 doesn't init correctly in a hidden div.  So we remove it every
+      // time before showing it in the modal.
 
-    // This event will be renamed "open.fndtn.reveal" in future foundation:
-    // http://foundation.zurb.com/docs/components/reveal.html#event-bindings
-    $(document).on("open", "#note-edit-dialog", function(event) {
-        var scope = $(event.currentTarget);
-        // Remove iframe.
-        $(".wysihtml5-sandbox", scope).remove();
-        // Unbind toolbar events by cloning it.
-        var toolbar = $(".wysihtml5-toolbar", scope);
-        var toolbarClone = toolbar.clone();
-        toolbar.replaceWith(toolbarClone);
-        // Unbind textarea events by cloning it.
-        var textarea = $("[role='wysihtml5-rich-text']", scope);
-        var textareaClone = textarea.clone();
-        var val = textarea.val(); // textarea value isn't copied with clone.
-        textarea.replaceWith(textareaClone);
-        textareaClone.val(val);
-        textareaClone.show();
-        // Reinitialize
-        initWysihtml5(textareaClone[0]);
-    });
-  </script>
+      // This event will be renamed "open.fndtn.reveal" in future foundation:
+      // http://foundation.zurb.com/docs/components/reveal.html#event-bindings
+      $(document).on("open", "#note-edit-dialog", function(event) {
+          var scope = $(event.currentTarget);
+          // Remove iframe.
+          $(".wysihtml5-sandbox", scope).remove();
+          // Unbind toolbar events by cloning it.
+          var toolbar = $(".wysihtml5-toolbar", scope);
+          var toolbarClone = toolbar.clone();
+          toolbar.replaceWith(toolbarClone);
+          // Unbind textarea events by cloning it.
+          var textarea = $("[role='wysihtml5-rich-text']", scope);
+          var textareaClone = textarea.clone();
+          var val = textarea.val(); // textarea value isn't copied with clone.
+          textarea.replaceWith(textareaClone);
+          textareaClone.val(val);
+          textareaClone.show();
+          // Reinitialize
+          initWysihtml5(textareaClone[0]);
+      });
+    </script>
+  {% endif %}
 {% endblock %}
 
 {% block raw_content %}
@@ -259,14 +261,16 @@
                 <p>{{ field.help_text }}</p>
               {% endwith %}
             </div>
-            <div class="small-12 columns">
-              {% with note_edit_form.html as field %}
-                {{ field.errors|safe }}
-                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-                {{ field }}
-                <p>{{ field.help_text }}</p>
-              {% endwith %}
-            </div>
+            {% if note.is_editable %}
+              <div class="small-12 columns">
+                {% with note_edit_form.html as field %}
+                  {{ field.errors|safe }}
+                  <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                  {{ field }}
+                  <p>{{ field.help_text }}</p>
+                {% endwith %}
+              </div>
+            {% endif %}
             <div class="small-12 columns text-center">
               <button type="submit"><i class="fa fa-save"></i> Save</button>
             </div>

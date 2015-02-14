@@ -5,7 +5,7 @@ from south.v2 import DataMigration
 from django.db import models
 import markdown
 from notes.models import NoteMarkdown
-from notes.sanitizer import sanitize_html
+from notes import sanitizer
 
 class Migration(DataMigration):
 
@@ -15,7 +15,7 @@ class Migration(DataMigration):
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
         for notemarkdown in orm['notes.NoteMarkdown'].objects.exclude(markdown=""):
-            notemarkdown.html = sanitize_html(markdown.markdown(notemarkdown.markdown))
+            notemarkdown.html = sanitizer.sanitize_html_to_editable(markdown.markdown(notemarkdown.markdown))
             notemarkdown.save()
 
     def backwards(self, orm):

@@ -36,6 +36,7 @@ class TestNotes(TestCase):
         self.note = Note()
         self.note.course = self.course
         self.note.name = u"Lecture notes concerning the use of therefore ∴"
+        self.note.category = Note.LECTURE_NOTES
         self.note.uploaded_at = self.now
         self.note.text = "This is the plaintext version of a note. It's pretty cool. Alpaca."
         self.note.save()
@@ -97,11 +98,11 @@ class TestNotes(TestCase):
             <h2>OK</h2>
             &amp;
             \u201d
-            <a>This stuff</a>
+            <a target='_blank' rel='nofollow'>This stuff</a>
             <a href="http://google.com" target="_blank" rel="nofollow">That guy</a>
         """)
 
-class TestSanitizer(TestCase):
+class TestSanitizeToEditable(TestCase):
     def test_clean(self):
         dirty = """
             <script>unsafe</script>
@@ -117,12 +118,12 @@ class TestSanitizer(TestCase):
             </section>
         """
 
-        self.assertHTMLEqual(sanitizer.sanitize_html(dirty), u"""
+        self.assertHTMLEqual(sanitizer.sanitize_html_to_editable(dirty), u"""
             <h1>Something</h1>
             <h2>OK</h2>
             &amp;
             \u201d
-            <a>This stuff</a>
+            <a target="_blank" rel="nofollow">This stuff</a>
             <a href="http://google.com" target="_blank" rel="nofollow">That guy</a>
             <h3>This should show up</h3>
         """)
@@ -135,18 +136,34 @@ class TestSanitizer(TestCase):
     def test_data_uri(self):
         # Strip out all data URIs.
         html = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==">'
-        self.assertHTMLEqual(sanitizer.sanitize_html(html), "<img/>")
+        self.assertHTMLEqual(sanitizer.sanitize_html_to_editable(html), "<img/>")
 
         # Strip out non-image data URI's
         html = '<img src="data:application/pdf;base64,blergh">'
-        self.assertHTMLEqual(sanitizer.sanitize_html(html), "<img/>")
+        self.assertHTMLEqual(sanitizer.sanitize_html_to_editable(html), "<img/>")
 
 class TestDataUriToS3(TestCase):
-    def test_data_uri(self):
+    def test_image_data_uri(self):
         html = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==">'
         s3ified = sanitizer.data_uris_to_s3(html)
         soup = BeautifulSoup(s3ified)
-        print s3ified
         regex = r'^https?://.*$'
         self.assertTrue(bool(re.match(regex, soup.img['src'])),
                 "{} does not match {}".format(s3ified, regex))
+
+        resanitize = sanitizer.data_uris_to_s3(s3ified)
+        self.assertHTMLEqual(s3ified, resanitize)
+
+    def test_font_face_data_uri(self):
+        # Note: this data-uri is not a valid font (it's the red dot).
+        html = '''<style>@font-face { src: url('data:application/font-woff;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='); }</style>'''
+
+        s3ified = sanitizer.data_uris_to_s3(html)
+        self.assertFalse(re.search(r"url\('data:application", s3ified),
+                "data URL not removed: {}".format(s3ified))
+        self.assertTrue(re.search(r"url\('https?://[^\)]+\)", s3ified),
+                "URL not inserted: {}".format(s3ified))
+
+        # Ensure that cleaning is idempotent.
+        self.assertHTMLEqual(s3ified,
+                sanitizer.sanitize_html_preserve_formatting(s3ified))

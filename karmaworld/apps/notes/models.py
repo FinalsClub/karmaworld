@@ -34,7 +34,7 @@ import django_filepicker
 from taggit.managers import TaggableManager
 import markdown
 
-from karmaworld.apps.notes.sanitizer import sanitize_html
+from karmaworld.apps.notes import sanitizer
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.licenses.models import License
 from karmaworld.apps.notes.search import SearchIndex
@@ -80,6 +80,8 @@ class Document(models.Model):
         (ASSIGNMENT, 'Assignment'),
         (OTHER, 'Other'),
     )
+    EDITABLE_CATEGORIES = (LECTURE_NOTES,)
+
     category = models.CharField(max_length=50, choices=NOTE_CATEGORIES, blank=True, null=True)
 
     # license if different from default
@@ -360,6 +362,9 @@ class Note(Document):
     def is_pdf(self):
         return self.mimetype in Note.PDF_MIMETYPES
 
+    def is_editable(self):
+        return self.category in Note.EDITABLE_CATEGORIES
+
 
 class NoteMarkdown(models.Model):
     note     = models.OneToOneField(Note, primary_key=True)
@@ -369,7 +374,11 @@ class NoteMarkdown(models.Model):
     def save(self, *args, **kwargs):
         if self.markdown and not self.html:
             self.html = markdown.markdown(self.markdown)
-        self.html = sanitize_html(self.html)
+        if self.note.is_editable():
+            self.html = sanitizer.sanitize_html_to_editable(self.html)
+        else:
+            self.html = sanitizer.sanitize_html_preserve_formatting(self.html)
+
         super(NoteMarkdown, self).save(*args, **kwargs)
 
 auto_add_check_unique_together(Note)
