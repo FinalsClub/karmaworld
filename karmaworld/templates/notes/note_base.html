@@ -10,8 +10,8 @@
   {% compress css %}
     <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/note_course_pages.css">
     <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/annotator.min.css" />
-    {{ note_edit_form.media.css }}
   {% endcompress %}
+  {{ note_edit_form.media.css }}
 {% endblock %}
 
 {% block pagescripts %}
@@ -35,8 +35,8 @@
     <script src="{{ STATIC_URL }}js/pxem.jQuery.js"></script>
     <script src="{{ STATIC_URL }}js/marked.js" ></script>
     <script src="{{ STATIC_URL }}js/annotator-full.min.js"></script>
-    {{ note_edit_form.media.js }}
   {% endcompress %}
+  {{ note_edit_form.media.js }}
   <script>
     {% if show_note_container %}
       $(function() {
