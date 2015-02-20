@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from karmaworld.apps.notes import sanitizer
 from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
@@ -14,9 +15,21 @@ class Migration(DataMigration):
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
 
-        # keep score
+        # keep score. save as lists for debugging purposes if needed.
         good = []
+        edit = []
+        nonedit = []
         bad = []
+
+        # at the time of migration, editable categories are limited to
+        EDITABLE_CATEGORIES = ('LECTURE_NOTES',)
+
+        # at the time of migration, translated PDFs were based on mimetypes
+        PDF_MIMETYPES = (
+          'application/pdf',
+          'application/vnd.ms-powerpoint',
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        )
 
         # find each Note without an html field, download its S3 html, and
         # store it in the local database.
@@ -29,11 +42,25 @@ class Migration(DataMigration):
             if key:
                 html = key.read()
 
+            # check the downloaded html
             if not html:
                 bad.append(note.slug)
                 continue
             else:
                 good.append(note.slug)
+
+            # clean the html in a consistent way with note uploads as of the
+            # time of this migration.
+            # handle embedded images from pdf2htmlEX or other sources
+            html = sanitizer.data_uris_to_s3(html)
+            if note.category in EDITABLE_CATEGORIES:
+                # make HTML editable
+                html = sanitizer.sanitize_html_to_editable(html)
+                edit.append(note)
+            else:
+                # clean up HTML without concern for editing
+                html = sanitizer.sanitize_html_preserve_formatting(html)
+                nonedit.append(note)
 
             # store the html in the corresponding NoteMarkdown object
             nmd = orm['notes.NoteMarkdown'].objects.get_or_create(note=note)[0]
@@ -43,6 +70,8 @@ class Migration(DataMigration):
         # Display the score
         print "Migrated {0} notes and failed to migrate {1} notes.".format(
           len(good), len(bad))
+        print "Of good notes, {0} are editable and {1} are not.".format(
+          len(edit), len(nonedit))
 
         print "Failed list:"
         for slug in bad:
