@@ -3,8 +3,9 @@ from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+
+import re
 import markdown
-from notes.models import NoteMarkdown
 from notes import sanitizer
 
 class Migration(DataMigration):
@@ -14,8 +15,26 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName". 
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
+
+        # find URLs in markdown tags
+        expr = re.compile('\[(.*)\]\(([^)]+)\)')
+        # find whitespace
+        whitespace = re.compile('[\s]+')
+        # remove all whitespace found in second group of a regex result
+        def remove_whitespace_from_tag(match):
+            parms = list(match.groups())
+            parms[1] = whitespace.sub('', parms[1])
+            return u'[{0}]({1})'.format(*parms)
+
+        # filter non-empty markdown fields into the html field
         for notemarkdown in orm['notes.NoteMarkdown'].objects.exclude(markdown=""):
-            notemarkdown.html = sanitizer.sanitize_html_to_editable(markdown.markdown(notemarkdown.markdown))
+            # find markdown link tags and remove all whitespace from the URLs.
+            # https://github.com/FinalsClub/karmaworld/issues/404
+            md = expr.sub(remove_whitespace_from_tag, notemarkdown.markdown)
+            # convert markdown to HTML
+            md = markdown.markdown(md)
+            # cleanup converted HTML
+            notemarkdown.html = sanitizer.sanitize_html_to_editable(md)
             notemarkdown.save()
 
     def backwards(self, orm):
