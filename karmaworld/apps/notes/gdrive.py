@@ -214,7 +214,6 @@ def convert_raw_document(raw_document, user=None):
 
     # Extract HTML from the appropriate place
     html = ''
-    convert_to_markdown = False
     if raw_document.mimetype == PDF_MIMETYPE:
         html = pdf2html(original_content)
     elif raw_document.mimetype in PPT_MIMETYPES:
