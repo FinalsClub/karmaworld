@@ -1,2 +1,2 @@
 port: 8000
-procfile: Procfile-development
+procfile: Procfile

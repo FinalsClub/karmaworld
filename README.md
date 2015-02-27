@@ -329,6 +329,9 @@ Run `foreman start`.  `foreman` will load the `.env` file and manage running all
 processes in a way that is similar to that of Heroku. This allows better
 consistency with local, staging, and production deployments.
 
+To run web-only, but no celery or beat, run `foreman start web` to specify
+strictly the web worker.
+
 Press ctrl-C to kill foreman. Foreman will run Django's runserver command.
 If you wish to have more control over how this is done, you can do
 `foreman run python manage.py runserver <options>`. For running any other
