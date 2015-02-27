@@ -1,5 +1,5 @@
 #!/bin/bash
-python manage.py celery worker --pidfile=/tmp/celeryd.pid -l info &
+python manage.py celery worker --pidfile=/tmp/celeryd.pid -l info -Q $CELERY_QUEUE_NAME &
 sleep 5
 workerpid=`cat /tmp/celeryd.pid`
 echo "Started celery worker with pid $workerpid"
