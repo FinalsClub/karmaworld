@@ -5,7 +5,7 @@ from django.forms import ModelForm, IntegerField, HiddenInput, Form, CharField, 
 from django.forms import TextInput
 from django_filepicker.widgets import FPFileWidget
 from django.template.loader import render_to_string
-from wysihtml5.widgets import RichTextEditor
+from karmaworld.utils.widgets import RichTextEditor
 
 from karmaworld.apps.notes.models import Note, NoteMarkdown
 
