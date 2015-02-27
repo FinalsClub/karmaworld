@@ -92,15 +92,23 @@ KEYWORDS_HIT_DEFINITION_FIELDS = [
     ('definition20', 'Definition 20'),
 ]
 
+def run_mturk(whence):
+    try:
+        MTURK_HOST = os.environ['MTURK_HOST']
+    except KeyError, e:
+        logger.warn('Not running {0}: could not find Mechanical Turk secrets'
+          .format(whence))
+        return ''
+    else:
+        return MTURK_HOST
+
 @task(name='submit_extract_keywords_hit')
 def submit_extract_keywords_hit(note):
     """Create a Mechanical Turk HIT that asks a worker to
     choose keywords and definitions from the given note."""
 
-    try:
-        MTURK_HOST = os.environ['MTURK_HOST']
-    except:
-        logger.warn('Could not find Mechanical Turk secrets, not running submit_extract_keywords_hit')
+    MTURK_HOST = run_mturk('submit_extract_keywords_hit')
+    if not MTURK_HOST:
         return
 
     connection = MTurkConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY,
@@ -154,10 +162,8 @@ def submit_extract_keywords_hit(note):
 @task(name='get_extract_keywords_results')
 def get_extract_keywords_results():
 
-    try:
-        MTURK_HOST = os.environ['MTURK_HOST']
-    except ImportError:
-        logger.warn('Could not find Mechanical Turk secrets, not running get_extract_keywords_results')
+    MTURK_HOST = run_mturk('get_extract_keywords_results')
+    if not MTURK_HOST:
         return
 
     connection = MTurkConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY,
@@ -239,11 +245,14 @@ CONTENT_DISPOSITION_REGEX = r'filename="(?P<filename>.+)"'
 
 @task(name='check_notes_mailbox')
 def check_notes_mailbox():
+    MTURK_HOST = run_mturk('get_extract_keywords_results')
+    if not MTURK_HOST:
+        return
+
     try:
         MAILBOX_USER = os.environ['NOTES_MAILBOX_USERNAME']
         MAILBOX_PASSWORD = os.environ['NOTES_MAILBOX_PASSWORD']
         FILEPICKER_API_KEY = os.environ['FILEPICKER_API_KEY']
-        MTURK_HOST = os.environ['MTURK_HOST']
     except:
         logger.warn('Could not find notes mailbox secrets, not running check_notes_mailbox')
         return
