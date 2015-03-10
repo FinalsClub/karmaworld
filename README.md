@@ -55,6 +55,13 @@ documentation will operate assuming Heroku is in use.
 
 See README.heroku for more information.
 
+#### pdf2htmlEX
+This project uses [pdf2htmlEX](https://github.com/coolwanglu/pdf2htmlEX) as
+a dependency. pdf2htmlEX is used to convert uploaded PDF notes into HTML. If
+using Heroku, the default [KarmaNotes Heroku buildpack](https://github.com/FinalsClub/heroku-buildpack-karmanotes)
+will [include](https://github.com/FinalsClub/heroku-buildpack-karmanotes/blob/master/bin/steps/pdf2htmlex)
+an [outdated version of pdf2htmlEX](https://github.com/FinalsClub/pdf2htmlEX)
+which is [patched](https://github.com/FinalsClub/pdf2htmlEX/commit/3c19f6abd8d59d1b58cf254b7160b332b3f5b517).
 
 ### Celery Queue
 Celery uses the Apache Message Queueing Protocol for passing messages to its workers.
@@ -294,6 +301,40 @@ Heroku tools, install the [Heroku toolbelt](https://toolbelt.heroku.com/).
 Ensure environment variables are available to `foreman` by copying
 `.env.example` to `.env` and update those variables as appropriate for your
 local system.
+
+## pdf2htmlEX
+
+This project uses [pdf2htmlEX](https://github.com/coolwanglu/pdf2htmlEX) as
+a dependency. pdf2htmlEX is used to convert uploaded PDF notes into HTML. It
+needs to be installed on the same system that KarmaNotes runs on.
+
+### using their source
+
+See their instructions at
+[https://github.com/coolwanglu/pdf2htmlEX/wiki/Building](https://github.com/coolwanglu/pdf2htmlEX/wiki/Building).
+
+Make sure to [patch](https://github.com/FinalsClub/pdf2htmlEX/commit/3c19f6abd8d59d1b58cf254b7160b332b3f5b517)
+the source code to expose two variables.
+
+### using our fork
+
+You can use FinalsClub's [outdated version of pdf2htmlEX](https://github.com/FinalsClub/pdf2htmlEX).
+See their installation instructions above, but don't worry about patching.
+
+### using their PPA
+
+You can use [their upstream PPA](https://launchpad.net/~coolwanglu/+archive/ubuntu/pdf2htmlex).
+
+        apt-add-repository ppa:coolwanglu/pdf2htmlex
+        apt-get update
+        apt-get install pdf2htmlex
+
+Then patch the javascript on your system by running this code in the shell.
+
+        cat >> `dpkg -L pdf2htmlex | grep pdf2htmlEX.js` <<PDF2HTMLEXHACK
+        Viewer.prototype['rescale'] = Viewer.prototype.rescale;
+        Viewer.prototype['scroll_to'] = Viewer.prototype.scroll_to;
+        PDF2HTMLEXHACK
 
 ## Install
 
