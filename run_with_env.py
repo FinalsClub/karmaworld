@@ -1,9 +1,12 @@
-# export a foreman env to heroku
+# a duct-tape-and-bubble-gum version of foreman's env support
+import os
 import subprocess
 
-def export_env(filename='.env'):
-    data=['heroku', 'config:set']
-    unset=['heroku', 'config:unset']
+def run_in_env(command, filename='.env'):
+    # configure environment as a copy of the current environment
+    env = {}
+    env.update(os.environ)
+    # plus vars from the file
     with open(filename, 'r') as config:
         for line in config.readlines():
             # ignore whitespace padding
@@ -12,21 +15,16 @@ def export_env(filename='.env'):
             # further ignore whitespace padding that was around the =
             tmp = map(str.strip, tmp)
             if len(tmp[0]) and tmp[0][0] == '#':
-                # the heroku CLI cannot return if a variable is not yet set
-                # or if it has been set to the empty string.
-                # delete commented-out variables to be safe.
-                unset.append(tmp[0][1:])
+                pass
             # check for nonempty variable and content
             elif len(tmp) == 2 and len(tmp[0]) and len(tmp[1]):
-                    
-                data.append('{0}={1}'.format(*tmp))
-    # run heroku configuration
-    subprocess.check_call(data)
-    subprocess.check_call(unset)
+                env[tmp[0]] = tmp[1].strip("'") # drop quotes around values
+    # run command
+    subprocess.check_call(command, env=env)
     # check_call fires an exception on failure.
     # if we're here, both calls succeeded.
     return 0
 
 if __name__ == '__main__':
     import sys
-    sys.exit(export_env('.env'))
+    sys.exit(run_in_env(sys.argv[1:], '.env'))
