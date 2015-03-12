@@ -6,10 +6,13 @@
     Models for the notes django app.
     Contains only the minimum for handling files and their representation
 """
+import os
+import time
+import urllib
+import logging
 import datetime
 import traceback
-import logging
-from allauth.account.signals import user_logged_in
+
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
@@ -19,25 +22,28 @@ from django.core.files.storage import default_storage
 from django.db.models import SET_NULL
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
-from karmaworld.apps.users.models import NoteKarmaEvent, GenericKarmaEvent
-from karmaworld.utils.filepicker import encode_fp_policy, sign_fp_policy
-import os
-import time
-import urllib
-
 from django.conf import settings
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.utils.text import slugify
+
+import markdown
 import django_filepicker
 from taggit.managers import TaggableManager
-import markdown
+from allauth.account.signals import user_logged_in
 
 from karmaworld.apps.notes import sanitizer
+from karmaworld.apps.users.models import UserProfile
+from karmaworld.apps.users.models import NoteKarmaEvent
+from karmaworld.apps.users.models import GenericKarmaEvent
+from karmaworld.apps.notes.search import SearchIndex
 from karmaworld.apps.courses.models import Course
 from karmaworld.apps.licenses.models import License
-from karmaworld.apps.notes.search import SearchIndex
+
+from karmaworld.utils.filepicker import sign_fp_policy
+from karmaworld.utils.filepicker import encode_fp_policy
+
 from karmaworld.settings.manual_unique_together import auto_add_check_unique_together
 
 FILEPICKER_API_KEY = os.environ['FILEPICKER_API_KEY']
@@ -365,6 +371,65 @@ class Note(Document):
     def is_editable(self):
         return self.category in Note.EDITABLE_CATEGORIES
 
+
+    def allows_edit_by(self, user, cache={}):
+        """
+        Security policy for editing notes. Hand rolled for now.
+        cache is a dictionary to return some calculated info pass-by-ref.
+          (does nothing, maintained for consistency)
+        Returns True if the user can edit the note.
+        Checks if the user can tag and the note is editable.
+        """
+        # Of course the note must be editable in the first place.
+        # If so, user must be able to tag note to edit it.
+        return self.is_editable() and self.allows_tags_by(user)
+
+    def allows_tags_by(self, user, cache={}):
+        """
+        Security policy for tagging notes. Hand rolled for now.
+        cache is a dictionary to return some calculated info pass-by-ref.
+        Returns True if the user can edit the note.
+        Checks if the user can delete and there are enough points to tag.
+        """
+        # If the user cannot delete the note, the user cannot add tags.
+        if not self.allows_delete_by(user, cache):
+            return False
+        # Staff can edit, no worries about points.
+        if cache.has_key('staff') and cache['staff']:
+            return True
+        # Users must have 20 points to edit tags.
+        if cache.has_key('profile') and not cache.has_key('points'):
+            cache['points'] = cache['profile'].get_points()
+        return cache.has_key('points') and cache['points'] >= 20
+
+    def allows_delete_by(self, user, cache={}):
+        """
+        Security policy for deleting notes. Hand rolled for now.
+        cache is a dictionary to return some calculated info pass-by-ref
+        Returns True if the user can delete the note.
+        Checks if user is admin or owns the note.
+        """
+        # do not allow unauthenticated users access
+        if hasattr(user, 'is_authenticated') and not user.is_authenticated():
+            return False
+        cache['user'] = user
+        # ensure user is a UserProfile by contract.
+        if not hasattr(user, 'has_staff_status'):
+            # assume it's a regular User and try to resolve it
+            user = UserProfile.objects.get(user_id=user.id)
+        cache['profile'] = user
+        # if the user is staff, the user can delete.
+        cache['staff'] = False
+        if user.has_staff_status():
+            cache['staff'] = True
+            return True
+        # apparently some notes are un-owned. so, user is not the owner.
+        if self.user is None:
+            return False
+        # pull user id for this note
+        owner_id = self.user.id
+        # Note owner may edit, others may not.
+        return owner_id == user.get_id()
 
 class NoteMarkdown(models.Model):
     note     = models.OneToOneField(Note, primary_key=True)

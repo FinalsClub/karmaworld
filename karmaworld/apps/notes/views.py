@@ -2,31 +2,42 @@
 # -*- coding:utf8 -*-
 # Copyright (C) 2012  FinalsClub Foundation
 
-import traceback
+import json
 import logging
+import traceback
+
 from django.contrib import messages
 
 from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.forms.formsets import formset_factory
-from karmaworld.apps.courses.forms import CourseForm
-from karmaworld.apps.courses.models import Course
-from karmaworld.apps.notes.search import SearchIndex
-from karmaworld.apps.quizzes.create_quiz import quiz_from_keywords
-from karmaworld.apps.quizzes.forms import KeywordForm
-from karmaworld.apps.quizzes.models import Keyword
-from karmaworld.apps.quizzes.tasks import submit_extract_keywords_hit, get_extract_keywords_results
-from karmaworld.apps.users.models import NoteKarmaEvent
-from karmaworld.utils.ajax_utils import *
 
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.http import HttpResponseForbidden
+from django.http import HttpResponseBadRequest
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic import UpdateView, FormView
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 
-from karmaworld.apps.notes.models import Note, NoteMarkdown, KEYWORD_MTURK_THRESHOLD
-from karmaworld.apps.notes.forms import NoteForm, NoteDeleteForm
+from karmaworld.apps.notes.forms import NoteForm
+from karmaworld.apps.notes.forms import NoteDeleteForm
+from karmaworld.apps.notes.models import Note
+from karmaworld.apps.notes.models import NoteMarkdown
+from karmaworld.apps.notes.models import KEYWORD_MTURK_THRESHOLD
+from karmaworld.apps.notes.search import SearchIndex
+from karmaworld.apps.users.models import NoteKarmaEvent
+from karmaworld.apps.courses.forms import CourseForm
+from karmaworld.apps.quizzes.forms import KeywordForm
+from karmaworld.apps.quizzes.tasks import submit_extract_keywords_hit
+from karmaworld.apps.quizzes.tasks import get_extract_keywords_results
+from karmaworld.apps.courses.models import Course
+from karmaworld.apps.quizzes.models import Keyword
+from karmaworld.apps.quizzes.create_quiz import quiz_from_keywords
+
+from karmaworld.utils.ajax_utils import ajax_pk_base
+from karmaworld.utils.ajax_utils import ajax_increment
 
 
 logger = logging.getLogger(__name__)
@@ -39,6 +50,10 @@ USER_PROFILE_FLAGS_FIELD = 'flagged_notes'
 def note_page_context_helper(note, request, context):
 
     if request.method == 'POST':
+        if not note.allows_edit_by(request.user):
+            # This user is Balrog. It. Shall. Not. Pass.
+            return HttpResponseForbidden()
+        # Only save tags if not forbidden above.
         context['note_edit_form'] = NoteForm(request.POST)
     else:
         tags_string = ','.join([str(tag) for tag in note.tags.all()])
@@ -76,6 +91,15 @@ class NoteView(UpdateView):
     def get_success_url(self):
         return self.object.get_absolute_url()
 
+    def form_valid(self, form):
+        self.note = self.object
+        # Ensure that the requesting user has permission to edit.
+        if self.note.allows_edit_by(self.request.user):
+            return super(NoteView, self).form_valid(form)
+        else:
+            messages.error(self.request, 'Permission denied.')
+            return HttpResponseRedirect(self.get_success_url())
+
     def get_context_data(self, **kwargs):
         context = super(NoteView, self).get_context_data(**kwargs)
         context['show_note_container'] = True
@@ -108,9 +132,8 @@ class NoteDeleteView(FormView):
 
     def form_valid(self, form):
         self.note = Note.objects.get(id=form.cleaned_data['note'])
-        u = self.request.user
         # Ensure that the requesting user has permission to delete.
-        if (u.is_authenticated() and u.id == self.note.user_id) or u.is_staff:
+        if self.note.allows_delete_by(self.request.user):
             self.note.is_hidden = True
             self.note.save()
             messages.success(self.request, 'The note "{0}" was deleted successfully.'.format(self.note.name))
@@ -158,7 +181,10 @@ class NoteKeywordsView(FormView, SingleObjectMixin):
         kwargs['keywords'] = Keyword.objects.filter(note=self.get_object())
         kwargs['show_keywords'] = True
 
-        note_page_context_helper(self.get_object(), self.request, kwargs)
+        ret = note_page_context_helper(self.get_object(), self.request, kwargs)
+        # check for errors returned by the helper.
+        if ret:
+            return ret
 
         return super(NoteKeywordsView, self).get_context_data(**kwargs)
 
@@ -202,7 +228,10 @@ class NoteQuizView(TemplateView):
     def get_context_data(self, **kwargs):
         note = Note.objects.get(slug=self.kwargs['slug'])
 
-        note_page_context_helper(note, self.request, kwargs)
+        ret = note_page_context_helper(note, self.request, kwargs)
+        # check for errors returned by the helper.
+        if ret:
+            return ret
 
         kwargs['note'] = note
         kwargs['questions'] = quiz_from_keywords(note)
@@ -328,8 +357,8 @@ def edit_note_tags(request, pk):
     """
     Saves the posted string of tags
     """
-    if request.method == "POST" and request.is_ajax() and request.user.is_authenticated() and request.user.get_profile().can_edit_items():
-        note = Note.objects.get(pk=pk)
+    note = Note.objects.get(pk=pk)
+    if request.method == "POST" and request.is_ajax() and note.allows_tags_by(request.user):
         note.tags.set(request.body)
 
         note_json = serializers.serialize('json', [note,])
@@ -337,7 +366,10 @@ def edit_note_tags(request, pk):
         resp['fields']['tags'] = list(note.tags.names())
 
         return HttpResponse(json.dumps(resp), mimetype="application/json")
-    else:
+    if request.method != "POST" or not request.is_ajax():
         return HttpResponseBadRequest(json.dumps({'status': 'fail', 'message': 'Invalid request'}),
+                                      mimetype="application/json")
+    else:
+        return HttpResponseForbidden(json.dumps({'status': 'fail', 'message': 'Not permitted'}),
                                       mimetype="application/json")
 

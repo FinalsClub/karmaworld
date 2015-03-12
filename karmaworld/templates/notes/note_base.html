@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load url from future %}
 {% load compress %}
+{% load notes %}
 
 {% block title %}
   {{ note.name }}
@@ -57,7 +58,7 @@
       });
     {% endif %}
   </script>
-  {% if note.is_editable %}
+  {% if user|can_edit:note %}
     <script type="text/javascript">
       // wysihtml5 doesn't init correctly in a hidden div.  So we remove it every
       // time before showing it in the modal.
@@ -121,6 +122,16 @@
           <span class="header-title">{{ note.name }} </span>
           <span style="display: inline;">
             <span class="show-for-large-up">
+              {% if user|can_del:note %}
+                <form method="POST" action="{% url 'note_delete' %}">
+                  {% csrf_token %}
+                  {{ note_delete_form }}
+                  <button id="delete-note-button" type="submit" class="scary"><i class="fa fa-trash-o"></i> Delete Note</button>
+                </form>
+              {% else %}
+                {# just to keep the formatting consistent #}
+                <form></form>
+              {% endif %}
               {% if user.is_authenticated %}
                 {% if already_thanked %}
                   <button id="thank-button-disabled" class="modify-button disabled opentip"
@@ -174,14 +185,24 @@
                   <i class="fa fa-download"></i> Download Note</button>
               {% endif %}
 
-              {% if user.get_profile.can_edit_items and note.user != user %}
+              {% if user|can_tag:note %}
                 <button id="edit-note-tags" class="modify-button" data-reveal-id="note-tag-dialog">
-                  <i class="fa fa-pencil-square-o"></i> Edit Tags
-                </button>
+                  <i class="fa fa-pencil-square-o"></i> Edit Tags</button>
+              {% else %}
+                <button id="edit-note-tags-disabled" class="modify-button disabled opentip"
+                          data-ot="Sorry, you are not allowed to edit tags on this note"
+                           {% include 'partial/opentip_settings.html' %}>
+                  <i class="fa fa-pencil-square-o"></i> Edit Tags</button>
               {% endif %}
 
-              {% if note.user == user or user.is_staff %}
-                <button id="edit-button" data-reveal-id="note-edit-dialog" class="modify-button"> <i class="fa fa-edit"></i> Edit This Note</button>&nbsp;&nbsp;
+              {% if user|can_edit:note %}
+                <button id="edit-button" class="modify-button" data-reveal-id="note-edit-dialog">
+                  <i class="fa fa-edit"></i> Edit This Note</button>
+              {% else %}
+                <button id="edit-button-disabled" class="modify-button disabled opentip"
+                          data-ot="Sorry, you are not allowed to edit the contents of this note"
+                           {% include 'partial/opentip_settings.html' %}>
+                  <i class="fa fa-edit"></i> Edit This Note</button>
               {% endif %}
 
               {% if note.license %}
@@ -223,6 +244,7 @@
           <div class="small-12 columns">
             <h3>Edit this note's tags</h3>
             <input id="note_tags_input" type="text" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+            <p>{{ note_edit_form.tags.help_text }}</p>
             <button id="save_note_tags" type="submit" value="tags-form"><i class="fa fa-save"></i> Save</button>
           </div>
         </div>
@@ -233,13 +255,6 @@
         <div class="row">
           <div class="small-8 columns">
             <h3>Edit Your Note</h3>
-          </div>
-          <div class="small-4 columns text-right">
-            <form method="POST" action="{% url 'note_delete' %}">
-              {% csrf_token %}
-              {{ note_delete_form }}
-              <button id="delete-note-button" type="submit" class="scary"><i class="fa fa-trash-o"></i> Delete Note</button>
-            </form>
           </div>
         </div>
         <div class="row">
@@ -253,24 +268,14 @@
                 <p>{{ field.help_text }}</p>
               {% endwith %}
             </div>
-            <div class="small-12 large-6 columns">
-              {% with note_edit_form.tags as field %}
+            <div class="small-12 columns">
+              {% with note_edit_form.html as field %}
                 {{ field.errors|safe }}
                 <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
                 {{ field }}
                 <p>{{ field.help_text }}</p>
               {% endwith %}
             </div>
-            {% if note.is_editable %}
-              <div class="small-12 columns">
-                {% with note_edit_form.html as field %}
-                  {{ field.errors|safe }}
-                  <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-                  {{ field }}
-                  <p>{{ field.help_text }}</p>
-                {% endwith %}
-              </div>
-            {% endif %}
             <div class="small-12 columns text-center">
               <button type="submit"><i class="fa fa-save"></i> Save</button>
             </div>

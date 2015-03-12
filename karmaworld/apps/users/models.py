@@ -40,11 +40,11 @@ class UserProfile(models.Model):
 
         return sum
 
-    def can_edit_items(self):
-        if self.user.is_staff:
-            return True
-        else:
-            return (self.get_points() >= 20)
+    def get_id(self):
+        return self.user.id
+
+    def has_staff_status(self):
+        return self.user.is_staff
 
     NO_BADGE = 0
     PROSPECT = 1

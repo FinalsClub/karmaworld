@@ -123,6 +123,11 @@ function initNoteContentPage() {
           $('.tags').append($('<span>', { class: 'tag-span', text: tag }));
         });
         $('#note-tag-dialog').foundation('reveal', 'close');
+      },
+      error: function(data) {
+        $('#note_tags_form').slideUp();
+        $('#note-tag-dialog').foundation('reveal', 'close');
+        confirm('Could not add tags: ' + data.responseJSON.message);
       }
     });
   });

@@ -22,3 +22,17 @@ def ordinal_letter(value):
 def keyvalue(dict, key):
     return dict[key]
 
+
+@register.filter()
+def can_edit(user,note):
+    return note.allows_edit_by(user)
+
+
+@register.filter()
+def can_tag(user,note):
+    return note.allows_tags_by(user)
+
+
+@register.filter()
+def can_del(user,note):
+    return note.allows_delete_by(user)
