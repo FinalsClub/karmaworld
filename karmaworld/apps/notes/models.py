@@ -398,7 +398,9 @@ class Note(Document):
         if cache.has_key('staff') and cache['staff']:
             return True
         # Users must have 20 points to edit tags.
-        if cache.has_key('profile') and not cache.has_key('points'):
+        if cache.has_key('profile'):
+            # make sure to update points, caching is really just for passing
+            # back in the call stack, not caching for long periods.
             cache['points'] = cache['profile'].get_points()
         return cache.has_key('points') and cache['points'] >= 20
 
