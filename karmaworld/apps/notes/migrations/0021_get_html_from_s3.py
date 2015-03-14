@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import sys
+
 from karmaworld.apps.notes import sanitizer
 from south.utils import datetime_utils as datetime
 from south.db import db
@@ -31,19 +33,28 @@ class Migration(DataMigration):
           'application/vnd.openxmlformats-officedocument.presentationml.presentation'
         )
 
+        necessary_notes = orm['notes.Note'].objects.filter(notemarkdown__html__isnull=True)
+        n_notes = necessary_notes.count()
+
+        # visualiation to show how well this is moving through a large database.
+        counter = 0
+        sys.stdout.write('\n{0:04}/{1:04} '.format(counter, n_notes))
         # find each Note without an html field, download its S3 html, and
         # store it in the local database.
-        for note in orm['notes.Note'].objects.filter(notemarkdown__html__isnull=True):
+        for note in necessary_notes:
             # download the s3 content
             html = ''
             # copy/pasted from model code for Note.get_relative_s3_path
             note_s3_path = 'html/{0}.html'.format(note.slug)
+            sys.stdout.write(':')
+            sys.stdout.flush()
             key = default_storage.bucket.get_key(note_s3_path)
             if key:
                 html = key.read()
 
             # check the downloaded html
             if not html:
+                sys.stdout.write('( ')
                 bad.append(note.slug)
                 continue
             else:
@@ -56,16 +67,28 @@ class Migration(DataMigration):
             if note.category in EDITABLE_CATEGORIES:
                 # make HTML editable
                 html = sanitizer.sanitize_html_to_editable(html)
+                sys.stdout.write(']')
                 edit.append(note)
             else:
                 # clean up HTML without concern for editing
                 html = sanitizer.sanitize_html_preserve_formatting(html)
+                sys.stdout.write(')')
                 nonedit.append(note)
 
             # store the html in the corresponding NoteMarkdown object
             nmd = orm['notes.NoteMarkdown'].objects.get_or_create(note=note)[0]
             nmd.html = html
             nmd.save()
+
+            # manage the display
+            counter = counter + 1
+            sys.stdout.write(' ')
+            # track 20 notes per line
+            if counter % 20 == 0:
+                # finish off previous line and start new line
+                sys.stdout.write('\n{0:04}/{1:04} '.format(counter, n_notes))
+                # flush per line, just in case it isn't outputting
+                sys.stdout.flush()
 
         # Display the score
         print "Migrated {0} notes and failed to migrate {1} notes.".format(
