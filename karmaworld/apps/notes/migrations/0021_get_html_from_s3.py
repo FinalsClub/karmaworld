@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 
 from karmaworld.apps.notes import sanitizer
@@ -8,6 +9,9 @@ from south.v2 import DataMigration
 from django.db import models
 from django.core.files.storage import default_storage
 import requests
+
+def display_counts(current, total):
+    sys.stdout.write('\n{0:04}/{1:04} '.format(current, total))
 
 class Migration(DataMigration):
 
@@ -36,9 +40,20 @@ class Migration(DataMigration):
         necessary_notes = orm['notes.Note'].objects.filter(notemarkdown__html__isnull=True)
         n_notes = necessary_notes.count()
 
+        # perform migration in discrete chunks to deal with the transaction
+        # (just delete the migration from the south table and run again)
+        limitkey = 'NOTE_LIMIT_0021'
+        sys.stdout.write('Running until ')
+        if os.environ.has_key(limitkey):
+            max_notes = int(os.environ[limitkey])
+            display_counts(max_notes, n_notes)
+        else:
+            max_notes = n_notes
+            display_counts(n_notes, n_notes)
+
         # visualiation to show how well this is moving through a large database.
         counter = 0
-        sys.stdout.write('\n{0:04}/{1:04} '.format(counter, n_notes))
+        display_counts(counter, max_notes)
         # find each Note without an html field, download its S3 html, and
         # store it in the local database.
         for note in necessary_notes:
@@ -56,6 +71,7 @@ class Migration(DataMigration):
             if not html:
                 sys.stdout.write('( ')
                 bad.append(note.slug)
+                counter = counter + 1
                 continue
             else:
                 good.append(note.slug)
@@ -86,9 +102,13 @@ class Migration(DataMigration):
             # track 20 notes per line
             if counter % 20 == 0:
                 # finish off previous line and start new line
-                sys.stdout.write('\n{0:04}/{1:04} '.format(counter, n_notes))
+                display_counts(counter, max_notes)
                 # flush per line, just in case it isn't outputting
                 sys.stdout.flush()
+
+            # perform migration in discrete chunks to deal with the transaction
+            if counter == max_notes:
+                break
 
         # Display the score
         print "Migrated {0} notes and failed to migrate {1} notes.".format(
