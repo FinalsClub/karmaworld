@@ -11,6 +11,10 @@ def export_env(filename='.env'):
             tmp = line.split('=')
             # further ignore whitespace padding that was around the =
             tmp = map(str.strip, tmp)
+            # Strip any quotes that might show up around the string
+            def striphyphen(somestring):
+                return somestring.strip("'").strip('"')
+            tmp = map(striphyphen, tmp)
             if len(tmp[0]) and tmp[0][0] == '#':
                 # the heroku CLI cannot return if a variable is not yet set
                 # or if it has been set to the empty string.
