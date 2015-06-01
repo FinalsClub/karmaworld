@@ -11,7 +11,14 @@ v3.0 of the karmanotes.org website from the FinalsClub Foundation
 
 # Purpose
 
-KarmaNotes is an online database of college lecture notes.  KarmaNotes empowers college students to participate in the free exchange of knowledge. 
+KarmaWorld is an online database of college lecture notes.  KarmaWorld
+empowers college students to participate in the free exchange of knowledge.
+
+# Naming
+
+The repository and the project are called KarmaWorld. One implementation
+of KarmaWorld, which is run by FinalsClub Foundation, is called
+[KarmaNotes](https://www.karmanotes.org/).
 
 # Pre-Installation
 
@@ -38,15 +45,66 @@ directory underneath that (`{project_root}/karmaworld`) alongside files like
 `fabfile.py` (`{project_root}/fabfile.py`) and `README.md`
 (`{project_root}/README.md`).
 
+## External Software Dependencies
+
+### pdf2htmlEX
+
+KarmaWorld uses [pdf2htmlEX](https://github.com/coolwanglu/pdf2htmlEX) as
+a dependency. pdf2htmlEX is used to convert uploaded PDF notes into HTML.
+
+An [outdated version of pdf2htmlEX](https://github.com/FinalsClub/pdf2htmlEX)
+is available which includes the
+[patch](https://github.com/FinalsClub/pdf2htmlEX/commit/3c19f6abd8d59d1b58cf254b7160b332b3f5b517)
+required for pdf2htmlEX to correctly work with KarmaWorld.
+
+Newer versions can be used by applying the patch by hand. It's a fairly
+simple two-line modification that can be done after installing
+pdf2htmlEX.
+
+### SSL Certificate
+
+If you wish to host your system publicly, you'll almost certainly want
+an SSL certificate signed by a proper authority.
+
+You may need to set the `SSL_REDIRECT` environment variable to `true` to
+make KarmaWorld redirect insecure connections to secure ones.
+
+Follow [Heroku's SSL setup](https://devcenter.heroku.com/articles/ssl-endpoint)
+to get SSL running on your server with Heroku.
+
 ## External Service Dependencies
 
 Notice: This software makes use of external third party services which require
 accounts to access the service APIs. Without these third parties available,
 this software may require considerable overhaul. These services have
-API keys, credentials, and other information that you must provide to KarmaNotes
+API keys, credentials, and other information that you must provide to KarmaWorld
 as environment variables. The best way to persist these environment variables is
 by using a `.env` file. Copy `.env.example` to `.env` and populate the fields as
 required.
+
+A number of services are required even if running the KarmaWorld web service
+locally, some of the services are recommended, and some are completely optional
+even if running the web service on Heroku.
+
+Many of these services have free tiers and can be used without charge for
+development testing purposes.
+
+* Required Services
+  * [Google Drive](#google-drive)
+  * [Filepicker](#filepicker)
+  * [PostgreSQL](#postgresql)
+  * [Celery](#celery-queue)
+* Optional but recommended
+  * [IndexDen](#indexden): enables searching through courses, notes, etc
+  * [Heroku](#heroku): the production environment used by karmanotes.org
+    * it might not be possible to run KarmaWorld on Heroku using a free
+      webapp.
+  * [Amazon S3](#s3-for-static-files): for static file hosting
+* Entirely optional (though used in the production environment)
+  * [Twitter](#twitter): share updates about new uploads
+  * [Amazon Mechanical Turk](#amazon-mechanical-turk): generate quizzes, flashcards, etc
+  * [Amazon CloudFront](#amazon-cloudfront-cdn)
+  * [Amazon S3](#s3-for-filepicker): store files uploaded to Filepicker
 
 ### Heroku
 This project has chosen to use [Heroku](www.heroku.com) to host the Django and
@@ -55,27 +113,25 @@ documentation will operate assuming Heroku is in use.
 
 See README.heroku for more information.
 
-#### pdf2htmlEX
-This project uses [pdf2htmlEX](https://github.com/coolwanglu/pdf2htmlEX) as
-a dependency. pdf2htmlEX is used to convert uploaded PDF notes into HTML. If
-using Heroku, the default [KarmaNotes Heroku buildpack](https://github.com/FinalsClub/heroku-buildpack-karmanotes)
+#### pdf2htmlEX on Heroku
+If using Heroku, the default
+[KarmaNotes Heroku buildpack](https://github.com/FinalsClub/heroku-buildpack-karmanotes)
 will [include](https://github.com/FinalsClub/heroku-buildpack-karmanotes/blob/master/bin/steps/pdf2htmlex)
-an [outdated version of pdf2htmlEX](https://github.com/FinalsClub/pdf2htmlEX)
-which is [patched](https://github.com/FinalsClub/pdf2htmlEX/commit/3c19f6abd8d59d1b58cf254b7160b332b3f5b517).
+the [required version of pdf2htmlEX](#pdf2htmlex).
 
 ### Celery Queue
 Celery uses the Apache Message Queueing Protocol for passing messages to its workers.
 
 For production, we recommend using Heroku's CloudAMQP add-on, getting your own CloudAMQP account, or
 running a queueing system on your own. The `CLOUDAMQP_URL` environment variable must be set correctly
-for KarmaNotes to be able to use Celery. The `CELERY_QUEUE_NAME` environment variable
+for KarmaWorld to be able to use Celery. The `CELERY_QUEUE_NAME` environment variable
 must be set to the name of the queue you wish to use. Settings this to something unique
-allows multiple instances of KarmaNotes (or some other software) to share the same queueing server.
+allows multiple instances of KarmaWorld (or some other software) to share the same queueing server.
 
 For development on localhost, `RabbitMQ` is the default for `djcelery` and is well supported. Ensure
 `RabbitMQ` is installed for local development.
 
-### Postgresql RDBMS
+### PostgreSQL
 
 PostgreSQL is not necessarily required; other RDBMS could probably be fit into
 place. However, the code was largely written assuming PostgreSQL will be used.
@@ -92,8 +148,10 @@ otherwise accessible.
 The instructions for creating an [S3](http://aws.amazon.com/s3/) bucket may be
 [found on Amazon.](http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html)
 
-Two, separate buckets will be needed in production: one for static file hosting
+Two, separate buckets may be used in production: one for static file hosting
 and one as a communication bus with Filepicker.
+
+#### S3 for Filepicker
 
 This software uses S3 to store files which are sent to or received 
 from Filepicker. Filepicker will need to know the S3 bucket name, access key,
@@ -107,7 +165,9 @@ The software will not need to know the S3 credentials for the Filepicker
 bucket, because the software will upload files to the Filepicker S3 bucket
 through Filepicker's API and it will link to or download files from the
 Filepicker S3 bucket through Filepicker's URLs. This will be covered in the
-Filepicker section below.
+[Filepicker section](#filepicker).
+
+#### S3 for static files
 
 This software uses S3 for hosting static files. The software will need to
 update static files on the S3 bucket. As such, the software will need the
@@ -245,7 +305,7 @@ your Filepicker S3 bucket. Click 'Amazon S3' on the left hand side menu and
 supply the credentials for the user with access to the Filepicker S3 bucket.
 
 ### IndexDen
-KarmaNotes uses IndexDen to create a searchable index of all the notes in the
+KarmaWorld uses IndexDen to create a searchable index of all the notes in the
 system. Create an free IndexDen account at
 [their homepage](http://indexden.com/). You will be given a private URL that
 accesses your IndexDen account. This URL is visible on your dashboard (you
@@ -254,7 +314,7 @@ might need to scroll down).
 Set the `INDEXDEN_PRIVATE_URL` environment variable to your private URL.
 
 Set the `INDEXDEN_INDEX` environment variable to the name of the index you want
-to use for KarmaNotes. The index will be created automatically when KarmaNotes
+to use for KarmaWorld. The index will be created automatically when KarmaNotes
 is run if it doesn't already exist. It may be created through the GUI if
 desired.
 
@@ -279,24 +339,17 @@ to your OAuth settings, and grab the "Consumer key", "Consumer secret",
 environment variables `TWITTER_CONSUMER_KEY`, `TWITTER_CONSUMER_SECRET`,
 `TWITTER_ACCESS_TOKEN_KEY`, `TWITTER_ACCESS_TOKEN_SECRET`.
 
-### SSL Certificate
-
-If you wish to host your system publicly, you'll need an SSL certificate
-signed by a proper authority.
-
-Follow [Heroku's SSL setup](https://devcenter.heroku.com/articles/ssl-endpoint)
-to get SSL running on your server.
-
-You may set the `SSL_REDIRECT` environment variable to `true` to make KarmaNotes
-redirect insecure connections to secure ones.
-
 # Local
 
 ## Configuring foreman
 
-KarmaNotes is a Heroku application and makes use of a Procfie. To use the
-Procfile locally, we recommend using `foreman`. To install `foreman` and other
-Heroku tools, install the [Heroku toolbelt](https://toolbelt.heroku.com/).
+KarmaNotes runs on Heroku as a webapp and thus makes use of a Procfie. While
+not strictly necessary, KarmaWorld can use the same basic Procfile which is
+convenient and consistent.
+
+To use the Procfile locally, we recommend using `foreman`. To install `foreman`
+and other Heroku tools, install the
+[Heroku toolbelt](https://toolbelt.heroku.com/).
 
 Ensure environment variables are available to `foreman` by copying
 `.env.example` to `.env` and update those variables as appropriate for your
@@ -306,7 +359,7 @@ local system.
 
 This project uses [pdf2htmlEX](https://github.com/coolwanglu/pdf2htmlEX) as
 a dependency. pdf2htmlEX is used to convert uploaded PDF notes into HTML. It
-needs to be installed on the same system that KarmaNotes runs on.
+needs to be installed on the same system that KarmaWorld is running on.
 
 ### using their source
 
@@ -381,9 +434,13 @@ This simply ensures that the environment variables from `.env` are present.
 
 # Heroku Install
 
-KarmaNotes is a Heroku application. Download the [Heroku toolbelt](https://toolbelt.heroku.com/).
+KarmaNotes runs on Heroku as a webapp. This section addresses what was done
+for KarmaNotes so that other implementations of KarmaWorld can be run on
+Heroku.
 
-To run KarmaNotes on Heroku, do `heroku create` and `git push heroku master` as typical
+Before anything else, download the [Heroku toolbelt](https://toolbelt.heroku.com/).
+
+To run KarmaWorld on Heroku, do `heroku create` and `git push heroku master` as typical
 for a Heroku application. Set your the variable `BUILDPACK_URL` to
 `https://github.com/FinalsClub/heroku-buildpack-karmanotes` to use a buildpack
 designed to support KarmaNotes.
