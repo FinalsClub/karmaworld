@@ -105,6 +105,7 @@ development testing purposes.
   * [Amazon Mechanical Turk](#amazon-mechanical-turk): generate quizzes, flashcards, etc
   * [Amazon CloudFront](#amazon-cloudfront-cdn)
   * [Amazon S3](#s3-for-filepicker): store files uploaded to Filepicker
+    * Filepicker does not support S3 storage in its free tier
 
 ### Heroku
 This project has chosen to use [Heroku](www.heroku.com) to host the Django and
