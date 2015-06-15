@@ -79,8 +79,7 @@ accounts to access the service APIs. Without these third parties available,
 this software may require considerable overhaul. These services have
 API keys, credentials, and other information that you must provide to KarmaWorld
 as environment variables. The best way to persist these environment variables is
-by using a `.env` file. Copy `.env.example` to `.env` and populate the fields as
-required.
+by using a `.env` file.  Copy `.env.example` to `.env` and populate the fields as required.
 
 A number of services are required even if running the KarmaWorld web service
 locally, some of the services are recommended, and some are completely optional
@@ -89,6 +88,8 @@ even if running the web service on Heroku.
 Many of these services have free tiers and can be used without charge for
 development testing purposes.
 
+* Reminder
+  * Copy `.env.example` to `.env` and populate the environment variables there.
 * Required Services
   * [Google Drive](#google-drive)
   * [Filepicker](#filepicker)
@@ -398,6 +399,14 @@ Then patch the javascript on your system by running this code in the shell.
     * on Debian systems, some packages are required for pip to succeed:
     * `apt-get install python-dev libpython-dev python-psycopg2 libmemcached-dev libffi-dev libssl-dev postgresql-server-dev-X.Y`
   1. `pip install -r requirements-dev.txt`
+
+## Configuration
+
+Make sure [External Service Dependencies](#external_service_dependencies) are
+satisfied. This includes running a local database and RabbitMQ instance as
+desired.
+
+  1. configure `.env` as per [instructions](#external_service_dependencies)
   1. `foreman run python manage.py syncdb --migrate --noinput`
   1. `foreman run python manage.py createsuperuser`
   1. `foreman run python manage.py fetch_usde_csv ./schools.csv`
