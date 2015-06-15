@@ -270,8 +270,9 @@ A Google Drive service account with access to the Google Drive is required.
 This may be done with a Google Apps account with administrative privileges, or ask
 your business sysadmin.
 
-Follow [Google's instructions](https://developers.google.com/drive/delegation)
-to create a Google Drive service account.
+Follow [Google's instructions](https://developers.google.com/drive/web/auth/web-server)
+to create a Google Drive service account. If using Google Apps, it is worth
+looking at [these instructions](https://developers.google.com/drive/delegation).
 
 Convert the p12 file into a Base64 encoded string for the
 `GOOGLE_SERVICE_KEY_BASE64` environment variable. There are many ways to do
