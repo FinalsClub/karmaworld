@@ -274,6 +274,11 @@ Follow [Google's instructions](https://developers.google.com/drive/web/auth/web-
 to create a Google Drive service account. If using Google Apps, it is worth
 looking at [these instructions](https://developers.google.com/drive/delegation).
 
+Google Drive used to use p12 files by default. Now a new-style JSON file is
+downloaded by default when creating new credentials. Until the code has been
+[updated](https://github.com/FinalsClub/karmaworld/issues/437) to use the
+new-style JSON file, make sure to click the `Generate a new P12 key` button.
+
 Convert the p12 file into a Base64 encoded string for the
 `GOOGLE_SERVICE_KEY_BASE64` environment variable. There are many ways to do
 this. If Python is available, the
@@ -283,6 +288,11 @@ makes this very easy:
         import binascii
         with open('file.p12', 'r') as f:
             print binascii.b2a_base64(f.read)
+
+The following instructions require creating web application credentials as
+separate. Ideally, we will
+[remove this step](https://github.com/FinalsClub/karmaworld/issues/436).
+Until then, please figure out how to create web application credentials.
 
 Copy the contents of `client_secret_*.apps.googleusercontent.com.json` into the
 `GOOGLE_CLIENT_SECRETS` environment variable.
