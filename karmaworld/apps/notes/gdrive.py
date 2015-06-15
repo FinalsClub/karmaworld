@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 PDF_MIMETYPE = 'application/pdf'
 PPT_MIMETYPES = ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation']
 
-GOOGLE_CLIENT_SECRETS = os.environ['GOOGLE_CLIENT_SECRETS']
+GOOGLE_SERVICE_EMAIL = os.environ['GOOGLE_SERVICE_EMAIL']
 GOOGLE_SERVICE_KEY_BASE64 = os.environ['GOOGLE_SERVICE_KEY_BASE64']
 GOOGLE_USER = os.environ['GOOGLE_USER']
 
@@ -49,12 +49,9 @@ def build_api_service():
     https://developers.google.com/drive/delegation
     """
 
-    # Extract the service address from the client secret
-    service_user = json.loads(GOOGLE_CLIENT_SECRETS)['web']['client_email']
-
     # Pull in the service's p12 private key.
     p12 = base64.decodestring(GOOGLE_SERVICE_KEY_BASE64)
-    credentials = SignedJwtAssertionCredentials(service_user, p12,
+    credentials = SignedJwtAssertionCredentials(GOOGLE_SERVICE_EMAIL, p12,
                                scope='https://www.googleapis.com/auth/drive',
                                sub=GOOGLE_USER)
 

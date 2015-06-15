@@ -274,10 +274,19 @@ Follow [Google's instructions](https://developers.google.com/drive/web/auth/web-
 to create a Google Drive service account. If using Google Apps, it is worth
 looking at [these instructions](https://developers.google.com/drive/delegation).
 
+Populate the `GOOGLE_USER` environment variable with the email address of the
+user whose Google Drive will be accessed. This is typically your own email
+address.
+
 Google Drive used to use p12 files by default. Now a new-style JSON file is
 downloaded by default when creating new credentials. Until the code has been
 [updated](https://github.com/FinalsClub/karmaworld/issues/437) to use the
 new-style JSON file, make sure to click the `Generate a new P12 key` button.
+
+While on the Credentials page (with the `Generate a new P12 key` button
+visible), note the Service account Email address. It will have a format like
+`numbers-alphanumerics@developer.gserviceaccount.com`. Copy this value and
+paste it into the `GOOGLE_SERVICE_EMAIL` environment variable.
 
 Convert the p12 file into a Base64 encoded string for the
 `GOOGLE_SERVICE_KEY_BASE64` environment variable. There are many ways to do
