@@ -298,14 +298,6 @@ makes this very easy:
         with open('file.p12', 'r') as f:
             print binascii.b2a_base64(f.read)
 
-The following instructions require creating web application credentials as
-separate. Ideally, we will
-[remove this step](https://github.com/FinalsClub/karmaworld/issues/436).
-Until then, please figure out how to create web application credentials.
-
-Copy the contents of `client_secret_*.apps.googleusercontent.com.json` into the
-`GOOGLE_CLIENT_SECRETS` environment variable.
-
 ### Filepicker
 This software uses [Filepicker.io](https://www.inkfilepicker.com/) for uploading
 files. This requires an account with Filepicker.
