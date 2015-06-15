@@ -396,7 +396,7 @@ Then patch the javascript on your system by running this code in the shell.
   1. `source venv/bin/activate`
   1. `pip install -r requirements.txt`
     * on Debian systems, some packages are required for pip to succeed:
-    * `apt-get install python-dev libpython-dev python-psycopg2 libmemcached-devlibffi-dev libssl-dev postgresql-server-dev-X.Y`
+    * `apt-get install python-dev libpython-dev python-psycopg2 libmemcached-dev libffi-dev libssl-dev postgresql-server-dev-X.Y`
   1. `pip install -r requirements-dev.txt`
   1. `foreman run python manage.py syncdb --migrate --noinput`
   1. `foreman run python manage.py createsuperuser`
