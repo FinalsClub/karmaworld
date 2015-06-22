@@ -299,19 +299,23 @@ makes this very easy:
             print binascii.b2a_base64(f.read)
 
 ### Filepicker
-This software uses [Filepicker.io](https://www.inkfilepicker.com/) for uploading
+This software uses [Filepicker](https://www.filepicker.com/) for uploading
 files. This requires an account with Filepicker.
 
 Filepicker can use an additional third party file hosting site where it may
 send uploaded files. This project, in production, uses Amazon S3 as the third
 party. See the Amazon S3 section above for more information.  
 
+In development, an S3 bucket will not be necessary. The Free Plan should
+suffice.
+
 Create a new App with Web SDK and provide the Heroku App URL for the
 Application's URL. You'll be given an API Key for the App. Paste this into the
 `FILEPICKER_API_KEY` environment variable.
 
 Find the 'App Security' button on the left hand side of the web site. Make sure
-'Use Security' is enabled. Generate a new secret key. Paste this key into the
+'Use Security' is enabled. Generate a new app secret. It might require
+reloading the page to see the new secret. Paste this secret into the
 `FILEPICKER_SECRET` environment variable.
 
 If you have an upgraded plan, you can configure Filepicker to have access to
