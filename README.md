@@ -418,11 +418,11 @@ Then patch the javascript on your system by running this code in the shell.
 
 ## Configuration
 
-Make sure [External Service Dependencies](#external_service_dependencies) are
+Make sure [External Service Dependencies](#external-service-dependencies) are
 satisfied. This includes running a local database and RabbitMQ instance as
 desired.
 
-  1. configure `.env` as per [instructions](#external_service_dependencies)
+  1. configure `.env` as per [instructions](#external-service-dependencies)
   1. `foreman run python manage.py syncdb --migrate --noinput`
   1. `foreman run python manage.py createsuperuser`
   1. `foreman run python manage.py fetch_usde_csv ./schools.csv`
