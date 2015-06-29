@@ -438,6 +438,13 @@ desired.
 * `fetching_usde_csv` requires `7zip` to be installed for processing compressed
      archives. On Debian-based systems, this entails `apt-get install p7zip-full`
 
+If using `DJANGO_SETTINGS_MODULE='karmaworld.settings.dev'` in `.env`, static
+file hosting is done by local files and completely ignores the
+`DEFAULT_FILE_STORAGE` setting in `.env`.
+
+If using `DJANGO_SETTINGS_MODULE='karmaworld.settings.prod'` in `.env`, static
+file hosting is done by `DEFAULT_FILE_STORAGE` defined in `.env`.
+
 ## Run
 
 Make sure you are inside your virtual environment (`source venv/bin/activate`).
