@@ -88,14 +88,17 @@ CELERYBEAT_SCHEDULE = {
     'tweet-about-notes': {
         'task': 'tweet_note',
         'schedule': timedelta(minutes=60),
+        'options': {'expires': 3600},
     },
     'check-mturk-results': {
         'task': 'get_extract_keywords_results',
         'schedule': timedelta(minutes=20),
+        'options': {'expires': 1200},
     },
     'update-scoreboard': {
         'task': 'fix_note_counts',
         'schedule': timedelta(days=1),
+        'options': {'expires': 86400},
     },
 }
 
