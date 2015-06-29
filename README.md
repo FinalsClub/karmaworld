@@ -74,16 +74,18 @@ to get SSL running on your server with Heroku.
 
 ## External Service Dependencies
 
-Notice: This software makes use of external third party services which require
-accounts to access the service APIs. Without these third parties available,
-this software may require considerable overhaul. These services have
-API keys, credentials, and other information that you must provide to KarmaWorld
-as environment variables. The best way to persist these environment variables is
-by using a `.env` file.  Copy `.env.example` to `.env` and populate the fields as required.
+Notice: A number of services are required even if running the KarmaWorld web
+service [locally](#local). Some of the services are recommended, and some are
+completely optional even if running the web service on Heroku.
 
-A number of services are required even if running the KarmaWorld web service
-locally, some of the services are recommended, and some are completely optional
-even if running the web service on Heroku.
+This software makes use of external third party services which require
+accounts to access the service APIs. Without these third parties available,
+this software may require considerable overhaul. These services have API keys,
+credentials, and other information that you must provide to KarmaWorld
+as environment variables.
+
+The best way to persist these API keys in environment variables is by using a
+`.env` file.  Copy `.env.example` to `.env` and populate the fields as required.
 
 Many of these services have free tiers and can be used without charge for
 development testing purposes.
