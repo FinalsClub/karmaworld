@@ -20,8 +20,15 @@ MOCK_MODE = settings.TESTING
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-INDEXDEN_INDEX = os.environ['INDEXDEN_INDEX']
-INDEXDEN_PRIVATE_URL = os.environ['INDEXDEN_PRIVATE_URL']
+# assume mock_mode if INDEXDEN is missing
+INDEXDEN_INDEX = None
+INDEXDEN_PRIVATE_URL = None
+if not os.environ.has_key('INDEXDEN_INDEX') or \
+   not os.environ.has_key('INDEXDEN_PRIVATE_URL'):
+  MOCK_MODE = True
+else:
+  INDEXDEN_INDEX = os.environ['INDEXDEN_INDEX']
+  INDEXDEN_PRIVATE_URL = os.environ['INDEXDEN_PRIVATE_URL']
 
 class SearchResult(object):
     """The result of making a query into IndexDen.
