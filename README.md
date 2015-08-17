@@ -449,7 +449,9 @@ file hosting is done by `DEFAULT_FILE_STORAGE` defined in `.env`.
 
 Make sure you are inside your virtual environment (`source venv/bin/activate`).
 
-If the code has changed or this is the first run, make sure any modified static
+Static file hosting makes use of compression if using
+`DJANGO_SETTINGS_MODULE='karmaworld.settings.prod'`. If using compression and
+the code has changed or this is the first run, make sure any modified static
 files get compressed with `foreman run python manage.py compress`. Static files
 then need to be uploaded correctly with `foreman run python manage.py
 collectstatic`.
