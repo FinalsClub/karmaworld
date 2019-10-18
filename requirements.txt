@@ -1,5 +1,5 @@
 cffi==0.8.6
-ecdsa==0.13
+ecdsa==0.13.3
 oauthlib==0.7.2
 paramiko==1.15.2
 python-dateutil==2.4.0
