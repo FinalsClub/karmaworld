@@ -22,7 +22,7 @@ git+https://github.com/btbonval/django-filepicker.git
 filemagic==1.6
 requests==2.3.0
 beautifulsoup4==4.3.2
-cryptography==0.4 # here to make buildpack install libffi
+cryptography==3.2 # here to make buildpack install libffi
 pyopenssl==0.14
 python-twitter==1.3.1
 gdshortener==0.0.2
