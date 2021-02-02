@@ -46,7 +46,7 @@ cssmin==0.1.4
 amqplib==1.0.2
 django-sslify==0.2.5
 newrelic==2.40.0.34
-bleach==1.4
+bleach==3.3.0
 bleach-whitelist==0.0.7
 Markdown==2.5.2
 Pillow==2.7.0
