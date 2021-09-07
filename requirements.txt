@@ -49,5 +49,5 @@ newrelic==2.40.0.34
 bleach==1.4
 bleach-whitelist==0.0.7
 Markdown==2.5.2
-Pillow==2.7.0
+Pillow==8.3.2
 lxml==3.4.4
