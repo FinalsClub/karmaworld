@@ -1,7 +1,7 @@
 cffi==0.8.6
 ecdsa==0.13
 oauthlib==0.7.2
-paramiko==1.15.2
+paramiko==2.10.1
 python-dateutil==2.4.0
 pytz==2014.10
 requests-oauthlib==0.4.2
